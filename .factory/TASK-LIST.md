@@ -1,7 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. **22 adversary passes complete. Streak: 3/3 — CASCADE CONVERGED.**
-> Brief v0.4.14 is final Phase 1a Stage 5 artifact. Top-of-stack: Task #6 (Stage 6 Finalize brief — READY) + Task #53 (post-convergence cleanup, optional). Phase 1b PRD entry pending HUMAN APPROVAL.
+> Snapshot taken at handoff: 2026-05-15. **22 adversary passes complete + v0.4.15 post-convergence cleanup applied. Cascade CONVERGED at Pass 22 on v0.4.14; Pass 23 verification pending.** Top-of-stack: Task #55 (Pass 23 verification).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -60,8 +59,9 @@
 | 50 | COMPLETED | Pass 20 adversary dispatch | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS20-S1: gate doesn't cover handoff], 1 OBSERVATION [F-PASS20-O1: historical claim wording]). **Streak 1/3** — first clean pass since Pass 12 (eight passes ago). Fourth-level recursion structurally closed via v0.4.14 writing-technique principle + gate hardening. Recursion depth observed: 0. Hardened gate self-test returns clean. F-PASS20-S1/O1 non-blocking; bundle into next applicable fix-burst rather than triggering v0.4.15. |
 | 51 | COMPLETED | Pass 21 adversary dispatch (toward streak 2/3) | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS21-S1: gate exclusion-list commentary], 1 OBSERVATION [F-PASS21-O1: SL-1 handoff TypeScript drift — corrected in same commit]). **Streak 2/3.** Recursion class structurally closed across two consecutive passes. F-PASS21-S1 (brief edit) bundles into post-convergence cleanup. |
 | 52 | COMPLETED | Pass 22 adversary dispatch — CONVERGENCE TEST | PASS — CASCADE CONVERGED. 0 findings of any class (CRITICAL/IMPORTANT/SUGGESTION/OBSERVATION). Streak 3/3 (third consecutive clean fresh-context pass). 10 structural-fix disciplines hold; 26 prior-pass fixes preserved; 0 regressed; recursion depth: 0. Brief v0.4.14 (786 lines, commit 7035315) is the final Phase 1a Stage 5 artifact. The 22-pass / 14-fix-burst cascade ran from v0.2.0 (Pass 1, 312 lines) to v0.4.14 (Pass 22, 786 lines). |
-| 53 | OPTIONAL-PENDING | Post-convergence cleanup burst (v0.4.15) bundling 4 deferred non-blocking findings | F-PASS20-S1 (extend gate to cover handoff), F-PASS20-O1 (soften historical "permanently eliminating" wording), F-PASS21-S1 (gate exclusion-list commentary). F-PASS21-O1 already corrected at 88342d0. Cost: approximately 1 fix-burst + 1 verification pass. Optional — human may skip and carry forward as PRD-phase backlog. |
-| 54 | BLOCKED-ON-HUMAN-APPROVAL | Phase 1b PRD phase entry | Per CLAUDE.md Pipeline Authority. On human approval, orchestrator dispatches product-owner with /vsdd-factory:create-prd skill to create PRD with behavioral contracts from converged product brief. |
+| 53 | COMPLETED | Post-convergence cleanup burst (v0.4.15) bundling deferred non-blocking findings | Applied at commit 9ff0504 (brief v0.4.14→v0.4.15; 786→802 lines). F-PASS20-S1 closed (gate extended to two-file for-loop covering brief + handoff). F-PASS21-S1 closed (exclusion-list-extension protocol NOTE added). F-PASS20-O1 closed (3 historical absolute-immutability claims softened to scoped equivalents — audit-trail preserved). Two-file gate self-test runs clean. F-PASS21-O1 was already corrected at 88342d0. |
+| 54 | BLOCKED-ON-HUMAN-APPROVAL | Phase 1b PRD phase entry | Per CLAUDE.md Pipeline Authority. Now blocked on BOTH human approval AND Task #55 (Pass 23 verification). On Pass 23 PASS + human approval, orchestrator dispatches product-owner with /vsdd-factory:create-prd skill. |
+| 55 | PENDING | Pass 23 post-convergence verification pass | TOP-OF-STACK. Verify v0.4.15 cleanup did not regress convergence. On PASS → cascade remains CONVERGED, advance Task #54 (Phase 1b PRD) per human approval. On FAIL → narrow fix-burst v0.4.16. Per Path A design: ~1 verification pass. |
 
 ## Next steps (in dependency order)
 
@@ -78,9 +78,9 @@
 11. ~~Task #50: Pass 20 fresh-context adversary dispatch — PASS (streak 1/3; first clean since Pass 12; recursion class structurally closed)~~
 12. ~~Task #51: Pass 21 fresh-context adversary dispatch — PASS (streak 2/3; second consecutive clean; recursion class stable across two passes)~~
 13. ~~Task #52: Pass 22 fresh-context adversary dispatch — PASS — CASCADE CONVERGED (streak 3/3; first truly clean pass; all defect classes closed)~~
-14. **Task #6: Stage 6 Finalize brief — READY** (awaits human approval to proceed)
-15. **Task #53: Post-convergence cleanup burst (v0.4.15) — OPTIONAL** (parallel with Task #6; human may skip)
-16. **Task #54: Phase 1b PRD phase entry — BLOCKED-ON-HUMAN-APPROVAL**
+14. ~~Task #53: Post-convergence cleanup burst (v0.4.15) — COMPLETED at commit 9ff0504~~
+15. **Task #55: Pass 23 post-convergence verification pass — TOP-OF-STACK** (verify v0.4.15 did not regress convergence)
+16. **Task #54: Phase 1b PRD phase entry — BLOCKED-ON-HUMAN-APPROVAL + Task #55 PASS**
 17. After Phase 1b entry authorized: execute Task #23 (post-convergence git cleanup)
 
-**CASCADE CONVERGED.** Tasks #40–#52 are all complete. Top-of-stack is Task #6 (READY) + Task #53 (OPTIONAL). Task #54 blocked on human approval to advance to Phase 1b.
+**CASCADE CONVERGED at Pass 22 on v0.4.14. v0.4.15 cleanup COMPLETE (Task #53).** Top-of-stack: Task #55 (Pass 23 verification). Task #54 blocked on Task #55 PASS + human approval.
