@@ -7,14 +7,15 @@ current_brief_version: 0.4.14
 current_brief_line_count: 786
 current_brief_path: .factory/specs/product-brief.md
 adversary_protocol: BC-5.39.001 3-CLEAN
-current_streak: 0/3
-current_pass_number: 19 (FAIL — first CRITICAL finding [F-PASS19-C1, 4th-level recursion]; v0.4.14 fix-burst applied with writing-technique principle; Pass 20 pending)
+current_streak: 1/3
+current_pass_number: 20 (PASS — 0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION, 1 OBSERVATION; first clean pass since Pass 12; recursion class structurally closed; Pass 21 pending)
 pass_15_verdict: FAIL
 pass_16_verdict: FAIL
 pass_17_verdict: FAIL
 pass_18_verdict: FAIL
 pass_19_verdict: FAIL
-total_passes_completed: 19
+pass_20_verdict: PASS
+total_passes_completed: 20
 total_fix_bursts: 14
 created: 2026-05-15
 status: in-progress
@@ -44,12 +45,7 @@ describe literal-line-number defects in semantic terms, never quote the literal
 token). F-PASS19-S1 gate hardening (added self-reference exclusion to the gate
 command). The hardened gate now PASSES its own self-test cleanly (zero output).
 
-Streak 0/3. Next step: Pass 20 fresh-context adversary dispatch (Task #50).
-
-NOTE: orchestrator deferred the production-grade ENFORCEMENT ESCALATION
-(creating a write-time machine-enforced hook script under .factory/hooks/) to
-v0.4.15 IF Pass 20 also surfaces this recursion class. Conservative scope per
-Canonical Principle Rule 3+4. The user may redirect to escalate sooner.
+**Pass 20 returned PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION, 1 OBSERVATION). **Streak: 1/3** — first clean pass since Pass 12 (eight passes ago). The fourth-level recursion of the narrow-fix-with-broad-announcement pattern is structurally closed via the v0.4.14 writing-technique principle and gate hardening. The hardened Self-Audit Checklist enforcement command returns zero output cleanly. F-PASS20-S1 (extend gate to cover handoff) and F-PASS20-O1 (soften historical claim wording) are non-blocking SUGGESTION/OBSERVATION-grade and will bundle into the next applicable fix-burst rather than triggering a v0.4.15 burst on their own. Next step: Pass 21 fresh-context adversary dispatch (Task #51) toward 2/3 streak.
 
 ## 2. Cascade history (full)
 
@@ -79,11 +75,13 @@ Canonical Principle Rule 3+4. The user may redirect to escalate sooner.
 | 18+fix | v0.4.13 (782 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS18-I1 closed (local + brief-level enforcement via new Self-Audit Checklist item); F-PASS18-S1 closed; F-PASS18-O2 closed (sibling-sweep); recursion broken at writing layer |
 | 19 | v0.4.13 (782 lines) | FAIL | 1 CRITICAL, 1 IMPORTANT | 0/3 | F-PASS19-C1 4th-level recursion: v0.4.13 enforcement gate fails own self-test; F-PASS19-I1 handoff sibling-sweep gap |
 | 19+fix | v0.4.14 (786 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS19-C1 LOCAL closure via writing-technique principle (no literal-line-number-token quotations); F-PASS19-S1 gate hardening (self-reference exclusion); hardened gate passes own self-test |
+| 20 | v0.4.14 (786 lines) | **PASS** | 0 CRITICAL, 0 IMPORTANT | **1/3** | First clean pass since Pass 12; recursion class structurally closed; F-PASS20-S1 (handoff coverage gap) + F-PASS20-O1 (historical wording) non-blocking; bundle into next applicable fix-burst |
 
 ## 3. Key state
 
 - **Brief:** `.factory/specs/product-brief.md` (v0.4.14, 786 lines)
-- **Streak:** 0/3 (reset by Pass 13 FAIL after Pass 12 PASS; Pass 14 also FAIL; 0/3 entering Pass 15)
+- **Streak:** **1/3** (Pass 20 PASS; first clean since Pass 12)
+- **Pass 20 dispatch status:** COMPLETE — **PASS** (0 CRITICAL + 0 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-20.md`. Recursion depth observed: 0 (structurally closed).
 - **Pass 19 dispatch status:** COMPLETE — FAIL (1 CRITICAL [process-gap, 4th-level recursion] + 1 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`.
 - **Pass 18 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-18.md`.
 - **Pass 17 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-17.md` (373 lines).
@@ -157,11 +155,13 @@ v0.4.13 closes the recursion structurally — the new Self-Audit Checklist enfor
 
 Pass 19 surfaced the cascade's first CRITICAL finding — empirically proving that cultural-checklist enforcement is structurally insufficient at fourth-level recursion. v0.4.14 broke the recursion at the writing layer via a writing-technique principle. v0.4.15 (if needed) escalates to a write-time machine-enforced hook script.
 
+Pass 20 is the first clean pass since Pass 12. The recursion class is structurally closed at recursion depth 0. The cascade is now converging toward 2/3 then 3/3.
+
 ## 6. Open questions for next session
 
-**v0.4.14 fix-burst is applied (commit 7035315) with writing-technique principle and gate hardening; the hardened gate now passes its own self-test.** Next step: Pass 20 fresh-context adversary dispatch (Task #50). Streak resumes from 0/3.
+**Pass 20 PASSED. Streak 1/3.** Next step: Pass 21 fresh-context adversary dispatch (Task #51). Do NOT trigger a v0.4.15 fix-burst — F-PASS20-S1/O1 are non-blocking and bundle into next applicable fix-burst.
 
-**Question for human review:** Should v0.4.15 escalate to a write-time machine-enforced hook script (e.g., `.factory/hooks/validate-changelog-anchors.sh` invoked by lefthook or factory-dispatcher), or continue with the writing-technique principle alone? The Pass 19 adversary recommended machine enforcement; the orchestrator deferred per conservative scope. If Pass 20 surfaces a fifth-level recursion of this class, escalation is the production-grade response.
+**Question for human review (escalation — not triggered by Pass 20):** Should v0.4.15 escalate to a write-time machine-enforced hook script (e.g., `.factory/hooks/validate-changelog-anchors.sh` invoked by lefthook or factory-dispatcher), or continue with the writing-technique principle alone? The Pass 19 adversary recommended machine enforcement; Pass 20 did NOT surface a fifth-level recursion, so the escalation question remains open for human adjudication but is not presently triggered.
 
 **Question for human review when resuming:**
 - After convergence (3 consecutive clean passes), should the brief move directly to PRD phase or is there a human review gate first?
@@ -194,6 +194,7 @@ Pass 19 surfaced the cascade's first CRITICAL finding — empirically proving th
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-17.md` | Pass 17 | 373 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-18.md` | Pass 18 | 193 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md` | Pass 19 | 169 |
+| `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-20.md` | Pass 20 | 167 |
 | `CLAUDE.md` | amended Node 20+ | 592 |
 
 **Note on git history:** Not all fix-burst commits are present in git. The orchestrator
@@ -206,7 +207,8 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
-| (this burst) | factory(adversary): persist Pass 19 FAIL + handoff sibling-sweep + v0.4.14 state refresh |
+| (this burst) | factory(adversary): persist Pass 20 PASS — first clean pass since Pass 12; recursion class structurally closed; streak 1/3 |
+| c0297f9 | factory(adversary): persist Pass 19 FAIL + handoff sibling-sweep + v0.4.14 state refresh |
 | 7035315 | factory(spec): bump brief to v0.4.14 — F-PASS19-C1 4th-level-recursion closure (writing-technique principle + gate hardening) |
 | 4b2f357 | factory(handoff): backfill Pass 18 commit SHA in §8 commit log |
 | ea9b314 | factory(adversary): persist Pass 18 FAIL + v0.4.13 state refresh + F-PASS18-S2/O1 + handoff §5 sibling-sweep |
@@ -246,26 +248,25 @@ commits — the brief on disk at v0.4.14 is the authoritative artifact.
 
 1. Read THIS file end-to-end.
 2. Read `.factory/specs/product-brief.md` (v0.4.14, 786 lines).
-3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md` (Pass 19 FAIL — historical; fixes applied in v0.4.14).
+3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-20.md` (Pass 20 PASS — first clean pass since Pass 12).
 
-**v0.4.14 fix-burst is applied (commit 7035315) with writing-technique principle.** Dispatch Pass 20 per Task #50:
+**Pass 20 PASSED. Streak 1/3.** Dispatch Pass 21 per Task #51:
 
-4. Dispatch fresh-context adversary using Pass 20 template.
+4. Dispatch fresh-context adversary using Pass 21 template.
 5. On adversary verdict:
-   - PASS (0 CRITICAL + 0 IMPORTANT) → streak 1/3 → record verdict via state-manager → dispatch Pass 21.
-   - FAIL with same recursion class → ESCALATE to write-time machine gate in v0.4.15 (informs human; new agent scope).
-   - FAIL with new finding class → v0.4.15 fix-burst per findings → return to step 4 for Pass 21.
+   - PASS (0 CRITICAL + 0 IMPORTANT) → streak 2/3 → record verdict via state-manager → dispatch Pass 22 toward 3/3.
+   - FAIL → record verdict via state-manager → v0.4.15 fix-burst per findings (bundle F-PASS20-S1 + F-PASS20-O1 into the burst) → return to step 4 for Pass 22.
 6. Continue per BC-5.39.001 strict protocol until 3 consecutive clean passes.
 
-**Note for Pass 20 adversary:** v0.4.14 closed F-PASS19-C1 via writing-technique principle (no literal line-number-token quotations in the brief Changelog) AND F-PASS19-S1 (gate hardening with self-reference exclusion). Pass 20 should run the hardened gate on the brief and verify zero output AND verify the v0.4.14 changelog block contains no literal line-number-token sequences AND verify the handoff sweep was effective.
+**Note for Pass 21 adversary:** Pass 20 verified the recursion class is closed at recursion depth 0. Pass 21 should re-verify this (the gate self-test must remain clean) AND attempt fresh-context novelty hunt for any defect-class the prior 20 passes missed.
 
-**Pass 20 dispatch template:**
+**Pass 21 dispatch template:**
 
 > You are a fresh-context adversary reviewer for the brain-factory product brief.
-> Your task: BC-5.39.001 3-CLEAN pass 20.
+> Your task: BC-5.39.001 3-CLEAN pass 21.
 > Target: `.factory/specs/product-brief.md` (v0.4.14, 786 lines).
-> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`.
-> Inputs: product-brief.md, pass-19.md, stage-3-locks.md, elicitation-notes.md,
+> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-20.md`.
+> Inputs: product-brief.md, pass-20.md, stage-3-locks.md, elicitation-notes.md,
 > brief-research.md, reference-repos.md, CLAUDE.md,
 > docs/planning/llm-second-brain-phased-build-plan.md (spot-check §§A.2, 5.11, 8.2.4).
 > Protocol: FAIL on any CRITICAL or IMPORTANT. PASS only if zero CRITICAL + IMPORTANT.

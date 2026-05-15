@@ -1,7 +1,7 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. 19 adversary passes complete + v0.4.14 fix-burst applied.
-> Streak: 0/3. Top-of-stack: Task #50 (Pass 20 fresh-context adversary dispatch).
+> Snapshot taken at handoff: 2026-05-15. **20 adversary passes complete. Streak: 1/3 (Pass 20 PASS — first clean since Pass 12).**
+> Top-of-stack: Task #51 (Pass 21 fresh-context adversary dispatch toward 2/3).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -57,7 +57,8 @@
 | 47 | COMPLETED | Fix-burst v0.4.12 → v0.4.13 per Pass 18 findings | Applied at commit 2e5f3b2. F-PASS18-I1 LOCAL: v0.4.11 coverage claim → semantic anchor at brief changelog. F-PASS18-I1 ENFORCEMENT: new Self-Audit Checklist item enforcing `grep \bL[0-9]+\b ... | grep -v WSL2` clean before commit (converts v0.4.10 cultural claim to brief-level enforced). F-PASS18-S1: cross_platform 5→4 count. F-PASS18-O2: Self-Audit sibling-sweep flatten. v0.4.13 changelog: 0 line-number anchors, 0 blanket-coverage wording (recursion broken at writing layer). 11 STRUCTURAL FIX headings. **Note:** orchestrator dispatched fix-burst BEFORE Pass 18 persistence (one-time order break to avoid context loss on the third-level recursion finding). |
 | 48 | COMPLETED | Pass 19 adversary dispatch | FAIL: 1 CRITICAL (F-PASS19-C1, [process-gap]: fourth-level recursion — v0.4.13 enforcement gate fails own self-test; two literal-line-number-anchor quotations at brief line 56 in the v0.4.13 changelog entry that introduced the gate); 1 IMPORTANT (F-PASS19-I1: handoff §§1+5 sibling-sweep gap — 7 literal line-number tokens in handoff prime writers to repeat the defect); 1 SUGGESTION (F-PASS19-S1: gate self-reference exclusion); 1 OBSERVATION (F-PASS19-O1: §5 blank-line table split). Streak: 0/3. Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`. |
 | 49 | COMPLETED | Fix-burst v0.4.13 → v0.4.14 per Pass 19 findings | Applied at commit 7035315. F-PASS19-C1 LOCAL closure via writing-technique principle (no literal-line-number-token quotations). F-PASS19-S1 gate hardening (self-reference exclusion). Hardened gate self-test PASSES (zero output). NOTE: orchestrator deferred production-grade ENFORCEMENT ESCALATION to v0.4.15 if Pass 20 surfaces same class. |
-| 50 | PENDING | Pass 20 adversary dispatch | Top-of-stack. Pass 20 should verify hardened gate self-test, verify v0.4.14 changelog block has no literal line-number-token sequences, verify handoff sweep was effective. Streak resumes from 0/3. |
+| 50 | COMPLETED | Pass 20 adversary dispatch | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS20-S1: gate doesn't cover handoff], 1 OBSERVATION [F-PASS20-O1: historical claim wording]). **Streak 1/3** — first clean pass since Pass 12 (eight passes ago). Fourth-level recursion structurally closed via v0.4.14 writing-technique principle + gate hardening. Recursion depth observed: 0. Hardened gate self-test returns clean. F-PASS20-S1/O1 non-blocking; bundle into next applicable fix-burst rather than triggering v0.4.15. |
+| 51 | PENDING | Pass 21 adversary dispatch (toward streak 2/3) | Top-of-stack. Pass 21 should verify the recursion class remains closed (gate self-test clean) AND attempt fresh-context novelty hunt. If PASS → streak 2/3, dispatch Pass 22. If FAIL → v0.4.15 fix-burst (bundle F-PASS20-S1/O1 into the burst). |
 
 ## Next steps (in dependency order)
 
@@ -71,7 +72,9 @@
 8. ~~(done at 2e5f3b2) Task #47: v0.4.13 fix-burst — F-PASS18-I1 local fix + brief-level enforcement + S1/O2 resolved~~
 9. ~~Task #48: Pass 19 fresh-context adversary dispatch (done — FAIL, 1 CRITICAL fourth-level recursion)~~
 10. ~~(done at 7035315) Task #49: v0.4.14 fix-burst — F-PASS19-C1 writing-technique principle + F-PASS19-S1 gate hardening~~
-11. **Task #50: Pass 20 fresh-context adversary dispatch (unblocked — dispatch ready)**
-12. If Pass 20 surfaces 5th-level recursion of same class → escalate to write-time machine gate in v0.4.15 (orchestrator informs human first; new tooling scope)
-13. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
+11. ~~Task #50: Pass 20 fresh-context adversary dispatch — PASS (streak 1/3; first clean since Pass 12; recursion class structurally closed)~~
+12. **Task #51: Pass 21 fresh-context adversary dispatch (top-of-stack — streak target 2/3)**
+13. Streak target: 2/3 next, then 3/3 = convergence; mark Task #6 (Stage 6 Finalize) as ready upon convergence
 14. After convergence: execute Task 23 (post-convergence git cleanup)
+
+**Note:** If Pass 21 surfaces a finding requiring a fix-burst, bundle F-PASS20-S1 (extend gate to cover handoff) and F-PASS20-O1 (soften historical claim wording) into that burst. Do NOT trigger v0.4.15 for F-PASS20-S1/O1 alone.
