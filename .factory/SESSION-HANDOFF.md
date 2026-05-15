@@ -243,7 +243,7 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
-| (this commit) | factory(adversary): persist Pass 23 PASS — post-convergence verification; cascade CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED |
+| 8228adc | factory(adversary): persist Pass 23 PASS — post-convergence verification; cascade CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED |
 | a0783df | factory(handoff): refresh state for v0.4.15 post-convergence cleanup completion — Pass 23 verification pending |
 | 9ff0504 | factory(spec): bump brief to v0.4.15 — post-convergence cleanup (F-PASS20-S1/O1 + F-PASS21-S1; gate extension + audit-trail wording calibration) |
 | 2d68e09 | factory(adversary): persist Pass 22 PASS — CASCADE CONVERGED at streak 3/3; brief v0.4.14 is final Phase 1a Stage 5 artifact |
