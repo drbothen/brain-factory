@@ -1,7 +1,7 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. 17 adversary passes complete + v0.4.12 fix-burst applied.
-> Streak: 0/3. Top-of-stack: Task #46 (Pass 18 fresh-context adversary dispatch).
+> Snapshot taken at handoff: 2026-05-15. 18 adversary passes complete + v0.4.13 fix-burst applied.
+> Streak: 0/3. Top-of-stack: Task #48 (Pass 19 fresh-context adversary dispatch).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -53,7 +53,9 @@
 | 43 | COMPLETED | Fix-burst v0.4.10 → v0.4.11 per Pass 16 findings | Applied at commit 5e6dc2f (brief v0.4.10→v0.4.11; 763→771 lines). F-PASS16-I1+I2 paired citation sibling-sweep with grep verification (3 prior-pass fixes back in compliance); F-PASS16-I3 semantic-label replacement (count-drift class eliminated); F-PASS16-S1 cross_platform Git Bash; F-PASS16-O1 plugin.json+hooks.json.template added to §Scope. Bonus in-scope: v0.4.5/v0.4.6/v0.4.7 structural-fix labels promoted to semantic-label format. |
 | 44 | COMPLETED | Pass 17 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS17-I1, [process-gap]: v0.4.11 audit-trail claim overbroad — v0.4.8 bullets L74/L75 lack STRUCTURAL FIX headings); 2 SUGGESTION (F-PASS17-S1 L351 § anchor, F-PASS17-S2 cross_platform flatten); 2 OBSERVATION (F-PASS17-O1 cross-doc coherence, F-PASS17-O2 handoff §5 inaccuracy — corrected in same commit). Streak 0/3. Smallest blocker count since Pass 15; convergence trajectory positive. |
 | 45 | COMPLETED | Fix-burst v0.4.11 → v0.4.12 per Pass 17 findings | Applied at commit ed6e705 (brief v0.4.11→v0.4.12; 771→776 lines). F-PASS17-I1 closed: v0.4.8 changelog bullets at L74/L75 promoted to STRUCTURAL FIX form; L57 coverage claim sharpened — 10 STRUCTURAL FIX headings total in Changelog. F-PASS17-S1: L356 anchors (§132/§144 → §SL-9/§SL-10). F-PASS17-S2: cross_platform flattened. |
-| 46 | PENDING | Pass 18 adversary dispatch | Unblocked. Fresh-context dispatch ready. Streak resumes from 0/3. Pass 17 had smallest blocker count since Pass 15; convergence trajectory positive. |
+| 46 | COMPLETED | Pass 18 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS18-I1, [process-gap]: third-level recursion of narrow-fix-broad-announcement — v0.4.12's own changelog L56 cites literal L57); 2 SUGGESTION (F-PASS18-S1 cross_platform count, F-PASS18-S2 handoff §5 enumeration); 2 OBSERVATION (F-PASS18-O1 stage-3-locks frontmatter, F-PASS18-O2 Self-Audit nested parenthetical). Streak 0/3. |
+| 47 | COMPLETED | Fix-burst v0.4.12 → v0.4.13 per Pass 18 findings | Applied at commit 2e5f3b2. F-PASS18-I1 LOCAL: brief v0.4.11 'all structural-fix headings' coverage claim → semantic anchor at L61. F-PASS18-I1 ENFORCEMENT: new Self-Audit Checklist item at brief L782 enforcing `grep \bL[0-9]+\b ... | grep -v WSL2` clean before commit (converts v0.4.10 cultural claim to brief-level enforced). F-PASS18-S1: cross_platform 5→4 count. F-PASS18-O2: Self-Audit L767 sibling-sweep flatten. v0.4.13 changelog: 0 line-number anchors, 0 blanket-coverage wording (recursion broken at writing layer). 11 STRUCTURAL FIX headings. **Note:** orchestrator dispatched fix-burst BEFORE Pass 18 persistence (one-time order break to avoid context loss on the third-level recursion finding). |
+| 48 | PENDING | Pass 19 adversary dispatch | Top-of-stack. Fresh-context dispatch ready. Pass 19 should verify the v0.4.13 Self-Audit Checklist enforcement is present AND that the v0.4.13 changelog passes the enforcement self-test. Streak resumes from 0/3. |
 
 ## Next steps (in dependency order)
 
@@ -63,6 +65,8 @@
 4. ~~(done at 5e6dc2f) Task #43: v0.4.11 fix-burst — F-PASS16-I1/I2/I3 + S1/O1 resolved; semantic labels + grep-verified sibling-sweep~~
 5. ~~Task #44: Pass 17 fresh-context adversary dispatch (done — FAIL, 1 IMPORTANT)~~
 6. ~~(done at ed6e705) Task #45: v0.4.12 fix-burst — F-PASS17-I1 audit-trail back-fill + S1/S2 resolved~~
-7. **Task #46: Pass 18 fresh-context adversary dispatch (unblocked — dispatch ready)**
-8. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
-9. After convergence: execute Task 23 (post-convergence git cleanup)
+7. ~~Task #46: Pass 18 fresh-context adversary dispatch (done — FAIL, 1 IMPORTANT third-level recursion)~~
+8. ~~(done at 2e5f3b2) Task #47: v0.4.13 fix-burst — F-PASS18-I1 local fix + brief-level enforcement + S1/O2 resolved~~
+9. **Task #48: Pass 19 fresh-context adversary dispatch (unblocked — dispatch ready)**
+10. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
+11. After convergence: execute Task 23 (post-convergence git cleanup)

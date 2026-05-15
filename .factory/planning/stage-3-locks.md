@@ -10,7 +10,7 @@ related_artifacts:
   - .factory/planning/brief-research.md (Stage 4-adjacent research)
   - .factory/planning/reference-repos.md (Stage 4-adjacent research)
   - .factory/specs/product-brief.md (Stage 4-6 product authorship)
-total_locks: 10
+total_locks: 11
 ---
 
 # Stage 3 Elicitation User-Locks
