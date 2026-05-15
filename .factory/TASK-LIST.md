@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. **22 adversary passes complete + v0.4.15 post-convergence cleanup applied. Cascade CONVERGED at Pass 22 on v0.4.14; Pass 23 verification pending.** Top-of-stack: Task #55 (Pass 23 verification).
+> Snapshot taken at handoff: 2026-05-15. **23 adversary passes complete. Cascade CONVERGED on v0.4.15. Phase 1a Stage 5 CLOSED.** Top-of-stack: Task #54 (Phase 1b PRD entry — BLOCKED-ON-HUMAN-APPROVAL).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -12,7 +12,7 @@
 | 3 | COMPLETED | Stage 3: Elicitation — SL-1 through SL-11 locked | stage-3-locks.md produced (171 lines) |
 | 4 | COMPLETED | Draft product-brief v0.1 | First draft from elicitation output |
 | 5 | COMPLETED | Draft product-brief v0.2.0 | Expanded with domain context + traceability scaffolding |
-| 6 | READY | Stage 6: Finalize brief and advance to PRD | Cascade convergence achieved at Pass 22. Brief v0.4.14 is the final artifact. Awaits HUMAN APPROVAL to (a) optionally run post-convergence cleanup burst per Task #53, then (b) advance to Phase 1b PRD phase. |
+| 6 | COMPLETED-PENDING-PHASE-1B | Stage 6: Finalize brief and advance to PRD | Cascade CONVERGED at Pass 22 on v0.4.14; post-convergence cleanup v0.4.15 applied + verified at Pass 23. Brief v0.4.15 is final. Phase 1a Stage 6 administratively complete; awaits Phase 1b PRD entry on human approval. |
 | 7 | COMPLETED | Pass 1 adversary dispatch | FAIL: 4 CRITICAL, 11 IMPORTANT |
 | 8 | COMPLETED | Fix-burst v0.2.0 → v0.3.0 | Resolved 10 of 12 Pass 1 findings; 2 new issues introduced |
 | 9 | COMPLETED | Pass 2 adversary dispatch | FAIL: 1 CRITICAL, 3 IMPORTANT |
@@ -60,8 +60,8 @@
 | 51 | COMPLETED | Pass 21 adversary dispatch (toward streak 2/3) | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS21-S1: gate exclusion-list commentary], 1 OBSERVATION [F-PASS21-O1: SL-1 handoff TypeScript drift — corrected in same commit]). **Streak 2/3.** Recursion class structurally closed across two consecutive passes. F-PASS21-S1 (brief edit) bundles into post-convergence cleanup. |
 | 52 | COMPLETED | Pass 22 adversary dispatch — CONVERGENCE TEST | PASS — CASCADE CONVERGED. 0 findings of any class (CRITICAL/IMPORTANT/SUGGESTION/OBSERVATION). Streak 3/3 (third consecutive clean fresh-context pass). 10 structural-fix disciplines hold; 26 prior-pass fixes preserved; 0 regressed; recursion depth: 0. Brief v0.4.14 (786 lines, commit 7035315) is the final Phase 1a Stage 5 artifact. The 22-pass / 14-fix-burst cascade ran from v0.2.0 (Pass 1, 312 lines) to v0.4.14 (Pass 22, 786 lines). |
 | 53 | COMPLETED | Post-convergence cleanup burst (v0.4.15) bundling deferred non-blocking findings | Applied at commit 9ff0504 (brief v0.4.14→v0.4.15; 786→802 lines). F-PASS20-S1 closed (gate extended to two-file for-loop covering brief + handoff). F-PASS21-S1 closed (exclusion-list-extension protocol NOTE added). F-PASS20-O1 closed (3 historical absolute-immutability claims softened to scoped equivalents — audit-trail preserved). Two-file gate self-test runs clean. F-PASS21-O1 was already corrected at 88342d0. |
-| 54 | BLOCKED-ON-HUMAN-APPROVAL | Phase 1b PRD phase entry | Per CLAUDE.md Pipeline Authority. Now blocked on BOTH human approval AND Task #55 (Pass 23 verification). On Pass 23 PASS + human approval, orchestrator dispatches product-owner with /vsdd-factory:create-prd skill. |
-| 55 | PENDING | Pass 23 post-convergence verification pass | TOP-OF-STACK. Verify v0.4.15 cleanup did not regress convergence. On PASS → cascade remains CONVERGED, advance Task #54 (Phase 1b PRD) per human approval. On FAIL → narrow fix-burst v0.4.16. Per Path A design: ~1 verification pass. |
+| 54 | BLOCKED-ON-HUMAN-APPROVAL | Phase 1b PRD phase entry | Now the SOLE blocker. On human approval, orchestrator dispatches `vsdd-factory:product-owner` with `/vsdd-factory:create-prd` skill. PRD elaborates the converged brief v0.4.15 into behavioral contracts with error taxonomy and edge cases. The PRD undergoes its own 3-CLEAN adversarial cascade in Phase 1d. |
+| 55 | COMPLETED | Pass 23 post-convergence verification pass | **PASS** (0 findings of any class). Post-convergence verification on brief v0.4.15. All 4 v0.4.15 cleanup items VERIFIED (F-PASS20-S1 gate extension, F-PASS21-S1 exclusion-list-extension NOTE, F-PASS20-O1 audit-trail wording softening, v0.4.15 changelog entry compliance). Two-file gate self-test clean on both files. 13/13 disciplines hold, 26/26 prior-pass fixes preserved. **Cascade officially CLOSED on v0.4.15.** |
 
 ## Next steps (in dependency order)
 
@@ -79,8 +79,8 @@
 12. ~~Task #51: Pass 21 fresh-context adversary dispatch — PASS (streak 2/3; second consecutive clean; recursion class stable across two passes)~~
 13. ~~Task #52: Pass 22 fresh-context adversary dispatch — PASS — CASCADE CONVERGED (streak 3/3; first truly clean pass; all defect classes closed)~~
 14. ~~Task #53: Post-convergence cleanup burst (v0.4.15) — COMPLETED at commit 9ff0504~~
-15. **Task #55: Pass 23 post-convergence verification pass — TOP-OF-STACK** (verify v0.4.15 did not regress convergence)
-16. **Task #54: Phase 1b PRD phase entry — BLOCKED-ON-HUMAN-APPROVAL + Task #55 PASS**
+15. ~~Task #55: Pass 23 post-convergence verification pass — COMPLETED — PASS (cascade remains CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED)~~
+16. **Task #54: Phase 1b PRD phase entry — BLOCKED-ON-HUMAN-APPROVAL** (sole remaining blocker)
 17. After Phase 1b entry authorized: execute Task #23 (post-convergence git cleanup)
 
-**CASCADE CONVERGED at Pass 22 on v0.4.14. v0.4.15 cleanup COMPLETE (Task #53).** Top-of-stack: Task #55 (Pass 23 verification). Task #54 blocked on Task #55 PASS + human approval.
+**CASCADE CONVERGED on v0.4.15. Phase 1a Stage 5 CLOSED.** Brief v0.4.15 (802 lines, commit 9ff0504) is the final Phase 1a deliverable. 23 passes, 15 fix-bursts, 4 levels of recursion surfaced and closed. The writing-technique principle, two-file gate, and exclusion-list-extension protocol carry forward to Phase 1b. Task #54 (Phase 1b PRD entry) is the sole pending item — BLOCKED-ON-HUMAN-APPROVAL.
