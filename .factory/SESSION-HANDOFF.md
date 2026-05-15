@@ -7,8 +7,8 @@ current_brief_version: 0.4.14
 current_brief_line_count: 786
 current_brief_path: .factory/specs/product-brief.md
 adversary_protocol: BC-5.39.001 3-CLEAN
-current_streak: 2/3
-current_pass_number: 21 (PASS — 0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION, 1 OBSERVATION; second consecutive clean pass; Pass 22 pending toward 3/3 convergence)
+current_streak: "**3/3 — CONVERGED**"
+current_pass_number: 22 (PASS — 0 findings of any class; CASCADE CONVERGED at streak 3/3; brief v0.4.14 is the final Phase 1a Stage 5 artifact)
 pass_15_verdict: FAIL
 pass_16_verdict: FAIL
 pass_17_verdict: FAIL
@@ -16,10 +16,12 @@ pass_18_verdict: FAIL
 pass_19_verdict: FAIL
 pass_20_verdict: PASS
 pass_21_verdict: PASS
-total_passes_completed: 21
+pass_22_verdict: PASS
+cascade_status: CONVERGED
+total_passes_completed: 22
 total_fix_bursts: 14
 created: 2026-05-15
-status: in-progress
+status: phase-1a-stage-5-converged
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a
@@ -48,7 +50,9 @@ command). The hardened gate now PASSES its own self-test cleanly (zero output).
 
 **Pass 20 returned PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION, 1 OBSERVATION). **Streak: 1/3** — first clean pass since Pass 12 (eight passes ago). The fourth-level recursion of the narrow-fix-with-broad-announcement pattern is structurally closed via the v0.4.14 writing-technique principle and gate hardening. The hardened Self-Audit Checklist enforcement command returns zero output cleanly. F-PASS20-S1 (extend gate to cover handoff) and F-PASS20-O1 (soften historical claim wording) are non-blocking SUGGESTION/OBSERVATION-grade and will bundle into the next applicable fix-burst rather than triggering a v0.4.15 burst on their own.
 
-**Pass 21 returned PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS21-S1: gate exclusion-list commentary improvement], 1 OBSERVATION [F-PASS21-O1: SL-1 handoff paraphrase drift — TypeScript not in stage-3-locks.md; corrected in THIS commit]). **Streak: 2/3** — second consecutive clean pass. ONE pass away from 3/3 convergence (the cascade goal). The recursion class remains structurally closed (gate self-test clean on both brief and handoff). F-PASS21-S1 (brief edit) deferred to post-convergence cleanup or next applicable fix-burst. Next step: Pass 22 fresh-context adversary dispatch (Task #52) toward 3/3.
+**Pass 21 returned PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS21-S1: gate exclusion-list commentary improvement], 1 OBSERVATION [F-PASS21-O1: SL-1 handoff paraphrase drift corrected in the Pass 21 commit]). **Streak: 2/3** — second consecutive clean pass.
+
+**Pass 22 returned PASS with 0 findings of any class** (0 CRITICAL, 0 IMPORTANT, 0 SUGGESTION, 0 OBSERVATION) — first truly clean pass in the entire cascade. **CASCADE CONVERGED. Streak 3/3.** The brain-factory product brief at v0.4.14 (786 lines, commit 7035315) is the final Phase 1a Stage 5 artifact. The fourth-level recursion of the narrow-fix-with-broad-announcement pattern remained structurally closed across three consecutive fresh-context passes (Pass 20, 21, 22). 10 structural-fix disciplines hold. 26 prior-pass fixes preserved with zero regressions. The cascade has converged on every defect dimension tested across 22 passes and 14 fix-bursts. Next steps require HUMAN APPROVAL: (a) optional small post-convergence cleanup burst for 4 deferred non-blocking findings (F-PASS20-S1/O1, F-PASS21-S1/O1); (b) advance Phase 1a to Phase 1b PRD phase per CLAUDE.md Pipeline Authority.
 
 ## 2. Cascade history (full)
 
@@ -80,11 +84,13 @@ command). The hardened gate now PASSES its own self-test cleanly (zero output).
 | 19+fix | v0.4.14 (786 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS19-C1 LOCAL closure via writing-technique principle (no literal-line-number-token quotations); F-PASS19-S1 gate hardening (self-reference exclusion); hardened gate passes own self-test |
 | 20 | v0.4.14 (786 lines) | **PASS** | 0 CRITICAL, 0 IMPORTANT | **1/3** | First clean pass since Pass 12; recursion class structurally closed; F-PASS20-S1 (handoff coverage gap) + F-PASS20-O1 (historical wording) non-blocking; bundle into next applicable fix-burst |
 | 21 | v0.4.14 (786 lines, unchanged) | **PASS** | 0 CRITICAL, 0 IMPORTANT | **2/3** | Second consecutive clean pass; recursion class stable; F-PASS21-S1 (brief; deferable) + F-PASS21-O1 (handoff §4 SL-1 TypeScript drift; CORRECTED this commit) |
+| 22 | v0.4.14 (786 lines, unchanged) | **PASS — CONVERGED** | 0 findings of any class | **3/3** | First truly clean pass; cascade converged across 3 consecutive fresh-context passes (Pass 20/21/22); recursion class structurally closed |
 
 ## 3. Key state
 
 - **Brief:** `.factory/specs/product-brief.md` (v0.4.14, 786 lines)
-- **Streak:** **2/3** (Pass 20 + Pass 21 PASS)
+- **Streak:** **3/3 — CASCADE CONVERGED**
+- **Pass 22 dispatch status:** COMPLETE — **PASS** (0 findings of any class). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-22.md`. **CASCADE CONVERGED** — brief v0.4.14 is the final Phase 1a Stage 5 artifact.
 - **Pass 21 dispatch status:** COMPLETE — **PASS** (0 CRITICAL + 0 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-21.md`. Recursion depth: 0 (structurally closed across two consecutive passes).
 - **Pass 20 dispatch status:** COMPLETE — **PASS** (0 CRITICAL + 0 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-20.md`. Recursion depth observed: 0 (structurally closed).
 - **Pass 19 dispatch status:** COMPLETE — FAIL (1 CRITICAL [process-gap, 4th-level recursion] + 1 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`.
@@ -162,13 +168,21 @@ Pass 19 surfaced the cascade's first CRITICAL finding — empirically proving th
 
 Pass 20 is the first clean pass since Pass 12. The recursion class is structurally closed at recursion depth 0. The cascade is now converging toward 2/3 then 3/3.
 
-Pass 21 confirms two consecutive clean passes (streak 2/3). Pass 22 will determine 3/3 convergence.
+Pass 21 confirms two consecutive clean passes (streak 2/3).
+
+**Pass 22 confirms 3/3 streak: CASCADE CONVERGED.** The 10 structural-fix disciplines (v0.4.5 through v0.4.14) hold across three consecutive fresh-context passes. The recursion class is structurally closed. The brief is the final Phase 1a Stage 5 artifact.
 
 ## 6. Open questions for next session
 
-**Pass 21 PASSED. Streak 2/3.** Next step: Pass 22 fresh-context adversary dispatch (Task #52) toward 3/3. Do NOT trigger a v0.4.15 fix-burst — F-PASS21-S1/O1 are non-blocking; F-PASS21-O1 is corrected in THIS commit (handoff §4 SL-1 TypeScript drop); F-PASS21-S1 (brief edit) bundles into post-convergence cleanup.
+**CASCADE CONVERGED. Pass 22 PASSED. Streak 3/3.** Brief v0.4.14 is the final Phase 1a Stage 5 artifact. Next steps require human approval (orchestrator does not auto-advance phases per CLAUDE.md Pipeline Authority).
 
-**Question for human review (escalation — not triggered by Pass 20):** Should v0.4.15 escalate to a write-time machine-enforced hook script (e.g., `.factory/hooks/validate-changelog-anchors.sh` invoked by lefthook or factory-dispatcher), or continue with the writing-technique principle alone? The Pass 19 adversary recommended machine enforcement; Pass 20 did NOT surface a fifth-level recursion, so the escalation question remains open for human adjudication but is not presently triggered.
+### Human approval gate — choose path forward
+
+- **Path A:** Optional post-convergence cleanup burst (v0.4.15) bundling 4 deferred non-blocking findings (F-PASS20-S1: extend gate to cover handoff; F-PASS20-O1: soften historical "permanently eliminating" wording; F-PASS21-S1: gate exclusion-list commentary improvement; F-PASS21-O1 already corrected at 88342d0). Cost: approximately 1 fix-burst plus 1 verification pass. Benefit: closes minor cleanup items before PRD phase.
+- **Path B:** Skip cleanup, advance directly to Phase 1b PRD. The 4 deferred findings carry forward as PRD-phase backlog.
+- **Path C:** Pause and review the converged brief before advancing.
+
+**Pass 19 escalation question (machine-enforced hook script): CLOSED by convergence** — cultural enforcement + writing-technique principle + gate hardening proved sufficient across three consecutive fresh-context passes.
 
 **Question for human review when resuming:**
 - After convergence (3 consecutive clean passes), should the brief move directly to PRD phase or is there a human review gate first?
@@ -203,6 +217,7 @@ Pass 21 confirms two consecutive clean passes (streak 2/3). Pass 22 will determi
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md` | Pass 19 | 169 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-20.md` | Pass 20 | 167 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-21.md` | Pass 21 | 159 |
+| `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-22.md` | Pass 22 (CONVERGENCE) | 146 |
 | `CLAUDE.md` | amended Node 20+ | 592 |
 
 **Note on git history:** Not all fix-burst commits are present in git. The orchestrator
@@ -215,7 +230,8 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
-| (this commit) | factory(adversary): persist Pass 21 PASS + correct F-PASS21-O1 handoff §4 SL-1 paraphrase; streak 2/3 |
+| (this commit) | factory(adversary): persist Pass 22 PASS — CASCADE CONVERGED at streak 3/3; brief v0.4.14 is final Phase 1a Stage 5 artifact |
+| 88342d0 | factory(adversary): persist Pass 21 PASS + correct F-PASS21-O1 handoff §4 SL-1 paraphrase; streak 2/3 |
 | 5c54640 | factory(adversary): persist Pass 20 PASS — first clean pass since Pass 12; recursion class structurally closed; streak 1/3 |
 | c0297f9 | factory(adversary): persist Pass 19 FAIL + handoff sibling-sweep + v0.4.14 state refresh |
 | 7035315 | factory(spec): bump brief to v0.4.14 — F-PASS19-C1 4th-level-recursion closure (writing-technique principle + gate hardening) |
@@ -256,29 +272,24 @@ commits — the brief on disk at v0.4.14 is the authoritative artifact.
 ## 9. Resume procedure
 
 1. Read THIS file end-to-end.
-2. Read `.factory/specs/product-brief.md` (v0.4.14, 786 lines).
-3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-21.md` (Pass 21 PASS — second consecutive clean).
+2. Read `.factory/specs/product-brief.md` (v0.4.14, 786 lines — CONVERGED).
+3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-22.md` (Pass 22 CONVERGENCE — third consecutive clean pass).
 
-**Pass 21 PASSED. Streak 2/3. ONE pass away from convergence.** Dispatch Pass 22 per Task #52:
+**CASCADE CONVERGED. Pass 22 PASSED. Streak 3/3.** Brief v0.4.14 is the final Phase 1a Stage 5 artifact.
 
-4. Dispatch fresh-context adversary using Pass 22 template.
-5. On adversary verdict:
-   - PASS (0 CRITICAL + 0 IMPORTANT) → **streak 3/3 → CASCADE CONVERGED** → record verdict via state-manager → mark Task #6 (Stage 6 Finalize) ready → bundle deferred findings (F-PASS20-S1/O1, F-PASS21-S1/O1) into Task #53 (post-convergence cleanup) → on cleanup completion, advance Phase 1a → Phase 1b (PRD phase).
-   - FAIL → record verdict via state-manager → streak 0/3 RESET → v0.4.15 fix-burst (bundle all deferred findings) → restart cascade from 0/3.
-6. Continue per BC-5.39.001 strict protocol.
+**Next steps require HUMAN APPROVAL** (orchestrator does not auto-advance phases per CLAUDE.md Pipeline Authority):
 
-**Note for Pass 22 adversary:** Pass 21 confirmed recursion class is closed across two consecutive passes. Pass 22 should re-verify (gate self-test clean) AND apply fresh-context novelty hunt for any defect-class the prior 21 passes missed. Pass 22 IS the convergence test — even one new IMPORTANT resets the streak to 0/3.
+4. Choose path forward (per §6 Human approval gate):
+   - Path A: Optional post-convergence cleanup burst (v0.4.15)
+   - Path B: Skip cleanup, advance to Phase 1b PRD
+   - Path C: Pause and review
 
-**Pass 22 dispatch template (CONVERGENCE TEST):**
+5. On human direction:
+   - If Path A: dispatch product-owner v0.4.15 fix-burst bundling 4 deferred findings → state-manager refresh → Pass 23 verification → on PASS, advance to Phase 1b
+   - If Path B: mark Phase 1a Stage 6 (Finalize brief) COMPLETE → initiate Phase 1b PRD phase → spawn product-owner with `/vsdd-factory:create-prd` skill
+   - If Path C: user reads converged brief, returns with direction
 
-> You are a fresh-context adversary reviewer for the brain-factory product brief.
-> Your task: BC-5.39.001 3-CLEAN pass 22 — CONVERGENCE TEST (streak 2/3; one PASS ends the cascade).
-> Target: `.factory/specs/product-brief.md` (v0.4.14, 786 lines).
-> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-21.md`.
-> Inputs: product-brief.md, pass-21.md, stage-3-locks.md, elicitation-notes.md,
-> brief-research.md, reference-repos.md, CLAUDE.md,
-> docs/planning/llm-second-brain-phased-build-plan.md (spot-check §§A.2, 5.11, 8.2.4).
-> Protocol: FAIL on any CRITICAL or IMPORTANT. PASS only if zero CRITICAL + IMPORTANT.
+6. Phase 1b PRD phase entry (when authorized): orchestrator dispatches `vsdd-factory:product-owner` to create PRD with behavioral contracts from converged product brief. Per CLAUDE.md Phase Sequence: PRD with BCs → architecture with ADRs → adversarial spec review (3-CLEAN cascade for PRD).
 
 ## 10. Standing user directives (carry forward)
 

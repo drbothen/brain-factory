@@ -1,7 +1,7 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. **21 adversary passes complete. Streak: 2/3 (Pass 20 + Pass 21 PASS).**
-> Top-of-stack: Task #52 (Pass 22 fresh-context adversary dispatch — CONVERGENCE TEST toward 3/3).
+> Snapshot taken at handoff: 2026-05-15. **22 adversary passes complete. Streak: 3/3 — CASCADE CONVERGED.**
+> Brief v0.4.14 is final Phase 1a Stage 5 artifact. Top-of-stack: Task #6 (Stage 6 Finalize brief — READY) + Task #53 (post-convergence cleanup, optional). Phase 1b PRD entry pending HUMAN APPROVAL.
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -13,7 +13,7 @@
 | 3 | COMPLETED | Stage 3: Elicitation — SL-1 through SL-11 locked | stage-3-locks.md produced (171 lines) |
 | 4 | COMPLETED | Draft product-brief v0.1 | First draft from elicitation output |
 | 5 | COMPLETED | Draft product-brief v0.2.0 | Expanded with domain context + traceability scaffolding |
-| 6 | PENDING | Stage 6: Finalize brief and advance to PRD | Awaits cascade convergence (3-CLEAN) |
+| 6 | READY | Stage 6: Finalize brief and advance to PRD | Cascade convergence achieved at Pass 22. Brief v0.4.14 is the final artifact. Awaits HUMAN APPROVAL to (a) optionally run post-convergence cleanup burst per Task #53, then (b) advance to Phase 1b PRD phase. |
 | 7 | COMPLETED | Pass 1 adversary dispatch | FAIL: 4 CRITICAL, 11 IMPORTANT |
 | 8 | COMPLETED | Fix-burst v0.2.0 → v0.3.0 | Resolved 10 of 12 Pass 1 findings; 2 new issues introduced |
 | 9 | COMPLETED | Pass 2 adversary dispatch | FAIL: 1 CRITICAL, 3 IMPORTANT |
@@ -59,7 +59,9 @@
 | 49 | COMPLETED | Fix-burst v0.4.13 → v0.4.14 per Pass 19 findings | Applied at commit 7035315. F-PASS19-C1 LOCAL closure via writing-technique principle (no literal-line-number-token quotations). F-PASS19-S1 gate hardening (self-reference exclusion). Hardened gate self-test PASSES (zero output). NOTE: orchestrator deferred production-grade ENFORCEMENT ESCALATION to v0.4.15 if Pass 20 surfaces same class. |
 | 50 | COMPLETED | Pass 20 adversary dispatch | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS20-S1: gate doesn't cover handoff], 1 OBSERVATION [F-PASS20-O1: historical claim wording]). **Streak 1/3** — first clean pass since Pass 12 (eight passes ago). Fourth-level recursion structurally closed via v0.4.14 writing-technique principle + gate hardening. Recursion depth observed: 0. Hardened gate self-test returns clean. F-PASS20-S1/O1 non-blocking; bundle into next applicable fix-burst rather than triggering v0.4.15. |
 | 51 | COMPLETED | Pass 21 adversary dispatch (toward streak 2/3) | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS21-S1: gate exclusion-list commentary], 1 OBSERVATION [F-PASS21-O1: SL-1 handoff TypeScript drift — corrected in same commit]). **Streak 2/3.** Recursion class structurally closed across two consecutive passes. F-PASS21-S1 (brief edit) bundles into post-convergence cleanup. |
-| 52 | PENDING | Pass 22 adversary dispatch — CONVERGENCE TEST toward streak 3/3 | TOP-OF-STACK. If PASS → cascade CONVERGED → Stage 6 (Finalize) ready, advance to PRD. If FAIL → streak 0/3 RESET → v0.4.15 fix-burst. Pass 22 must verify recursion class closed AND fresh-context novelty hunt. |
+| 52 | COMPLETED | Pass 22 adversary dispatch — CONVERGENCE TEST | PASS — CASCADE CONVERGED. 0 findings of any class (CRITICAL/IMPORTANT/SUGGESTION/OBSERVATION). Streak 3/3 (third consecutive clean fresh-context pass). 10 structural-fix disciplines hold; 26 prior-pass fixes preserved; 0 regressed; recursion depth: 0. Brief v0.4.14 (786 lines, commit 7035315) is the final Phase 1a Stage 5 artifact. The 22-pass / 14-fix-burst cascade ran from v0.2.0 (Pass 1, 312 lines) to v0.4.14 (Pass 22, 786 lines). |
+| 53 | OPTIONAL-PENDING | Post-convergence cleanup burst (v0.4.15) bundling 4 deferred non-blocking findings | F-PASS20-S1 (extend gate to cover handoff), F-PASS20-O1 (soften historical "permanently eliminating" wording), F-PASS21-S1 (gate exclusion-list commentary). F-PASS21-O1 already corrected at 88342d0. Cost: approximately 1 fix-burst + 1 verification pass. Optional — human may skip and carry forward as PRD-phase backlog. |
+| 54 | BLOCKED-ON-HUMAN-APPROVAL | Phase 1b PRD phase entry | Per CLAUDE.md Pipeline Authority. On human approval, orchestrator dispatches product-owner with /vsdd-factory:create-prd skill to create PRD with behavioral contracts from converged product brief. |
 
 ## Next steps (in dependency order)
 
@@ -75,8 +77,10 @@
 10. ~~(done at 7035315) Task #49: v0.4.14 fix-burst — F-PASS19-C1 writing-technique principle + F-PASS19-S1 gate hardening~~
 11. ~~Task #50: Pass 20 fresh-context adversary dispatch — PASS (streak 1/3; first clean since Pass 12; recursion class structurally closed)~~
 12. ~~Task #51: Pass 21 fresh-context adversary dispatch — PASS (streak 2/3; second consecutive clean; recursion class stable across two passes)~~
-13. **Task #52: Pass 22 fresh-context adversary dispatch — CONVERGENCE TEST (top-of-stack — streak target 3/3)**
-14. After convergence: If Task #52 PASSes → mark Task #6 (Stage 6 Finalize brief and advance to PRD) READY → bundle deferred findings (F-PASS20-S1/O1, F-PASS21-S1/O1) into Task #53 (post-convergence cleanup) → on cleanup completion, advance Phase 1a → Phase 1b (PRD phase).
-15. After convergence: execute Task #23 (post-convergence git cleanup)
+13. ~~Task #52: Pass 22 fresh-context adversary dispatch — PASS — CASCADE CONVERGED (streak 3/3; first truly clean pass; all defect classes closed)~~
+14. **Task #6: Stage 6 Finalize brief — READY** (awaits human approval to proceed)
+15. **Task #53: Post-convergence cleanup burst (v0.4.15) — OPTIONAL** (parallel with Task #6; human may skip)
+16. **Task #54: Phase 1b PRD phase entry — BLOCKED-ON-HUMAN-APPROVAL**
+17. After Phase 1b entry authorized: execute Task #23 (post-convergence git cleanup)
 
-**Note:** F-PASS20-S1/O1 and F-PASS21-S1/O1 are all non-blocking. If Pass 22 surfaces a finding requiring a fix-burst, bundle all four deferred findings into that burst. Do NOT trigger v0.4.15 for these alone.
+**CASCADE CONVERGED.** Tasks #40–#52 are all complete. Top-of-stack is Task #6 (READY) + Task #53 (OPTIONAL). Task #54 blocked on human approval to advance to Phase 1b.
