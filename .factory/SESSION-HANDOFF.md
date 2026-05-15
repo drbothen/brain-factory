@@ -189,7 +189,7 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
-| (this commit) | factory(adversary): persist Pass 18 FAIL + v0.4.13 state refresh + F-PASS18-S2/O1 + handoff §5 sibling-sweep |
+| ea9b314 | factory(adversary): persist Pass 18 FAIL + v0.4.13 state refresh + F-PASS18-S2/O1 + handoff §5 sibling-sweep |
 | 2e5f3b2 | factory(spec): bump brief to v0.4.13 — F-PASS18-I1 third-level-recursion closure (local fix + Self-Audit enforcement) + S1/O2 |
 | e41e3a9 | factory(handoff): refresh state for v0.4.12 fix-burst completion — unblock Pass 18 |
 | ed6e705 | factory(spec): bump brief to v0.4.12 — F-PASS17-I1 audit-trail back-fill + S1/S2 (semantic anchors + cross_platform flatten) |
