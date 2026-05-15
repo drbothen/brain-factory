@@ -1,7 +1,7 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. 16 adversary passes complete + v0.4.11 fix-burst
-> applied. Streak: 0/3. Top-of-stack: Task #44 (Pass 17 fresh-context adversary dispatch).
+> Snapshot taken at handoff: 2026-05-15. 17 adversary passes complete (Pass 17 = FAIL with 1 IMPORTANT).
+> Streak: 0/3. Top-of-stack: Task #45 (v0.4.12 fix-burst).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -51,7 +51,9 @@
 | 41 | COMPLETED | Fix-burst v0.4.9 → v0.4.10 per Pass 15 findings | Applied at commit 8b3cb47 (brief v0.4.9→v0.4.10; 758→763 lines). F-PASS15-I1 resolved (gen-test-corpus.sh added to §Scope); F-PASS15-S1/S2 anchored; 4th structural fix extended grep-anchor discipline to Changelog block. |
 | 42 | COMPLETED | Pass 16 adversary dispatch | FAIL: 3 IMPORTANT (F-PASS16-I1/I2 citation-shorthand regression, F-PASS16-I3 process-gap structural-fix mis-count); 1 SUGGESTION (F-PASS16-S1 cross_platform); 1 OBSERVATION (F-PASS16-O1 plugin.json/hooks.json.template gate-vs-scope). Streak: 0/3. Report persisted via state-manager (orchestrator dispatch — adversary read-only profile). |
 | 43 | COMPLETED | Fix-burst v0.4.10 → v0.4.11 per Pass 16 findings | Applied at commit 5e6dc2f (brief v0.4.10→v0.4.11; 763→771 lines). F-PASS16-I1+I2 paired citation sibling-sweep with grep verification (3 prior-pass fixes back in compliance); F-PASS16-I3 semantic-label replacement (count-drift class eliminated); F-PASS16-S1 cross_platform Git Bash; F-PASS16-O1 plugin.json+hooks.json.template added to §Scope. Bonus in-scope: v0.4.5/v0.4.6/v0.4.7 structural-fix labels promoted to semantic-label format. |
-| 44 | PENDING | Pass 17 adversary dispatch | Unblocked. Fresh-context dispatch ready. Streak resumes from 0/3. |
+| 44 | COMPLETED | Pass 17 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS17-I1, [process-gap]: v0.4.11 audit-trail claim overbroad — v0.4.8 bullets L74/L75 lack STRUCTURAL FIX headings); 2 SUGGESTION (F-PASS17-S1 L351 § anchor, F-PASS17-S2 cross_platform flatten); 2 OBSERVATION (F-PASS17-O1 cross-doc coherence, F-PASS17-O2 handoff §5 inaccuracy — corrected in same commit). Streak 0/3. Smallest blocker count since Pass 15; convergence trajectory positive. |
+| 45 | PENDING | Fix-burst v0.4.11 → v0.4.12 per Pass 17 findings | TOP-OF-STACK. F-PASS17-I1 (blocking, process-gap): promote v0.4.8 changelog bullets at L74/L75 to STRUCTURAL FIX form; amend L57 claim. Bundle F-PASS17-S1 (L351 §SL-9/§SL-10 anchors) + F-PASS17-S2 (cross_platform flatten). |
+| 46 | PENDING | Pass 18 adversary dispatch | Blocked on #45. Streak resumes from 0/3. |
 
 ## Next steps (in dependency order)
 
@@ -59,6 +61,8 @@
 2. ~~(done at 8b3cb47) Task #41: v0.4.10 fix-burst — F-PASS15-I1 resolved, S1/S2 anchored, 4th structural fix applied~~
 3. ~~Task #42: Pass 16 fresh-context adversary dispatch (done — FAIL)~~
 4. ~~(done at 5e6dc2f) Task #43: v0.4.11 fix-burst — F-PASS16-I1/I2/I3 + S1/O1 resolved; semantic labels + grep-verified sibling-sweep~~
-5. **Task #44: Pass 17 fresh-context adversary dispatch**
-6. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
-7. After convergence: execute Task 23 (post-convergence git cleanup)
+5. ~~Task #44: Pass 17 fresh-context adversary dispatch (done — FAIL, 1 IMPORTANT)~~
+6. **Task #45: v0.4.12 fix-burst — F-PASS17-I1 (blocking), bundle S1/S2**
+7. Task #46: Pass 18 fresh-context adversary dispatch (blocked on #45)
+8. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
+9. After convergence: execute Task 23 (post-convergence git cleanup)
