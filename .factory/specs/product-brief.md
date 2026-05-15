@@ -3,7 +3,7 @@ artifact_type: product-brief
 project: brain-factory
 phase: phase-1a
 status: draft
-version: 0.4.10
+version: 0.4.11
 target_release: v0.x (MVP through v0.9)
 v1_dependency: factory-dispatcher (planned)
 created: 2026-05-14
@@ -39,7 +39,7 @@ locked_decisions:
   content_types_v0_x: [articles, posts]
   marketplace: drbothen/claude-mp
   license: MIT
-  cross_platform: macOS + Linux + WSL2 (native Windows = v1.0)
+  cross_platform: macOS + Linux + (Windows via Git Bash or WSL2) (native Windows = v1.0)
   wclaude_absorption: patterns-and-agents-merged-into-existing-plan
   wclaude_repo_status: transitioning-private-to-public-before-v0.1 (currently drbothen/wclaude private; local path /Users/jmagady/Dev/wclaude/)
   scale_target_v0_9: power-user (~10000 sources / ~40M words / ~10000 wiki pages)
@@ -52,9 +52,15 @@ locked_decisions:
 
 # Product Brief: brain-factory
 
+**Changes in v0.4.11 (2026-05-15):**
+- **STRUCTURAL FIX (Citation shorthand sibling-sweep with grep verification):** corrected two stale citation shorthand callsites that regressed three prior-pass fixes (F-PASS10-O2, F-PASS12-O1, F-PASS13-O1): (1) in the §Scalability Design Principles §6 Commitment, `plan §A.4` → `phased-build-plan.md §A.4`; (2) in §Scope §Out of scope for v0.x (Worktree-mounted `.brain/` state), `Plugin plan §3.15` → `plugin-plan.md §3.15`. Post-fix grep verification confirms zero residual stale-shorthand callsites in the document body (F-PASS16-I1, F-PASS16-I2).
+- **STRUCTURAL FIX (Semantic structural-fix labels):** replaced the ordinal cascade-count label "4th in cascade" in the v0.4.10 changelog structural-fix entry with the semantic label "Changelog audit-trail discipline" — eliminates the count-drift class permanently (the count was also wrong: the fix was the 6th structural fix by fix-count, not the 4th). All structural-fix headings in the Changelog now use semantic labels rather than ordinal counts (F-PASS16-I3).
+- Updated frontmatter `cross_platform` to include "Git Bash" alongside "WSL2" — aligns frontmatter with 4 body callsites that uniformly cite both as the v0.x Windows-supported paths (F-PASS16-S1).
+- Added `plugin.json` and `hooks.json.template` to §Scope Additional v0.x deliverables — closes 4th instance of the gate-vs-scope defect class; both artifacts are required by the v0.1 and v1.0 ship gates (F-PASS16-O1).
+
 **Changes in v0.4.10 (2026-05-15):**
 - Added `scripts/gen-test-corpus.sh` to §Scope Additional v0.x deliverables enumeration — closes unsatisfiable-task gap (F-PASS15-I1)
-- **STRUCTURAL FIX (4th in cascade):** replaced all line-number citations in the Changelog block with semantic anchors — extends the v0.4.5 grep-anchor discipline to the Changelog audit-trail section, permanently eliminating the stale-line-citation defect class from Changelog entries (F-PASS15-S1, F-PASS15-S2). Specifically: v0.4.9 changelog entry for F-PASS14-I1 changed "per line 301" → "see the embedding_status enforcement gate item below"; v0.4.9 changelog entry for F-PASS14-I2 changed "§Scope §399" → "matching §Scope's 'Phase 2–3 new skill' header". Full Changelog sweep confirmed only these two entries contained stale line-number citations.
+- **STRUCTURAL FIX (Changelog audit-trail discipline):** replaced all line-number citations in the Changelog block with semantic anchors — extends the v0.4.5 grep-anchor discipline to the Changelog audit-trail section, permanently eliminating the stale-line-citation defect class from Changelog entries (F-PASS15-S1, F-PASS15-S2). Specifically: v0.4.9 changelog entry for F-PASS14-I1 changed "per line 301" → "see the embedding_status enforcement gate item below"; v0.4.9 changelog entry for F-PASS14-I2 changed "§Scope §399" → "matching §Scope's 'Phase 2–3 new skill' header". Full Changelog sweep confirmed only these two entries contained stale line-number citations.
 
 **Changes in v0.4.9 (2026-05-15):**
 - Reconciled hook-performance bats coverage to live inside `hooks.bats` (parallel to embedding_status treatment, see the embedding_status enforcement gate item below); preserves 9-suite bats count commitment (F-PASS14-I1)
@@ -69,19 +75,19 @@ locked_decisions:
 - Removed `§` notation from "Changelog" trailers in Self-Audit Checklist: "see §Changelog at top of brief" → "see the Changelog block at top of brief" (Changelog is a bold-header block, not a numbered section) (F-PASS12-O2 / F-PASS13-O2)
 
 **Changes in v0.4.7 (2026-05-15):**
-- **STRUCTURAL FIX:** collapsed Self-Audit Checklist per-version annotations (v0.3.0 through v0.4.6) to single "See Changelog at top of brief" references. Eliminates the per-version-attestation drift class permanently (F-PASS11-I1). Same drift-eliminate discipline applied in v0.4.5 (grep-anchors for L-number refs) and v0.4.6 (creation-date anchors for line counts).
+- **STRUCTURAL FIX (Per-version attestation collapse):** collapsed Self-Audit Checklist per-version annotations (v0.3.0 through v0.4.6) to single "See Changelog at top of brief" references. Eliminates the per-version-attestation drift class permanently (F-PASS11-I1). Same drift-eliminate discipline applied in v0.4.5 (grep-anchors for L-number refs) and v0.4.6 (creation-date anchors for line counts).
 - Corrected v0.4.6 changelog count-claim: disambiguation sweep was 5 callsites, not 4 (F-PASS11-S1)
 - Added Open Questions preamble note explaining strikethrough-Resolved convention (F-PASS11-O1)
 - Moved `stage_3_locks` frontmatter field under `locked_decisions:` block (F-PASS11-O2)
 
 **Changes in v0.4.6 (2026-05-15):**
-- **Structural fix:** dropped specific line counts from Traceability artifact citations; replaced with creation-date anchors only (F-PASS10-I1). Eliminates the recurring "wc-l-vs-Read-tool" line-count drift defect class. Same discipline as v0.4.5's structural fix to Self-Audit line-number refs. Acknowledges Pass 9 F-PASS9-S1 was correct, not a false positive; v0.4.5's "Verified via Read tool" claim was inaccurate (used wc -l).
+- **STRUCTURAL FIX (Line-count → creation-date anchors):** dropped specific line counts from Traceability artifact citations; replaced with creation-date anchors only (F-PASS10-I1). Eliminates the recurring "wc-l-vs-Read-tool" line-count drift defect class. Same discipline as v0.4.5's structural fix to Self-Audit line-number refs. Acknowledges Pass 9 F-PASS9-S1 was correct, not a false positive; v0.4.5's "Verified via Read tool" claim was inaccurate (used wc -l).
 - Sibling-sweep Open Question #2 to match Q#12 reframing — applied Q#8-style strikethrough + Resolved annotation (F-PASS10-S1)
 - Disambiguated "plan §A.2" → "phased-build-plan §A.2" at 5 callsites; added Citation Conventions note (F-PASS10-O2)
 - Added v0.5 early-ship timing notes for skills #18 `/brain:monthly-perf` and #22 `/brain:publish-content` (F-PASS10-O1)
 
 **Changes in v0.4.5 (2026-05-15):**
-- **Structural fix:** replaced all line-number references in §Self-Audit Checklist with grep-anchored semantic references — eliminates the recurring "stale-line-number-after-edit" defect class that Passes 5, 7, and 9 each caught (F-PASS9-I1)
+- **STRUCTURAL FIX (L-numbers → grep-anchors):** replaced all line-number references in §Self-Audit Checklist with grep-anchored semantic references — eliminates the recurring "stale-line-number-after-edit" defect class that Passes 5, 7, and 9 each caught (F-PASS9-I1)
 - Verified Traceability line-count citations via Read tool: elicitation-notes.md = 610 lines, stage-3-locks.md = 171 lines, brief-research.md = 495 lines — all existing citations confirmed accurate; Pass 9 finding F-PASS9-S1 ("off by one") was itself incorrect (F-PASS9-S1)
 - Clarified `/brain:init` v0.1 scaffold: 7 topic categories + explicit note that `highlights/` and `bookmarks/` are created on-demand by v0.5 readwise/raindrop GH Actions, not part of the v0.1 scaffold (F-PASS9-S2)
 - Locked v0.9 ship gate research-backend path: gate tests web-search default; Perplexity MCP opt-in path is tested in Phase 3 dogfood but is not part of the v0.9 release gate (F-PASS9-O1)
@@ -277,7 +283,7 @@ Every operation reports its token consumption. At 10K sources, cumulative token 
 
 At Karpathy's scale (~hundreds of pages), keyword search on `index.md` is sufficient. At 10x scale (~10K pages), semantic retrieval ("find pages about X that don't mention X by name") becomes load-bearing. brain-factory reserves the interface in v0.x so v1.0+ can implement semantic retrieval without a wiki rewrite.
 
-**Commitment:** Every wiki page's frontmatter MUST include an `embedding_status` field (values: `pending` | `computed` | `stale`) from v0.1 onward. **Default value `pending`** written by `/brain:ingest-url` and `/brain:ingest-source` skills. **`validate-frontmatter-schema.sh` hook enforces presence on `wiki/*` writes** (PostToolUse on Write|Edit; scope includes both `wiki/*` and `sources/*` per plan §A.4, but the `embedding_status` requirement applies only to `wiki/*` since `sources/*` has a different mandatory-fields schema — see `validate-source-immutability.sh` for the source-fields enforcement). Operations that do not produce embeddings (v0.x default) leave the value at `pending`. The `manifest.json` schema includes an `embeddings_model` field (default: `null` in v0.x). v1.0+ implementations of vector retrieval populate both fields; v0.x reserves the schema. This mandatory-from-v0.1 commitment ensures the v1.0+ migration is non-breaking.
+**Commitment:** Every wiki page's frontmatter MUST include an `embedding_status` field (values: `pending` | `computed` | `stale`) from v0.1 onward. **Default value `pending`** written by `/brain:ingest-url` and `/brain:ingest-source` skills. **`validate-frontmatter-schema.sh` hook enforces presence on `wiki/*` writes** (PostToolUse on Write|Edit; scope includes both `wiki/*` and `sources/*` per phased-build-plan.md §A.4, but the `embedding_status` requirement applies only to `wiki/*` since `sources/*` has a different mandatory-fields schema — see `validate-source-immutability.sh` for the source-fields enforcement). Operations that do not produce embeddings (v0.x default) leave the value at `pending`. The `manifest.json` schema includes an `embeddings_model` field (default: `null` in v0.x). v1.0+ implementations of vector retrieval populate both fields; v0.x reserves the schema. This mandatory-from-v0.1 commitment ensures the v1.0+ migration is non-breaking.
 
 ### 7. Page-chunking readiness
 
@@ -499,7 +505,9 @@ Note: The 15 author-committed templates are covered by adversarial review, bats 
 - Content publish platforms in v0.x: LinkedIn Posts API (Community Management) + LinkedIn articles manual-finalize via `--finalize`. Medium support ships as the first reference extension at `plugins/brain-factory/extensions/medium/`, demonstrating the extension pattern. (Medium API is officially deprecated per `.factory/planning/brief-research.md` §6.1; only legacy integration tokens work, best-effort, with no support commitment from Medium.) Extension pattern at `plugins/brain-factory/extensions/<platform>/` with hook contract and frontmatter schema.
 - Content types in v0.x: articles (1000+ words, LinkedIn via manual-finalize; Medium via reference extension) and posts (<3000 chars, LinkedIn via Posts API). (thought-leadership CLAUDE.md directory structure)
 - Self-VSDD: `.factory/` active throughout v0.x development. (CLAUDE.md Pipeline Authority)
-- Per-platform hooks.json variants (darwin-arm64, darwin-x86_64, linux-x86_64, windows-x86_64) — same content for v0.x bash hooks. (`llm-second-brain-phased-build-plan.md` §6.2)
+- `plugin.json` — Claude Code plugin manifest (semver version, plugin metadata, agent/skill registration; valid v0.1.0 at v0.1 ship). (`llm-second-brain-plugin-plan.md` §1)
+- `hooks.json.template` — hooks.json variant template referencing all 13 hooks via `${CLAUDE_PLUGIN_ROOT}` (per-platform variants are generated from this template at install or release time). (`llm-second-brain-phased-build-plan.md` §6.2)
+- Per-platform hooks.json variants (darwin-arm64, darwin-x86_64, linux-x86_64, windows-x86_64) — same content for v0.x bash hooks; generated from `hooks.json.template`. (`llm-second-brain-phased-build-plan.md` §6.2)
 - `scripts/run-skill.mjs` — headless skill runner for GH Actions using Node 20+. (locked decision in brief prompt §toolchain-node-runtime-lock)
 - `scripts/defuddle-fetch.mjs` — Defuddle CLI wrapper for `/brain:ingest-url`. Requires Node 20+. (`llm-second-brain-phased-build-plan.md` §A.6; elicitation-notes.md Q-20)
 - `scripts/gen-test-corpus.sh` — synthetic-corpus generator producing N source files + manifest.json for the v0.9 scale test (Phase 3 deliverable owned by devops-engineer, designed during Phase 1c architecture, built during Phase 3 alongside scale-test execution).
@@ -520,7 +528,7 @@ Note: The 15 author-committed templates are covered by adversarial review, bats 
 - **Hosted SaaS.** Local-only. Not on roadmap.
 - **Email, correspondence, and song content types** as `/brain:publish-content` targets. Deferred to v0.5+. (thought-leadership CLAUDE.md content types; locked decision in brief prompt)
 - **wclaude overlap-with-primitives skills NOT absorbed:** mine-ideas, capture-idea, research-topic-as-separate-skill (brain-factory ships `/brain:research` instead), draft-article, draft-email, manage-correspondence, create-thought-grenade. Brain-factory primitives cover the function or skill flags handle it. (locked decision in brief prompt §wclaude-absorption NOT-absorbed list)
-- **Worktree-mounted `.brain/` state.** Plugin plan §3.15 marks it OPTIONAL advanced. Default for new installs is plain (no worktree). Not committed in v0.x.
+- **Worktree-mounted `.brain/` state.** plugin-plan.md §3.15 marks it OPTIONAL advanced. Default for new installs is plain (no worktree). Not committed in v0.x.
 - **PowerShell ports of bash hooks.** More work; throwaway code once Phase 4 lands. (`llm-second-brain-phased-build-plan.md` §13 #3)
 
 ---
