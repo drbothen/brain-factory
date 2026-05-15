@@ -1,7 +1,7 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. 16 adversary passes complete (Pass 16 = FAIL
-> with 3 IMPORTANT). Streak: 0/3. Top-of-stack: Task #43 (v0.4.11 fix-burst).
+> Snapshot taken at handoff: 2026-05-15. 16 adversary passes complete + v0.4.11 fix-burst
+> applied. Streak: 0/3. Top-of-stack: Task #44 (Pass 17 fresh-context adversary dispatch).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -50,15 +50,15 @@
 | 40 | COMPLETED | Persist Pass 15 + refresh handoff state | All three artifacts persisted. Commits: 8d3e2a4 (pass-15), 6072814 (handoff), 989bd20 (task-list). |
 | 41 | COMPLETED | Fix-burst v0.4.9 → v0.4.10 per Pass 15 findings | Applied at commit 8b3cb47 (brief v0.4.9→v0.4.10; 758→763 lines). F-PASS15-I1 resolved (gen-test-corpus.sh added to §Scope); F-PASS15-S1/S2 anchored; 4th structural fix extended grep-anchor discipline to Changelog block. |
 | 42 | COMPLETED | Pass 16 adversary dispatch | FAIL: 3 IMPORTANT (F-PASS16-I1/I2 citation-shorthand regression, F-PASS16-I3 process-gap structural-fix mis-count); 1 SUGGESTION (F-PASS16-S1 cross_platform); 1 OBSERVATION (F-PASS16-O1 plugin.json/hooks.json.template gate-vs-scope). Streak: 0/3. Report persisted via state-manager (orchestrator dispatch — adversary read-only profile). |
-| 43 | PENDING | Fix-burst v0.4.10 → v0.4.11 per Pass 16 findings | TOP-OF-STACK. F-PASS16-I1+I2 paired citation-shorthand sibling-sweep with grep verification; F-PASS16-I3 replace ordinal cascade-count with semantic label; bundle S1/O1. v0.4.11 changelog entry MUST use semantic-label discipline. |
-| 44 | PENDING | Pass 17 adversary dispatch | Blocked on #43. Streak resumes from 0/3. |
+| 43 | COMPLETED | Fix-burst v0.4.10 → v0.4.11 per Pass 16 findings | Applied at commit 5e6dc2f (brief v0.4.10→v0.4.11; 763→771 lines). F-PASS16-I1+I2 paired citation sibling-sweep with grep verification (3 prior-pass fixes back in compliance); F-PASS16-I3 semantic-label replacement (count-drift class eliminated); F-PASS16-S1 cross_platform Git Bash; F-PASS16-O1 plugin.json+hooks.json.template added to §Scope. Bonus in-scope: v0.4.5/v0.4.6/v0.4.7 structural-fix labels promoted to semantic-label format. |
+| 44 | PENDING | Pass 17 adversary dispatch | Unblocked. Fresh-context dispatch ready. Streak resumes from 0/3. |
 
 ## Next steps (in dependency order)
 
 1. ~~(done) Task #40: persist Pass 15 + refresh handoff state~~
 2. ~~(done at 8b3cb47) Task #41: v0.4.10 fix-burst — F-PASS15-I1 resolved, S1/S2 anchored, 4th structural fix applied~~
 3. ~~Task #42: Pass 16 fresh-context adversary dispatch (done — FAIL)~~
-4. **Task #43: v0.4.11 fix-burst** — paired citation-shorthand sibling-sweep with grep verification + semantic label for structural-fix; bundle S1/O1
+4. ~~(done at 5e6dc2f) Task #43: v0.4.11 fix-burst — F-PASS16-I1/I2/I3 + S1/O1 resolved; semantic labels + grep-verified sibling-sweep~~
 5. **Task #44: Pass 17 fresh-context adversary dispatch**
 6. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
 7. After convergence: execute Task 23 (post-convergence git cleanup)
