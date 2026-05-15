@@ -3,7 +3,7 @@ artifact_type: product-brief
 project: brain-factory
 phase: phase-1a
 status: draft
-version: 0.4.11
+version: 0.4.12
 target_release: v0.x (MVP through v0.9)
 v1_dependency: factory-dispatcher (planned)
 created: 2026-05-14
@@ -39,7 +39,7 @@ locked_decisions:
   content_types_v0_x: [articles, posts]
   marketplace: drbothen/claude-mp
   license: MIT
-  cross_platform: macOS + Linux + (Windows via Git Bash or WSL2) (native Windows = v1.0)
+  cross_platform: macOS + Linux + Git-Bash + WSL2 (native Windows = v1.0)
   wclaude_absorption: patterns-and-agents-merged-into-existing-plan
   wclaude_repo_status: transitioning-private-to-public-before-v0.1 (currently drbothen/wclaude private; local path /Users/jmagady/Dev/wclaude/)
   scale_target_v0_9: power-user (~10000 sources / ~40M words / ~10000 wiki pages)
@@ -52,9 +52,14 @@ locked_decisions:
 
 # Product Brief: brain-factory
 
+**Changes in v0.4.12 (2026-05-15):**
+- **STRUCTURAL FIX (Changelog completeness — v0.4.8 back-fill):** Promoted two v0.4.8 changelog bullets to `**STRUCTURAL FIX (semantic-label):**` form: (1) Citation shorthand sibling-sweep (F-PASS12-O1 / F-PASS13-O1) and (2) §Changelog notation cleanup (F-PASS12-O2 / F-PASS13-O2). These were structural-discipline work per SESSION-HANDOFF.md §5's v0.4.8 row but lacked the STRUCTURAL FIX heading. v0.4.11's claim "all structural-fix headings in the Changelog now use semantic labels" was overbroad — it was true for headings that existed but FALSE for completeness. This is the third instance of the "narrow-fix-with-broad-announcement" defect-pattern class (Pass 16 caught "at all callsites" incomplete; Pass 17 caught "all structural-fix headings" incomplete). Amended L57 claim to reflect the back-fill and bar a recurrence (F-PASS17-I1).
+- **STRUCTURAL FIX (§-as-line-number anchor cleanup):** Replaced `SL-9 at §132, SL-10 at §144` in §Scope §v0.9 ship gate with `see §SL-9 and §SL-10` — eliminates §-notation-as-line-number masquerading as section anchor. SL-N IDs are stable; line numbers drift. Consistent with v0.4.5 L-number → grep-anchor discipline (F-PASS17-S1).
+- Flattened frontmatter `cross_platform` nested parentheticals: `macOS + Linux + (Windows via Git Bash or WSL2) (native Windows = v1.0)` → `macOS + Linux + Git-Bash + WSL2 (native Windows = v1.0)` — preserves all five supported environments while eliminating nested-parenthetical structure (F-PASS17-S2).
+
 **Changes in v0.4.11 (2026-05-15):**
 - **STRUCTURAL FIX (Citation shorthand sibling-sweep with grep verification):** corrected two stale citation shorthand callsites that regressed three prior-pass fixes (F-PASS10-O2, F-PASS12-O1, F-PASS13-O1): (1) in the §Scalability Design Principles §6 Commitment, `plan §A.4` → `phased-build-plan.md §A.4`; (2) in §Scope §Out of scope for v0.x (Worktree-mounted `.brain/` state), `Plugin plan §3.15` → `plugin-plan.md §3.15`. Post-fix grep verification confirms zero residual stale-shorthand callsites in the document body (F-PASS16-I1, F-PASS16-I2).
-- **STRUCTURAL FIX (Semantic structural-fix labels):** replaced the ordinal cascade-count label "4th in cascade" in the v0.4.10 changelog structural-fix entry with the semantic label "Changelog audit-trail discipline" — eliminates the count-drift class permanently (the count was also wrong: the fix was the 6th structural fix by fix-count, not the 4th). All structural-fix headings in the Changelog now use semantic labels rather than ordinal counts (F-PASS16-I3).
+- **STRUCTURAL FIX (Semantic structural-fix labels):** replaced the ordinal cascade-count label "4th in cascade" in the v0.4.10 changelog structural-fix entry with the semantic label "Changelog audit-trail discipline" — eliminates the count-drift class permanently (the count was also wrong: the fix was the 6th structural fix by fix-count, not the 4th). All structural-fix entries in the Changelog now use the `**STRUCTURAL FIX (semantic-label):**` heading format (no ordinal cascade counts; no unlabeled structural-fix bullets). v0.4.12 back-fills v0.4.8's two unlabeled structural-fix bullets and amends this claim to be accurate (F-PASS16-I3 + F-PASS17-I1).
 - Updated frontmatter `cross_platform` to include "Git Bash" alongside "WSL2" — aligns frontmatter with 4 body callsites that uniformly cite both as the v0.x Windows-supported paths (F-PASS16-S1).
 - Added `plugin.json` and `hooks.json.template` to §Scope Additional v0.x deliverables — closes 4th instance of the gate-vs-scope defect class; both artifacts are required by the v0.1 and v1.0 ship gates (F-PASS16-O1).
 
@@ -71,8 +76,8 @@ locked_decisions:
 **Changes in v0.4.8 (2026-05-15):**
 - Reconciled Phase 3 Timeline "13 polish skills" → "12 polish skills" + /brain:research, aligning with §Scope's 12+1=13 phase-2-3 count (F-PASS13-I1)
 - Added .reference/README.md creation to devops-engineer bootstrap task; resolves v0.1 gate vs task artifact mismatch — gate requires both MANIFEST.md and README.md, now both are committed by the task (F-PASS13-I2, Option A)
-- Sibling-swept "phased plan §X" → "phased-build-plan §X" and "plugin plan §X" → "plugin-plan.md §X" at all callsites to align with Citation Conventions block (F-PASS12-O1 / F-PASS13-O1)
-- Removed `§` notation from "Changelog" trailers in Self-Audit Checklist: "see §Changelog at top of brief" → "see the Changelog block at top of brief" (Changelog is a bold-header block, not a numbered section) (F-PASS12-O2 / F-PASS13-O2)
+- **STRUCTURAL FIX (Citation shorthand sibling-sweep — historical, partial):** Sibling-swept "phased plan §X" → "phased-build-plan §X" and "plugin plan §X" → "plugin-plan.md §X" at all callsites to align with Citation Conventions block. **NOTE:** Pass 16 surfaced that this sibling-sweep was incomplete (2 residual callsites at §Scalability §6 Commitment and §Scope §Out-of-scope); v0.4.11 closed the gap with grep-verification. (F-PASS12-O1 / F-PASS13-O1)
+- **STRUCTURAL FIX (§Changelog notation cleanup):** Removed `§` notation from "Changelog" trailers in Self-Audit Checklist: "see §Changelog at top of brief" → "see the Changelog block at top of brief" (Changelog is a bold-header block, not a numbered section). (F-PASS12-O2 / F-PASS13-O2)
 
 **Changes in v0.4.7 (2026-05-15):**
 - **STRUCTURAL FIX (Per-version attestation collapse):** collapsed Self-Audit Checklist per-version annotations (v0.3.0 through v0.4.6) to single "See Changelog at top of brief" references. Eliminates the per-version-attestation drift class permanently (F-PASS11-I1). Same drift-eliminate discipline applied in v0.4.5 (grep-anchors for L-number refs) and v0.4.6 (creation-date anchors for line counts).
@@ -348,7 +353,7 @@ Each criterion is measurable and tested; none are aspirational.
 - Meta-lint passes on every artifact in the plugin repo at time of tag.
 - **Scale test at power-user tier (new v0.9 gate addition).** v0.9 ship gate includes ingesting a 10,000-source synthetic corpus (~40M words, expected ~10,000 wiki pages) and measuring against these pass criteria:
 
-  **Source attribution:** The following 6 pass criteria are **brief-introduced via Stage 3 elicitation user-locks SL-9 (scalability scope) and SL-10 (scale target)** recorded in `.factory/planning/stage-3-locks.md` (Stage 3 locks artifact created 2026-05-15; SL-9 at §132, SL-10 at §144):
+  **Source attribution:** The following 6 pass criteria are **brief-introduced via Stage 3 elicitation user-locks SL-9 (scalability scope) and SL-10 (scale target)** recorded in `.factory/planning/stage-3-locks.md` (Stage 3 locks artifact created 2026-05-15; see §SL-9 and §SL-10):
   - SL-9: User selected "Discipline + measured v0.9 scale test"
   - SL-10: User selected "Power-user scale (10x personal)" — ~10,000 sources / ~40M words / ~10,000 wiki pages
 
