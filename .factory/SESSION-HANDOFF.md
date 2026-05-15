@@ -8,9 +8,10 @@ current_brief_line_count: 763
 current_brief_path: .factory/specs/product-brief.md
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: 0/3
-current_pass_number: 15 (FAIL — fix-burst v0.4.10 applied; Pass 16 pending)
+current_pass_number: 16 (FAIL — 3 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION; report at .factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md)
 pass_15_verdict: FAIL
-total_passes_completed: 15
+pass_16_verdict: FAIL
+total_passes_completed: 16
 total_fix_bursts: 10
 created: 2026-05-15
 status: in-progress
@@ -30,6 +31,8 @@ Pass 15 returned FAIL with 1 IMPORTANT. v0.4.10 fix-burst applied at commit 8b3c
 anchored, and the 4th structural fix extended the v0.4.5 grep-anchor discipline to the
 Changelog block. Streak 0/3. Next step: Pass 16 fresh-context adversary dispatch
 (Task #42).
+
+Pass 16 returned FAIL with 3 IMPORTANT findings: F-PASS16-I1+I2 (paired citation regression at L280/L523 — v0.4.8 sibling-sweep was incomplete; 3 prior-pass fixes silently regressed), F-PASS16-I3 (process-gap: v0.4.10 structural-fix label mis-counts cascade — should be semantic, not ordinal), and F-PASS16-O1 (OBSERVATION: 4th instance of gate-vs-scope defect family). Streak 0/3. Next step: dispatch v0.4.11 fix-burst (Task #43), then Pass 17 (Task #44).
 
 ## 2. Cascade history (full)
 
@@ -51,11 +54,13 @@ Changelog block. Streak 0/3. Next step: Pass 16 fresh-context adversary dispatch
 | 14 | v0.4.8 (751 lines) | FAIL | 0 CRITICAL, 2 IMPORTANT | 0/3 | F-PASS14-I1: v0.1 gate introduces 10th .bats file but §Scope locks 9; F-PASS14-I2: /brain:research labeled "polish" in v0.9 gate but "new" in §Scope |
 | 15 | v0.4.9 (758 lines) | FAIL | 0 CRITICAL, 1 IMPORTANT | 0/3 | F-PASS15-I1: scripts/gen-test-corpus.sh required at v0.9 gate but absent from §Scope deliverables — 3rd instance of gate-vs-scope class |
 | 15+fix | v0.4.10 (763 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS15-I1 resolved; S1/S2 anchored; 4th structural fix: Changelog → semantic anchors |
+| 16 | v0.4.10 (763 lines) | FAIL | 0 CRITICAL, 3 IMPORTANT | 0/3 | F-PASS16-I1/I2 citation-shorthand regression (3 prior fixes); F-PASS16-I3 process-gap structural-fix mis-count; F-PASS16-O1 plugin.json/hooks.json.template gate-vs-scope |
 
 ## 3. Key state
 
 - **Brief:** `.factory/specs/product-brief.md` (v0.4.10, 763 lines)
 - **Streak:** 0/3 (reset by Pass 13 FAIL after Pass 12 PASS; Pass 14 also FAIL; 0/3 entering Pass 15)
+- **Pass 16 dispatch status:** COMPLETE — FAIL (3 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md` (408 lines).
 - **Pass 15 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION).
   Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` (375 lines).
 - **Fix bursts applied:** 10 total (v0.2.0 → v0.3.0, v0.3.0 → v0.4.0, v0.4.0 → v0.4.1,
@@ -113,13 +118,24 @@ sibling-sweep gaps in other cross-section dimensions keep emerging.
 Pass 15 surfaced a 4th structural fix candidate; v0.4.10 applied it (extending
 grep-anchor discipline to the Changelog block).
 
+Pass 16 surfaced two new defect classes: (a) F-PASS16-I1/I2 — 3 prior-pass fixes (F-PASS10-O2 / F-PASS12-O1 / F-PASS13-O1) silently regressed at 2 callsites despite v0.4.8 "at all callsites" claim — demonstrates that trusted-as-resolved findings need fresh-grep re-verification; (b) F-PASS16-I3 — ordinal cascade-counter labels are themselves count-drift-prone; semantic labels eliminate the class.
+
 ## 6. Open questions for next session
 
-**v0.4.10 fix-burst is applied (commit 8b3cb47).** Next step: Pass 16 fresh-context adversary dispatch (Task #42). Streak resumes from 0/3.
+**Pass 16 verdict: FAIL.** Next step: v0.4.11 fix-burst (Task #43), then Pass 17 (Task #44).
 
-**Question for human review when resuming:** Has anything changed about the convergence
-target? User has consistently chosen "keep following protocol" — confirm before next
-dispatch if context is very stale.
+**Blockers to fix (Task #43):**
+- F-PASS16-I1 (IMPORTANT): L280 `plan §A.4` → `phased-build-plan.md §A.4`.
+- F-PASS16-I2 (IMPORTANT, paired): L523 `Plugin plan §3.15` → `plugin-plan.md §3.15`.
+- F-PASS16-I3 (IMPORTANT, [process-gap]): L57 "STRUCTURAL FIX (4th in cascade)" → "STRUCTURAL FIX (Changelog audit-trail discipline)" — semantic label, eliminates count-drift class permanently.
+
+**Bundled suggestions/observations (non-blocking, recommended bundle):**
+- F-PASS16-S1: Frontmatter L42 `cross_platform` → add Git Bash.
+- F-PASS16-O1: §Scope deliverables → add `plugin.json` + `hooks.json.template` (or accept as plugin-infrastructure implicit-in-tarball).
+
+**Required grep verifications BEFORE v0.4.11 commit:**
+1. `grep -nE '(^|[^.])plan §[A-Z0-9]|Plugin plan §|Phased plan §' product-brief.md` → expect zero non-Changelog-historical matches.
+2. The v0.4.11 changelog entry itself MUST use a semantic label, not an ordinal cascade count (eat-your-own-dog-food).
 
 ## 7. Artifacts on disk (all persisted)
 
@@ -145,6 +161,7 @@ dispatch if context is very stale.
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-13.md` | Pass 13 | 312 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-14.md` | Pass 14 | 333 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` | Pass 15 | 375 |
+| `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md` | Pass 16 | 408 |
 | `CLAUDE.md` | amended Node 20+ | 592 |
 
 **Note on git history:** Not all fix-burst commits are present in git. The orchestrator
@@ -184,24 +201,25 @@ commits — the brief on disk at v0.4.9 is the authoritative artifact.
 ## 9. Resume procedure
 
 1. Read THIS file end-to-end.
-2. Read `.factory/specs/product-brief.md` (v0.4.10, the artifact under review).
-3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` (Pass 15 FAIL — historical; fixes already applied in v0.4.10).
+2. Read `.factory/specs/product-brief.md` (v0.4.10, 763 lines, the artifact under review).
+3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md` (Pass 16 FAIL — contains F-PASS16-I1/I2/I3/S1/O1 detail).
 
-**v0.4.10 fix-burst is applied (commit 8b3cb47).** Dispatch Pass 16 per Task #42 — this is your top-of-stack action:
+**Pass 16 result is in: FAIL.** Dispatch v0.4.11 fix-burst per Task #43 — this is your top-of-stack action:
 
-4. Dispatch fresh-context adversary using the Pass 16 template below.
-5. On adversary verdict:
-   - PASS (0 CRITICAL + 0 IMPORTANT) → streak 1/3 → record verdict via state-manager → dispatch Pass 17.
-   - FAIL → record verdict via state-manager → dispatch a v0.4.11 fix-burst per the new findings → return to step 4 for Pass 17.
-6. Continue per BC-5.39.001 strict protocol until 3 consecutive clean passes.
+4. Fix F-PASS16-I1 + F-PASS16-I2 (paired IMPORTANT, blocking) via citation-shorthand sibling-sweep with grep verification.
+5. Fix F-PASS16-I3 (IMPORTANT, [process-gap], blocking): replace ordinal cascade-count label with semantic label at L57.
+6. Bundle F-PASS16-S1 (frontmatter Git Bash) and optionally F-PASS16-O1 (§Scope plugin.json/hooks.json.template).
+7. Bump version to v0.4.11. Update Changelog block (using semantic anchors per the discipline established in v0.4.10).
+8. Commit fix-burst as a single atomic commit.
+9. Dispatch Pass 17 fresh-context per Pass 17 template below. Streak resumes from 0/3.
 
-**Pass 16 dispatch template:**
+**Pass 17 dispatch template:**
 
 > You are a fresh-context adversary reviewer for the brain-factory product brief.
-> Your task: BC-5.39.001 3-CLEAN pass 16.
-> Target: `.factory/specs/product-brief.md` (v0.4.10, 763 lines).
-> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md`.
-> Inputs: product-brief.md, pass-15.md, stage-3-locks.md, elicitation-notes.md,
+> Your task: BC-5.39.001 3-CLEAN pass 17.
+> Target: `.factory/specs/product-brief.md` (v0.4.11, N lines).
+> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md`.
+> Inputs: product-brief.md, pass-16.md, stage-3-locks.md, elicitation-notes.md,
 > brief-research.md, reference-repos.md, CLAUDE.md,
 > docs/planning/llm-second-brain-phased-build-plan.md (spot-check §§A.2, 5.11, 8.2.4).
 > Protocol: FAIL on any CRITICAL or IMPORTANT. PASS only if zero CRITICAL + IMPORTANT.
