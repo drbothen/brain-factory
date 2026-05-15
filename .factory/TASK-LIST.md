@@ -1,7 +1,7 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. **20 adversary passes complete. Streak: 1/3 (Pass 20 PASS — first clean since Pass 12).**
-> Top-of-stack: Task #51 (Pass 21 fresh-context adversary dispatch toward 2/3).
+> Snapshot taken at handoff: 2026-05-15. **21 adversary passes complete. Streak: 2/3 (Pass 20 + Pass 21 PASS).**
+> Top-of-stack: Task #52 (Pass 22 fresh-context adversary dispatch — CONVERGENCE TEST toward 3/3).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -58,7 +58,8 @@
 | 48 | COMPLETED | Pass 19 adversary dispatch | FAIL: 1 CRITICAL (F-PASS19-C1, [process-gap]: fourth-level recursion — v0.4.13 enforcement gate fails own self-test; two literal-line-number-anchor quotations at brief line 56 in the v0.4.13 changelog entry that introduced the gate); 1 IMPORTANT (F-PASS19-I1: handoff §§1+5 sibling-sweep gap — 7 literal line-number tokens in handoff prime writers to repeat the defect); 1 SUGGESTION (F-PASS19-S1: gate self-reference exclusion); 1 OBSERVATION (F-PASS19-O1: §5 blank-line table split). Streak: 0/3. Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`. |
 | 49 | COMPLETED | Fix-burst v0.4.13 → v0.4.14 per Pass 19 findings | Applied at commit 7035315. F-PASS19-C1 LOCAL closure via writing-technique principle (no literal-line-number-token quotations). F-PASS19-S1 gate hardening (self-reference exclusion). Hardened gate self-test PASSES (zero output). NOTE: orchestrator deferred production-grade ENFORCEMENT ESCALATION to v0.4.15 if Pass 20 surfaces same class. |
 | 50 | COMPLETED | Pass 20 adversary dispatch | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS20-S1: gate doesn't cover handoff], 1 OBSERVATION [F-PASS20-O1: historical claim wording]). **Streak 1/3** — first clean pass since Pass 12 (eight passes ago). Fourth-level recursion structurally closed via v0.4.14 writing-technique principle + gate hardening. Recursion depth observed: 0. Hardened gate self-test returns clean. F-PASS20-S1/O1 non-blocking; bundle into next applicable fix-burst rather than triggering v0.4.15. |
-| 51 | PENDING | Pass 21 adversary dispatch (toward streak 2/3) | Top-of-stack. Pass 21 should verify the recursion class remains closed (gate self-test clean) AND attempt fresh-context novelty hunt. If PASS → streak 2/3, dispatch Pass 22. If FAIL → v0.4.15 fix-burst (bundle F-PASS20-S1/O1 into the burst). |
+| 51 | COMPLETED | Pass 21 adversary dispatch (toward streak 2/3) | **PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS21-S1: gate exclusion-list commentary], 1 OBSERVATION [F-PASS21-O1: SL-1 handoff TypeScript drift — corrected in same commit]). **Streak 2/3.** Recursion class structurally closed across two consecutive passes. F-PASS21-S1 (brief edit) bundles into post-convergence cleanup. |
+| 52 | PENDING | Pass 22 adversary dispatch — CONVERGENCE TEST toward streak 3/3 | TOP-OF-STACK. If PASS → cascade CONVERGED → Stage 6 (Finalize) ready, advance to PRD. If FAIL → streak 0/3 RESET → v0.4.15 fix-burst. Pass 22 must verify recursion class closed AND fresh-context novelty hunt. |
 
 ## Next steps (in dependency order)
 
@@ -73,8 +74,9 @@
 9. ~~Task #48: Pass 19 fresh-context adversary dispatch (done — FAIL, 1 CRITICAL fourth-level recursion)~~
 10. ~~(done at 7035315) Task #49: v0.4.14 fix-burst — F-PASS19-C1 writing-technique principle + F-PASS19-S1 gate hardening~~
 11. ~~Task #50: Pass 20 fresh-context adversary dispatch — PASS (streak 1/3; first clean since Pass 12; recursion class structurally closed)~~
-12. **Task #51: Pass 21 fresh-context adversary dispatch (top-of-stack — streak target 2/3)**
-13. Streak target: 2/3 next, then 3/3 = convergence; mark Task #6 (Stage 6 Finalize) as ready upon convergence
-14. After convergence: execute Task 23 (post-convergence git cleanup)
+12. ~~Task #51: Pass 21 fresh-context adversary dispatch — PASS (streak 2/3; second consecutive clean; recursion class stable across two passes)~~
+13. **Task #52: Pass 22 fresh-context adversary dispatch — CONVERGENCE TEST (top-of-stack — streak target 3/3)**
+14. After convergence: If Task #52 PASSes → mark Task #6 (Stage 6 Finalize brief and advance to PRD) READY → bundle deferred findings (F-PASS20-S1/O1, F-PASS21-S1/O1) into Task #53 (post-convergence cleanup) → on cleanup completion, advance Phase 1a → Phase 1b (PRD phase).
+15. After convergence: execute Task #23 (post-convergence git cleanup)
 
-**Note:** If Pass 21 surfaces a finding requiring a fix-burst, bundle F-PASS20-S1 (extend gate to cover handoff) and F-PASS20-O1 (soften historical claim wording) into that burst. Do NOT trigger v0.4.15 for F-PASS20-S1/O1 alone.
+**Note:** F-PASS20-S1/O1 and F-PASS21-S1/O1 are all non-blocking. If Pass 22 surfaces a finding requiring a fix-burst, bundle all four deferred findings into that burst. Do NOT trigger v0.4.15 for these alone.
