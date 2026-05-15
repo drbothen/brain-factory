@@ -1,7 +1,8 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. 14 of 15 dispatched adversary passes complete;
-> Pass 15 in flight. Next step depends on Pass 15 verdict — see SESSION-HANDOFF.md §9.
+> Snapshot taken at handoff: 2026-05-15. 15 adversary passes complete (Pass 15 = FAIL
+> with 1 IMPORTANT). Streak: 0/3. Top-of-stack: Task #41 (v0.4.10 fix-burst). See
+> SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
 
@@ -44,13 +45,16 @@
 | 35 | COMPLETED | Fix-burst v0.4.8 → v0.4.9 | Fixed I1 (bats count) + I2 (/brain:research label "new" in Scope) |
 | 36 | COMPLETED | Commit Pass 14 FAIL report | SHA: 7f8572c |
 | 37 | COMPLETED | Amend CLAUDE.md with Node 20+ constraint | L5 updated at Stage 3 |
-| 38 | COMPLETED | Author SESSION-HANDOFF.md | This file's sibling; written at handoff |
-| 39 | IN-PROGRESS | Pass 15 adversary dispatch | Dispatched background agent `aa57a4dca72a13c1a`; result not yet in at handoff time |
+| 38 | COMPLETED | Author SESSION-HANDOFF.md | Initial handoff; written at session boundary |
+| 39 | COMPLETED | Pass 15 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS15-I1: scripts/gen-test-corpus.sh missing from §Scope); 2 SUGGESTION (F-PASS15-S1/S2: stale Changelog line refs); 2 OBSERVATION. Streak: 0/3 |
+| 40 | IN-PROGRESS | Persist Pass 15 + refresh handoff state | Writing adversary-pass-15.md, SESSION-HANDOFF.md, TASK-LIST.md |
+| 41 | PENDING | Fix-burst v0.4.9 → v0.4.10 per Pass 15 findings | TOP-OF-STACK. Fix F-PASS15-I1 (add gen-test-corpus.sh to §Scope); bundle S1/S2 (Changelog semantic anchors); consider 4th structural fix (Changelog line-refs → semantic anchors) |
+| 42 | PENDING | Pass 16 adversary dispatch | Blocked on #41. Streak resumes from 0/3. |
 
 ## Next steps (in dependency order)
 
-1. Resolve Pass 15 result (see SESSION-HANDOFF.md §9 for resume procedure)
-2. If Pass 15 PASS → dispatch Pass 16 (streak 1/3)
-3. If Pass 15 FAIL → fix-burst → v0.5.0 → dispatch Pass 16
+1. Complete Task #40 (this task — commit handoff state)
+2. Task #41: v0.4.10 fix-burst — add `scripts/gen-test-corpus.sh` to §Scope (F-PASS15-I1, blocker), bundle S1/S2 Changelog semantic-anchor fixes, optionally apply 4th structural fix
+3. Task #42: Pass 16 fresh-context adversary dispatch — streak resumes from 0/3
 4. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
 5. After convergence: execute Task 23 (post-convergence git cleanup)
