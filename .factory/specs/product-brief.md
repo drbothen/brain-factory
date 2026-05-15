@@ -3,7 +3,7 @@ artifact_type: product-brief
 project: brain-factory
 phase: phase-1a
 status: draft
-version: 0.4.9
+version: 0.4.10
 target_release: v0.x (MVP through v0.9)
 v1_dependency: factory-dispatcher (planned)
 created: 2026-05-14
@@ -52,9 +52,13 @@ locked_decisions:
 
 # Product Brief: brain-factory
 
+**Changes in v0.4.10 (2026-05-15):**
+- Added `scripts/gen-test-corpus.sh` to §Scope Additional v0.x deliverables enumeration — closes unsatisfiable-task gap (F-PASS15-I1)
+- **STRUCTURAL FIX (4th in cascade):** replaced all line-number citations in the Changelog block with semantic anchors — extends the v0.4.5 grep-anchor discipline to the Changelog audit-trail section, permanently eliminating the stale-line-citation defect class from Changelog entries (F-PASS15-S1, F-PASS15-S2). Specifically: v0.4.9 changelog entry for F-PASS14-I1 changed "per line 301" → "see the embedding_status enforcement gate item below"; v0.4.9 changelog entry for F-PASS14-I2 changed "§Scope §399" → "matching §Scope's 'Phase 2–3 new skill' header". Full Changelog sweep confirmed only these two entries contained stale line-number citations.
+
 **Changes in v0.4.9 (2026-05-15):**
-- Reconciled hook-performance bats coverage to live inside `hooks.bats` (parallel to embedding_status treatment per line 301); preserves 9-suite bats count commitment (F-PASS14-I1)
-- Corrected skill #26 categorical label in v0.9 ship gate: "Phase 2-3 polish" → "Phase 2-3 new skill" matching §Scope §399 (F-PASS14-I2)
+- Reconciled hook-performance bats coverage to live inside `hooks.bats` (parallel to embedding_status treatment, see the embedding_status enforcement gate item below); preserves 9-suite bats count commitment (F-PASS14-I1)
+- Corrected skill #26 categorical label in v0.9 ship gate: "Phase 2-3 polish" → "Phase 2-3 new skill" matching §Scope's 'Phase 2–3 new skill' header (F-PASS14-I2)
 - Fixed Open Question #4 phase reference: "Phase 2 polish skill implementation" → "Phase 3 polish skill implementation" (F-PASS14-S1)
 - Added `plugins/brain-factory/tests/local-dev-test.sh` to §Scope Additional v0.x deliverables enumeration (F-PASS14-O1)
 
@@ -498,6 +502,7 @@ Note: The 15 author-committed templates are covered by adversarial review, bats 
 - Per-platform hooks.json variants (darwin-arm64, darwin-x86_64, linux-x86_64, windows-x86_64) — same content for v0.x bash hooks. (`llm-second-brain-phased-build-plan.md` §6.2)
 - `scripts/run-skill.mjs` — headless skill runner for GH Actions using Node 20+. (locked decision in brief prompt §toolchain-node-runtime-lock)
 - `scripts/defuddle-fetch.mjs` — Defuddle CLI wrapper for `/brain:ingest-url`. Requires Node 20+. (`llm-second-brain-phased-build-plan.md` §A.6; elicitation-notes.md Q-20)
+- `scripts/gen-test-corpus.sh` — synthetic-corpus generator producing N source files + manifest.json for the v0.9 scale test (Phase 3 deliverable owned by devops-engineer, designed during Phase 1c architecture, built during Phase 3 alongside scale-test execution).
 - LICENSE file (MIT) ships in v0.1 tarball. (locked decision; plugin-plan.md §27.2; phased-build-plan §6.2)
 - Six-dimensional convergence tracking in `.brain/STATE.md`: Capture / Sources / Wiki / Synthesis / Output / Reflection. User-visible via `/brain:health` and SessionStart hook banner. (`llm-second-brain-plugin-plan.md` §3.6, §12)
 - Planning docs (`docs/planning/`) do NOT ship in the published tarball — author-only design substrate. (`llm-second-brain-phased-build-plan.md` §6.2 release step; elicitation-notes.md Q-18)
