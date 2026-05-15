@@ -8,8 +8,9 @@ current_brief_line_count: 758
 current_brief_path: .factory/specs/product-brief.md
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: 0/3
-current_pass_number: 15 (in flight at handoff time)
-total_passes_completed: 14
+current_pass_number: 15 (FAIL — 1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION; report at .factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md)
+pass_15_verdict: FAIL
+total_passes_completed: 15
 total_fix_bursts: 9
 created: 2026-05-15
 status: in-progress
@@ -24,8 +25,10 @@ We are mid-cascade in BC-5.39.001 3-CLEAN convergence on the brain-factory produ
 `.factory/specs/product-brief.md`) is structurally sound on substantive content but
 the adversary cascade keeps finding small cross-section drift defects.
 
-Pass 15 was dispatched in background just before this handoff was authored. Its results
-are not yet in. Agent ID at dispatch time: `aa57a4dca72a13c1a`.
+Pass 15 returned FAIL with 1 IMPORTANT (F-PASS15-I1: `scripts/gen-test-corpus.sh`
+missing from §Scope deliverables — third instance of gate-vs-scope class). Streak 0/3.
+Next step: dispatch v0.4.10 fix-burst per Pass 15 findings (Task #41), then Pass 16
+(Task #42).
 
 ## 2. Cascade history (full)
 
@@ -45,14 +48,14 @@ are not yet in. Agent ID at dispatch time: `aa57a4dca72a13c1a`.
 | 12 | v0.4.7 (745 lines) | PASS | 0 CRITICAL, 0 IMPORTANT | 1/3 | First clean pass after structural-fix cascade; all 4 structural fixes verified; 2 observations only |
 | 13 | v0.4.7 (745 lines) | FAIL | 0 CRITICAL, 2 IMPORTANT | 0/3 (RESET) | F-PASS13-I1: Timeline §Scope shows 12 polish skills vs 13 in §Skills list; F-PASS13-I2: .reference/README.md required at v0.1 gate but no bootstrap task creates it |
 | 14 | v0.4.8 (751 lines) | FAIL | 0 CRITICAL, 2 IMPORTANT | 0/3 | F-PASS14-I1: v0.1 gate introduces 10th .bats file but §Scope locks 9; F-PASS14-I2: /brain:research labeled "polish" in v0.9 gate but "new" in §Scope |
+| 15 | v0.4.9 (758 lines) | FAIL | 0 CRITICAL, 1 IMPORTANT | 0/3 | F-PASS15-I1: scripts/gen-test-corpus.sh required at v0.9 gate but absent from §Scope deliverables — 3rd instance of gate-vs-scope class |
 
 ## 3. Key state
 
 - **Brief:** `.factory/specs/product-brief.md` (v0.4.9, 758 lines)
 - **Streak:** 0/3 (reset by Pass 13 FAIL after Pass 12 PASS; Pass 14 also FAIL; 0/3 entering Pass 15)
-- **Pass 15 dispatch status:** RUNNING in background at handoff time; agent ID was
-  `aa57a4dca72a13c1a`. When this handoff is read, check the task log for its result OR
-  re-dispatch fresh-context Pass 15 if the result is stale/lost.
+- **Pass 15 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION).
+  Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` (375 lines).
 - **Fix bursts applied:** 9 total (v0.2.0 → v0.3.0, v0.3.0 → v0.4.0, v0.4.0 → v0.4.1,
   v0.4.1 → v0.4.2-final, v0.4.2-final → v0.4.3, v0.4.3 → v0.4.4, v0.4.4 → v0.4.5/v0.4.6,
   v0.4.6 → v0.4.7, v0.4.7 → v0.4.8/v0.4.9)
@@ -102,15 +105,30 @@ sibling-sweep gaps in other cross-section dimensions keep emerging.
 
 - Pass 13 caught Timeline-vs-Scope skill count drift (12 vs 13)
 - Pass 14 caught bats file count gate-vs-scope drift (10 vs 9)
-- Pass 15 may catch another or be clean
+- Pass 15 caught scripts/gen-test-corpus.sh gate-vs-scope drift (3rd instance of same class)
+
+Pass 15 also surfaced a 4th candidate structural fix: extend v0.4.5 grep-anchor
+discipline to the Changelog block (would eliminate F-PASS15-S1/S2 defect class
+permanently — stale line-number citations in Changelog entries). Tag: [process-gap].
+Adversary recommends bundling this with the v0.4.10 fix-burst.
 
 ## 6. Open questions for next session
 
-**If Pass 15 is clean:** streak 1/3. Need Pass 16 + Pass 17 clean for convergence.
-Cascade continues.
+**Pass 15 verdict is known: FAIL.** Next step: v0.4.10 fix-burst (Task #41), then Pass 16 (Task #42).
 
-**If Pass 15 finds blockers:** fix-burst → v0.5.0 + Pass 16. Cascade continues per
-BC-5.39.001 strict protocol (user-confirmed at last checkpoint).
+**Blocker to fix (Task #41):**
+- F-PASS15-I1 (IMPORTANT): Add `scripts/gen-test-corpus.sh` to §Scope §Additional v0.x
+  deliverables — 3rd instance of gate-vs-scope class. Fix: add bullet between lines 491–500.
+
+**Bundled suggestions (non-blocking, bundle with fix-burst):**
+- F-PASS15-S1: Stale line citation in v0.4.9 changelog (line 56 "line 301" → semantic anchor for embedding_status enforcement gate item).
+- F-PASS15-S2: Stale line citation in v0.4.9 changelog (line 57 "§Scope §399" → semantic anchor for Phase 2-3 new skill header).
+
+**Recommended structural fix (4th, optional but advised):**
+- Extend v0.4.5 grep-anchor discipline to the Changelog block. Replace all line-number
+  citations in Changelog entries with semantic anchors. This would permanently eliminate
+  the stale-Changelog-citation defect class (same mechanism as F-PASS15-S1/S2).
+  Adversary explicitly recommends this as the 4th structural fix.
 
 **Question for human review when resuming:** Has anything changed about the convergence
 target? User has consistently chosen "keep following protocol" — confirm before next
@@ -139,6 +157,7 @@ dispatch if context is very stale.
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-12.md` | Pass 12 | 360 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-13.md` | Pass 13 | 312 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-14.md` | Pass 14 | 333 |
+| `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` | Pass 15 | 375 |
 | `CLAUDE.md` | amended Node 20+ | 592 |
 
 **Note on git history:** Not all fix-burst commits are present in git. The orchestrator
@@ -151,6 +170,10 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
+| 8d3e2a4 | factory(adversary): persist Pass 15 FAIL — 3rd instance of gate-vs-scope artifact mismatch |
+| 8e4a743 | factory(spec): persist product-brief at v0.4.9 for durability |
+| db56149 | factory(handoff): persist task list snapshot |
+| da0a569 | factory(handoff): persist session state for clean-context resume |
 | 7f8572c | factory(adversary): persist Pass 14 FAIL — 2 new IMPORTANT cross-section drifts |
 | 2c8e8ba | factory(adversary): persist Pass 13 FAIL — 2 new IMPORTANT sibling-sweep gaps |
 | 620de01 | factory(adversary): persist Pass 12 PASS report — structural-fix cascade validated |
@@ -174,25 +197,31 @@ commits — the brief on disk at v0.4.9 is the authoritative artifact.
 
 1. Read THIS file end-to-end.
 2. Read `.factory/specs/product-brief.md` (v0.4.9, the artifact under review).
-3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-14.md` (most recent FAIL —
-   contains F-PASS14-I1 and F-PASS14-I2 detail).
-4. Check task status: the background task for Pass 15 (agent `aa57a4dca72a13c1a`) should
-   appear in TaskList as in_progress or completed.
-5. If Pass 15 result is in: dispatch fix-burst (if FAIL) or Pass 16 (if PASS), per
-   BC-5.39.001 strict protocol.
-6. If Pass 15 result is lost (task shows in_progress but no completion notification):
-   re-dispatch Pass 15 fresh-context using the same dispatch template used for Pass 14
-   (read adversary-pass-14.md for inputs list; use `.factory/specs/product-brief.md`
-   v0.4.9 as target).
-7. Resume per BC-5.39.001 strict protocol until 3 consecutive clean passes.
+3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` (Pass 15 FAIL —
+   contains F-PASS15-I1/S1/S2/O1/O2 detail).
 
-**Pass dispatch template (use for re-dispatch):**
+**Pass 15 result is in: FAIL.** Dispatch v0.4.10 fix-burst per Task #41 — this is your
+top-of-stack action:
+
+4. Fix F-PASS15-I1 (IMPORTANT, blocking): Add `scripts/gen-test-corpus.sh` to §Scope
+   §Additional v0.x deliverables in product-brief.md (between lines 491–500). Wording:
+   "`scripts/gen-test-corpus.sh` — synthetic-corpus generator for the v0.9 scale test
+   (Phase 3 deliverable owned by devops-engineer, designed during Phase 1c architecture)."
+5. Bundle F-PASS15-S1/S2 (SUGGESTIONS): Replace stale line-number citations in the
+   v0.4.9 changelog block with semantic anchors (line 56 and line 57).
+6. Consider the 4th structural fix: Changelog line-references → semantic anchors (see §5
+   and §6 for detail). Adversary recommends this to close the defect class permanently.
+7. Bump version to v0.4.10 in frontmatter. Update Changelog block.
+8. Commit fix-burst. Dispatch Pass 16 fresh-context.
+9. Resume per BC-5.39.001 strict protocol until 3 consecutive clean passes.
+
+**Pass 16 dispatch template:**
 
 > You are a fresh-context adversary reviewer for the brain-factory product brief.
-> Your task: BC-5.39.001 3-CLEAN pass N.
-> Target: `.factory/specs/product-brief.md` (v0.4.9, 758 lines).
-> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-14.md`.
-> Inputs: product-brief.md, pass-14.md, stage-3-locks.md, elicitation-notes.md,
+> Your task: BC-5.39.001 3-CLEAN pass 16.
+> Target: `.factory/specs/product-brief.md` (v0.4.10, N lines).
+> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md`.
+> Inputs: product-brief.md, pass-15.md, stage-3-locks.md, elicitation-notes.md,
 > brief-research.md, reference-repos.md, CLAUDE.md,
 > docs/planning/llm-second-brain-phased-build-plan.md (spot-check §§A.2, 5.11, 8.2.4).
 > Protocol: FAIL on any CRITICAL or IMPORTANT. PASS only if zero CRITICAL + IMPORTANT.
