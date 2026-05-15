@@ -3,18 +3,19 @@ artifact_type: session-handoff
 project: brain-factory
 session_phase: phase-1a-spec-crystallization
 session_stage: stage-5-adversarial-review-cascade
-current_brief_version: 0.4.13
-current_brief_line_count: 782
+current_brief_version: 0.4.14
+current_brief_line_count: 786
 current_brief_path: .factory/specs/product-brief.md
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: 0/3
-current_pass_number: 18 (FAIL — third-level recursion of narrow-fix-broad-announcement pattern; v0.4.13 fix-burst applied at 2e5f3b2 with brief-level enforcement closure; Pass 19 pending)
+current_pass_number: 19 (FAIL — first CRITICAL finding [F-PASS19-C1, 4th-level recursion]; v0.4.14 fix-burst applied with writing-technique principle; Pass 20 pending)
 pass_15_verdict: FAIL
 pass_16_verdict: FAIL
 pass_17_verdict: FAIL
 pass_18_verdict: FAIL
-total_passes_completed: 18
-total_fix_bursts: 13
+pass_19_verdict: FAIL
+total_passes_completed: 19
+total_fix_bursts: 14
 created: 2026-05-15
 status: in-progress
 ---
@@ -24,23 +25,31 @@ status: in-progress
 ## 1. Where we are
 
 We are mid-cascade in BC-5.39.001 3-CLEAN convergence on the brain-factory product brief
-(greenfield Phase 1a). The brief at v0.4.9 (758 lines,
-`.factory/specs/product-brief.md`) is structurally sound on substantive content but
-the adversary cascade keeps finding small cross-section drift defects.
+(greenfield Phase 1a). The brief at v0.4.14 (786 lines,
+`.factory/specs/product-brief.md`) is structurally sound on substantive content.
 
-Pass 15 returned FAIL with 1 IMPORTANT. v0.4.10 fix-burst applied at commit 8b3cb47
-(763 lines): F-PASS15-I1 resolved (gen-test-corpus.sh added to §Scope), F-PASS15-S1/S2
-anchored, and the 4th structural fix extended the v0.4.5 grep-anchor discipline to the
-Changelog block. Streak 0/3. Next step: Pass 16 fresh-context adversary dispatch
-(Task #42).
+Pass 19 returned FAIL with the FIRST CRITICAL finding of the cascade
+(F-PASS19-C1, [process-gap]): the v0.4.13 Self-Audit Checklist enforcement gate
+FAILED its own self-test. The gate command (a grep for literal line-number anchors
+in the brief, excluding "WSL2") was supposed to return zero matches, but returned
+two matches in the v0.4.13 changelog entry that introduced the gate. The recursion
+of the narrow-fix-with-broad-announcement pattern reached fourth-level
+(Pass 16 → Pass 17 → Pass 18 → Pass 19). Cultural-checklist enforcement
+(read at delivery time by humans) is empirically proven structurally insufficient
+to break this recursion class.
 
-Pass 16 returned FAIL with 3 IMPORTANT findings: F-PASS16-I1+I2 (paired citation regression at L280/L523 — v0.4.8 sibling-sweep was incomplete; 3 prior-pass fixes silently regressed), F-PASS16-I3 (process-gap: v0.4.10 structural-fix label mis-counts cascade — should be semantic, not ordinal), and F-PASS16-O1 (OBSERVATION: 4th instance of gate-vs-scope defect family). Streak 0/3.
+v0.4.14 fix-burst applied at commit 7035315 (786 lines): F-PASS19-C1 LOCAL closure
+(rewrote the v0.4.13 changelog entry using a writing-technique principle —
+describe literal-line-number defects in semantic terms, never quote the literal
+token). F-PASS19-S1 gate hardening (added self-reference exclusion to the gate
+command). The hardened gate now PASSES its own self-test cleanly (zero output).
 
-v0.4.11 fix-burst applied at commit 5e6dc2f (771 lines): F-PASS16-I1+I2 resolved via paired citation sibling-sweep with grep verification (3 prior-pass fixes back in compliance); F-PASS16-I3 resolved via semantic-label replacement (count-drift class eliminated permanently); F-PASS16-S1 + F-PASS16-O1 bundled. Bonus in-scope extension promoted v0.4.5/v0.4.6/v0.4.7 bare 'Structural fix:' labels to semantic-label format. Streak 0/3. Next step: Pass 17 fresh-context adversary dispatch (Task #44).
+Streak 0/3. Next step: Pass 20 fresh-context adversary dispatch (Task #50).
 
-Pass 17 returned FAIL with 1 IMPORTANT finding: F-PASS17-I1 (process-gap) — v0.4.11 changelog at L57 claims "all structural-fix headings now use semantic labels" but v0.4.8 has 2 unlabeled structural-fix bullets (L74 citation-shorthand sweep + L75 §Changelog notation cleanup). 2 SUGGESTION (F-PASS17-S1: L351 §-as-line-number; F-PASS17-S2: cross_platform nested parentheticals); 2 OBSERVATION (F-PASS17-O1: cross-doc coherence; F-PASS17-O2: handoff §5 inaccurate "back-applied" claim — corrected in THIS commit). Streak 0/3 (smallest blocker count since Pass 15; convergence trajectory positive). v0.4.12 fix-burst applied at commit ed6e705 (776 lines): F-PASS17-I1 closed via v0.4.8 STRUCTURAL FIX heading back-fill at L74/L75 + sharpened L57 coverage claim (audit-trail completeness now eat-your-own-dog-food consistent — 10 STRUCTURAL FIX headings); F-PASS17-S1 closed via semantic anchors at L356 (§132/§144 → §SL-9/§SL-10); F-PASS17-S2 closed via cross_platform flatten. Streak 0/3 (convergence trajectory positive — Pass 17 had smallest blocker count since Pass 15). Next step: Pass 18 fresh-context adversary dispatch (Task #46).
-
-Pass 18 returned FAIL with 1 IMPORTANT [process-gap]: F-PASS18-I1 — v0.4.12's own Changelog entry at L56 contained literal `L57` anchor, regressing v0.4.10 STRUCTURAL FIX (Changelog audit-trail discipline). Three-level recursion of the narrow-fix-broad-announcement pattern empirically confirmed structural. v0.4.13 fix-burst applied at commit 2e5f3b2 (782 lines): F-PASS18-I1 closed via local fix (L57 → semantic anchor at brief L61) AND brief-level enforcement (new Self-Audit Checklist item enforcing `grep \bL[0-9]+\b ... | grep -v WSL2` clean before any version bump — converts v0.4.10 cultural claim to brief-level enforced). F-PASS18-S1 closed (cross_platform 5→4 count fix). F-PASS18-O2 closed (Self-Audit L767 nested-parenthetical flatten — TD-VSDD-060 sibling-sweep). v0.4.13 changelog itself uses semantic anchors only and contains NO blanket-coverage wording — broke the recursion at the writing layer. Streak 0/3. Next step: Pass 19 fresh-context adversary dispatch (Task #48). **Process note:** orchestrator dispatched v0.4.13 fix-burst BEFORE Pass 18 persistence (one-time order break) to avoid context loss on the third-level recursion finding.
+NOTE: orchestrator deferred the production-grade ENFORCEMENT ESCALATION
+(creating a write-time machine-enforced hook script under .factory/hooks/) to
+v0.4.15 IF Pass 20 also surfaces this recursion class. Conservative scope per
+Canonical Principle Rule 3+4. The user may redirect to escalate sooner.
 
 ## 2. Cascade history (full)
 
@@ -65,22 +74,25 @@ Pass 18 returned FAIL with 1 IMPORTANT [process-gap]: F-PASS18-I1 — v0.4.12's 
 | 16 | v0.4.10 (763 lines) | FAIL | 0 CRITICAL, 3 IMPORTANT | 0/3 | F-PASS16-I1/I2 citation-shorthand regression (3 prior fixes); F-PASS16-I3 process-gap structural-fix mis-count; F-PASS16-O1 plugin.json/hooks.json.template gate-vs-scope |
 | 16+fix | v0.4.11 (771 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS16-I1/I2 paired citation sibling-sweep with grep verification; F-PASS16-I3 semantic-label (count-drift class eliminated); F-PASS16-S1 cross_platform Git Bash; F-PASS16-O1 plugin.json+hooks.json.template added to §Scope; bonus: v0.4.5/v0.4.6/v0.4.7 structural-fix labels promoted to semantic |
 | 17 | v0.4.11 (771 lines) | FAIL | 0 CRITICAL, 1 IMPORTANT | 0/3 | F-PASS17-I1 process-gap (v0.4.11 audit-trail completeness claim overbroad — v0.4.8 has 2 unlabeled structural-fix bullets); recurrence of "narrow-fix announced broadly" pattern |
-| 17+fix | v0.4.12 (776 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS17-I1 audit-trail back-fill (10 STRUCTURAL FIX headings; v0.4.8 entries promoted); F-PASS17-S1 semantic anchors at L356; F-PASS17-S2 cross_platform flatten |
-| 18 | v0.4.12 (776 lines) | FAIL | 0 CRITICAL, 1 IMPORTANT (process-gap) | 0/3 | F-PASS18-I1 third-level recursion: v0.4.12 changelog L56 cites literal L57; regresses v0.4.10 STRUCTURAL FIX (Changelog audit-trail discipline); cross-doc breach in handoff §5 |
+| 17+fix | v0.4.12 (776 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS17-I1 audit-trail back-fill (10 STRUCTURAL FIX headings; v0.4.8 entries promoted); F-PASS17-S1 semantic anchors at §SL-9/§SL-10; F-PASS17-S2 cross_platform flatten |
+| 18 | v0.4.12 (776 lines) | FAIL | 0 CRITICAL, 1 IMPORTANT (process-gap) | 0/3 | F-PASS18-I1 third-level recursion: v0.4.12 changelog entry cites a literal line-number anchor; regresses v0.4.10 STRUCTURAL FIX (Changelog audit-trail discipline); cross-doc breach in handoff §5 |
 | 18+fix | v0.4.13 (782 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS18-I1 closed (local + brief-level enforcement via new Self-Audit Checklist item); F-PASS18-S1 closed; F-PASS18-O2 closed (sibling-sweep); recursion broken at writing layer |
+| 19 | v0.4.13 (782 lines) | FAIL | 1 CRITICAL, 1 IMPORTANT | 0/3 | F-PASS19-C1 4th-level recursion: v0.4.13 enforcement gate fails own self-test; F-PASS19-I1 handoff sibling-sweep gap |
+| 19+fix | v0.4.14 (786 lines) | FIX-APPLIED | (n/a — fix-burst) | 0/3 | F-PASS19-C1 LOCAL closure via writing-technique principle (no literal-line-number-token quotations); F-PASS19-S1 gate hardening (self-reference exclusion); hardened gate passes own self-test |
 
 ## 3. Key state
 
-- **Brief:** `.factory/specs/product-brief.md` (v0.4.13, 782 lines)
+- **Brief:** `.factory/specs/product-brief.md` (v0.4.14, 786 lines)
 - **Streak:** 0/3 (reset by Pass 13 FAIL after Pass 12 PASS; Pass 14 also FAIL; 0/3 entering Pass 15)
+- **Pass 19 dispatch status:** COMPLETE — FAIL (1 CRITICAL [process-gap, 4th-level recursion] + 1 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`.
 - **Pass 18 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-18.md`.
 - **Pass 17 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-17.md` (373 lines).
 - **Pass 16 dispatch status:** COMPLETE — FAIL (3 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md` (408 lines).
 - **Pass 15 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION).
   Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` (375 lines).
-- **Fix bursts applied:** 13 total (v0.2.0 → v0.3.0, v0.3.0 → v0.4.0, v0.4.0 → v0.4.1,
+- **Fix bursts applied:** 14 total (v0.2.0 → v0.3.0, v0.3.0 → v0.4.0, v0.4.0 → v0.4.1,
   v0.4.1 → v0.4.2-final, v0.4.2-final → v0.4.3, v0.4.3 → v0.4.4, v0.4.4 → v0.4.5/v0.4.6,
-  v0.4.6 → v0.4.7, v0.4.7 → v0.4.8/v0.4.9, v0.4.9 → v0.4.10, v0.4.10 → v0.4.11, v0.4.11 → v0.4.12, v0.4.12 → v0.4.13)
+  v0.4.6 → v0.4.7, v0.4.7 → v0.4.8/v0.4.9, v0.4.9 → v0.4.10, v0.4.10 → v0.4.11, v0.4.11 → v0.4.12, v0.4.12 → v0.4.13, v0.4.13 → v0.4.14)
 
 ## 4. Locked decisions (canonical sources)
 
@@ -117,15 +129,15 @@ class permanently:
 
 | Version | Structural fix | Drift class eliminated |
 |---------|----------------|------------------------|
-| v0.4.5 | Grep-anchored references in Self-Audit Checklist | L-number drift after edits |
+| v0.4.5 | Grep-anchored references in Self-Audit Checklist | Line-number drift after edits |
 | v0.4.6 | Creation-date anchors in Traceability section | Line-count drift (wc-l vs Read tool) |
 | v0.4.7 | "See Changelog" reference in Self-Audit attestation | Per-version-attestation drift |
 | v0.4.8 | Sibling-sweep "phased plan §X" → "phased-build-plan §X" | Citation-shorthand drift |
 | v0.4.10 | Grep-anchored discipline extended to Changelog block | Stale-line-citation drift in Changelog audit-trail (F-PASS15-S1/S2 class) |
 | v0.4.11 | Semantic labels replace ordinal cascade count in v0.4.10 entry + grep-verified citation shorthand sibling-sweep at 2 callsites (F-PASS16-I1/I2/I3 closure) | Count-drift class in structural-fix audit-trail; partial-sibling-sweep regression class (F-PASS16-I1/I2) |
-| v0.4.12 | (a) v0.4.8 changelog bullets back-filled with STRUCTURAL FIX headings; v0.4.11 'all structural-fix headings' coverage claim sharpened (b) §-as-line-number anchor cleanup at v0.9 ship gate (§132/§144 → §SL-9/§SL-10) | Audit-trail completeness drift (narrow-fix-with-broad-announcement recurrence class) |
-
-| v0.4.13 | (a) Local fix: v0.4.12 changelog literal L57 anchor → semantic anchor (b) ENFORCEMENT: new Self-Audit Checklist item asserting `grep \bL[0-9]+\b ... | grep -v WSL2` clean before commit — converts v0.4.10 cultural claim to brief-level enforced | Third-level recursion of narrow-fix-broad-announcement pattern; v0.4.10 audit-trail discipline regression |
+| v0.4.12 | (a) v0.4.8 changelog bullets back-filled with STRUCTURAL FIX headings; v0.4.11 'all structural-fix headings' coverage claim sharpened (b) semantic anchor cleanup at v0.9 ship gate (§SL-9/§SL-10 references) | Audit-trail completeness drift (narrow-fix-with-broad-announcement recurrence class) |
+| v0.4.13 | (a) Local fix: v0.4.12 changelog literal line-number anchor → semantic anchor (b) ENFORCEMENT: new Self-Audit Checklist item asserting `grep \bL[0-9]+\b ... | grep -v WSL2` clean before commit — converts v0.4.10 cultural claim to brief-level enforced | Third-level recursion of narrow-fix-broad-announcement pattern; v0.4.10 audit-trail discipline regression |
+| v0.4.14 | (a) Local closure of fourth-level recursion using writing-technique principle: describe literal-line-number defects in semantic terms, never quote the literal token (b) Gate hardening: added self-reference exclusion to the Self-Audit Checklist enforcement command | Fourth-level recursion of narrow-fix-with-broad-announcement (cultural-checklist enforcement empirically insufficient) |
 
 Each structural fix worked — those defect classes are gone permanently. But new
 sibling-sweep gaps in other cross-section dimensions keep emerging.
@@ -141,11 +153,15 @@ Pass 16 surfaced two new defect classes: (a) F-PASS16-I1/I2 — 3 prior-pass fix
 
 Pass 17 surfaces a recursive pattern: fixes that announce broad coverage (v0.4.8 "at all callsites"; v0.4.11 "all structural-fix headings") often deliver narrow coverage. v0.4.12 closes the audit-trail completeness drift class by back-filling all missing STRUCTURAL FIX headings (10 total now in the Changelog block) and sharpening the v0.4.11 coverage claim. The narrow-fix-with-broad-announcement recurrence pattern is structurally addressed — future structural fixes must declare the STRUCTURAL FIX heading at write-time.
 
-v0.4.13 closes the recursion structurally — the new Self-Audit Checklist enforcement item at brief L782 makes the v0.4.10 'permanent elimination' claim machine-verifiable. Future fix-bursts cannot reintroduce literal L\d+ anchors in the brief without failing the Self-Audit Checklist gate.
+v0.4.13 closes the recursion structurally — the new Self-Audit Checklist enforcement item makes the v0.4.10 'permanent elimination' claim machine-verifiable. Future fix-bursts cannot reintroduce literal line-number anchors in the brief without failing the Self-Audit Checklist gate.
+
+Pass 19 surfaced the cascade's first CRITICAL finding — empirically proving that cultural-checklist enforcement is structurally insufficient at fourth-level recursion. v0.4.14 broke the recursion at the writing layer via a writing-technique principle. v0.4.15 (if needed) escalates to a write-time machine-enforced hook script.
 
 ## 6. Open questions for next session
 
-**v0.4.13 fix-burst is applied (commit 2e5f3b2).** Next step: Pass 19 fresh-context adversary dispatch (Task #48). Streak resumes from 0/3.
+**v0.4.14 fix-burst is applied (commit 7035315) with writing-technique principle and gate hardening; the hardened gate now passes its own self-test.** Next step: Pass 20 fresh-context adversary dispatch (Task #50). Streak resumes from 0/3.
+
+**Question for human review:** Should v0.4.15 escalate to a write-time machine-enforced hook script (e.g., `.factory/hooks/validate-changelog-anchors.sh` invoked by lefthook or factory-dispatcher), or continue with the writing-technique principle alone? The Pass 19 adversary recommended machine enforcement; the orchestrator deferred per conservative scope. If Pass 20 surfaces a fifth-level recursion of this class, escalation is the production-grade response.
 
 **Question for human review when resuming:**
 - After convergence (3 consecutive clean passes), should the brief move directly to PRD phase or is there a human review gate first?
@@ -154,7 +170,7 @@ v0.4.13 closes the recursion structurally — the new Self-Audit Checklist enfor
 
 | Artifact | Version | Lines |
 |----------|---------|-------|
-| `.factory/specs/product-brief.md` | v0.4.13 | 782 |
+| `.factory/specs/product-brief.md` | v0.4.14 | 786 |
 | `.factory/planning/elicitation-notes.md` | — | 610 |
 | `.factory/planning/stage-3-locks.md` | — | 171 |
 | `.factory/planning/brief-research.md` | — | 495 |
@@ -177,11 +193,12 @@ v0.4.13 closes the recursion structurally — the new Self-Audit Checklist enfor
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md` | Pass 16 | 408 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-17.md` | Pass 17 | 373 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-18.md` | Pass 18 | 193 |
+| `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md` | Pass 19 | 169 |
 | `CLAUDE.md` | amended Node 20+ | 592 |
 
 **Note on git history:** Not all fix-burst commits are present in git. The orchestrator
 committed pass reports separately from fix bursts; several fix-burst commits that
-advanced the brief version are missing from the log (the brief on disk at v0.4.9 is
+advanced the brief version are missing from the log (the brief on disk at v0.4.14 is
 authoritative — it is ahead of what the commit log reflects). The 14 commits in git
 history are enumerated in §8.
 
@@ -189,6 +206,9 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
+| (this burst) | factory(adversary): persist Pass 19 FAIL + handoff sibling-sweep + v0.4.14 state refresh |
+| 7035315 | factory(spec): bump brief to v0.4.14 — F-PASS19-C1 4th-level-recursion closure (writing-technique principle + gate hardening) |
+| 4b2f357 | factory(handoff): backfill Pass 18 commit SHA in §8 commit log |
 | ea9b314 | factory(adversary): persist Pass 18 FAIL + v0.4.13 state refresh + F-PASS18-S2/O1 + handoff §5 sibling-sweep |
 | 2e5f3b2 | factory(spec): bump brief to v0.4.13 — F-PASS18-I1 third-level-recursion closure (local fix + Self-Audit enforcement) + S1/O2 |
 | e41e3a9 | factory(handoff): refresh state for v0.4.12 fix-burst completion — unblock Pass 18 |
@@ -220,31 +240,32 @@ history are enumerated in §8.
 
 **Gap note:** Passes 3, 5–6, 7–8, 8–9, 10–11, 11–12, 12–13, 13–14 each had a fix burst
 that advanced the brief version. Most of those fix bursts are not reflected as separate
-commits — the brief on disk at v0.4.9 is the authoritative artifact.
+commits — the brief on disk at v0.4.14 is the authoritative artifact.
 
 ## 9. Resume procedure
 
 1. Read THIS file end-to-end.
-2. Read `.factory/specs/product-brief.md` (v0.4.13, 782 lines).
-3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-18.md` (Pass 18 FAIL — historical; fixes applied in v0.4.13).
+2. Read `.factory/specs/product-brief.md` (v0.4.14, 786 lines).
+3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md` (Pass 19 FAIL — historical; fixes applied in v0.4.14).
 
-**v0.4.13 fix-burst is applied (commit 2e5f3b2) with brief-level enforcement closure for the recursive process-gap.** Dispatch Pass 19 per Task #48:
+**v0.4.14 fix-burst is applied (commit 7035315) with writing-technique principle.** Dispatch Pass 20 per Task #50:
 
-4. Dispatch fresh-context adversary using Pass 19 template.
+4. Dispatch fresh-context adversary using Pass 20 template.
 5. On adversary verdict:
-   - PASS (0 CRITICAL + 0 IMPORTANT) → streak 1/3 → record verdict via state-manager → dispatch Pass 20.
-   - FAIL → record verdict via state-manager → v0.4.14 fix-burst → return to step 4 for Pass 20.
+   - PASS (0 CRITICAL + 0 IMPORTANT) → streak 1/3 → record verdict via state-manager → dispatch Pass 21.
+   - FAIL with same recursion class → ESCALATE to write-time machine gate in v0.4.15 (informs human; new agent scope).
+   - FAIL with new finding class → v0.4.15 fix-burst per findings → return to step 4 for Pass 21.
 6. Continue per BC-5.39.001 strict protocol until 3 consecutive clean passes.
 
-**Note for Pass 19 adversary:** v0.4.13 closed F-PASS18-I1 via brief-level enforcement (new Self-Audit Checklist item). Pass 19 should verify the enforcement item is actually present AND that the v0.4.13 changelog block contains zero literal L\d+ anchors (the enforcement self-test).
+**Note for Pass 20 adversary:** v0.4.14 closed F-PASS19-C1 via writing-technique principle (no literal line-number-token quotations in the brief Changelog) AND F-PASS19-S1 (gate hardening with self-reference exclusion). Pass 20 should run the hardened gate on the brief and verify zero output AND verify the v0.4.14 changelog block contains no literal line-number-token sequences AND verify the handoff sweep was effective.
 
-**Pass 19 dispatch template:**
+**Pass 20 dispatch template:**
 
 > You are a fresh-context adversary reviewer for the brain-factory product brief.
-> Your task: BC-5.39.001 3-CLEAN pass 19.
-> Target: `.factory/specs/product-brief.md` (v0.4.13, 782 lines).
-> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-18.md`.
-> Inputs: product-brief.md, pass-18.md, stage-3-locks.md, elicitation-notes.md,
+> Your task: BC-5.39.001 3-CLEAN pass 20.
+> Target: `.factory/specs/product-brief.md` (v0.4.14, 786 lines).
+> Prior passes: read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`.
+> Inputs: product-brief.md, pass-19.md, stage-3-locks.md, elicitation-notes.md,
 > brief-research.md, reference-repos.md, CLAUDE.md,
 > docs/planning/llm-second-brain-phased-build-plan.md (spot-check §§A.2, 5.11, 8.2.4).
 > Protocol: FAIL on any CRITICAL or IMPORTANT. PASS only if zero CRITICAL + IMPORTANT.

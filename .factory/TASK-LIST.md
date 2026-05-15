@@ -1,7 +1,7 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-15. 18 adversary passes complete + v0.4.13 fix-burst applied.
-> Streak: 0/3. Top-of-stack: Task #48 (Pass 19 fresh-context adversary dispatch).
+> Snapshot taken at handoff: 2026-05-15. 19 adversary passes complete + v0.4.14 fix-burst applied.
+> Streak: 0/3. Top-of-stack: Task #50 (Pass 20 fresh-context adversary dispatch).
 > See SESSION-HANDOFF.md §9 for resume procedure.
 
 ## Task Status
@@ -44,18 +44,20 @@
 | 34 | COMPLETED | Resolve F-PASS14-I1 bats count decision | hook-performance tests fold into hooks.bats; 9-suite count preserved |
 | 35 | COMPLETED | Fix-burst v0.4.8 → v0.4.9 | Fixed I1 (bats count) + I2 (/brain:research label "new" in Scope) |
 | 36 | COMPLETED | Commit Pass 14 FAIL report | SHA: 7f8572c |
-| 37 | COMPLETED | Amend CLAUDE.md with Node 20+ constraint | L5 updated at Stage 3 |
+| 37 | COMPLETED | Amend CLAUDE.md with Node 20+ constraint | Updated at Stage 3 |
 | 38 | COMPLETED | Author SESSION-HANDOFF.md | Initial handoff; written at session boundary |
 | 39 | COMPLETED | Pass 15 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS15-I1: scripts/gen-test-corpus.sh missing from §Scope); 2 SUGGESTION (F-PASS15-S1/S2: stale Changelog line refs); 2 OBSERVATION. Streak: 0/3 |
 | 40 | COMPLETED | Persist Pass 15 + refresh handoff state | All three artifacts persisted. Commits: 8d3e2a4 (pass-15), 6072814 (handoff), 989bd20 (task-list). |
 | 41 | COMPLETED | Fix-burst v0.4.9 → v0.4.10 per Pass 15 findings | Applied at commit 8b3cb47 (brief v0.4.9→v0.4.10; 758→763 lines). F-PASS15-I1 resolved (gen-test-corpus.sh added to §Scope); F-PASS15-S1/S2 anchored; 4th structural fix extended grep-anchor discipline to Changelog block. |
 | 42 | COMPLETED | Pass 16 adversary dispatch | FAIL: 3 IMPORTANT (F-PASS16-I1/I2 citation-shorthand regression, F-PASS16-I3 process-gap structural-fix mis-count); 1 SUGGESTION (F-PASS16-S1 cross_platform); 1 OBSERVATION (F-PASS16-O1 plugin.json/hooks.json.template gate-vs-scope). Streak: 0/3. Report persisted via state-manager (orchestrator dispatch — adversary read-only profile). |
 | 43 | COMPLETED | Fix-burst v0.4.10 → v0.4.11 per Pass 16 findings | Applied at commit 5e6dc2f (brief v0.4.10→v0.4.11; 763→771 lines). F-PASS16-I1+I2 paired citation sibling-sweep with grep verification (3 prior-pass fixes back in compliance); F-PASS16-I3 semantic-label replacement (count-drift class eliminated); F-PASS16-S1 cross_platform Git Bash; F-PASS16-O1 plugin.json+hooks.json.template added to §Scope. Bonus in-scope: v0.4.5/v0.4.6/v0.4.7 structural-fix labels promoted to semantic-label format. |
-| 44 | COMPLETED | Pass 17 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS17-I1, [process-gap]: v0.4.11 audit-trail claim overbroad — v0.4.8 bullets L74/L75 lack STRUCTURAL FIX headings); 2 SUGGESTION (F-PASS17-S1 L351 § anchor, F-PASS17-S2 cross_platform flatten); 2 OBSERVATION (F-PASS17-O1 cross-doc coherence, F-PASS17-O2 handoff §5 inaccuracy — corrected in same commit). Streak 0/3. Smallest blocker count since Pass 15; convergence trajectory positive. |
-| 45 | COMPLETED | Fix-burst v0.4.11 → v0.4.12 per Pass 17 findings | Applied at commit ed6e705 (brief v0.4.11→v0.4.12; 771→776 lines). F-PASS17-I1 closed: v0.4.8 changelog bullets at L74/L75 promoted to STRUCTURAL FIX form; L57 coverage claim sharpened — 10 STRUCTURAL FIX headings total in Changelog. F-PASS17-S1: L356 anchors (§132/§144 → §SL-9/§SL-10). F-PASS17-S2: cross_platform flattened. |
-| 46 | COMPLETED | Pass 18 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS18-I1, [process-gap]: third-level recursion of narrow-fix-broad-announcement — v0.4.12's own changelog L56 cites literal L57); 2 SUGGESTION (F-PASS18-S1 cross_platform count, F-PASS18-S2 handoff §5 enumeration); 2 OBSERVATION (F-PASS18-O1 stage-3-locks frontmatter, F-PASS18-O2 Self-Audit nested parenthetical). Streak 0/3. |
-| 47 | COMPLETED | Fix-burst v0.4.12 → v0.4.13 per Pass 18 findings | Applied at commit 2e5f3b2. F-PASS18-I1 LOCAL: brief v0.4.11 'all structural-fix headings' coverage claim → semantic anchor at L61. F-PASS18-I1 ENFORCEMENT: new Self-Audit Checklist item at brief L782 enforcing `grep \bL[0-9]+\b ... | grep -v WSL2` clean before commit (converts v0.4.10 cultural claim to brief-level enforced). F-PASS18-S1: cross_platform 5→4 count. F-PASS18-O2: Self-Audit L767 sibling-sweep flatten. v0.4.13 changelog: 0 line-number anchors, 0 blanket-coverage wording (recursion broken at writing layer). 11 STRUCTURAL FIX headings. **Note:** orchestrator dispatched fix-burst BEFORE Pass 18 persistence (one-time order break to avoid context loss on the third-level recursion finding). |
-| 48 | PENDING | Pass 19 adversary dispatch | Top-of-stack. Fresh-context dispatch ready. Pass 19 should verify the v0.4.13 Self-Audit Checklist enforcement is present AND that the v0.4.13 changelog passes the enforcement self-test. Streak resumes from 0/3. |
+| 44 | COMPLETED | Pass 17 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS17-I1, [process-gap]: v0.4.11 audit-trail claim overbroad — v0.4.8 bullets lacked STRUCTURAL FIX headings); 2 SUGGESTION (F-PASS17-S1 semantic anchor at v0.9 ship gate, F-PASS17-S2 cross_platform flatten); 2 OBSERVATION (F-PASS17-O1 cross-doc coherence, F-PASS17-O2 handoff §5 inaccuracy — corrected in same commit). Streak 0/3. Smallest blocker count since Pass 15; convergence trajectory positive. |
+| 45 | COMPLETED | Fix-burst v0.4.11 → v0.4.12 per Pass 17 findings | Applied at commit ed6e705 (brief v0.4.11→v0.4.12; 771→776 lines). F-PASS17-I1 closed: v0.4.8 changelog bullets promoted to STRUCTURAL FIX form; coverage claim sharpened — 10 STRUCTURAL FIX headings total in Changelog. F-PASS17-S1: semantic anchors at v0.9 ship gate (§SL-9/§SL-10). F-PASS17-S2: cross_platform flattened. |
+| 46 | COMPLETED | Pass 18 adversary dispatch | FAIL: 1 IMPORTANT (F-PASS18-I1, [process-gap]: third-level recursion of narrow-fix-broad-announcement — v0.4.12's own changelog entry cites a literal line-number anchor); 2 SUGGESTION (F-PASS18-S1 cross_platform count, F-PASS18-S2 handoff §5 enumeration); 2 OBSERVATION (F-PASS18-O1 stage-3-locks frontmatter, F-PASS18-O2 Self-Audit nested parenthetical). Streak 0/3. |
+| 47 | COMPLETED | Fix-burst v0.4.12 → v0.4.13 per Pass 18 findings | Applied at commit 2e5f3b2. F-PASS18-I1 LOCAL: v0.4.11 coverage claim → semantic anchor at brief changelog. F-PASS18-I1 ENFORCEMENT: new Self-Audit Checklist item enforcing `grep \bL[0-9]+\b ... | grep -v WSL2` clean before commit (converts v0.4.10 cultural claim to brief-level enforced). F-PASS18-S1: cross_platform 5→4 count. F-PASS18-O2: Self-Audit sibling-sweep flatten. v0.4.13 changelog: 0 line-number anchors, 0 blanket-coverage wording (recursion broken at writing layer). 11 STRUCTURAL FIX headings. **Note:** orchestrator dispatched fix-burst BEFORE Pass 18 persistence (one-time order break to avoid context loss on the third-level recursion finding). |
+| 48 | COMPLETED | Pass 19 adversary dispatch | FAIL: 1 CRITICAL (F-PASS19-C1, [process-gap]: fourth-level recursion — v0.4.13 enforcement gate fails own self-test; two literal-line-number-anchor quotations at brief line 56 in the v0.4.13 changelog entry that introduced the gate); 1 IMPORTANT (F-PASS19-I1: handoff §§1+5 sibling-sweep gap — 7 literal line-number tokens in handoff prime writers to repeat the defect); 1 SUGGESTION (F-PASS19-S1: gate self-reference exclusion); 1 OBSERVATION (F-PASS19-O1: §5 blank-line table split). Streak: 0/3. Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-19.md`. |
+| 49 | COMPLETED | Fix-burst v0.4.13 → v0.4.14 per Pass 19 findings | Applied at commit 7035315. F-PASS19-C1 LOCAL closure via writing-technique principle (no literal-line-number-token quotations). F-PASS19-S1 gate hardening (self-reference exclusion). Hardened gate self-test PASSES (zero output). NOTE: orchestrator deferred production-grade ENFORCEMENT ESCALATION to v0.4.15 if Pass 20 surfaces same class. |
+| 50 | PENDING | Pass 20 adversary dispatch | Top-of-stack. Pass 20 should verify hardened gate self-test, verify v0.4.14 changelog block has no literal line-number-token sequences, verify handoff sweep was effective. Streak resumes from 0/3. |
 
 ## Next steps (in dependency order)
 
@@ -67,6 +69,9 @@
 6. ~~(done at ed6e705) Task #45: v0.4.12 fix-burst — F-PASS17-I1 audit-trail back-fill + S1/S2 resolved~~
 7. ~~Task #46: Pass 18 fresh-context adversary dispatch (done — FAIL, 1 IMPORTANT third-level recursion)~~
 8. ~~(done at 2e5f3b2) Task #47: v0.4.13 fix-burst — F-PASS18-I1 local fix + brief-level enforcement + S1/O2 resolved~~
-9. **Task #48: Pass 19 fresh-context adversary dispatch (unblocked — dispatch ready)**
-10. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
-11. After convergence: execute Task 23 (post-convergence git cleanup)
+9. ~~Task #48: Pass 19 fresh-context adversary dispatch (done — FAIL, 1 CRITICAL fourth-level recursion)~~
+10. ~~(done at 7035315) Task #49: v0.4.14 fix-burst — F-PASS19-C1 writing-technique principle + F-PASS19-S1 gate hardening~~
+11. **Task #50: Pass 20 fresh-context adversary dispatch (unblocked — dispatch ready)**
+12. If Pass 20 surfaces 5th-level recursion of same class → escalate to write-time machine gate in v0.4.15 (orchestrator informs human first; new tooling scope)
+13. Continue until streak 3/3 → mark Task 6 (Stage 6 Finalize) as ready
+14. After convergence: execute Task 23 (post-convergence git cleanup)
