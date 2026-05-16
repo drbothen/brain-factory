@@ -38,13 +38,13 @@ The factory tests itself. `meta-lint.bats` validates that brain-factory's own SK
 
 ### 9 bats suites
 
-The 9 bats suites (NFR-019 — exactly 9), aligned to brief v0.4.17 §Test architecture per
+The 9 bats suites (NFR-019 — exactly 9), aligned to the brief §Test architecture per
 Source-of-Truth Precedence (brief is parent spec; SS-18 derives). An earlier draft of this
 section used `ingest.bats` and `wiki.bats` (more functional naming for SS-02/03 and SS-05);
-brief v0.4.17 commits to `skills.bats` and `templates.bats` as the broader category names.
-(Version cite updated F-PASS5-I2: v0.4.15 → v0.4.17. Brief v0.4.16 modified §Bring-up plan
-+ §bin/lobster-run only — §Test architecture was unchanged. Brief v0.4.17 adds policies
-filename sweep per PO's parallel Pass 5 burst — §Test architecture remains unchanged.)
+the brief commits to `skills.bats` and `templates.bats` as the broader category names.
+(Version cite history for audit: v0.4.15 (original) → v0.4.17 (F-PASS5-I2 update) → v0.4.18
+(F-PASS7-I1 — converted to version-agnostic; §Test architecture content unchanged across
+v0.4.15..v0.4.18.))
 SS-18 is aligned to brief naming per CLAUDE.md Source-of-Truth Precedence + brain-factory-001
 (F-PASS2-I4 decision). Functional coverage is unchanged — the brief names reflect that
 ingest and wiki manipulation are skill-level operations, and templates covers GH Action

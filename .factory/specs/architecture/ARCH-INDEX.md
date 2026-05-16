@@ -1,13 +1,13 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.7"
+version: "0.1.8"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.6
+inherits_from: prd@v0.1.7
 deployment_topology: single-service
 created: 2026-05-15
 last_updated: 2026-05-16
@@ -249,7 +249,17 @@ graph TD
 
 **Propagation note (PO action required):** Under Option B, PRD's `inherits_from` should reference `product-brief.md@v0.4.17` (the brief's post-burst version) rather than `v0.4.16`. This is PO scope — the architect surfaces it to the orchestrator for the parallel PO burst.
 
-**Application to ARCH-INDEX:** `inherits_from: prd@v0.1.6` (PRD's current version at this burst's commit time). Correct.
+**Application to ARCH-INDEX:** `inherits_from: prd@v0.1.7` (PRD's current version at this burst's commit time). Updated from prd@v0.1.6 per F-PASS7-C2.
+
+### Parallel-burst hazard mitigation (post-Pass-7 amendment)
+
+Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when architect and PO bursts run in parallel and both bump shared parents, neither sees the other's bumps. Each burst pins `inherits_from` only to the parent version visible at ITS OWN commit time — not the post-all-bursts version.
+
+**Mitigation:** In any Pass closure sequence with parallel bursts, the LAST burst MUST re-pin all `inherits_from` fields to the post-all-bursts parent versions. This is typically the state-manager FINAL refresh (burst 4 in a 4-burst sequence).
+
+**Evidence from Pass 7:** Pass 7 demonstrated this hazard concretely. The parallel Pass 6 architect+PO bursts both bumped PRD; the architect's `inherits_from` became stale relative to the PO's subsequent PRD bump. The fix: adopt a SERIALIZED burst sequence (state-manager-persist → architect → PO → state-manager-FINAL) so each burst sees all prior bumps. The state-manager FINAL burst then re-pins any remaining `inherits_from` staleness.
+
+**New standing rule for Pass closure sequences:** The Pass 7 closure burst sequence implements this discipline — state-manager-persist (burst 1) → architect (burst 2) → PO (burst 3) → state-manager-FINAL (burst 4). The state-manager FINAL burst in burst 4 is responsible for re-pinning all `inherits_from` fields after all specialist bursts complete. This eliminates the parallel-burst hazard without requiring Option A's strict ordering constraint inside each burst. Parallel bursts remain acceptable for independent concerns; bursts that touch shared parents must be serialized or deferred to state-manager FINAL for re-pinning.
 
 ---
 
@@ -328,16 +338,23 @@ for f in \
   .factory/specs/behavioral-contracts/BC-INDEX.md \
   .factory/specs/architecture/ARCH-INDEX.md; do
   echo "--- $f ---"
+  # Clause 1: L-prefixed line-number anchor check
   grep -nE '\bL[0-9]+\b' "$f" \
     | grep -v WSL2 \
     | grep -v 'L\[0-9\]+' \
     | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki' \
     | grep -v 'level: L[0-9]\+\|Level [0-9]\+\|L2\|L3\|L4\|LEVEL' \
     | grep -v 'SS-[0-9]\+\|CAP-[0-9]\+\|NFR-[0-9]\+\|ADR-[0-9]\+\|VP-[0-9]\+'
+  # Clause 2: plain-prose line-number anchor check
+  grep -nE '\bline [0-9]+\b' "$f" \
+    | grep -v '```' \
+    | grep -v '\`line [0-9]\+\`'
 done
 ```
 
 **NOTE (exclusion-list-extension protocol — architecture ID tokens):** Architecture artifacts carry `SS-NN`, `CAP-NNN`, `NFR-NNN`, `ADR-NNN`, and `VP-NNN` token patterns throughout. These are canonical spec identifiers — not line-number anchors. Added `grep -v 'SS-[0-9]+|CAP-[0-9]+|NFR-[0-9]+|ADR-[0-9]+|VP-[0-9]+'` per the exclusion-list-extension protocol: (a) add exclusion; (b) re-run gate — zero matches; (c) rationale: architecture spec ID tokens are domain-standard identifiers, not line-number anchors. This exclusion is ARCH-INDEX-scope; sibling-sweep to all architecture section files is required when this gate is extended.
+
+**NOTE (Clause 2 — plain-prose line-number check, added F-PASS7-I3):** Clause 2 catches `line N` tokens that are NOT inside triple-backtick code fences and NOT inside single-backtick inline code spans. Exclusion rationale: (a) triple-backtick fence exclusion (`grep -v '```'`) — shell command examples, bats harness code, and generated output blocks legitimately reference line numbers as command arguments or tool output; (b) single-backtick inline exclusion (`grep -v '\`line N\`'`) — inline `line N` in backtick spans is a code reference, not a prose anchor. The writing-technique principle still applies: prefer behavioral descriptions over `line N` prose references even in inline code contexts, so use backtick spans sparingly and only when the line reference is in a code-quoting context. `[audit-trail]`-tagged changelog entries are exempt from the Clause 2 gate because changelog content is historical audit trail, not live spec prose.
 
 Additional Self-Audit items:
 - [x] No "pending architect review" / "TODO for architect" for questions answerable in scope
@@ -354,6 +371,16 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.8 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS7-C2-arch — inherits_from stale: prd@v0.1.6 → prd@v0.1.7):** ARCH-INDEX frontmatter `inherits_from` corrected from `prd@v0.1.6` to `prd@v0.1.7`. PRD was bumped to v0.1.7 during the Pass 7 state-manager-persist burst (burst 1); architect burst (burst 2) runs after, so prd@v0.1.7 is the correct pin at this burst's commit time. §Versioning Policy "Application to ARCH-INDEX" updated to reflect prd@v0.1.7.
+
+**POLICY AMENDMENT (F-PASS7-C2-arch — Option B parallel-burst hazard mitigation):** Revised §Versioning Policy to add a new sub-section "Parallel-burst hazard mitigation (post-Pass-7 amendment)." Pass 7 demonstrated that Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when architect and PO bursts run in parallel, each burst can only pin to the parent version visible at ITS OWN commit time, not the post-all-bursts version. Mitigation: adopt Path B — serialized burst sequence (state-manager-persist → architect → PO → state-manager-FINAL) where the LAST burst re-pins all `inherits_from` fields to post-all-bursts parent versions. This preserves Option B's per-burst simplicity while eliminating the parallel-bump hazard. The sequential Pass 7 closure discipline implements this standing rule.
+
+**STRUCTURAL FIX (F-PASS7-I1-arch — narrative version-cite staleness: version-agnostic conversion):** ADR-009 §Spec-level vs content-level and ADR-004 §References narrative cites converted from version-specific to version-agnostic form. ADR-009: "PRD v0.1.6 + architecture" → "current PRD + architecture". ADR-004: "PRD v0.1.6 + BC-INDEX.md" → "Current PRD + BC-INDEX.md". SS-18 §9 bats suites narrative cites converted: "brief v0.4.17" occurrences → version-agnostic "the brief §Test architecture" form (audit-trail version history preserved in parenthetical). Sweep of all 17 ADRs, 18 SS-NN, and 27 VPs confirms: the only remaining version-specific narrative cites after this burst are changelog audit-trail entries (correctly preserved) and the "BC-INDEX v0.1.5 carries `inherits_from: prd@v0.1.6`" rationale in §Versioning Policy (asserting a specific historical event, not a live version reference — correctly preserved). No additional stale narrative cites found.
+
+**STRUCTURAL FIX (F-PASS7-I3-arch — Self-Audit Checklist Clause 2 addition):** Added Clause 2 to the five-file gate bash block: plain-prose line-number anchor check (`grep -nE '\bline [0-9]+\b'`) with exclusions for triple-backtick fences and single-backtick inline code spans. Added NOTE explaining exclusion rationale: code fences legitimately reference line numbers as tool output or command args; inline backtick spans are code references. Writing-technique principle still discourages plain-prose `line N` references even in inline code contexts. Changelog `[audit-trail]` entries exempt per established audit-trail exemption rule.
 
 ### v0.1.7 (2026-05-16)
 

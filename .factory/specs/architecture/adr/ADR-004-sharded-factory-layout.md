@@ -83,6 +83,6 @@ The `.factory/` layout uses domain sharding for behavioral contracts and a separ
 
 ## References
 
-- PRD v0.1.6 + BC-INDEX.md (the current sharding index over 95 BCs across 18 subsystems)
+- Current PRD + BC-INDEX.md (the canonical sharding index over 95 BCs across 18 subsystems)
 - BC-2.01.001 through BC-2.18.005 (the 95 BC files that live in this layout)
 - SESSION-HANDOFF.md §10 (worktree layout standing directive)
