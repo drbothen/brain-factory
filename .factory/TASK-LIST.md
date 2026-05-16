@@ -1,16 +1,14 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS-PAUSED — 11 passes complete (all FAIL), 22 fix-bursts committed, streak 0/3. PAUSED MID-PASS-11 with architect work uncommitted on disk.**
-> **Resume on fresh context:** Read `.factory/STATE.md` FIRST. It contains the complete clean-context resume procedure including the PAUSED MID-PASS-11 disposition decision.
+> Snapshot updated: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — 11 passes complete (all FAIL), 23 fix-bursts committed, streak 0/3. Pass 11 closed; ready for Pass 12.**
+> **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md §9 for resume procedure summary.
 
 ## Top-of-Stack (RESUME ENTRY POINT)
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #34 | RESUME-ACTION | Decide Pass 11 architect uncommitted work disposition (Option A/B/C). See STATE.md PAUSED section. |
-| 2 | #100 | NEXT-ACTION (blocked on #34) | Pass 11 state-mgr FINAL burst — apply 8-sub-check FINAL discipline |
-| 3 | #101 | NEXT-ACTION (blocked on #100) | Pass 12 adversary dispatch |
+| 1 | #101 | NEXT-ACTION | Pass 12 adversary dispatch per BC-5.39.001 cascade protocol |
 
 ## Task Status
 
@@ -49,7 +47,7 @@
 | 31 | COMPLETED | Resolve F-PASS13-I2 Option A/B decision | User chose Option A: add .reference/README.md to bootstrap task |
 | 32 | COMPLETED | Fix-burst v0.4.7 → v0.4.8 | Fixed I1 (skill count 12→13), I2 (bootstrap task updated) |
 | 33 | COMPLETED | Pass 14 adversary dispatch | FAIL: 2 IMPORTANT |
-| 34 | RESUME-ACTION | Decide Pass 11 architect uncommitted work disposition | Option A (commit as-is, recommended), B (re-dispatch architect), or C (discard). See STATE.md PAUSED MID-PASS-11 section. Git commands provided. |
+| 34 | COMPLETED | Pass 11 architect disposition — Option A executed | Architect work committed at a3a83b1 (recovered from API-error mid-commit via Option A pre-authorized commit) |
 | 35 | COMPLETED | Fix-burst v0.4.8 → v0.4.9 | Fixed I1 (bats count) + I2 (/brain:research label) |
 | 36 | COMPLETED | Commit Pass 14 FAIL report | SHA: 7f8572c |
 | 37 | COMPLETED | Amend CLAUDE.md with Node 20+ constraint | Updated at Stage 3 |
@@ -122,9 +120,9 @@
 | 104 | COMPLETED | Phase 1d Pass 10 architect fix-burst | architecture v0.1.11 → v0.1.12 + VP-INDEX v0.1.4 → v0.1.5. Commit cc9ba18 |
 | 105 | COMPLETED | Phase 1d Pass 10 state-manager FINAL | Extended FINAL discipline (7 sub-checks). Commit c468276 |
 | 106 | COMPLETED | Phase 1d adversary pass 11 | FAIL: 2C+3I. Persist commit 63cf130. Report at adversary-pass-11.md |
-| 107 | PAUSED-UNCOMMITTED | Phase 1d Pass 11 architect burst | 34 files modified on disk (ARCH-INDEX v0.1.13 + VP-INDEX v0.1.6 + 8 ADRs + 18 SS + 6 VPs). Commit attempt failed via API error mid-commit. Content is complete and intentional. |
-| 108 | NEXT-ACTION (blocked on #34) | Phase 1d Pass 11 state-manager FINAL | Apply 8-sub-check FINAL discipline (sub-check (h) adversary pre-flight verification newly codified in Pass 11 architect work). Blocked on #107 disposition. |
-| 109 | NEXT-ACTION (blocked on #108) | Phase 1d adversary pass 12 | Dispatch after Pass 11 closure is complete. Continue cascade toward streak 3/3. |
+| 107 | COMPLETED | Phase 1d Pass 11 architect burst | ARCH-INDEX v0.1.13 + VP-INDEX v0.1.6 + timestamp canonical-baseline sweep + dual-scope retroactive audit + adversary pre-flight codification. Recovered via Option A; committed at a3a83b1. |
+| 108 | COMPLETED | Phase 1d Pass 11 state-manager FINAL | 8-sub-check FINAL discipline applied. All 5 findings addressed. State docs updated. Commit PENDING self-commit (this burst). |
+| 109 | NEXT-ACTION | Phase 1d adversary pass 12 | Dispatch after state-mgr FINAL commits. Continue cascade toward streak 3/3. |
 
 ## Next steps (in dependency order)
 
@@ -133,7 +131,7 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#106: Phase 1d Passes 1–11 persists — COMPLETED (11 passes, 22 fix-bursts committed).~~
+~~Tasks #71–#108: Phase 1d Passes 1–11 persists + fix-bursts — COMPLETED (11 passes, 23 fix-bursts committed).~~
 
 1. **Task #34 — RESUME-ACTION (top of stack):** Decide Option A/B/C for Pass 11 architect uncommitted work. See STATE.md PAUSED MID-PASS-11 section.
    - Option A (recommended): `git add .factory/specs/architecture/ && git commit -m "factory(spec): architecture v0.1.12 → v0.1.13 + VP-INDEX v0.1.5 → v0.1.6 — Phase 1d Pass 11 architect (F-PASS11-C1/C2/I1/I2/I3 + timestamp canonical-baseline sweep + retroactive dual-scope audit + adversary pre-flight codification)"`

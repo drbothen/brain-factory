@@ -2,16 +2,16 @@
 artifact_type: session-handoff
 project: brain-factory
 session_phase: phase-1d-adversarial-spec-review
-session_stage: phase-1d-cascade-paused-mid-pass-11
+session_stage: phase-1d-cascade-pass-11-closed-ready-for-pass-12
 current_brief_version: 0.4.19
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.8
 current_prd_path: .factory/specs/prd/index.md
 current_bc_index_path: .factory/specs/behavioral-contracts/BC-INDEX.md
 current_bc_index_version: 0.1.7
-current_architecture_version: 0.1.12 (LAST COMMITTED; v0.1.13 uncommitted on disk)
+current_architecture_version: 0.1.13
 current_arch_index_path: .factory/specs/architecture/ARCH-INDEX.md
-current_vp_index_version: 0.1.5 (LAST COMMITTED; v0.1.6 uncommitted on disk)
+current_vp_index_version: 0.1.6
 total_bc_count: 95
 total_adr_count: 17
 total_ss_design_count: 18
@@ -22,15 +22,15 @@ phase_1b_initial_commit: 23e3a91
 phase_1c_completion_commits: [b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b]
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: "0/3 (reset after Pass 7 FAIL; has not recovered)"
-current_pass_number: 11 (FAIL — 2C+3I; persist commit 63cf130; architect UNCOMMITTED on disk; state-manager FINAL PENDING)
+current_pass_number: 11 (FAIL — 2C+3I; persist commit 63cf130; architect a3a83b1; state-mgr FINAL PENDING self-commit)
 phase_1b_status: COMPLETED — PRD v0.1.1 landed; consistency audit closed; Phase 1c authorized
 phase_1c_status: COMPLETED — architecture v0.1.1 + SS-NN backfill across BCs/PRD/BC-INDEX; consistency audit closed; five-file gate canonical; 64/64 P0 BC VP coverage
-phase_1d_status: IN-PROGRESS-PAUSED — 11 passes complete; 22 fix-bursts committed; Pass 11 architect uncommitted on disk; state-manager FINAL pending
+phase_1d_status: IN-PROGRESS — 11 passes complete; 23 fix-bursts committed; streak 0/3; Pass 11 closed; ready for Pass 12
 cascade_status: CLOSED — v0.4.15 is the final Phase 1a Stage 5 artifact
 total_passes_completed: 23
 total_fix_bursts: 15
 total_phase_1d_passes_completed: 11
-total_phase_1d_fix_bursts: 22 (Pass 11 architect uncommitted; state-manager FINAL pending)
+total_phase_1d_fix_bursts: 23 (Pass 11 architect a3a83b1 + state-mgr FINAL PENDING self-commit)
 phase_1d_pass_1_verdict: FAIL
 phase_1d_pass_2_verdict: FAIL
 phase_1d_pass_3_verdict: FAIL
@@ -44,14 +44,14 @@ phase_1d_pass_10_verdict: FAIL
 phase_1d_pass_11_verdict: FAIL
 created: 2026-05-15
 last_updated: 2026-05-16
-status: phase-1d-cascade-paused-for-durable-resume
+status: phase-1d-cascade-active-pass-11-closed
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS-PAUSED mid-Pass-11 (11 passes, 22 fix-bursts committed, streak 0/3).**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 11 closed; ready for Pass 12 dispatch (11 passes, 23 fix-bursts committed, streak 0/3).**
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -59,11 +59,11 @@ Phase 1b (PRD) has been completed. PRD v0.1.1 landed at commit 7935faa. The PRD 
 
 Phase 1c (Architecture) has been completed. Architecture v0.1.1 landed via 5 commits (b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b). ARCH-INDEX + 17 ADRs + 18 SS-NN designs + 27 VPs (64/64 P0 BC coverage).
 
-Phase 1d (Adversarial spec review) is IN-PROGRESS-PAUSED. 11 passes completed (all FAIL), 22 fix-bursts committed. Current LAST COMMITTED spec versions: brief v0.4.19, PRD v0.1.8, BC-INDEX v0.1.7, ARCH-INDEX v0.1.12 (cc9ba18), VP-INDEX v0.1.5. Streak 0/3.
+Phase 1d (Adversarial spec review) is IN-PROGRESS. 11 passes completed (all FAIL), 23 fix-bursts committed. Current spec versions: brief v0.4.19, PRD v0.1.8, BC-INDEX v0.1.7, ARCH-INDEX v0.1.13 (a3a83b1), VP-INDEX v0.1.6. Streak 0/3.
 
-**PAUSED MID-PASS-11 status:** Pass 11 persist commit landed at 63cf130 (2C+3I). Pass 11 architect burst completed all 34 file edits on disk but API error crashed BEFORE commit. The cascade was paused by the user for a clean-context durable resume snapshot.
+**Pass 11 closure note:** Pass 11 persist commit landed at 63cf130 (2C+3I). Pass 11 architect burst was interrupted mid-commit; recovered via Option A pre-authorized commit at SHA a3a83b1. Pass 11 state-mgr FINAL closed all 5 findings and updated all operational state docs. Cascade ready for Pass 12.
 
-**Next action for fresh-context orchestrator:** Read STATE.md. Decide architect uncommitted work disposition (Option A/B/C). Proceed per STATE.md Resume Procedure.
+**Next action for fresh-context orchestrator:** Dispatch Pass 12 adversary per BC-5.39.001 cascade protocol.
 
 ## 2. Cascade history — Phase 1a (full, 23 passes)
 
@@ -74,8 +74,8 @@ See SESSION-HANDOFF prior versions or `.factory/cycles/v0.1-phase-1a-brief/adver
 - **Brief:** `.factory/specs/product-brief.md` (v0.4.19, commit 1c0251c)
 - **PRD:** `.factory/specs/prd/index.md` (v0.1.8, commit 1c0251c)
 - **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, commit 1c0251c)
-- **ARCH-INDEX (LAST COMMITTED):** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.12, commit cc9ba18); v0.1.13 uncommitted on disk
-- **VP-INDEX (LAST COMMITTED):** `.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.5, commit cc9ba18); v0.1.6 uncommitted on disk
+- **ARCH-INDEX:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.13, commit a3a83b1)
+- **VP-INDEX:** `.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.6, commit a3a83b1)
 - **ADRs:** 17 (ADR-001 through ADR-017, all `status: accepted`)
 - **SS-NN designs:** 18 (SS-01 through SS-18)
 - **VPs:** 27 (VP-001 through VP-027; 64/64 P0 BC coverage)
@@ -83,7 +83,7 @@ See SESSION-HANDOFF prior versions or `.factory/cycles/v0.1-phase-1a-brief/adver
 - **Phase 1a streak:** 3/3 — CASCADE CONVERGED on v0.4.15 (Phase 1a Stage 5 CLOSED)
 - **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
 - **Phase 1c status:** COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89ea4b)
-- **Phase 1d status:** IN-PROGRESS-PAUSED — 11 passes complete; 22 fix-bursts committed; streak 0/3
+- **Phase 1d status:** IN-PROGRESS — 11 passes complete; 23 fix-bursts committed; streak 0/3
 - **Five-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md)
 
 ## 4. Locked decisions (canonical sources)
@@ -137,7 +137,7 @@ Plus from later session decisions (not in stage-3-locks.md):
 | 8 | Operational state doc path-currency check (test -e) | Incremental + canonical-baseline |
 | 9 | In-document title-cell sibling-sweep (ARCH-INDEX Doc Map vs VP-INDEX Summary) | Incremental + canonical-baseline |
 | 10 | Dual-scope discipline (every codified discipline declares both incremental and canonical-baseline scope) | Incremental + canonical-baseline |
-| 11 (PENDING) | Timestamp tri-partite semantic + retroactive dual-scope audit + adversary pre-flight | Pending commit |
+| 11 | Timestamp tri-partite semantic (F-PASS11-C1/I3) + retroactive dual-scope audit (F-PASS11-C2) + adversary pre-flight (F-PASS11-O1) | Incremental + canonical-baseline |
 
 ## 7. Artifacts on disk (all persisted, last committed versions)
 
@@ -146,16 +146,19 @@ Plus from later session decisions (not in stage-3-locks.md):
 | `.factory/specs/product-brief.md` | v0.4.19 | commit 1c0251c |
 | `.factory/specs/prd/index.md` | v0.1.8 | commit 1c0251c |
 | `.factory/specs/behavioral-contracts/BC-INDEX.md` | v0.1.7 | commit 1c0251c |
-| `.factory/specs/architecture/ARCH-INDEX.md` | v0.1.12 | commit cc9ba18; v0.1.13 UNCOMMITTED |
-| `.factory/specs/architecture/adr/ADR-001-*.md` through `ADR-017-*.md` | accepted | 17 files; 8 have uncommitted timestamp bumps |
-| `.factory/specs/architecture/subsystems/SS-01-*.md` through `SS-18-*.md` | v0.1.1+ | 18 files; all have uncommitted timestamp bumps |
-| `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.5 | commit cc9ba18; v0.1.6 UNCOMMITTED |
-| `.factory/specs/architecture/verification-properties/VP-001-*.md` through `VP-027-*.md` | — | 27 files; VP-004/012/014/021/026/027 have uncommitted changes |
+| `.factory/specs/architecture/ARCH-INDEX.md` | v0.1.13 | commit a3a83b1 |
+| `.factory/specs/architecture/adr/ADR-001-*.md` through `ADR-017-*.md` | accepted | 17 files; timestamp sweep applied at a3a83b1 |
+| `.factory/specs/architecture/subsystems/SS-01-*.md` through `SS-18-*.md` | v0.1.1+ | 18 files; timestamp sweep applied at a3a83b1 |
+| `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.6 | commit a3a83b1 |
+| `.factory/specs/architecture/verification-properties/VP-001-*.md` through `VP-027-*.md` | — | 27 files; committed at a3a83b1 |
 
 ## 8. Recent commits (most recent first)
 
 | SHA | Message |
 |-----|---------|
+| [state-mgr FINAL] | factory(state): Phase 1d Pass 11 FINAL — STATE refresh + 8-sub-check FINAL discipline (PENDING self-commit) |
+| a3a83b1 | factory(spec): architecture v0.1.12 → v0.1.13 + VP-INDEX v0.1.5 → v0.1.6 — Phase 1d Pass 11 architect |
+| 7b1be59 | factory(state): durable resume snapshot — Phase 1d 11-pass cascade in progress |
 | 63cf130 | factory(adversary): persist Phase 1d Pass 11 FAIL — 2 CRITICAL + 3 IMPORTANT |
 | c468276 | factory(state): Phase 1d Pass 10 FINAL — STATE refresh + extended FINAL discipline (7 sub-checks: add dual-scope verification) |
 | cc9ba18 | factory(spec): architecture v0.1.11 → v0.1.12 + VP-INDEX v0.1.4 → v0.1.5 — Phase 1d Pass 10 architect canonical-baseline sweep |
@@ -173,17 +176,15 @@ Plus from later session decisions (not in stage-3-locks.md):
 
 ## 9. Resume procedure
 
-**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d IN-PROGRESS-PAUSED.**
+**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d IN-PROGRESS — Pass 11 closed; ready for Pass 12.**
 
-**For a fresh-context orchestrator session:** Read `.factory/STATE.md` FIRST — it is the canonical entry point. STATE.md contains the complete clean-context resume procedure including the PAUSED MID-PASS-11 disposition decision.
+**For a fresh-context orchestrator session:** Read `.factory/STATE.md` FIRST — it is the canonical entry point.
 
 In summary:
 1. Run `vsdd-factory:devops-engineer` factory-worktree-health (BLOCKING preflight; expect intentional non-canonical layout per §10)
 2. Read CLAUDE.md, STATE.md, THIS FILE, TASK-LIST.md, then adversary-pass-11.md
-3. Run `git status` to confirm 34 uncommitted architect files; spot-check ARCH-INDEX for Pass 11 content
-4. Decide Option A/B/C per STATE.md PAUSED MID-PASS-11 section
-5. If Option A: commit architect work → dispatch state-mgr FINAL Pass 11 → dispatch Pass 12
-6. Repeat cascade until streak 3/3
+3. Dispatch Pass 12 adversary per BC-5.39.001 cascade protocol
+4. Repeat cascade until streak 3/3
 
 Carry forward to Phase 1d: writing-technique principle (including plain-prose `line N`), five-file gate, exclusion-list-extension protocol, no blanket-coverage wording, single-commit-per-burst, NO AI attribution. Full discipline catalog in STATE.md.
 
@@ -223,10 +224,12 @@ Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 11 passes to
 | 8 | FAIL | 1C+3I | a6917e4 | architect bf34582 + state-mgr FINAL 35fd7c2 | 0/3 |
 | 9 | FAIL | 1C+2I | 3296100 | architect 8c7dc97 + state-mgr FINAL 47824c4 | 0/3 |
 | 10 | FAIL | 2C+3I | 5a61476 | architect cc9ba18 + state-mgr FINAL c468276 | 0/3 |
-| 11 | FAIL | 2C+3I | 63cf130 | architect UNCOMMITTED (34 files on disk) + state-mgr FINAL PENDING | 0/3 |
+| 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + state-mgr FINAL PENDING self-commit | 0/3 |
 
 **CRITICAL trajectory:** 7→4→2→3→2→2→2→1→1→2→2. Regression at Pass 10–11; novel-class findings driving uplift.
 
 **Pass 11 findings summary:** 2 CRITICAL + 3 IMPORTANT. Report at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-11.md`.
 
 **Pass reports:** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..11}.md`
+
+**Pass 11 closure:** persist 63cf130 + architect a3a83b1 (recovered from API-error mid-commit via Option A) + state-mgr FINAL PENDING self-commit.
