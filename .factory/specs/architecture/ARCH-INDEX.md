@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.3"
+version: "0.1.4"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00

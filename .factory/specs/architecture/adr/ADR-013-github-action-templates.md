@@ -46,7 +46,7 @@ brain-factory ships GH Action templates that operators install into their brain 
 7. `quarterly-mirror.yml` — quarterly: runs `/brain:quarterly-mirror`
 8. `publish-scheduled.yml` — scheduled: publishes content with `status: ready` in `to-publish/`
 9. `monthly-perf.yml` — monthly: runs `/brain:monthly-perf`
-10. `cold-start-recover.yml` — manual trigger: runs `/brain:cold-start-recover`
+10. `cold-start.yml` — manual trigger: runs `/brain:cold-start-recover`
 11. `export-brain.yml` — manual trigger: runs `/brain:export-brain`
 12. `adversary-review.yml` — manual trigger (file path input): runs `/brain:adversary-review`
 13. `connect.yml` — scheduled: runs `/brain:connect 7`
@@ -69,8 +69,8 @@ Templates are materialized into the user's brain vault by `/brain:install-action
 
 All GH Action templates that call external APIs (LinkedIn Posts API, RSS feeds, IMAP) implement exponential backoff with `retry-after` header respect:
 - On 429 response: read `Retry-After` header (seconds) or default to 60 seconds
-- Exponential backoff: 1s, 2s, 4s, 8s... cap at 300s
-- Max retries: 5 before failing the workflow step
+- Exponential backoff: 60s, 120s, 240s (doubling from 60s base; 3 retries exhaust at 240s)
+- Max retries: 3 before failing the workflow step with exit 1 (BC-2.13.003)
 Implemented via `scripts/lib/api-retry.sh` (ADR-016 §api-retry.sh Delivery for GitHub Actions), which all API-calling GH Action templates invoke. GH Actions runners use the `scripts/lib/` copy installed by `/brain:install-actions`; the `hooks/lib/api-retry.sh` version is used exclusively by hook scripts in the Claude Code session context.
 
 ### v0.1 ship gate

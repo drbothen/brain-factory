@@ -44,8 +44,8 @@ bats (integration.bats — slow lane, gated by `BATS_SLOW=1`):
   [[ "${BATS_SLOW:-0}" == "1" ]] || skip "slow test — set BATS_SLOW=1 to enable"
 
   local brain_dir; brain_dir="${BATS_TEST_TMPDIR}/scale-1k-brain"
-  # Generate a 999-page brain corpus using gen-test-corpus.sh
-  bash "${PLUGIN_ROOT}/scripts/gen-test-corpus.sh" --brain "$brain_dir" --pages 999
+  # Generate a 999-source brain corpus using gen-test-corpus.sh (ADR-012 canonical CLI)
+  bash "${PLUGIN_ROOT}/scripts/gen-test-corpus.sh" --sources 999 --seed 42 "$brain_dir"
 
   local start; start="$(date +%s%3N)"
   # Ingest one additional URL (wiki-layer only — network is mocked)
@@ -72,8 +72,8 @@ bats (integration.bats — slow lane, gated by `BATS_SLOW=1`):
   local t_1k; t_1k="$(cat "$t_1k_file")"
 
   local brain_dir; brain_dir="${BATS_TEST_TMPDIR}/scale-10k-brain"
-  # Generate a 9999-page brain corpus
-  bash "${PLUGIN_ROOT}/scripts/gen-test-corpus.sh" --brain "$brain_dir" --pages 9999
+  # Generate a 9999-source brain corpus (ADR-012 canonical CLI)
+  bash "${PLUGIN_ROOT}/scripts/gen-test-corpus.sh" --sources 9999 --seed 42 "$brain_dir"
 
   local start; start="$(date +%s%3N)"
   BRAIN_ROOT="$brain_dir" INGEST_SKIP_NETWORK=1 \

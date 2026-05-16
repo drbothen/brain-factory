@@ -104,8 +104,8 @@ The hook script's main body calls `TRACE=$(generate_trace)` once at startup, the
 Used by skills and GH Action scripts that call external APIs (LinkedIn, RSS feeds):
 ```bash
 api_retry() {
-  local max_attempts=5
-  local delay=1
+  local max_attempts=3
+  local delay=60
   local cmd=("$@")
   local attempt=1
   while [[ $attempt -le $max_attempts ]]; do
@@ -121,14 +121,15 @@ api_retry() {
     else
       sleep "$delay"
       delay=$((delay * 2))
-      [[ $delay -gt 300 ]] && delay=300
     fi
     attempt=$((attempt + 1))
   done
+  # 3 attempts exhausted — exit 1 per BC-2.13.003
   return 1
 }
 ```
-BC-2.13.003 (rate-limit handling) is satisfied by this helper.
+BC-2.13.003 (rate-limit handling: 3 retries, 60s base, exponential 60/120/240s, exit 1 after
+3 failures) is satisfied by this helper.
 
 ### manifest-write.sh
 

@@ -127,8 +127,10 @@ bats (meta-lint.bats + hooks.bats) — catalog cross-reference and separation en
 
 ## Counterexamples
 
-- A hook uses a literal `event_type` string like `"hook.start"` that is not registered in
-  `event-catalog.json` — the emit-site cross-reference loop catches this
+- A hook uses a literal `event_type` string like `"hook.started"` that is not registered in
+  `event-catalog.json` — the emit-site cross-reference loop catches this (SS-17 requires
+  past-tense event_type values; `hook.started` is past-tense but must still appear in the
+  catalog — an unregistered past-tense value is equally a violation)
 - A hook emits a debug JSONL line on stderr that also writes the `"verdict"` key (e.g., a
   developer logs the verdict for debugging) — the verdict-in-stderr test catches this separation
   violation
