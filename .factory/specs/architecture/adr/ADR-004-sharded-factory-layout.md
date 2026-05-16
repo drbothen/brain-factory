@@ -93,5 +93,6 @@ The `.factory/` layout uses domain sharding for behavioral contracts and a separ
 
 Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
 
-- **F-PASS6-I2:** §References narrative cite corrected from version-specific "PRD v0.1.6 + BC-INDEX.md" to version-agnostic "Current PRD + BC-INDEX.md" (F-PASS7-I1-arch follow-on: converted to version-agnostic form). [audit-trail]
+- **F-PASS6-I2:** §References narrative cite corrected from "PRD v0.1.1 BC-INDEX.md" to "PRD v0.1.6 + BC-INDEX.md". ARCH-INDEX v0.1.7 entry records: "ADR-004 §References corrected: 'PRD v0.1.1 BC-INDEX.md' → 'PRD v0.1.6 + BC-INDEX.md'." [audit-trail]
+- **F-PASS7-I1-arch:** §References narrative cite further converted from "PRD v0.1.6 + BC-INDEX.md" to version-agnostic "Current PRD + BC-INDEX.md". ARCH-INDEX v0.1.8 entry records: "ADR-004: 'PRD v0.1.6 + BC-INDEX.md' → 'Current PRD + BC-INDEX.md'." [audit-trail]
 - **F-PASS8-I1:** Three stale absolute document-size annotations in the §Decision sharded-layout code block replaced with semantic anchors describing each file's role (product-brief.md, index.md, BC-INDEX.md). [audit-trail]

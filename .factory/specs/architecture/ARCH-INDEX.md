@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.15"
+version: "0.1.16"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
@@ -47,7 +47,7 @@ The `timestamp:` field tracks the most recent meaningful content edit (distinct 
 - `.factory/SESSION-HANDOFF.md` — operational resume document; uses `last_updated` only.
 - `.factory/TASK-LIST.md` — operational task ledger; no datetime fields.
 
-**Canonical-baseline sweep (F-PASS11 architect burst):** All 62 architecture artifacts (excluding ARCH-INDEX and VP-INDEX already at 2026-05-16T00:00:00 from Pass 10) were audited. Files with content edits after the initial 2026-05-15 timestamp backfill (v0.1.1 burst, 7e8f96f) received `timestamp: 2026-05-16T00:00:00`. Files with no content edits after that burst retain `timestamp: 2026-05-15T00:00:00`. See Pass 11 Changelog entry for the full bumped-vs-unchanged inventory.
+**Canonical-baseline sweep (F-PASS11 architect burst):** All 64 architecture artifacts (ARCH-INDEX and VP-INDEX were pre-bumped to 2026-05-16T00:00:00 from Pass 10 and re-confirmed in Pass 11; the remaining 62 were audited fresh) were covered. Files with content edits after the initial 2026-05-15 timestamp backfill (v0.1.1 burst, 7e8f96f) received `timestamp: 2026-05-16T00:00:00`. Files with no content edits after that burst retain `timestamp: 2026-05-15T00:00:00`. See Pass 11 Changelog entry for the full bumped-vs-unchanged inventory.
 
 **Canonical-baseline sweep complete:** Architecture sweep applied in Pass 11 architect burst (a3a83b1) and refined in Pass 12 architect burst (71c51b3, F-PASS12-C1). PRD/BC sweep applied in Pass 12 PO burst (ecbe056, F-PASS12-C2). Bumped to 2026-05-16T00:00:00: 34 architecture artifacts (ARCH-INDEX + VP-INDEX + 8 ADRs + 18 SS-NN + 6 VPs) + 100 PRD/BC artifacts (PRD index + 3 supplements + BC-INDEX + 95 BCs) = 134 files. Retained at 2026-05-15T00:00:00: 30 architecture artifacts (9 ADRs + 21 VPs) + 1 PRD supplement (nfr-catalog) = 31 files. Total in-scope: 165 files.
 
@@ -400,18 +400,19 @@ Additional Self-Audit items:
     .factory/specs/architecture/verification-properties/VP-*.md; do
     t=$(yq eval '.timestamp' "$f")
     c=$(yq eval '.created' "$f")
-    # Trigger: content was edited past initial creation (timestamp > created)
+    # Trigger: content was edited past initial creation (timestamp differs from created date)
     # AND no Changelog section exists
-    if [[ "$t" != "${c}T00:00:00" && "$t" != "$c" ]] \
-       || [[ "$t" == "2026-05-16T00:00:00" && "$c" == "2026-05-15" ]]; then
+    if [[ "$t" != "${c}T00:00:00" && "$t" != "$c" ]]; then
       if ! grep -q "^## Changelog" "$f"; then
-        echo "FAIL: $f has content-edit history (timestamp $t > created $c) but no ## Changelog section."
+        echo "FAIL: $f has content-edit history (timestamp $t differs from created $c) but no ## Changelog section."
       fi
     fi
   done
   ```
 
   Incremental scope: before any architect burst that modifies an SS-NN, ADR, or VP body, bump the version and add a Changelog entry before commit. Canonical-baseline scope: Pass 12 F-PASS12-C1/I2 retroactively examined all 18 SS-NN files; all 18 confirmed Case A (documented content edits past initial creation). The 16 SS-NN files previously at v1.0 without Changelog sections were bumped to v1.1 with Changelog entries in the Pass 12 burst. SS-02 (v1.2) and SS-18 (v1.4) were already conformant. Pass 13 F-PASS13-C2 extended the discipline scope from SS-NN only to all three artifact types: 8 ADRs (ADR-003/004/006/009/010/012/013/016) and 5 VPs (VP-004/014/021/026/027) back-filled to v1.1 with Changelog sections in this burst. (Dual-scope declaration added F-PASS11-C2/I2; discipline tightened F-PASS12-I2; scope extended to SS/ADR/VP F-PASS13-C2.)
+
+  **Changelog reconstruction enumeration discipline (F-PASS14-C1):** When back-filling a `## Changelog` section from ARCH-INDEX history, the architect MUST first enumerate all ARCH-INDEX changelog entries that reference the target file ID (e.g., `grep VP-NNN ARCH-INDEX.md`). Each enumerated entry that records a modification to the file becomes ONE Changelog bullet — no merging multiple passes into a single bullet, no inventing pass attributions, no `(F-PASS9-C1 pass sweep)`-style framings unless F-PASS9-C1 actually was a sweep affecting that specific file. If ARCH-INDEX history is insufficient to attribute a body modification (the modification is visible in the body but no ARCH-INDEX entry records it), do NOT invent an attribution — report it as "modification observed in body but ARCH-INDEX history insufficient to attribute." Incremental scope: applied before any architect burst that creates or amends a Changelog section in an architecture artifact. Canonical-baseline scope: Pass 14 F-PASS14-C1 retroactively re-enumerated all 13 Pass 13 back-fills; corrections applied in the Pass 14 burst (VP-014, VP-021 bullet splits; ADR-009 two-bullet split; ADR-004 source-version correction + two-bullet split; VP-026 two-bullet split). (Codified F-PASS14-C1.)
 
 - [x] **Count balance check (F-PASS13-C1):** For any count claim in a canonical-baseline-scope clause (e.g., "N bumped / M retained"), verify N + M = the total artifact count cited in the same clause. Incremental scope: before any architect burst that changes a count claim, run the arithmetic check before commit. Canonical-baseline scope: Pass 13 F-PASS13-C1 retroactively swept all canonical-baseline-scope clauses in ARCH-INDEX Self-Audit Checklist — only the timestamp freshness check had an arithmetic balance error (claimed "28 retained" where actual filesystem state was 30 retained; 34 + 28 = 62, not 64); corrected to "30 retained" in this burst. (Codified F-PASS13-C1.)
 - [x] **VP title canonical-baseline sweep (F-PASS10-C1/I1):** For every VP file, three derived cells must match the VP file H1 exactly: (a) VP-INDEX.md Title cell, (b) ARCH-INDEX.md Document Map Purpose cell, (c) ARCH-INDEX.md VP-INDEX Summary Title cell. Mismatch in any derived cell is a blocking defect — derived cells are never authoritative. Incremental scope: on every burst that modifies a VP H1, sweep all three derived cells for that VP before commit. Canonical-baseline scope: Pass 10 F-PASS10-C1 swept all 27 VPs — drift found and resolved in VP-001, VP-014..VP-020, VP-021..VP-027; clean VPs confirmed for VP-002..VP-013. (Dual-scope declaration confirmed per F-PASS11-C2; canonical-baseline explicitly stated alongside incremental.)
@@ -421,6 +422,20 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.16 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS14-C1 — Changelog reconstruction enumeration discipline: Pass 13 back-fills corrected):** Pass 14 adversary found that Pass 13 Changelog back-fills contained hallucinated attributions and conflated multi-pass modifications. Five files corrected under strict enumeration protocol (grep target file ID in ARCH-INDEX.md first; one bullet per modification; no invented pass framings):
+- VP-014: STRUCK the "(F-PASS9-C1 pass sweep)" framing (F-PASS9-C1 affected VP-012 only); single F-PASS10-C1/I1 bullet retained. Body modifications attributed to F-PASS1-I1/I2/S1 not confirmed in ARCH-INDEX history — reported as "modification observed in body but ARCH-INDEX history insufficient to attribute."
+- VP-021: STRUCK the "(F-PASS9-C1 pass sweep)" framing; F-PASS1-I9 and F-PASS10-C1/I1 split into two separate bullets.
+- ADR-009: Conflated single bullet split into two — F-PASS6-I2 (PRD v0.1.1 → PRD v0.1.6) and F-PASS7-I1-arch (PRD v0.1.6 → version-agnostic) recorded as distinct modifications.
+- ADR-004: F-PASS6-I2 source version corrected from "PRD v0.1.6" to "PRD v0.1.1" (the actual before-state per ARCH-INDEX v0.1.7); F-PASS7-I1-arch added as separate bullet.
+- VP-026: Conflated single bullet split into two — F-PASS3-S1 (counterexample past-tense) and F-PASS10-C1/I1 (VP title sweep) recorded as distinct modifications.
+Self-Audit Checklist updated with "Changelog reconstruction enumeration discipline (F-PASS14-C1)" sub-rule under Architecture artifact Changelog discipline item. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS14-I1 — bash sweep code dead OR clause and error message):** The Architecture artifact Changelog discipline bash sweep condition had a dead OR clause (`|| [[ "$t" == "2026-05-16T00:00:00" && "$c" == "2026-05-15" ]]`) — this second disjunct is subsumed by the primary condition (`[[ "$t" != "${c}T00:00:00" && "$t" != "$c" ]]` already covers the 2026-05-16 timestamp case when created is 2026-05-15, since `2026-05-16T00:00:00 != 2026-05-15T00:00:00`). Dead clause removed; primary condition retained. Error message corrected from "timestamp $t > created $c" to "timestamp $t differs from created $c" (the trigger is a difference, not strictly a chronological greater-than). [audit-trail]
+
+**STRUCTURAL FIX (F-PASS14-I2 — Timestamp Field Convention Policy 62-vs-64 scope drift):** The Timestamp Field Convention Policy paragraph described the Pass 11 sweep as covering "All 62 architecture artifacts (excluding ARCH-INDEX and VP-INDEX...)" where the total architecture artifact count is 64. Rephrased to "All 64 architecture artifacts (ARCH-INDEX and VP-INDEX were pre-bumped at Pass 10 and re-confirmed in Pass 11; the remaining 62 were audited fresh)" — makes the full scope explicit while preserving the pre-bump distinction. [audit-trail]
 
 ### v0.1.15 (2026-05-16)
 

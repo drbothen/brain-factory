@@ -150,4 +150,5 @@ and meta-lint.bats extension to cover event catalog cross-reference
 
 Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
 
-- **F-PASS3-S1 (VP-026 counterexample past-tense) / F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-026 counterexample wording corrected from present-tense to past-tense per the event_type naming convention (SS-17, ADR-009). Additionally, VP-026 H1 title and all three derived cells aligned during the Pass 10 27-VP sweep; VP-026 was one of the VPs with drift resolved. [audit-trail]
+- **F-PASS3-S1:** VP-026 counterexample wording corrected from present-tense to past-tense per the event_type naming convention (SS-17, ADR-009). ARCH-INDEX v0.1.4 entry records: "VP-026 counterexample wording corrected from present-tense to past-tense per the event_type naming convention (SS-17, ADR-009)." [audit-trail]
+- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-026 H1 title and all three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned during the Pass 10 27-VP sweep. ARCH-INDEX v0.1.12 entry records drift resolved for VP-026 Document Map Purpose and VP-INDEX Summary Title cells. [audit-trail]

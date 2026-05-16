@@ -100,4 +100,5 @@ The same architectural pattern applies at two levels:
 
 Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
 
-- **F-PASS6-I2:** §Spec-level vs content-level (within §Decision) narrative cite corrected from version-specific "PRD v0.1.1 + architecture" to version-agnostic "current PRD + architecture". Converted further to final version-agnostic form in F-PASS7-I1-arch sweep. [audit-trail]
+- **F-PASS6-I2:** §Spec-level vs content-level (within §Decision) narrative cite corrected from "PRD v0.1.1 + architecture" to "PRD v0.1.6 + architecture". ARCH-INDEX v0.1.7 entry records: "ADR-009 §Decision (Spec-level vs content-level) corrected: 'PRD v0.1.1 + architecture' → 'PRD v0.1.6 + architecture'." [audit-trail]
+- **F-PASS7-I1-arch:** §Spec-level vs content-level narrative cite further converted from "PRD v0.1.6 + architecture" to version-agnostic "current PRD + architecture". ARCH-INDEX v0.1.8 entry records: "ADR-009: 'PRD v0.1.6 + architecture' → 'current PRD + architecture'." [audit-trail]
