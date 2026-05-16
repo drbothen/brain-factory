@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-05
 title: "Wiki Layer and Wikilink Integrity"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -83,3 +83,16 @@ If any step fails, `git checkout .` is called before reporting failure (no parti
 
 - `tests/skills.bats` — lint all 7 checks; rename positive + negative + edge; wikilink resolution with fixture index
 - Scale test: lint 10K-page synthetic corpus under 600s (NFR-003)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS2-I4 sibling-sweep — test path alignment):** Test Surface updated from deprecated `bats/`-prefixed path to canonical `tests/skills.bats` form per brief §Test architecture (Source-of-Truth Precedence + brain-factory-001). Functional coverage unchanged. Closes the sibling-sweep portion of F-PASS2-I4 as recorded in ARCH-INDEX v0.1.3. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — wiki layer and wikilink integrity, six wiki page
+types, wikilink resolution algorithm, partial-failure fan-out.

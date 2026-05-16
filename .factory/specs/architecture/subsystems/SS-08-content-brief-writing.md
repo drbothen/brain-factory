@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-08
 title: "Content Brief and Writing"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -87,3 +87,18 @@ Both are P1 (v0.9) features; the skill stubs them out in v0.1 with a "not yet im
 
 - `tests/skills.bats` — brief frontmatter schema present; ONE THING section non-empty; voice hook fires on brief write; avoid-list advisory on known-trigger words
 - Integration: end-to-end brief → write → adversary-review pipeline in local-dev-test.sh
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-I6 — matcher scope narrowed):** PostToolUse hook matcher scope corrected from "fires when a file is written to `briefs/`" to "fires when a file matching `briefs/content/*-draft.md` is written". Aligns with the authoritative hook matcher in interface-definitions.md §Hook Registration Matrix. Decision rationale documented. Closes F-PASS1-I6 as recorded in ARCH-INDEX v0.1.2. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. Functional coverage unchanged. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — content brief and writing pipeline, ONE THING /
+PROOF / TRANSFORMATION structure, voice avoid-list hook, `/brain:write` skill design.

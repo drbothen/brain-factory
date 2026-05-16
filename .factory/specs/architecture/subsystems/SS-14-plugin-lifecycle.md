@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-14
 title: "Plugin Lifecycle and Upgrade"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -66,3 +66,17 @@ The hook chain does not write to `${CLAUDE_PLUGIN_ROOT}`. Skills read templates 
 ## Test Surface
 
 - `tests/upgrade.bats` — plugin.json JSON schema valid; hooks.json.template contains all 13 hooks; upgrade-brain runs migration idempotently
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. Two occurrences replaced. Functional coverage unchanged. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — plugin lifecycle phases (install, upgrade, downgrade,
+uninstall), `plugin.json` and `hooks.json.template` manifest schema, `/brain:upgrade-brain`
+migration skill.

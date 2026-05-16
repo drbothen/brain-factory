@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-04
 title: "Hook Enforcement Chain"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -83,3 +83,20 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 ## Scale Considerations
 
 PostToolUse hooks fire on every Write/Edit. At 10K page ingest, this means 10K+ hook invocations. Hooks must be fast (NFR-001: 100ms p99). The O(n) wikilink resolution (grep -F on wiki/index.md) is the bottleneck; profiled and optimized in Phase 3 if needed.
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-C4 — shared helpers enumeration):** Interfaces section updated to enumerate all four `hooks/lib/` helpers correctly: `hook-event-emit.sh`, `api-retry.sh`, `manifest-write.sh` (all ADR-016), and `sha256.sh` (ADR-015, not ADR-016). Previous listing omitted `api-retry.sh` and misattributed `sha256.sh` to ADR-016. Closes F-PASS1-C4 as recorded in ARCH-INDEX v0.1.2. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS1-I12 — test surface wording):** Test Surface updated: deprecated `bats/hooks.bats` path replaced with `tests/hooks.bats` form, and wording clarified to remove the implication that hooks.bats is subdivided into 9 internal suites; all 13 hooks share `tests/hooks.bats` per NFR-019. Closes F-PASS1-I12 as recorded in ARCH-INDEX v0.1.2. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** Remaining `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — hook enforcement chain, 13 hook scripts, shared
+helpers in hooks/lib/, exit-code contract (0/1/2), JSON I/O protocol.

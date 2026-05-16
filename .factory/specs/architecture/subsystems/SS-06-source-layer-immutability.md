@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-06
 title: "Source Layer and Immutability"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -83,3 +83,18 @@ Enforced at two levels:
 
 - `tests/hooks.bats` (immutability assertions): existing source path → E-SOURCE-001; new path → exit 0
 - `tests/skills.bats`: manifest.json valid JSON after ingest; `chunks` field present and empty; `last_ingest` populated (covered by VP-012 Group 2)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS2-I4 sibling-sweep — test path alignment):** Test Surface updated from deprecated `bats/`-prefixed path to canonical `tests/` form per brief §Test architecture (Source-of-Truth Precedence + brain-factory-001). Functional coverage unchanged. Closes the sibling-sweep portion of F-PASS2-I4 as recorded in ARCH-INDEX v0.1.3. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** Remaining `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — source layer immutability, sha256 hash algorithm,
+manifest.json schema, E-SOURCE-001 block on write-to-existing-path.

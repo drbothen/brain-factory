@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-01
 title: "Brain Initialization and Scaffold"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -82,3 +82,16 @@ Init is O(1) — creates a fixed set of directories and files regardless of futu
 ## Deferred Concerns
 
 None for v0.x. The `/brain:init` feature set is complete in v0.1.
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-I2/I3 — test surface and hard-fail decision):** Test Surface updated from deprecated `bats/init.bats` to canonical `tests/integration.bats` (init tests are end-to-end skill tests per the 9-suite roster; no `tests/init.bats` exists). Already-initialized brain edge case corrected from "idempotent scaffold (no overwrite)" to "E-INIT-002 hard-fail". Architectural decisions section added documenting the zero-argument CLI decision and the hard-fail decision with full rationale. Closes F-PASS1-I2 and F-PASS1-I3 as recorded in ARCH-INDEX v0.1.2. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — brain initialization and scaffold via `/brain:init`,
+directory structure, frontmatter schema bootstrapping.

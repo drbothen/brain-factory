@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-11
 title: "Knowledge Synthesis and Connection"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -63,3 +63,16 @@ Reads `inbox/*.md` notes (quick captures from the operator). For each note, clas
 ## Test Surface
 
 - `tests/skills.bats` — connect output has valid wikilinks; synthesize output has valid frontmatter; process-inbox moves file from inbox/ to wiki/{type}/
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. Functional coverage unchanged. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — knowledge synthesis and connection, `/brain:connect`,
+`/brain:synthesize`, `/brain:process-inbox`, wikilink-forming synthesis output.

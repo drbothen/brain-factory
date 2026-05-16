@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-13
 title: "GitHub Action Templates"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -61,3 +61,20 @@ Rate-limit handling for all templates calling external APIs: uses `scripts/lib/a
 
 - `tests/upgrade.bats` — template YAML is valid (yamllint); install-actions copies correct files; rate-limit retry fires on 429 fixture
 - CI: v0.1 core 6 templates run green on ubuntu-latest against smoke-brain fixture
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-C7 — api-retry.sh path corrected):** Key Design section updated from `scripts/api-retry.sh` to `scripts/lib/api-retry.sh`. ADR-013 §Rate-limit handling updated correspondingly. The `hooks/lib/` version serves Claude Code session context; `scripts/lib/` serves GH Actions runner context (dual-copy pattern per ADR-016). Closes F-PASS1-C7 as recorded in ARCH-INDEX v0.1.2. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS3-S2 — cold-start.yml aligned to brief):** `cold-start.yml` GH Action template description updated to align with brief §cold-start section — template name and trigger pattern now match the authoritative product brief. Closes F-PASS3-S2 as recorded in ARCH-INDEX v0.1.4. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. Functional coverage unchanged. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — GitHub Action templates strategy, 19 total templates
+(15 author + 4 community-optional), `/brain:install-actions` skill, rate-limit retry policy.

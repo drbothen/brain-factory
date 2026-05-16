@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-03
 title: "Source Ingest Pipeline"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -59,3 +59,16 @@ Partial-failure fan-out (BC-2.03.004): the same per-page result envelope used in
 ## Test Surface
 
 - `tests/skills.bats` — positive: local markdown file → source + wiki; negative: path outside vault → E-INGEST-001; edge: path resolves to symlink outside vault → E-INGEST-001; partial failure: one wiki page blocked → fan-out envelope with that failure surfaced
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS2-I4 sibling-sweep — test path alignment):** Test Surface updated from deprecated `bats/`-prefixed path to canonical `tests/skills.bats` form per brief §Test architecture (Source-of-Truth Precedence + brain-factory-001). Functional coverage unchanged. Closes the sibling-sweep portion of F-PASS2-I4 as recorded in ARCH-INDEX v0.1.3. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — source ingest pipeline via `/brain:ingest-source`,
+local file ingest, out-of-vault path rejection, manifest delta.

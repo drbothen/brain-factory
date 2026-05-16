@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-09
 title: "Publishing Pipeline"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -80,3 +80,18 @@ published/linkedin/<slug>.md      (status: published — moved here after post)
 
 - `tests/skills.bats` — state machine transitions; `--schedule` flag parses date correctly; monthly-perf JSON schema valid
 - Integration: publish-content with LinkedIn DTU mock (not real API in bats)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-I5 — error code corrected):** State machine enforcement section corrected from "Any other transition: E-PUBLISH-002 block" to "E-PUBLISH-001 block". E-PUBLISH-002 is "Missing status field"; E-PUBLISH-001 is "invalid transition". Closes F-PASS1-I5 as recorded in ARCH-INDEX v0.1.2. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. Functional coverage unchanged. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — publishing pipeline, draft → ready → published state
+machine, LinkedIn Posts API integration, `/brain:monthly-perf` skill design.

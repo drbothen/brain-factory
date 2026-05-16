@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-16
 title: "Scale-Aware Architecture"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -75,3 +75,19 @@ See ADR-012 for full design. Produces a reproducible synthetic brain vault tree 
 
 - `tests/integration.bats` — token JSONL valid JSON after ingest; budget alert fires at 2x threshold; gen-test-corpus.sh produces deterministic output
 - NFR-004 scale test via scale-test.yml; NFR-005 memory via `/usr/bin/time -v`
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-C5 — budget-alert baseline corrected):** Budget alert threshold corrected from "baseline (100K tokens; 2x = 200K)" to "baseline (50K tokens; 2x = 100K)". Matches BC-2.16.002, brief §Scalability §5, and NFR-007. Closes F-PASS1-C5 as recorded in ARCH-INDEX v0.1.2. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS4-C2 — canonical test path sweep):** `bats/`-prefixed path references replaced with canonical `tests/` form per the sweep-by-canonical-pattern discipline established in ARCH-INDEX v0.1.5. Functional coverage unchanged. [audit-trail]
+
+**RETROACTIVE CLASSIFICATION (F-PASS12-I2 — SS-NN Changelog discipline):** This file had content edits past initial creation but remained at v1.0 without a Changelog section, escaping the Pass 9 / Pass 10-I2 discipline. Bumped to v1.1 with Changelog added per F-PASS12-I2 resolution. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — scale-aware architecture, token instrumentation JSONL,
+budget-alert baseline (50K tokens; 2x = 100K), `gen-test-corpus.sh` interface, sub-linear
+ingest latency target (NFR-004).
