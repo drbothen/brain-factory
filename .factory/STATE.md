@@ -8,14 +8,14 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: IN-PROGRESS — cascade running; 8 passes complete; 16 fix-bursts complete; streak 0/3
+phase_1d_status: IN-PROGRESS — cascade running; 9 passes complete; 19 fix-bursts complete; streak 0/3
 session_continuity: clean-context-resume
 canonical_state_doc: .factory/SESSION-HANDOFF.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
 canonical_prd: .factory/specs/prd/index.md (v0.1.8, commit 1c0251c)
 canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.7, commit 1c0251c)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.10, commit bf34582) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.4 + 27 VPs
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.11, commit 8c7dc97) + 17 ADRs + 18 SS-NN designs (SS-02 v1.2, SS-18 v1.4) + VP-INDEX v0.1.4 (VP-012 v1.3) + 27 VPs
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
 ---
 
@@ -29,7 +29,7 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 **Phase:** 1d Adversarial spec review — IN PROGRESS (cascade running).
 
-**Top-of-stack action:** Phase 1d BC-5.39.001 3-CLEAN cascade in progress. 8 passes complete, 16 fix-bursts complete, streak 0/3. Next action: dispatch Pass 9.
+**Top-of-stack action:** Phase 1d BC-5.39.001 3-CLEAN cascade in progress. 9 passes complete, 19 fix-bursts complete, streak 0/3. Next action: dispatch Pass 10.
 
 ## Phase 1a Stage 5 — CLOSED
 
@@ -54,7 +54,7 @@ PRD v0.1.0 created by `vsdd-factory:product-owner` at commit 23e3a91. Fresh-cont
 Architecture v0.1.0 produced by `vsdd-factory:architect` at commit b7679ee. Fresh-context consistency-validator returned CONDITIONAL-GO with 7 findings. Architect fix-burst at commit 7e8f96f (architecture v0.1.0 → v0.1.1) closed 5 findings. Product-owner SS-NN sweep + BC-INDEX gate + PRD §7 RTM at commit cd6c3ba closed the remaining actionable finding (F-1c-CV-02). PO body sibling-sweep follow-up at commit 1a10e45 (TD-VSDD-060 closure). PO Architecture Module cell backfill at commit d89ea4b (Production-Grade Default Rule 6 closure). Independent orchestrator verification of all 4 fix-bursts: CLEAN.
 
 **Architecture package inventory (64 files total):**
-- 1 ARCH-INDEX: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.10, commit bf34582)
+- 1 ARCH-INDEX: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.11, commit 8c7dc97)
 - 17 ADRs: `ADR-001` through `ADR-017` (all `status: accepted`)
 - 18 SS-NN subsystem designs: `SS-01` through `SS-18` (1:1 with ss-NN BC dirs; 1:1 with CAP-001..CAP-018)
 - 1 VP-INDEX + 27 VPs: `VP-001` through `VP-027` (64/64 P0 BC coverage achieved)
@@ -70,7 +70,8 @@ Architecture v0.1.0 produced by `vsdd-factory:architect` at commit b7679ee. Fres
 | 5 | FAIL | 2C+3I | d588aa7 (architect) + 96a2a14 (PO) | 0/3 |
 | 6 | FAIL | 2C+3I | 533d7db (state-manager persist) + 0827566 (architect) + e0e143c (PO) | 0/3 |
 | 7 | FAIL | 2C+3I | 90acdbf (persist) + 7e60898 (architect) + 1c0251c (PO) + fd033d1 (state-manager FINAL) | 0/3 |
-| 8 | FAIL | 1C+3I | a6917e4 (persist) + bf34582 (architect) + this commit (state-manager FINAL) | 0/3 |
+| 8 | FAIL | 1C+3I | a6917e4 (persist) + bf34582 (architect) + 35fd7c2 (state-manager FINAL) | 0/3 |
+| 9 | FAIL | 1C+2I | 3296100 (persist) + 8c7dc97 (architect) + this commit (state-manager FINAL) | 0/3 |
 
 New structural-fix disciplines introduced during Phase 1d cascade (additive to Phase 1a's 13):
 - Pass 4: "sweep-by-canonical-pattern, not sweep-by-changed-token"
@@ -78,6 +79,7 @@ New structural-fix disciplines introduced during Phase 1d cascade (additive to P
 - Pass 6: "inherits_from chain integrity" + "broaden writing-technique gate to cover plain-prose line-N forms" + "operational state docs in freshness audit scope" (STATE.md, SESSION-HANDOFF, TASK-LIST)
 - Pass 7: "pass-closure burst sequencing: state-manager refresh is FINAL commit, not intermediate" (F-PASS7-I2/O1) + "Option B parallel-burst hazard mitigation: state-manager FINAL re-pins all inherits_from to post-all-bursts parent versions" (ARCH-INDEX v0.1.8 §Versioning Policy amendment) + "writing-technique principle extended to plain-prose `line N` literals even in backticks" (F-PASS7-C1) + "Clause 2 gate sibling-sweep to brief + ARCH-INDEX Self-Audit Checklists" (F-PASS7-I3) + "narrative version cites converted to version-agnostic shorthand to scope-eliminate stale-cite class" (F-PASS7-I1 approach)
 - Pass 8: "path-currency check on operational state docs" (F-PASS8-C1 closure — state-manager FINAL MUST verify every .factory/specs/... path cited in STATE.md/SESSION-HANDOFF.md/TASK-LIST.md resolves to an existing file via test -e before commit) + "architecture-artifact line-count drift discipline extended from brief-only to all spec artifacts including SS-NN and ADR files" (F-PASS8-I1 closure) + "VP file ↔ VP-INDEX row consistency for NFR coverage verification" (F-PASS8-I2) + "changelog narrative factual accuracy: corrective NOTE pattern for after-the-fact corrections" (F-PASS8-I3) + "state-manager FINAL discipline EXTENDED: inherits_from re-pin [existing], path-currency check [new], absolute-quantity audit [new], cited-SHA verification [new], changelog factual-accuracy spot-check [new]" (F-PASS8-O1 codification)
+- Pass 9: "in-document title-cell sibling-sweep — within ARCH-INDEX, verify Document Map Purpose cells match VP-INDEX Summary title cells for any VPs whose titles were updated in a burst" (F-PASS9-C1 closure) + "writing-technique principle extension to architecture-layer changelog entries: applies WITH OR WITHOUT [audit-trail] tag — gate exemption does not exempt from the principle itself" (F-PASS9-I1 closure) + "SS-NN template Changelog discipline — any SS-NN file bumped past v1.0 MUST carry an in-file ## Changelog section" (F-PASS9-I2 closure) + "state-manager FINAL discipline EXTENDED to 6 sub-checks: (a) inherits_from re-pin, (b) path-currency check, (c) absolute-quantity audit, (d) cited-SHA verification, (e) changelog factual-accuracy spot-check, (f) [NEW] in-document title-cell sibling-sweep" (F-PASS9-C1 closure drives sub-check (f))
 
 ## What Phase 1d in-cascade carries from Phase 1b/1c
 
@@ -113,7 +115,7 @@ The adversary (Phase 1d) MUST inherit and apply these disciplines:
 
 15. **Path-currency check on operational state docs** (NEW — Pass 8, F-PASS8-C1 closure): state-manager FINAL burst MUST verify every `.factory/specs/...` path cited in STATE.md / SESSION-HANDOFF.md / TASK-LIST.md resolves to an existing file via `test -e` before commit. F-PASS8-C1 demonstrated SESSION-HANDOFF cited non-existent VP-INDEX paths (missing `architecture/` segment); a fresh-context resume would have failed at the Read step. Canonical VP path: `.factory/specs/architecture/verification-properties/VP-INDEX.md`.
 
-16. **state-manager FINAL discipline EXTENDED** (NEW — Pass 8, F-PASS8-O1 codification): Before committing, state-manager FINAL MUST run: (a) inherits_from re-pin to post-all-bursts parent versions [pre-existing], (b) path-currency check via `test -e` on all cited .factory/specs/ paths [new], (c) absolute-quantity audit — verify any count ("8 passes", "16 fix-bursts", "v0.1.10") matches actual artifact state, (d) cited-SHA verification — run `git log --oneline` and confirm all commit SHAs cited in state docs exist, (e) changelog factual-accuracy spot-check — scan changelogs for entries claiming closures that happened in a different burst (corrective NOTE pattern applies when found).
+16. **state-manager FINAL discipline EXTENDED** (Pass 8 F-PASS8-O1 codification, extended at Pass 9 F-PASS9-C1 to 6 sub-checks): Before committing, state-manager FINAL MUST run: (a) inherits_from re-pin to post-all-bursts parent versions, (b) path-currency check via `test -e` on all cited .factory/specs/ paths, (c) absolute-quantity audit — verify any count ("9 passes", "19 fix-bursts", "v0.1.11") matches actual artifact state, (d) cited-SHA verification — run `git log --oneline` and confirm all commit SHAs cited in state docs exist, (e) changelog factual-accuracy spot-check — scan changelogs for entries claiming closures that happened in a different burst (corrective NOTE pattern applies when found), (f) [NEW — Pass 9] in-document title-cell sibling-sweep — verify ARCH-INDEX Document Map Purpose cells match VP-INDEX Summary title cells for any VP whose title was updated in a burst; a VP-INDEX row update without a matching Document Map cell update is a propagation gap.
 
 ## What Phase 1b inherits from Phase 1a
 
@@ -150,24 +152,24 @@ In order:
 5. `/Users/jmagady/Dev/brain-factory/.factory/specs/product-brief.md` — Phase 1a deliverable (v0.4.19)
 6. `/Users/jmagady/Dev/brain-factory/.factory/specs/prd/index.md` — Phase 1b deliverable (v0.1.8)
 7. `/Users/jmagady/Dev/brain-factory/.factory/specs/behavioral-contracts/BC-INDEX.md` — BC sharding index (v0.1.7, 95 BCs across 18 subsystems)
-8. `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/ARCH-INDEX.md` — Phase 1c deliverable (v0.1.10, 17 ADRs + 18 SS-NN designs + 27 VPs)
+8. `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/ARCH-INDEX.md` — Phase 1c deliverable (v0.1.11, 17 ADRs + 18 SS-NN designs + 27 VPs)
 
 ### Step 2 — Continue Phase 1d Adversarial spec review (cascade IN PROGRESS — pre-authorized 2026-05-15)
 
-Phase 1d cascade is running. 8 passes complete (all FAIL), 16 fix-bursts applied, streak 0/3.
+Phase 1d cascade is running. 9 passes complete (all FAIL), 19 fix-bursts applied, streak 0/3.
 
-**Immediate next action:** Dispatch Pass 9.
+**Immediate next action:** Dispatch Pass 10.
 
 Cascade inputs (current versions):
 - Brief: `.factory/specs/product-brief.md` (v0.4.19)
 - PRD: `.factory/specs/prd/index.md` (v0.1.8) + 4 supplements
 - BC-INDEX: `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, 95 BCs across 18 subsystems)
-- Architecture: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.10) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.4 + 27 VPs
+- Architecture: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.11) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.4 + 27 VPs
 - Planning context: `docs/planning/llm-second-brain-{plan,phased-build-plan,plugin-plan}.md` (immutable per brain-factory-001)
 - Locked decisions: `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - Project conventions: `CLAUDE.md`
 
-Pass reports: `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md` (Passes 1–7 already written).
+Pass reports: `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md` (Passes 1–9 written).
 
 ### Step 3 — After Phase 1d convergence
 
@@ -176,11 +178,11 @@ After 3-CLEAN cascade converges, Phase 2 (Story Decomposition) requires a separa
 ## Worktree layout — current durable state
 
 `.factory/` is a REGULAR DIRECTORY tracked on `main` (NOT a canonical orphan-branch worktree). Factory artifacts are durably persisted on `main` via `factory(...)` conventional commits. This is intentional pre-v0.1 state per SESSION-HANDOFF §10 standing directive. Recent commits include:
-- this commit — state-manager Phase 1d Pass 8 FINAL
+- this commit — state-manager Phase 1d Pass 9 FINAL
+- `8c7dc97` — architect Phase 1d Pass 9 fixes: architecture v0.1.10→v0.1.11 (F-PASS9-C1/I1/I2)
+- `3296100` — persist Phase 1d Pass 9 FAIL report (1C+2I)
+- `35fd7c2` — state-manager Phase 1d Pass 8 FINAL
 - `bf34582` — architect Phase 1d Pass 8 fixes: architecture v0.1.9→v0.1.10
-- `a6917e4` — persist Phase 1d Pass 8 FAIL report (1C+3I)
-- `fd033d1` — state-manager Phase 1d Pass 7 FINAL
-- `1c0251c` — PO Phase 1d Pass 7 fixes: brief v0.4.18→v0.4.19, PRD v0.1.7→v0.1.8, BC-INDEX v0.1.6→v0.1.7
 
 Run `git -C /Users/jmagady/Dev/brain-factory log --oneline | head -30` to see the full commit history.
 
@@ -202,11 +204,11 @@ These were surfaced during Phase 1a but deferred for human direction at appropri
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md` (cascade history, locked decisions, recent commits, Phase 1b/1c completion details)
 - **Task ledger:** `.factory/TASK-LIST.md` (Task #57 / #98 are top of stack — Phase 1d entry IN-PROGRESS + Pass 9 dispatch)
 - **Adversary cascade reports (Phase 1a):** `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-{1..23}.md` (immutable historical record)
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..8}.md` (Passes 1–8 written)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..9}.md` (Passes 1–9 written)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - **Product brief (current):** `.factory/specs/product-brief.md` (v0.4.19)
 - **PRD (current):** `.factory/specs/prd/index.md` (v0.1.8) + supplements
 - **BC-INDEX (current):** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, 95 BCs)
-- **Architecture (current):** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.10) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.4 + 27 VPs
+- **Architecture (current):** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.11) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.4 + 27 VPs
 - **Project conventions:** `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 - **Planning artifacts (IMMUTABLE per brain-factory-001):** `docs/planning/llm-second-brain-{plan,phased-build-plan,plugin-plan}.md`, `docs/planning/vsdd-dispatcher-extraction-plan.md`

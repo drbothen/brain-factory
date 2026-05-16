@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS — cascade running (8 passes, 16 fix-bursts, streak 0/3).** Top-of-stack: dispatch Pass 9.
+> Snapshot taken at handoff: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS — cascade running (9 passes, 19 fix-bursts, streak 0/3).** Top-of-stack: dispatch Pass 10.
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST. It contains the complete clean-context resume procedure. Phase 1b/1c/1d sequence is pre-authorized by user (2026-05-15).
 > See SESSION-HANDOFF.md §9 for resume procedure summary.
 
@@ -64,7 +64,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.0 landed at commit 23e3a91. Fresh-context consistency audit returned CONDITIONAL-GO with 5 findings. Fix-burst at commit 7935faa closed 4 of 5 findings (F-1b-CV-05 OBSERVATION accepted). PRD bumped to v0.1.1. Independent orchestrator verification: CLEAN. 95 BCs + BC-INDEX + 4 supplements materialized. Four-file gate canonical. |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | **PASS** (0 findings of any class). Post-convergence verification on brief v0.4.15. All 4 v0.4.15 cleanup items VERIFIED. Two-file gate self-test clean on both files. 13/13 disciplines hold, 26/26 prior-pass fixes preserved. **Cascade officially CLOSED on v0.4.15.** |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.0 landed at b7679ee (50 files: ARCH-INDEX + 17 ADRs + 18 SS designs + 14 VPs). Consistency audit returned CONDITIONAL-GO with 7 findings. Architect fix-burst at 7e8f96f closed 5 findings (+14 VPs achieving 64/64 P0 BC coverage); architecture bumped to v0.1.1. Product-owner SS-NN sweep at cd6c3ba (95 BCs + PRD §7 RTM + BC-INDEX gate). PO body sibling-sweep at 1a10e45 (TD-VSDD-060). PO Architecture Module backfill at d89ea4b (95 BC Traceability tables). All audit findings closed. Five-file gate canonical. |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade running. 8 passes complete (all FAIL), 16 fix-bursts applied. Current versions: brief v0.4.19, PRD v0.1.8, BC-INDEX v0.1.7, ARCH-INDEX v0.1.10, VP-INDEX v0.1.4. Streak 0/3. Cascade toward 3/3 convergence. |
+| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade running. 9 passes complete (all FAIL), 19 fix-bursts applied. Current versions: brief v0.4.19, PRD v0.1.8, BC-INDEX v0.1.7, ARCH-INDEX v0.1.11, VP-INDEX v0.1.4. Streak 0/3. Cascade toward 3/3 convergence. |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | `/vsdd-factory:create-prd` skill dispatch. 95 BCs across 18 subsystems, 4 supplements, BC format BC-2.NN.NNN. Commit 23e3a91. |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings (F-1b-CV-01 through F-1b-CV-05). Four actionable; one OBSERVATION accepted. |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Closed 4 of 5 consistency findings: BC-INDEX creation, traces_to backfill on 95 BCs, Edge Cases on 14 BCs, PRD §5 scope list update, supplement gate VSDD exclusion. Commit 7935faa. |
@@ -104,8 +104,12 @@
 | 94 | COMPLETED | Phase 1d adversary pass 8 | FAIL: 1C+3I (F-PASS8-C1 VP path; F-PASS8-I1 line-count drift; F-PASS8-I2 VP-012/NFR-018; F-PASS8-I3 changelog factual error). Report at adversary-pass-8.md. Commit a6917e4. |
 | 95 | COMPLETED | Phase 1d Pass 8 persist | Pass 8 FAIL report persisted. Commit a6917e4 (same as adversary persist). |
 | 96 | COMPLETED | Phase 1d Pass 8 architect fix-burst | architecture v0.1.9 → v0.1.10 + VP-012 v1.1 → v1.2. F-PASS8-I1/I2/I3 + SS-18 audit-range extension. Commit bf34582. |
-| 97 | COMPLETED | Phase 1d Pass 8 state-manager FINAL | F-PASS8-C1 VP path correction in SESSION-HANDOFF (3 path cites fixed to .factory/specs/architecture/verification-properties/VP-INDEX.md). STATE.md + SESSION-HANDOFF.md + TASK-LIST.md full refresh to post-all-bursts versions. ARCH-INDEX v0.1.10 recorded. Extended FINAL discipline (5 sub-checks) documented. This commit. |
-| 98 | PENDING | Phase 1d adversary pass 9 | After all Pass 8 fix-bursts confirmed complete (they are — this is the FINAL burst). Continue cascade toward streak 3/3. |
+| 97 | COMPLETED | Phase 1d Pass 8 state-manager FINAL | F-PASS8-C1 VP path correction in SESSION-HANDOFF (3 path cites fixed to .factory/specs/architecture/verification-properties/VP-INDEX.md). STATE.md + SESSION-HANDOFF.md + TASK-LIST.md full refresh to post-all-bursts versions. ARCH-INDEX v0.1.10 recorded. Extended FINAL discipline (5 sub-checks) documented. Commit 35fd7c2. |
+| 98 | COMPLETED | Phase 1d adversary pass 9 | FAIL: 1C+2I (F-PASS9-C1 Document Map VP-012 title sibling-sweep gap; F-PASS9-I1 writing-tech principle in arch changelogs; F-PASS9-I2 SS-NN template Changelog gap). Report at adversary-pass-9.md. Commit 3296100. |
+| 99 | COMPLETED | Phase 1d Pass 9 persist | Pass 9 FAIL report persisted. Commit 3296100 (same as adversary persist). |
+| 100 | COMPLETED | Phase 1d Pass 9 architect fix-burst | architecture v0.1.10 → v0.1.11 + VP-012 v1.2 → v1.3 + SS-18 v1.3 → v1.4. F-PASS9-C1/I1/I2. Commit 8c7dc97. |
+| 101 | COMPLETED | Phase 1d Pass 9 state-manager FINAL | STATE.md + SESSION-HANDOFF.md + TASK-LIST.md full refresh to post-all-bursts versions. ARCH-INDEX v0.1.11 recorded. Extended FINAL discipline (6 sub-checks) documented — sub-check (f) in-document title-cell sibling-sweep added. This commit. |
+| 102 | PENDING | Phase 1d adversary pass 10 | After all Pass 9 fix-bursts confirmed complete (they are — this is the FINAL burst). Continue cascade toward streak 3/3. |
 
 ## Next steps (in dependency order)
 
@@ -114,10 +118,10 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED (architecture v0.1.1 across commits b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b).~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#97: Phase 1d Passes 1–8 + fix-bursts — COMPLETED (8 passes, 16 fix-bursts; state-manager FINAL burst 3 of 3 for Pass 8 complete).~~
+~~Tasks #71–#101: Phase 1d Passes 1–9 + fix-bursts — COMPLETED (9 passes, 19 fix-bursts; state-manager FINAL burst 3 of 3 for Pass 9 complete).~~
 
-1. **Task #98 — PENDING (top of stack):** Phase 1d adversary Pass 9. Dispatch after all Pass 8 fix-bursts confirmed complete (they are — this is the FINAL burst).
+1. **Task #102 — PENDING (top of stack):** Phase 1d adversary Pass 10. Dispatch after all Pass 9 fix-bursts confirmed complete (they are — this is the FINAL burst).
 2. Subsequent adversary passes continue per BC-5.39.001 protocol until streak 3/3.
 3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS (cascade running, 8 passes, streak 0/3).** The writing-technique principle (including plain-prose `line N` in any context), five-file gate, and exclusion-list-extension protocol carry forward. **Resume on fresh context: read `.factory/STATE.md` FIRST.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS (cascade running, 9 passes, streak 0/3).** The writing-technique principle (including plain-prose `line N` in any context), five-file gate, and exclusion-list-extension protocol carry forward. **Resume on fresh context: read `.factory/STATE.md` FIRST.**
