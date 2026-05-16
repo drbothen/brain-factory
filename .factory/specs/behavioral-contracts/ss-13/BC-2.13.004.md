@@ -1,0 +1,57 @@
+---
+document_type: behavioral-contract
+level: L3
+version: "1.1"
+status: draft
+producer: "vsdd-factory:product-owner"
+timestamp: 2026-05-15T00:00:00
+phase: phase-1b
+origin: greenfield
+subsystem: "SS-TBD"
+capability: "CAP-013"
+lifecycle_status: active
+introduced: v0.1.0
+modified: []
+---
+
+# Behavioral Contract BC-2.13.004: 4 community-optional templates ship in tarball with no-author-support documentation
+
+## Description
+
+The v0.5 tarball includes 4 community-optional templates: `garden-publish.yml`, `telegram-bridge.yml`, `email-inbox.yml`, `cross-repo-dispatch.yml`. These are per-operator opt-in add-ons. They are NOT author-maintained integrations; they carry no author support commitment. Each template must include a prominent comment at the top stating it is community-optional with no author support. The README documents this distinction.
+
+## Preconditions
+
+1. Plugin v0.5 tarball assembled.
+
+## Postconditions
+
+1. All 4 community-optional templates present in tarball.
+2. Each template has a header comment: `# COMMUNITY OPTIONAL: This template is not author-maintained. Use at your own risk. No support commitment.`
+3. README documents the community-optional distinction.
+
+## Invariants
+
+1. Exactly 4 community-optional templates in v0.5 tarball.
+2. Community-optional templates are not covered by bats suites (no author testing commitment).
+
+## Canonical Test Vectors
+
+| Input | Expected Output | Category |
+|-------|----------------|----------|
+| `head -3 garden-publish.yml` | Community optional comment present | happy-path |
+
+## Verification Properties
+
+| VP-NNN | Property | Proof Method |
+|--------|----------|-------------|
+| VP-TBD | All 4 community templates have disclaimer comment | grep assertion |
+
+## Traceability
+
+| Field | Value |
+|-------|-------|
+| Capability Anchor Justification | CAP-013 ("GitHub Action Templates") per brief §Scope §GH Action templates ("Community-optional add-ons (4) — shipped in the v0.5 tarball for per-operator opt-in; no author support commitment"). |
+| Architecture Module | [filled by architect] |
+| Stories | [filled by story-writer] |
+| Source Brief Section | product-brief.md §Scope §GH Action templates |
