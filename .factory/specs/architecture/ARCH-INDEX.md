@@ -1,10 +1,10 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.11"
+version: "0.1.12"
 status: draft
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-16T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.8
@@ -70,7 +70,7 @@ last_updated: 2026-05-16
 | SS-16 design | `architecture/subsystems/SS-16-scale-aware-architecture.md` | Scale-aware architecture design |
 | SS-17 design | `architecture/subsystems/SS-17-structured-event-catalog.md` | Structured event catalog design |
 | SS-18 design | `architecture/subsystems/SS-18-meta-lint-self-audit.md` | Meta-lint and self-audit design |
-| VP-001 | `architecture/verification-properties/VP-001-hook-exit-code-semantics.md` | Hook exit-code bats coverage |
+| VP-001 | `architecture/verification-properties/VP-001-hook-exit-code-semantics.md` | Hook exit-code semantics coverage |
 | VP-002 | `architecture/verification-properties/VP-002-posttooluse-hook-trigger.md` | PostToolUse hook trigger on wiki writes |
 | VP-003 | `architecture/verification-properties/VP-003-source-immutability.md` | Source immutability enforcement |
 | VP-004 | `architecture/verification-properties/VP-004-wikilink-resolution.md` | Wikilink resolution correctness |
@@ -83,20 +83,20 @@ last_updated: 2026-05-16
 | VP-011 | `architecture/verification-properties/VP-011-quarantine-coverage.md` | Quarantine on every WebFetch |
 | VP-012 | `architecture/verification-properties/VP-012-manifest-atomicity.md` | Manifest write atomicity and last_ingest field correctness |
 | VP-013 | `architecture/verification-properties/VP-013-hook-performance-budget.md` | Hook p99 latency under 100ms |
-| VP-014 | `architecture/verification-properties/VP-014-brain-init-scaffold.md` | Brain init scaffold completeness |
-| VP-015 | `architecture/verification-properties/VP-015-url-ingest-pipeline.md` | URL ingest pipeline end-to-end |
-| VP-016 | `architecture/verification-properties/VP-016-source-ingest-pipeline.md` | Source ingest and vault path rejection |
-| VP-017 | `architecture/verification-properties/VP-017-hook-naming-and-attribution.md` | Kebab-case gate and AI attribution block |
-| VP-018 | `architecture/verification-properties/VP-018-wiki-layer-integrity.md` | Wiki layer schema, state machine, partial-failure |
-| VP-019 | `architecture/verification-properties/VP-019-content-brief-pipeline.md` | Content brief ONE THING / PROOF / TRANSFORMATION |
-| VP-020 | `architecture/verification-properties/VP-020-publish-state-machine.md` | Publish state machine and LinkedIn API shape |
-| VP-021 | `architecture/verification-properties/VP-021-quarantine-skill-and-corpus.md` | Quarantine skill activation and corpus location |
-| VP-022 | `architecture/verification-properties/VP-022-lobster-headless-execution.md` | Lobster headless execution |
-| VP-023 | `architecture/verification-properties/VP-023-github-action-templates.md` | GH Action templates v0.1 core set validity |
-| VP-024 | `architecture/verification-properties/VP-024-plugin-lifecycle.md` | Plugin install completeness and upgrade idempotency |
-| VP-025 | `architecture/verification-properties/VP-025-scale-token-instrumentation.md` | Token JSONL on every ingest |
-| VP-026 | `architecture/verification-properties/VP-026-event-catalog-schema-and-completeness.md` | Event catalog schema and emit-site completeness |
-| VP-027 | `architecture/verification-properties/VP-027-sub-linear-ingest-latency.md` | Sub-linear ingest latency 1K→10K pages |
+| VP-014 | `architecture/verification-properties/VP-014-brain-init-scaffold.md` | Brain initialization scaffolds complete folder structure |
+| VP-015 | `architecture/verification-properties/VP-015-url-ingest-pipeline.md` | URL ingest pipeline: Defuddle fetch to manifest delta to wiki pages |
+| VP-016 | `architecture/verification-properties/VP-016-source-ingest-pipeline.md` | Source ingest pipeline: local file ingest and out-of-vault path rejection |
+| VP-017 | `architecture/verification-properties/VP-017-hook-naming-and-attribution.md` | Hook enforcement: kebab-case filename gate and AI attribution block |
+| VP-018 | `architecture/verification-properties/VP-018-wiki-layer-integrity.md` | Wiki layer: page schema, embedding state machine, and partial-failure fan-out |
+| VP-019 | `architecture/verification-properties/VP-019-content-brief-pipeline.md` | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION structure enforcement |
+| VP-020 | `architecture/verification-properties/VP-020-publish-state-machine.md` | Publishing pipeline: state machine enforcement and LinkedIn API call shape |
+| VP-021 | `architecture/verification-properties/VP-021-quarantine-skill-and-corpus.md` | Quarantine check skill activation and corpus location resolution |
+| VP-022 | `architecture/verification-properties/VP-022-lobster-headless-execution.md` | Lobster headless execution: no interactive prompts in non-TTY context |
+| VP-023 | `architecture/verification-properties/VP-023-github-action-templates.md` | GitHub Action templates: v0.1 core set YAML validity and trigger configuration |
+| VP-024 | `architecture/verification-properties/VP-024-plugin-lifecycle.md` | Plugin lifecycle: install from marketplace and upgrade migration execution |
+| VP-025 | `architecture/verification-properties/VP-025-scale-token-instrumentation.md` | Scale-aware token instrumentation: JSONL record written on every ingest invocation |
+| VP-026 | `architecture/verification-properties/VP-026-event-catalog-schema-and-completeness.md` | Event catalog: JSON schema validity and emit-site completeness |
+| VP-027 | `architecture/verification-properties/VP-027-sub-linear-ingest-latency.md` | Sub-linear ingest latency as wiki grows from 1K to 10K pages |
 | VP-INDEX.md | `architecture/verification-properties/VP-INDEX.md` | Canonical index over all VPs |
 
 ---
@@ -309,18 +309,18 @@ Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when
 | VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | P0 |
 | VP-012 | Manifest write atomicity and last_ingest field correctness | bats (integration.bats) | P0 |
 | VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | P0 |
-| VP-014 | Brain init scaffold completeness | bats (integration.bats) | P0 |
-| VP-015 | URL ingest pipeline: Defuddle to manifest to wiki pages | bats (integration.bats) | P0 |
-| VP-016 | Source ingest: local file ingest and vault path rejection | bats (skills.bats + integration.bats) | P0 |
-| VP-017 | Hook enforcement: kebab-case gate and AI attribution block | bats (hooks.bats) | P0 |
-| VP-018 | Wiki layer: page schema, embedding state machine, partial-failure fan-out | bats (skills.bats + integration.bats) | P0 |
-| VP-019 | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION enforcement | bats (skills.bats) | P0 |
+| VP-014 | Brain initialization scaffolds complete folder structure | bats (integration.bats) | P0 |
+| VP-015 | URL ingest pipeline: Defuddle fetch to manifest delta to wiki pages | bats (integration.bats) | P0 |
+| VP-016 | Source ingest pipeline: local file ingest and out-of-vault path rejection | bats (skills.bats + integration.bats) | P0 |
+| VP-017 | Hook enforcement: kebab-case filename gate and AI attribution block | bats (hooks.bats) | P0 |
+| VP-018 | Wiki layer: page schema, embedding state machine, and partial-failure fan-out | bats (skills.bats + integration.bats) | P0 |
+| VP-019 | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION structure enforcement | bats (skills.bats) | P0 |
 | VP-020 | Publishing pipeline: state machine enforcement and LinkedIn API call shape | bats (hooks.bats + skills.bats + LinkedIn DTU) | P0 |
-| VP-021 | Quarantine skill activation and corpus location resolution | bats (quarantine.bats) | P0 |
+| VP-021 | Quarantine check skill activation and corpus location resolution | bats (quarantine.bats) | P0 |
 | VP-022 | Lobster headless execution: no interactive prompts in non-TTY context | bats (integration.bats) | P0 |
-| VP-023 | GitHub Action templates: v0.1 core set YAML validity and trigger config | bats (meta-lint.bats) | P0 |
-| VP-024 | Plugin lifecycle: install completeness and upgrade migration idempotency | bats (upgrade.bats) | P0 |
-| VP-025 | Scale token instrumentation: JSONL record on every ingest invocation | bats (integration.bats) | P0 |
+| VP-023 | GitHub Action templates: v0.1 core set YAML validity and trigger configuration | bats (meta-lint.bats) | P0 |
+| VP-024 | Plugin lifecycle: install from marketplace and upgrade migration execution | bats (upgrade.bats) | P0 |
+| VP-025 | Scale-aware token instrumentation: JSONL record written on every ingest invocation | bats (integration.bats) | P0 |
 | VP-026 | Event catalog: JSON schema validity and emit-site completeness | bats (meta-lint.bats + hooks.bats) | P0 |
 | VP-027 | Sub-linear ingest latency as wiki grows from 1K to 10K pages | bats (integration.bats — slow lane) | P1 |
 
@@ -367,16 +367,42 @@ Additional Self-Audit items:
 - [x] deployment_topology field present in frontmatter
 - [x] Document Map complete with all section files listed
 - [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS5 — prevents stale last_updated drift.)
+- [x] **timestamp freshness check (F-PASS10-I3):** `timestamp` field tracks the most recent meaningful content edit (distinct from `last_updated`, which tracks most recent commit touch and may reflect metadata-only changes). Freshness convention: `created` = artifact creation date; `timestamp` = most recent content edit; `last_updated` = most recent commit touch. On any burst that modifies artifact content, bump `timestamp` to the burst date. Verify `timestamp >= created`. (Added Pass 10 — formalizes timestamp semantic tri-partite: created/timestamp/last_updated.)
+- [x] **SS-NN Changelog discipline (F-PASS10-I2):** For every `subsystems/SS-*.md` file with version > "1.0" in frontmatter, verify the file body contains a `## Changelog` section with a versioned entry for the current version. Bash sweep:
+
+  ```bash
+  for f in .factory/specs/architecture/subsystems/SS-*.md; do
+    v=$(grep '^version:' "$f" | head -1 | sed 's/version: *"\(.*\)"/\1/')
+    if [[ "$v" != "1.0" ]] && ! grep -q "^## Changelog" "$f"; then
+      echo "FAIL: $f at v$v lacks Changelog section"
+    fi
+  done
+  ```
+
+- [x] **VP title canonical-baseline sweep (F-PASS10-C1/I1):** For every VP file, three derived cells must match the VP file H1 exactly: (a) VP-INDEX.md Title cell, (b) ARCH-INDEX.md Document Map Purpose cell, (c) ARCH-INDEX.md VP-INDEX Summary Title cell. Incremental scope: check all VPs whose H1 was modified in the current burst. Canonical-baseline scope: run full sweep over all VP files at codification time. Mismatch in any derived cell is a blocking defect — derived cells are never authoritative.
+- [x] **Dual-scope discipline (F-PASS10-O1):** Every codified discipline must declare two scopes: (a) incremental scope — checked on every burst; (b) canonical-baseline scope — one-time sweep over entire spec inventory at codification time. Incremental-only disciplines allow pre-existing defect inventory to survive indefinitely.
 
 ---
 
 ## Changelog
 
+### v0.1.12 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS10-C1/I1 — 27-VP canonical-baseline title sweep):** All three derived VP-title cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned to canonical VP file H1 for all 27 VPs. Drift found in VP-001 Document Map Purpose cell and all three derived cells for VP-014, VP-015, VP-016, VP-017, VP-018, VP-019, VP-021, VP-023, VP-024, VP-025; VP-020 Document Map Purpose and VP-INDEX Summary Title cells; VP-022 Document Map Purpose and VP-INDEX Summary Title cells; VP-026 Document Map Purpose and VP-INDEX Summary Title cells; VP-027 Document Map Purpose and VP-INDEX Summary Title cells. VPs already aligned (no change): VP-002, VP-003, VP-004, VP-005, VP-006, VP-007, VP-008, VP-009, VP-010, VP-011, VP-012, VP-013. VP file H1 headings are canonical per Source-of-Truth Precedence rule 4; derived cells in VP-INDEX and ARCH-INDEX are downstream summaries. CODIFICATION: canonical-baseline scope — one-time sweep over all 27 VPs at codification time; incremental scope — on every burst that modifies a VP H1, sweep all three derived cells for that VP before commit. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS10-C2 — rewrite of v0.1.11 F-PASS9-I1 entry without quoting violating tokens):** The F-PASS9-I1 changelog entry in v0.1.11 described a writing-technique violation by quoting the violating backtick-wrapped tokens while doing so, thus recursively exemplifying the violation class it was closing. Rewritten using semantic anchors only: the entry now states "three stale absolute line counts in the §Decision sharded-layout code block of ADR-004" without quoting position references or quantity tokens. Self-audit sub-rule added: when describing a writing-technique violation in a changelog entry, the description itself must not quote the violating token — describe in semantic terms only. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS10-I2 — SS-NN Changelog discipline Self-Audit item):** Self-Audit Checklist updated with a new item enforcing the Pass 9 SS-NN Changelog discipline: for every subsystems/SS-*.md file with version past the initial release in frontmatter, the file body must contain a Changelog section with a versioned entry for the current version. Bash sweep command included. Prevents silent regression of the Pass 9 SS-02 and SS-18 Changelog-section gap. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS10-I3 — timestamp freshness tri-partite semantic):** Timestamp field semantics formally documented: `created` = artifact creation date; `timestamp` = most recent meaningful content edit; `last_updated` = most recent commit touch (may be metadata-only). Self-Audit Checklist item added for timestamp freshness. ARCH-INDEX and VP-INDEX timestamp fields bumped to 2026-05-16T00:00:00 for this content-modifying burst. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS10-O1 — dual-scope discipline codification):** Every codified discipline must declare two scopes explicitly: (a) incremental scope — checked on every burst, forward-only; (b) canonical-baseline scope — one-time sweep over entire spec inventory at codification time. Cascade history demonstrates that incremental-only disciplines allow pre-existing defect inventory to survive indefinitely. F-PASS10-C1 is the proof: Pass 9 F-PASS9-C1 swept the VP-012 Document Map cell but left the broader 27-VP drift inventory undetected. Canonical-baseline sweeps catch inherited inventory. Self-Audit Checklist updated with dual-scope discipline item. [audit-trail]
+
 ### v0.1.11 (2026-05-16)
 
 **STRUCTURAL FIX (F-PASS9-C1 — Document Map VP-012 title mismatch):** Document Map table VP-012 Purpose cell corrected from "Manifest write atomicity" (stale pre-v1.1 short title) to "Manifest write atomicity and last_ingest field correctness" (canonical title matching VP-INDEX Summary and VP-012 file H1). The v0.1.10 F-PASS8-I2 entry updated the VP-INDEX Summary row but left the Document Map cell stale. Corrective NOTE added to the F-PASS8-I2 entry below. VP-012 bumped v1.2 → v1.3. [audit-trail]
 
-**STRUCTURAL FIX (F-PASS9-I1 — writing-technique violation in v0.1.10 F-PASS8-I1 entry):** F-PASS8-I1 changelog entry contained plain-prose line-number references (`lines 36, 38, 45` and token counts `802, 535, 231`). Rewritten: "ADR-004 lines 36, 38, 45" replaced with "three stale absolute line counts in the §Decision sharded-layout code block"; the specific numeric counts removed from the defect-location description (the audit trail of what changed is captured semantically — "three stale absolute line counts replaced with semantic anchors"). Writing-technique principle applies to all spec content including architecture-layer changelog entries regardless of `[audit-trail]` tag. The `[audit-trail]` exemption applies only to the Clause 2 gate scope (five-file gate); the broader writing-technique principle binds architecture artifacts independently. [audit-trail]
+**STRUCTURAL FIX (F-PASS9-I1 — writing-technique principle violation in architecture-layer changelog entries):** The F-PASS8-I1 changelog entry (v0.1.10) described the ADR-004 line-count drift defect by quoting both the offending position references and the offending absolute-quantity tokens. Per the writing-technique principle (Phase 1a v0.4.14 codification, extended through Pass 6/7), these quotations themselves recurred the violation class. Rewrite: the F-PASS8-I1 entry now describes the defect in semantic terms — "three stale absolute line counts in the §Decision sharded-layout code block of ADR-004" — without quoting the position references or the quantity tokens. CODIFICATION: writing-technique principle applies to all spec content including architecture-layer changelog entries with or without [audit-trail] tag. The audit-trail exemption applies only to the Clause 2 gate scope; the broader writing-technique principle binds independently. Self-audit sub-rule: when describing a writing-technique violation in a changelog entry, the description itself must not quote the violating token — describe in semantic terms only. [audit-trail]
 
 **STRUCTURAL FIX (F-PASS9-I2 — SS-18 missing Changelog section):** SS-18 lacked an in-file `## Changelog` section despite being bumped through v1.0 → v1.1 → v1.2 → v1.3. Changelog section reconstructed from ARCH-INDEX history entries and appended to SS-18. SS-18 bumped v1.3 → v1.4. Sibling-sweep of SS-01..SS-17: SS-02 is at v1.1 (F-PASS2-I4 and F-PASS2-I5 changes) and also lacks a Changelog section. SS-02 Changelog section added and SS-02 bumped v1.1 → v1.2. SS-01 and SS-03..SS-17 remain at v1.0 — no Changelog required. [audit-trail]
 

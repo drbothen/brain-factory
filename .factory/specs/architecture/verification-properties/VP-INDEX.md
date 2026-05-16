@@ -1,10 +1,10 @@
 ---
 document_type: vp-index
 level: L3
-version: "0.1.4"
+version: "0.1.5"
 status: draft
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-16T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 created: 2026-05-15
@@ -36,18 +36,18 @@ last_updated: 2026-05-16
 | VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | BC-2.10.002, BC-2.04.001 | P0 | proposed |
 | VP-012 | Manifest write atomicity and last_ingest field correctness | bats (integration.bats) | NFR-018, BC-2.03.002, BC-2.06.003 | P0 | proposed |
 | VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | BC-2.04.015, NFR-001 | P0 | proposed |
-| VP-014 | Brain init scaffold completeness | bats (integration.bats) | BC-2.01.001, BC-2.01.002, BC-2.01.003, BC-2.01.004 | P0 | proposed |
-| VP-015 | URL ingest pipeline: Defuddle to manifest to wiki pages | bats (integration.bats) | BC-2.02.001, BC-2.02.002, BC-2.02.003, BC-2.02.004, BC-2.02.006 | P0 | proposed |
-| VP-016 | Source ingest: local file ingest and vault path rejection | bats (skills.bats + integration.bats) | BC-2.03.001, BC-2.03.003, BC-2.03.004 | P0 | proposed |
-| VP-017 | Hook enforcement: kebab-case gate and AI attribution block | bats (hooks.bats) | BC-2.04.011, BC-2.04.012, BC-2.04.017 | P0 | proposed |
-| VP-018 | Wiki layer: page schema, embedding state machine, partial-failure fan-out | bats (skills.bats + integration.bats) | BC-2.05.001, BC-2.05.003, BC-2.05.004, BC-2.05.005 | P0 | proposed |
-| VP-019 | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION enforcement | bats (skills.bats) | BC-2.08.001, BC-2.08.002 | P0 | proposed |
+| VP-014 | Brain initialization scaffolds complete folder structure | bats (integration.bats) | BC-2.01.001, BC-2.01.002, BC-2.01.003, BC-2.01.004 | P0 | proposed |
+| VP-015 | URL ingest pipeline: Defuddle fetch to manifest delta to wiki pages | bats (integration.bats) | BC-2.02.001, BC-2.02.002, BC-2.02.003, BC-2.02.004, BC-2.02.006 | P0 | proposed |
+| VP-016 | Source ingest pipeline: local file ingest and out-of-vault path rejection | bats (skills.bats + integration.bats) | BC-2.03.001, BC-2.03.003, BC-2.03.004 | P0 | proposed |
+| VP-017 | Hook enforcement: kebab-case filename gate and AI attribution block | bats (hooks.bats) | BC-2.04.011, BC-2.04.012, BC-2.04.017 | P0 | proposed |
+| VP-018 | Wiki layer: page schema, embedding state machine, and partial-failure fan-out | bats (skills.bats + integration.bats) | BC-2.05.001, BC-2.05.003, BC-2.05.004, BC-2.05.005 | P0 | proposed |
+| VP-019 | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION structure enforcement | bats (skills.bats) | BC-2.08.001, BC-2.08.002 | P0 | proposed |
 | VP-020 | Publishing pipeline: state machine enforcement and LinkedIn API call shape | bats (hooks.bats + skills.bats + LinkedIn DTU) | BC-2.09.001, BC-2.09.004, BC-2.09.005 | P0 | proposed |
-| VP-021 | Quarantine skill activation and corpus location resolution | bats (quarantine.bats) | BC-2.10.001, BC-2.10.003 | P0 | proposed |
+| VP-021 | Quarantine check skill activation and corpus location resolution | bats (quarantine.bats) | BC-2.10.001, BC-2.10.003 | P0 | proposed |
 | VP-022 | Lobster headless execution: no interactive prompts in non-TTY context | bats (integration.bats) | BC-2.12.004 | P0 | proposed |
-| VP-023 | GitHub Action templates: v0.1 core set YAML validity and trigger config | bats (meta-lint.bats) | BC-2.13.001 | P0 | proposed |
-| VP-024 | Plugin lifecycle: install completeness and upgrade migration idempotency | bats (upgrade.bats) | BC-2.14.001, BC-2.14.003 | P0 | proposed |
-| VP-025 | Scale token instrumentation: JSONL record on every ingest invocation | bats (integration.bats) | BC-2.16.001 | P0 | proposed |
+| VP-023 | GitHub Action templates: v0.1 core set YAML validity and trigger configuration | bats (meta-lint.bats) | BC-2.13.001 | P0 | proposed |
+| VP-024 | Plugin lifecycle: install from marketplace and upgrade migration execution | bats (upgrade.bats) | BC-2.14.001, BC-2.14.003 | P0 | proposed |
+| VP-025 | Scale-aware token instrumentation: JSONL record written on every ingest invocation | bats (integration.bats) | BC-2.16.001 | P0 | proposed |
 | VP-026 | Event catalog: JSON schema validity and emit-site completeness | bats (meta-lint.bats + hooks.bats) | BC-2.17.003, BC-2.17.004 | P0 | proposed |
 | VP-027 | Sub-linear ingest latency as wiki grows from 1K to 10K pages | bats (integration.bats — slow lane) | BC-2.02.007 | P1 | proposed |
 
@@ -111,6 +111,10 @@ it but the body and index table did not reflect it; VP-012 extended with Group 2
 - [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS6-O1-arch — mirrors ARCH-INDEX freshness discipline established in F-PASS5.)
 
 ## Changelog
+
+### v0.1.5 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS10-C1/I1 — canonical-baseline VP title sweep):** Title cells updated to match canonical VP file H1 for all drifted VPs. VP-014: "Brain init scaffold completeness" corrected to "Brain initialization scaffolds complete folder structure". VP-015: "URL ingest pipeline: Defuddle to manifest to wiki pages" corrected to "URL ingest pipeline: Defuddle fetch to manifest delta to wiki pages". VP-016: "Source ingest: local file ingest and vault path rejection" corrected to "Source ingest pipeline: local file ingest and out-of-vault path rejection". VP-017: "Hook enforcement: kebab-case gate and AI attribution block" corrected to "Hook enforcement: kebab-case filename gate and AI attribution block". VP-018: "Wiki layer: page schema, embedding state machine, partial-failure fan-out" corrected to "Wiki layer: page schema, embedding state machine, and partial-failure fan-out". VP-019: "Content brief pipeline: ONE THING / PROOF / TRANSFORMATION enforcement" corrected to "Content brief pipeline: ONE THING / PROOF / TRANSFORMATION structure enforcement". VP-021: "Quarantine skill activation and corpus location resolution" corrected to "Quarantine check skill activation and corpus location resolution". VP-023: "GitHub Action templates: v0.1 core set YAML validity and trigger config" corrected to "GitHub Action templates: v0.1 core set YAML validity and trigger configuration". VP-024: "Plugin lifecycle: install completeness and upgrade migration idempotency" corrected to "Plugin lifecycle: install from marketplace and upgrade migration execution". VP-025: "Scale token instrumentation: JSONL record on every ingest invocation" corrected to "Scale-aware token instrumentation: JSONL record written on every ingest invocation". VPs already aligned (no change): VP-001..VP-013, VP-020, VP-022, VP-026, VP-027. VP file H1 is canonical per Source-of-Truth Precedence rule 4. [audit-trail]
 
 ### v0.1.4 (2026-05-16)
 
