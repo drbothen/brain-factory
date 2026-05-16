@@ -57,7 +57,11 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 
 **Outbound:** stdout JSON verdict; stderr JSONL events; exit code 0/1/2
 
-**Shared helpers:** `hooks/lib/hook-event-emit.sh`, `hooks/lib/manifest-write.sh`, `hooks/lib/sha256.sh` (ADR-016)
+**Shared helpers (four files):**
+- `hooks/lib/hook-event-emit.sh` (ADR-016 — event emission + verdict)
+- `hooks/lib/api-retry.sh` (ADR-016 — exponential backoff for external API calls)
+- `hooks/lib/manifest-write.sh` (ADR-016 — atomic manifest.json writes)
+- `hooks/lib/sha256.sh` (ADR-015 — portable sha256 shim; NOT an ADR-016 helper)
 
 ## Purity Classification
 
@@ -72,7 +76,7 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 
 ## Test Surface
 
-- `bats/hooks.bats` — 9 test suites; ≥ 3 test cases per hook (positive + negative + edge)
+- `bats/hooks.bats` — covers all 13 hooks with ≥ 3 test cases per hook (positive + negative + edge); per NFR-019 this is the single bats file for hook tests in the 9-suite roster
 - NFR-001 perf assertion: `time <hook> < fixture.json` → assert under 100ms
 - NFR-016 fail-closed: inject malformed stdin → assert exit 2
 

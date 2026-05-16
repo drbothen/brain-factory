@@ -65,9 +65,11 @@ The 9 bats suites (NFR-019 — exactly 9):
 - `set -euo pipefail` within first 10 lines
 - No bare `exit` (every `exit` followed by 0, 1, or 2)
 - No `eval`
-- Has corresponding `.bats` test file
+- Has at least one named `@test` block in `tests/hooks.bats` matching the hook's filename (e.g., `@test "quarantine-fetch.sh: ..."`) — all 13 hooks share the single `tests/hooks.bats` file per NFR-019; per-hook `.bats` files are NOT created
 - shellcheck exits 0
 - shfmt -d produces no diff
+
+**Per-hook test file clarification (F-PASS1-I8 decision):** The canonical test roster is exactly 9 bats files (NFR-019). All hook tests live in `tests/hooks.bats`. The meta-lint assertion is not "does a per-hook `.bats` file exist?" but "does `tests/hooks.bats` contain ≥ 3 `@test` blocks prefixed with the hook's filename?". Creating per-hook bats files would create a 10th+ suite in violation of NFR-019.
 
 **AGENT.md surface:**
 - Frontmatter with `name`, `scope`, `tool-profile`

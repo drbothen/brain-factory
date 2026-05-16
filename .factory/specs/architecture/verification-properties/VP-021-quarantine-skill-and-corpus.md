@@ -149,8 +149,11 @@ EOF
 - The corpus is loaded once at Node process start and cached in-process — if the corpus
   is updated between invocations, the second invocation uses the stale corpus; the
   fresh-corpus test catches this if the skill uses a persistent Node daemon (must not)
-- `scripts/quarantine.mjs` missing causes the skill to exit 0 (silently pass) — this is
-  the most dangerous failure mode; the corpus-missing test specifically exercises this path
+- REGRESSION PATTERN: a buggy implementation might cause the skill to exit 0 (silently
+  pass) when `scripts/quarantine.mjs` is missing — the contracted behavior is exit 2
+  (fail-closed, per the Property Statement above). The corpus-missing bats test
+  specifically asserts `assert_failure 2` and `'"code":"E-QUARANTINE-002"'` to catch
+  this regression class. Any implementation that exits 0 on a missing corpus fails this test.
 - Empty file is treated as an error (exit 2) rather than clean — BC-2.10.001 EC-001
   explicitly states empty file → clean; the bats empty-file test catches this regression
 

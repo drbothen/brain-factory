@@ -61,7 +61,9 @@ created: <date>
 
 ### Voice avoid-list enforcement (BC-2.08.004)
 
-`validate-voice-avoid-list.sh` (PostToolUse, advisory exit 1) fires when a file is written to `briefs/`. The hook reads `rules/voice-avoid-list.txt` (30 entries: terms like "utilize", "leverage", "synergy", "deep dive", etc.) and advises the operator of any matches. Advisory only — does not block the brief write. The operator reviews and revises before publishing.
+`validate-voice-avoid-list.sh` (PostToolUse, advisory exit 1) fires when a file matching `briefs/content/*-draft.md` is written. The hook reads `rules/voice-avoid-list.txt` (30 entries: terms like "utilize", "leverage", "synergy", "deep dive", etc.) and advises the operator of any matches. Advisory only — does not block the brief write. The operator reviews and revises before publishing.
+
+**Matcher scope decision (F-PASS1-I6):** The hook fires on `briefs/content/*-draft.md` only — not on all of `briefs/`. This matches the authoritative matcher in interface-definitions.md §Hook Registration Matrix. Rationale: voice avoid-list enforcement is appropriate for content drafts that will be published; it is not appropriate for daily/weekly/monthly summaries, decisions briefs, or research briefs. Narrowing the matcher prevents spurious advisories on non-content briefs and is consistent with the spirit of BC-2.08.004.
 
 ### Companion posts and hero prompt (BC-2.08.003)
 

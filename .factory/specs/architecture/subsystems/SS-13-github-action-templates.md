@@ -43,7 +43,7 @@ Templates are organized by version gate:
 
 **Community-optional (4):** Shipped in tarball at `templates/github-action-templates/community/`. Each carries a header comment: `# Community template — no author support. Use at your own risk.`
 
-Rate-limit handling for all templates calling external APIs: uses `scripts/api-retry.sh` wrapper per ADR-016.
+Rate-limit handling for all templates calling external APIs: uses `scripts/lib/api-retry.sh` wrapper per ADR-016 §api-retry.sh Delivery for GitHub Actions (GH Actions runners cannot access `${CLAUDE_PLUGIN_ROOT}`; the `scripts/lib/` copy is installed into the brain vault by `/brain:install-actions`).
 
 `/brain:install-actions` copies templates to the vault's `.github/workflows/` via a dry-run preview (lists what will be installed), then writes on operator confirmation. Templates are standalone YAML files — not templated at copy time (no substitutions needed; `${CLAUDE_PLUGIN_ROOT}` is not referenced in YAML action templates).
 

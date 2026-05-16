@@ -47,7 +47,7 @@ This log is the source-of-truth for NFR-010 (30-day trailing average), NFR-007 (
 
 ### Budget alert (BC-2.16.002)
 
-`/brain:health` reads the last 30 days of ingest-tokens.jsonl, computes the average `input_tokens + output_tokens` per ingest, and warns (advisory, exit 1) if the 30-day average exceeds 2x the baseline (100K tokens; 2x = 200K). This gives the operator visibility before cost becomes a problem.
+`/brain:health` reads the last 30 days of ingest-tokens.jsonl, computes the average `input_tokens + output_tokens` per ingest, and warns (advisory, exit 1) if the 30-day average exceeds 2x the baseline (50K tokens; 2x = 100K). This gives the operator visibility before cost becomes a problem.
 
 ### GH Actions batch parallelism (BC-2.16.003)
 

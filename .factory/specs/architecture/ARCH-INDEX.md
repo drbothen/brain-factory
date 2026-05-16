@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.1"
+version: "0.1.2"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -337,6 +337,35 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-C4 SS-04 shared helpers):** SS-04 Interfaces section now enumerates all four `hooks/lib/` helpers correctly: `hook-event-emit.sh`, `api-retry.sh`, `manifest-write.sh` (all ADR-016), and `sha256.sh` (ADR-015, not ADR-016). Previous listing omitted `api-retry.sh` and misattributed `sha256.sh` to ADR-016.
+
+**STRUCTURAL FIX (F-PASS1-C5 SS-16 budget-alert baseline):** SS-16 §Budget alert corrected from "baseline (100K tokens; 2x = 200K)" to "baseline (50K tokens; 2x = 100K)". Matches BC-2.16.002, brief §Scalability §5, and NFR-007.
+
+**STRUCTURAL FIX (F-PASS1-C7 api-retry.sh path):** SS-13 Key Design section updated from `scripts/api-retry.sh` to `scripts/lib/api-retry.sh`. ADR-013 §Rate-limit handling updated from `hooks/lib/api-retry.sh` to `scripts/lib/api-retry.sh` (with explanation of the dual-copy pattern per ADR-016). The `hooks/lib/` version is for Claude Code session context; `scripts/lib/` is for GH Actions runner context.
+
+**STRUCTURAL FIX (F-PASS1-C2 ADR-012 .yml/.yaml drift):** ADR-012 §Integration updated `workflows/scale-test.yaml` → `workflows/scale-test.yml` to match ADR-013's canonical filename.
+
+**STRUCTURAL FIX (F-PASS1-I2 + F-PASS1-I3 SS-01 test surface):** SS-01 Test Surface updated: `bats/init.bats` → `tests/integration.bats` (init tests are end-to-end skill tests belonging in integration.bats per NFR-019's 9-suite roster; no `tests/init.bats` exists). Already-initialized brain edge case changed from "idempotent scaffold (no overwrite)" to "E-INIT-002 hard-fail". Architectural decisions section added documenting both the zero-argument CLI decision and the hard-fail decision with full rationale.
+
+**STRUCTURAL FIX (F-PASS1-I4 SS-17 event-type naming):** SS-17 now documents the canonical event_type naming convention: past-tense verbs describing completed events (e.g., `quarantine.blocked`, not `quarantine.block`). Catalog example already used `quarantine.blocked` correctly; the convention rule is now formally documented. PO applies to BC bodies separately.
+
+**STRUCTURAL FIX (F-PASS1-I5 SS-09 error code):** SS-09 §State machine enforcement corrected from "Any other transition: E-PUBLISH-002 block" to "E-PUBLISH-001 block". E-PUBLISH-002 is "Missing status field"; E-PUBLISH-001 is "invalid transition".
+
+**STRUCTURAL FIX (F-PASS1-I6 SS-08 matcher scope):** SS-08 §Voice avoid-list enforcement narrowed from "fires when a file is written to `briefs/`" to "fires when a file matching `briefs/content/*-draft.md` is written". Matches the authoritative hook matcher in interface-definitions.md §Hook Registration Matrix. Decision rationale documented in SS-08.
+
+**STRUCTURAL FIX (F-PASS1-I8 SS-18 hook lint check):** SS-18 §Hook script surface updated: "Has corresponding `.bats` test file" replaced with "Has at least one named `@test` block in `tests/hooks.bats` matching the hook's filename". Clarification added: all 13 hooks share `tests/hooks.bats`; creating per-hook files would violate NFR-019's 9-suite constraint.
+
+**STRUCTURAL FIX (F-PASS1-I9 VP-021 counterexample):** VP-021 Counterexamples section's missing-corpus item rewritten to clearly mark the regression pattern: the contracted behavior is exit 2; a buggy implementation might exit 0; the bats test catches this regression class.
+
+**STRUCTURAL FIX (F-PASS1-I12 SS-04 test surface wording):** SS-04 Test Surface updated: "`bats/hooks.bats` — 9 test suites" replaced with "`bats/hooks.bats` — covers all 13 hooks ... per NFR-019 this is the single bats file for hook tests in the 9-suite roster". Removes the implication that hooks.bats is subdivided into 9 internal suites.
+
+**Cross-cutting decisions for PO (F-PASS1-I1/I2/I4):** Three decisions documented in SS-01 and SS-17 for PO to apply to BC bodies:
+1. `/brain:init` public CLI is zero-argument — no `--target`/`--yes` flags (documented in SS-01).
+2. Already-initialized brain → E-INIT-002 hard-fail, not idempotent scaffold (documented in SS-01).
+3. Event_type naming convention → past-tense verbs (documented in SS-17).
 
 ### v0.1.1 (2026-05-15)
 

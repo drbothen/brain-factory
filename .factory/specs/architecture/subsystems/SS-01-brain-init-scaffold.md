@@ -51,11 +51,29 @@ CAP-001 — Brain Initialization and Scaffold
 - SS-15 (Governance): 10 baseline policies written to `.brain/policies.yaml`
 - SS-17 (Event Catalog): structured events emitted during init
 
+## Architectural Decisions (Phase 1d)
+
+### Public CLI: zero arguments (F-PASS1-I1)
+
+`/brain:init` is a zero-argument skill. The public interface is `/brain:init` with no flags. The skill uses the current working directory (the brain vault root) as the target. There is no `--target` or `--yes` flag in the public API per interface-definitions.md §Skill Interface Catalog.
+
+**Implication for bats harness:** VP-014 bats tests must `cd` into the temp brain directory before invoking the init skill's run script. They do NOT pass `--target "$brain_dir"`. The run.sh internal implementation may use positional arguments internally, but these are not part of the public CLI contract.
+
+### Already-initialized brain: hard-fail E-INIT-002 (F-PASS1-I2)
+
+When `/brain:init` runs against a directory that already has `.brain/` initialized, it HARD-FAILS with E-INIT-002 (exit 2). It does NOT idempotently re-scaffold (no "fill in missing files" behavior).
+
+**Rationale:** idempotent re-scaffold creates a trap — the operator may accidentally re-run init on an active brain and receive a silent success, then discover files were re-created on top of existing content. The hard-fail forces explicit intent: the operator must run `/brain:upgrade-brain` to modify an existing brain scaffold. This protects user data and makes the operation's footprint explicit.
+
+**Recovery path:** if a brain is partially initialized (missing some scaffold files), the operator runs `/brain:upgrade-brain` which knows how to apply incremental scaffold changes idempotently. `/brain:init` is not that tool.
+
 ## Test Surface
 
-- `bats/init.bats` — positive: fresh git repo → scaffold created; negative: non-git dir → E-INIT-001; edge: already-initialized brain → idempotent scaffold (no overwrite)
+- `tests/integration.bats` — positive: fresh git repo → scaffold created; negative: non-git dir → E-INIT-001; edge: existing `.brain/` dir → E-INIT-002 hard-fail (NOT idempotent scaffold)
 - `local-dev-test.sh` — full `/brain:init` execution in temp vault; assert all directories exist; assert manifest.json valid JSON; assert policies.yaml has 10 entries
 - NFR-002: `assert_under_5_minutes` timer assertion in `local-dev-test.sh`
+
+**Note:** Init tests live in `tests/integration.bats` per NFR-019's 9-suite roster (no `tests/init.bats` exists; that would violate the 9-suite constraint). `/brain:init` is an end-to-end skill test, not a unit test — integration.bats is the correct suite.
 
 ## Scale Considerations
 

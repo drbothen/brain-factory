@@ -35,16 +35,18 @@ No engine plugin files are modified during init. Template resolution always uses
 
 ## Verification Mechanism
 
-bats (integration.bats) — end-to-end init assertion on a temp brain:
+bats (integration.bats) — end-to-end init assertion on a temp brain.
+
+**Invocation pattern:** The public `/brain:init` interface is zero-argument (SS-01 §Architectural Decisions). The bats harness does NOT pass `--target` or `--yes` flags. Instead it `cd`s into the temp brain directory before invoking the skill's run script, which uses the current working directory as the target. This matches the real operator invocation pattern.
 
 ```bash
 @test "/brain:init: all postcondition directories exist in fresh brain" {
   local brain_dir; brain_dir="$(mktemp -d)"
   git -C "$brain_dir" init -b main >/dev/null 2>&1
 
-  # Simulate /brain:init by invoking the init skill with CLAUDE_PLUGIN_ROOT set
-  CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
-    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh" --target "$brain_dir" --yes
+  # Invoke init skill via cd into brain dir — zero-argument public CLI (SS-01 §Architectural Decisions)
+  (cd "$brain_dir" && CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
+    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh")
 
   assert_success
 
@@ -76,8 +78,8 @@ bats (integration.bats) — end-to-end init assertion on a temp brain:
 @test "/brain:init: embedding_status: pending in all init wiki templates (BC-2.01.004)" {
   local brain_dir; brain_dir="$(mktemp -d)"
   git -C "$brain_dir" init -b main >/dev/null 2>&1
-  CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
-    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh" --target "$brain_dir" --yes
+  (cd "$brain_dir" && CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
+    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh")
 
   # Every wiki page template written during init must have embedding_status: pending
   while IFS= read -r page; do
@@ -89,18 +91,20 @@ bats (integration.bats) — end-to-end init assertion on a temp brain:
 @test "/brain:init: rejects non-git directory with E-INIT-001 (BC-2.01.003)" {
   local brain_dir; brain_dir="$(mktemp -d)"
   # No git init — should get E-INIT-001
-  CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
-    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh" --target "$brain_dir" --yes
+  run bash -c "cd '$brain_dir' && CLAUDE_PLUGIN_ROOT='${BATS_TEST_DIRNAME}/../../..' \
+    bash '${BATS_TEST_DIRNAME}/../../../skills/init/run.sh'"
   assert_failure 2
   assert_output --partial '"code":"E-INIT-001"'
 }
 
-@test "/brain:init: rejects existing .brain/ with E-INIT-002 (BC-2.01.003)" {
+@test "/brain:init: rejects existing .brain/ with E-INIT-002 — hard-fail, not idempotent (BC-2.01.003)" {
+  # Decision: already-initialized brain → E-INIT-002 hard-fail (SS-01 §Architectural Decisions).
+  # The correct recovery is /brain:upgrade-brain, not re-running /brain:init.
   local brain_dir; brain_dir="$(mktemp -d)"
   git -C "$brain_dir" init -b main >/dev/null 2>&1
   mkdir -p "$brain_dir/.brain"
-  CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
-    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh" --target "$brain_dir" --yes
+  run bash -c "cd '$brain_dir' && CLAUDE_PLUGIN_ROOT='${BATS_TEST_DIRNAME}/../../..' \
+    bash '${BATS_TEST_DIRNAME}/../../../skills/init/run.sh'"
   assert_failure 2
   assert_output --partial '"code":"E-INIT-002"'
 }
@@ -109,8 +113,8 @@ bats (integration.bats) — end-to-end init assertion on a temp brain:
   local brain_dir; brain_dir="$(mktemp -d)"
   git -C "$brain_dir" init -b main >/dev/null 2>&1
   local start; start="$(date +%s)"
-  CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
-    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh" --target "$brain_dir" --yes
+  (cd "$brain_dir" && CLAUDE_PLUGIN_ROOT="${BATS_TEST_DIRNAME}/../../.." \
+    bash "${CLAUDE_PLUGIN_ROOT}/skills/init/run.sh")
   local elapsed; elapsed="$(($(date +%s) - start))"
   assert [ "$elapsed" -lt 300 ] "/brain:init took ${elapsed}s, exceeds 5-minute SLA"
 }

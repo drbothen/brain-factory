@@ -55,7 +55,7 @@ The `--finalize --url` flow handles LinkedIn Articles (longer-form): the operato
 `validate-publish-state.sh` (PostToolUse) enforces valid transitions:
 - `draft → ready`: always allowed
 - `ready → published`: only via `/brain:publish-content` (which triggers the API call and writes `published_at`); direct frontmatter edit to `published` without `published_at` → E-PUBLISH-001 block
-- Any other transition: E-PUBLISH-002 block
+- Any other transition: E-PUBLISH-001 block (invalid transition — E-PUBLISH-002 is "Missing status field", not "invalid transition")
 
 ### Directory structure (BC-2.09.005)
 

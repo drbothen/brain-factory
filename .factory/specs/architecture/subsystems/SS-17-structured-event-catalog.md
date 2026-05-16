@@ -35,6 +35,16 @@ Maintains the canonical registry of all hook event types. Ensures every `hook-ev
 
 ## Key Design
 
+### Event-type naming convention (F-PASS1-I4 decision)
+
+All `event_type` values use **past-tense verbs** to describe completed events. Events describe what has happened, not what to do. This is the standard observability convention (e.g., Datadog, OpenTelemetry semantic conventions use past-tense for event names).
+
+**Canonical pattern:** `<domain>.<past-tense-verb>` — e.g., `quarantine.blocked`, `source.immutability.violated`, `wiki.wikilink.broken`, `ingest.url.started`, `ingest.url.completed`.
+
+**Forbidden pattern:** `<domain>.<imperative-verb>` — e.g., `quarantine.block`, `source.immutability.violation` (noun form, not verb). Any `event_type` using an imperative or noun form is a meta-lint violation.
+
+This decision is recorded here (SS-17, the Event Catalog design) rather than in a new ADR because it is a naming rule within a single subsystem's responsibility, not a cross-cutting architectural decision requiring ADR-grade trade-off analysis.
+
 ### Event catalog file
 
 Location: `scripts/event-catalog.json`. This is a version-controlled JSON array:

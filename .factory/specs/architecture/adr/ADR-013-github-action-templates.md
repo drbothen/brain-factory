@@ -71,7 +71,7 @@ All GH Action templates that call external APIs (LinkedIn Posts API, RSS feeds, 
 - On 429 response: read `Retry-After` header (seconds) or default to 60 seconds
 - Exponential backoff: 1s, 2s, 4s, 8s... cap at 300s
 - Max retries: 5 before failing the workflow step
-Implemented via `hooks/lib/api-retry.sh` (ADR-016), which all API-calling scripts invoke.
+Implemented via `scripts/lib/api-retry.sh` (ADR-016 §api-retry.sh Delivery for GitHub Actions), which all API-calling GH Action templates invoke. GH Actions runners use the `scripts/lib/` copy installed by `/brain:install-actions`; the `hooks/lib/api-retry.sh` version is used exclusively by hook scripts in the Claude Code session context.
 
 ### v0.1 ship gate
 
