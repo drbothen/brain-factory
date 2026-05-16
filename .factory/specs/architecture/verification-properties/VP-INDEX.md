@@ -1,7 +1,7 @@
 ---
 document_type: vp-index
 level: L3
-version: "0.1.3"
+version: "0.1.4"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -108,8 +108,13 @@ it but the body and index table did not reflect it; VP-012 extended with Group 2
 - [x] VP-013 verifies_bcs field updated: now [BC-2.04.015, NFR-001] — BC-2.02.007 moved to VP-027
 - [x] VP-027 Phase P1 (slow lane — requires gen-test-corpus.sh infrastructure); VP-022 (lobster headless) Phase P0
 - [x] VP-012 extended to cover BC-2.06.003 (last_ingest field); SS-06 row in P0 Coverage Matrix updated; Coverage summary accurate 64/64 (F-PASS2-C3)
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS6-O1-arch — mirrors ARCH-INDEX freshness discipline established in F-PASS5.)
 
 ## Changelog
+
+### v0.1.4 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS6-O1-arch — last_updated freshness check added to Self-Audit):** VP-INDEX Self-Audit Checklist now includes the `last_updated freshness check` item: before commit, verify `last_updated` >= MAX(date in any Changelog entry). Mirrors the same discipline established in ARCH-INDEX Self-Audit during F-PASS5. Prevents silent last_updated drift across future fix-bursts.
 
 ### v0.1.3 (2026-05-16)
 

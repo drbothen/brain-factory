@@ -65,7 +65,7 @@ Each agent returns a structured finding list. The adversary agent synthesizes al
 ### Spec-level vs content-level adversarial review
 
 The same architectural pattern applies at two levels:
-- **Spec level (VSDD pipeline):** Phase 1d adversary reviews the full spec package (PRD v0.1.1 + architecture). Fresh-context Opus reads specs; adversary findings drive fix-bursts; 3-CLEAN convergence required before Phase 2.
+- **Spec level (VSDD pipeline):** Phase 1d adversary reviews the full spec package (PRD v0.1.6 + architecture). Fresh-context Opus reads specs; adversary findings drive fix-bursts; 3-CLEAN convergence required before Phase 2.
 - **Content level (brain feature):** `/brain:adversary-review` applies the same protocol to user content artifacts. Streak tracking lives in `.brain/STATE.md`.
 
 ## Consequences

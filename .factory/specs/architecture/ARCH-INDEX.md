@@ -1,13 +1,13 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.6"
+version: "0.1.7"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.1
+inherits_from: prd@v0.1.6
 deployment_topology: single-service
 created: 2026-05-15
 last_updated: 2026-05-16
@@ -237,6 +237,22 @@ graph TD
 
 ---
 
+## Versioning Policy
+
+**inherits_from pin rule (F-PASS6-C2 adjudication — Option B selected):** The `inherits_from` field in a child document's frontmatter pins to the parent document's version AT THE END of the burst in which the child was last bumped. That is: at burst commit time, every child's `inherits_from` reflects the parent's then-current (post-bump) version.
+
+**Rationale for Option B over Option A:**
+- **No ordering dependency.** Option A (pin-at-authoring-time) requires the parent to be bumped before the child in the same burst — an ordering constraint that is easy to violate and produces transient inconsistency during the burst. Option B allows all bumps to be staged together; consistency is guaranteed at commit time.
+- **Simpler invariant.** "At commit time, child's inherits_from = parent's current version" is a single-step check. Option A's invariant is "child pins to parent's version before this burst's parent bump" — which requires knowing the pre-burst parent version.
+- **Matches software release practice.** When a package declares a dependency, the declared version is the version that exists at release time, not the version at some earlier moment in the same release cycle.
+- **BC-INDEX already applied this rule.** BC-INDEX v0.1.5 carries `inherits_from: prd@v0.1.6` — the PO applied Option B implicitly. Choosing Option A would require correcting BC-INDEX back to `prd@v0.1.5`, removing a correctly applied pin.
+
+**Propagation note (PO action required):** Under Option B, PRD's `inherits_from` should reference `product-brief.md@v0.4.17` (the brief's post-burst version) rather than `v0.4.16`. This is PO scope — the architect surfaces it to the orchestrator for the parallel PO burst.
+
+**Application to ARCH-INDEX:** `inherits_from: prd@v0.1.6` (PRD's current version at this burst's commit time). Correct.
+
+---
+
 ## Module-to-CAP Traceability
 
 > Every CAP-NNN capability anchor mapped to its implementing architecture module(s).
@@ -338,6 +354,16 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.7 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS6-C1 — inherits_from stale: prd@v0.1.1 → prd@v0.1.6):** ARCH-INDEX frontmatter `inherits_from` corrected from `prd@v0.1.1` to `prd@v0.1.6`. The field was set at initial draft (v0.1.0) and never updated through five subsequent fix-bursts. PRD current version is v0.1.6.
+
+**POLICY DECISION (F-PASS6-C2 — inherits_from semantic policy adjudication, Option B selected):** Chose Option B (pin-at-burst-end): child's `inherits_from` pins to parent's version at the END of the burst (post all bumps), not at authoring time. Rationale: no ordering dependency, simpler invariant, consistent with BC-INDEX v0.1.5 which already applied this rule implicitly, and matches standard release-version pinning practice. Policy documented in new §Versioning Policy section. ARCH-INDEX `inherits_from: prd@v0.1.6` is correct under Option B. PO action surfaced: PRD `inherits_from` should be updated to `product-brief.md@v0.4.17` (brief's post-burst version per Option B); this is PO scope.
+
+**STRUCTURAL FIX (F-PASS6-I2 — ADR narrative version cites stale):** ADR-009 §Decision (Spec-level vs content-level) corrected: "PRD v0.1.1 + architecture" → "PRD v0.1.6 + architecture". ADR-004 §References corrected: "PRD v0.1.1 BC-INDEX.md" → "PRD v0.1.6 + BC-INDEX.md". Sibling-sweep across all 17 ADRs, 18 SS-NN designs, and 27 VPs confirms no other stale `PRD v0.1.[0-5]` or `brief v0.4.1[0-6]` narrative cites in non-changelog content. ARCH-INDEX changelog entries referencing stale versions are historical audit trail and correctly preserved.
+
+**STRUCTURAL FIX (F-PASS6-O1-arch — VP-INDEX Self-Audit last_updated freshness check):** VP-INDEX Self-Audit Checklist updated to include the `last_updated freshness check` item (same wording as ARCH-INDEX Self-Audit, established in F-PASS5). VP-INDEX bumped to v0.1.4.
 
 ### v0.1.6 (2026-05-16)
 
