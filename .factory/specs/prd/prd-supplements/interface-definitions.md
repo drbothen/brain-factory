@@ -4,10 +4,11 @@ supplement_type: interface-definitions
 version: "0.1.0"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-16T00:00:00
 phase: phase-1b
 traces_to: prd/index.md
 created: 2026-05-15
+last_updated: 2026-05-16
 ---
 
 # brain-factory Interface Definitions

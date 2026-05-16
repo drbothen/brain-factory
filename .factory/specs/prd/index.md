@@ -1,10 +1,10 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.8"
+version: "0.1.9"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-16T00:00:00
 phase: phase-1b
 artifact_type: prd
 inherits_from: product-brief.md@v0.4.19
@@ -546,11 +546,15 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   **NOTE (exclusion-list-extension protocol — plain-prose clause):** To add a new exclusion for the plain-prose clause: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Triple-backtick fences and single-backtick inline spans are the two pre-approved exclusion categories (sibling-swept from ARCH-INDEX v0.1.8 improved Clause 2).
 
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.8 (2026-05-16). **PASS.**
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.9 (2026-05-16). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.9 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS12-C2 — canonical-baseline timestamp sweep for PRD/BC inventory):** Pass 11 architect burst codified the Timestamp Field Convention Policy at ARCH-INDEX v0.1.13 enumerating the PRD index, 4 supplements, BC-INDEX, and 95 BC files as in-scope but deferred the canonical-baseline sweep to a PO follow-up burst. This burst closes that deferral. Per the policy semantic (`timestamp = most recent meaningful content edit`), each in-scope file received per-file classification: files with documented content edits at 2026-05-16 → `timestamp: 2026-05-16T00:00:00`; files unchanged after initial 2026-05-15 creation → `timestamp: 2026-05-15T00:00:00`. Counts: PRD index bumped to 2026-05-16 (this file); 3 supplements bumped to 2026-05-16 (interface-definitions, error-taxonomy, test-vectors); 1 supplement retained at 2026-05-15 (nfr-catalog — last content commit 2026-05-15); BC-INDEX bumped to 2026-05-16; all 95 BCs bumped to 2026-05-16 (earliest body-content commit d89ea4b at 2026-05-16 00:00:10 populated Architecture Module cells in all 95 files). Closes F-PASS12-C2 (CRITICAL) per CLAUDE.md Canonical Principle Rule 4. [audit-trail]
 
 ### v0.1.8 (2026-05-16)
 
