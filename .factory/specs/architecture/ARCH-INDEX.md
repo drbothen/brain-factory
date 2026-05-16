@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.16"
+version: "0.1.17"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
@@ -407,12 +407,22 @@ Additional Self-Audit items:
         echo "FAIL: $f has content-edit history (timestamp $t differs from created $c) but no ## Changelog section."
       fi
     fi
+    # Separate invariant check (F-PASS15-O1): timestamp must be >= created (tri-partite semantic)
+    if [[ "$t" < "${c}T00:00:00" && "$t" < "$c" ]]; then
+      echo "INVARIANT-FAIL: $f has timestamp $t before created $c (tri-partite semantic violation)."
+    fi
   done
   ```
 
   Incremental scope: before any architect burst that modifies an SS-NN, ADR, or VP body, bump the version and add a Changelog entry before commit. Canonical-baseline scope: Pass 12 F-PASS12-C1/I2 retroactively examined all 18 SS-NN files; all 18 confirmed Case A (documented content edits past initial creation). The 16 SS-NN files previously at v1.0 without Changelog sections were bumped to v1.1 with Changelog entries in the Pass 12 burst. SS-02 (v1.2) and SS-18 (v1.4) were already conformant. Pass 13 F-PASS13-C2 extended the discipline scope from SS-NN only to all three artifact types: 8 ADRs (ADR-003/004/006/009/010/012/013/016) and 5 VPs (VP-004/014/021/026/027) back-filled to v1.1 with Changelog sections in this burst. (Dual-scope declaration added F-PASS11-C2/I2; discipline tightened F-PASS12-I2; scope extended to SS/ADR/VP F-PASS13-C2.)
 
   **Changelog reconstruction enumeration discipline (F-PASS14-C1):** When back-filling a `## Changelog` section from ARCH-INDEX history, the architect MUST first enumerate all ARCH-INDEX changelog entries that reference the target file ID (e.g., `grep VP-NNN ARCH-INDEX.md`). Each enumerated entry that records a modification to the file becomes ONE Changelog bullet — no merging multiple passes into a single bullet, no inventing pass attributions, no `(F-PASS9-C1 pass sweep)`-style framings unless F-PASS9-C1 actually was a sweep affecting that specific file. If ARCH-INDEX history is insufficient to attribute a body modification (the modification is visible in the body but no ARCH-INDEX entry records it), do NOT invent an attribution — report it as "modification observed in body but ARCH-INDEX history insufficient to attribute." Incremental scope: applied before any architect burst that creates or amends a Changelog section in an architecture artifact. Canonical-baseline scope: Pass 14 F-PASS14-C1 retroactively re-enumerated all 13 Pass 13 back-fills; corrections applied in the Pass 14 burst (VP-014, VP-021 bullet splits; ADR-009 two-bullet split; ADR-004 source-version correction + two-bullet split; VP-026 two-bullet split). (Codified F-PASS14-C1.)
+
+  **F-PASS15-C1 clarification — Changelog amendments count as body modifications:** Amending a `## Changelog` section (struck framings, added bullets, corrected source-version citations, added Notes) is a body modification requiring version bump and new Changelog entry. The carve-out interpretation "Changelog reconstruction is completing v1.1 rather than creating new state" is rejected — every burst that modifies a Changelog body advances the version. ARCH-INDEX itself bumped v0.1.15 → v0.1.16 for F-PASS14-C1 Changelog corrections, setting the explicit precedent. This clarification binds the F-PASS13-C2 Architecture artifact Changelog discipline (incremental scope: before any architect burst that modifies an SS-NN, ADR, or VP body — including Changelog body — bump the version and add a Changelog entry before commit). [audit-trail]
+
+  **F-PASS15-I1 strengthening — derived-cell-count enumeration discipline:** When citing F-PASS10-C1/I1 (or any sibling-sweep discipline that aligns multiple derived cells) in a VP/ADR/SS Changelog, the bullet MUST enumerate the SPECIFIC cells that had drift per ARCH-INDEX v0.1.12 (or the relevant pass-N entry). Do not claim "all three derived cells aligned" unless the ARCH-INDEX entry explicitly states all three had drift; if the ARCH-INDEX entry records drift for "Document Map Purpose and VP-INDEX Summary Title cells" only, the bullet must say "two of three derived cells aligned" or enumerate the two specific cells. Cross-reference VP-INDEX "VPs already aligned" inventory if applicable. Directionality must be stated correctly: derived cells aligned TO the canonical VP file H1 (not "H1 aligned with cells"). [audit-trail]
+
+  **F-PASS15-I2 strengthening — initial-creation content discipline:** When applying the F-PASS14-C1 enumeration discipline, first verify that a body modification PAST INITIAL CREATION actually occurred. Initial-creation content reflecting parent-document decisions (e.g., a VP authored at v0.1.1 reflecting SS-NN decisions captured at v0.1.2 — where SS-NN parent decisions predated the VP's creation) is NOT a "modification past creation" and does NOT require attribution. The enumeration discipline targets post-creation body modifications only. Applying "modification observed but ARCH-INDEX history insufficient to attribute" to initial-creation content is a misapplication of F-PASS14-C1. [audit-trail]
 
 - [x] **Count balance check (F-PASS13-C1):** For any count claim in a canonical-baseline-scope clause (e.g., "N bumped / M retained"), verify N + M = the total artifact count cited in the same clause. Incremental scope: before any architect burst that changes a count claim, run the arithmetic check before commit. Canonical-baseline scope: Pass 13 F-PASS13-C1 retroactively swept all canonical-baseline-scope clauses in ARCH-INDEX Self-Audit Checklist — only the timestamp freshness check had an arithmetic balance error (claimed "28 retained" where actual filesystem state was 30 retained; 34 + 28 = 62, not 64); corrected to "30 retained" in this burst. (Codified F-PASS13-C1.)
 - [x] **VP title canonical-baseline sweep (F-PASS10-C1/I1):** For every VP file, three derived cells must match the VP file H1 exactly: (a) VP-INDEX.md Title cell, (b) ARCH-INDEX.md Document Map Purpose cell, (c) ARCH-INDEX.md VP-INDEX Summary Title cell. Mismatch in any derived cell is a blocking defect — derived cells are never authoritative. Incremental scope: on every burst that modifies a VP H1, sweep all three derived cells for that VP before commit. Canonical-baseline scope: Pass 10 F-PASS10-C1 swept all 27 VPs — drift found and resolved in VP-001, VP-014..VP-020, VP-021..VP-027; clean VPs confirmed for VP-002..VP-013. (Dual-scope declaration confirmed per F-PASS11-C2; canonical-baseline explicitly stated alongside incremental.)
@@ -422,6 +432,19 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.17 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS15-C1 — version bumps on 6 files for Pass 14 Changelog amendments):** Pass 14 architect burst (07466a4) amended the Changelog sections of VP-014, VP-021, VP-026, VP-027, ADR-004, and ADR-009 without bumping their versions, in violation of the F-PASS13-C2 incremental scope discipline (Changelog amendments ARE body modifications). All 6 files bumped from v1.1 to v1.2 with new Changelog entries citing F-PASS15-C1. Self-Audit Checklist F-PASS15-C1 clarification sub-rule codified: "Changelog amendments count as body modifications." ARCH-INDEX bumped v0.1.16 → v0.1.17. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS15-I1 — F-PASS10-C1/I1 bullet narrative corrections in VP-014, VP-021, VP-026, VP-027):** Four VP Changelog bullets mis-stated the Pass 10 derived-cell alignment. Corrections:
+- VP-014 and VP-021: "H1 title and all three derived cells aligned" reframed to "the three derived cells aligned TO the canonical VP H1." All-three drift was correct per ARCH-INDEX v0.1.12 ("all three derived cells for VP-014..VP-019" and "VP-021..VP-027"); only the directionality framing corrected.
+- VP-026 and VP-027: "all three derived cells aligned" corrected to "two of three derived cells (ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned TO the canonical VP H1; the VP-INDEX Title cell was already aligned." ARCH-INDEX v0.1.12 records drift for Document Map Purpose and VP-INDEX Summary Title only for VP-026 and VP-027 — not VP-INDEX Title.
+Self-Audit Checklist F-PASS15-I1 strengthening sub-rule codified: derived-cell-count enumeration discipline. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS15-I2 — VP-014 initial-creation Note removed):** The VP-014 v1.1 Changelog Note attributed zero-argument CLI content and E-INIT-002 content as "modification observed in body but ARCH-INDEX history insufficient to attribute." Per F-PASS15-I2: VP-014 was created at v0.1.1 (F-1c-CV-01) AFTER F-PASS1-I1 and F-PASS1-I2 decisions were captured in SS-01. VP-014 body content reflecting SS-01 parent decisions was authored at initial creation — not as a post-creation modification. No attribution is required; the Note is removed. Self-Audit Checklist F-PASS15-I2 strengthening sub-rule codified: initial-creation content discipline. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS15-O1 — bash sweep timestamp-invariant check added):** Architecture artifact Changelog discipline bash sweep extended with a separate invariant check: `timestamp` must be >= `created` per the tri-partite semantic (F-PASS10-I3 / F-PASS11-C1). The prior bash sweep detected only Changelog presence vs absence; it did not verify the `timestamp >= created` invariant. New check added inside the loop: if timestamp is lexicographically before both `${created}T00:00:00` and `${created}`, emit "INVARIANT-FAIL". Catches creation-date inversion (e.g., timestamp 2026-05-14 on a file created 2026-05-15). [audit-trail]
 
 ### v0.1.16 (2026-05-16)
 

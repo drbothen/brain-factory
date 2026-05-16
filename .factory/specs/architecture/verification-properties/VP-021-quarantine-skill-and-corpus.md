@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-021
 title: "Quarantine check skill activation and corpus location resolution"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -163,9 +163,15 @@ proposed — pending Phase 3 implementation of quarantine-check skill and quaran
 
 ## Changelog
 
+### v1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS15-C1 — version-bump for Pass 14 Changelog amendments):** Pass 14 architect burst (07466a4) amended this file's Changelog section without bumping its version, in violation of the F-PASS13-C2 incremental scope discipline. This v1.2 burst applies the missing version bump. No new body modifications past v1.1 — only this version-bump-and-Changelog-entry closure. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS15-I1 — F-PASS10-C1/I1 bullet H1-directionality correction):** The v1.1 Changelog framed the Pass 10 cell alignment as "H1 title and all three derived cells aligned" — imprecise directionality. Corrected: the three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned TO the canonical VP-021 H1 during the Pass 10 27-VP sweep. VP-021 had all-three drift per ARCH-INDEX v0.1.12 ("Drift found in VP-001 Document Map Purpose cell and all three derived cells for VP-014..VP-020, VP-021..VP-027") — so "three" is correct; only the directionality framing is corrected. [audit-trail]
+
 ### v1.1 (2026-05-16)
 
 Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
 
 - **F-PASS1-I9:** VP-021 Counterexamples section's missing-corpus item rewritten to clearly mark the regression pattern: the contracted behavior is exit 2 (fail-closed); a buggy implementation might exit 0; the bats test catches this regression class. ARCH-INDEX v0.1.2 entry records: "VP-021 Counterexamples section's missing-corpus item rewritten to clearly mark the regression pattern." [audit-trail]
-- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-021 H1 title and all three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned during the Pass 10 27-VP sweep. ARCH-INDEX v0.1.12 entry records: "Drift found in VP-001 Document Map Purpose cell and all three derived cells for VP-014..VP-020, VP-021..VP-027." VP-021 was one of the VPs with drift resolved. [audit-trail]
+- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** The three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned TO the canonical VP-021 H1 during the Pass 10 27-VP sweep. ARCH-INDEX v0.1.12 entry records: "Drift found in VP-001 Document Map Purpose cell and all three derived cells for VP-014..VP-020, VP-021..VP-027." VP-021 was one of the VPs with all-three drift resolved. [audit-trail]

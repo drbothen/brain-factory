@@ -4,7 +4,7 @@ id: ADR-004
 title: "Sharded .factory/ layout for specs and behavioral contracts"
 status: accepted
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -88,6 +88,10 @@ The `.factory/` layout uses domain sharding for behavioral contracts and a separ
 - SESSION-HANDOFF.md §10 (worktree layout standing directive)
 
 ## Changelog
+
+### v1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS15-C1 — version-bump for Pass 14 Changelog amendments):** Pass 14 architect burst (07466a4) amended this file's Changelog section without bumping its version, in violation of the F-PASS13-C2 incremental scope discipline. This v1.2 burst applies the missing version bump. No new body modifications past v1.1 — only this version-bump-and-Changelog-entry closure. [audit-trail]
 
 ### v1.1 (2026-05-16)
 

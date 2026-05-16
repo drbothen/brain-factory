@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-027
 title: "Sub-linear ingest latency as wiki grows from 1K to 10K pages"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -152,9 +152,15 @@ and runs in standard CI.
 
 ## Changelog
 
+### v1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS15-C1 — version-bump for Pass 14 Changelog amendments):** Pass 14 architect burst (07466a4) amended this file's Changelog section without bumping its version, in violation of the F-PASS13-C2 incremental scope discipline. This v1.2 burst applies the missing version bump. No new body modifications past v1.1 — only this version-bump-and-Changelog-entry closure. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS15-I1 — F-PASS10-C1/I1 bullet cell-count and H1-directionality correction):** The v1.1 Changelog claimed "all three derived cells aligned" for VP-027. ARCH-INDEX v0.1.12 records only two cells with drift for VP-027: the Document Map Purpose cell and the VP-INDEX Summary Title cell. Corrected: two of three derived cells (ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned TO the canonical VP-027 H1 during the Pass 10 27-VP sweep; the VP-INDEX Title cell was already aligned. ARCH-INDEX v0.1.12 records drift resolved for VP-027 Document Map Purpose and VP-INDEX Summary Title cells. [audit-trail]
+
 ### v1.1 (2026-05-16)
 
 Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
 
 - **F-PASS3-I2:** §Verification Mechanism proof harness and counterexample updated to use the canonical `gen-test-corpus.sh` CLI: `--sources` flag for source count and positional `<output-dir>` argument. Removed ambiguity about the output path parameter. [audit-trail]
-- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-027 H1 title and all three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned during the Pass 10 27-VP sweep; VP-027 was one of the VPs with drift resolved. [audit-trail]
+- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** Two of three derived cells (ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned TO the canonical VP-027 H1 during the Pass 10 27-VP sweep; the VP-INDEX Title cell was already aligned. ARCH-INDEX v0.1.12 records drift resolved for VP-027 Document Map Purpose and VP-INDEX Summary Title cells. [audit-trail]

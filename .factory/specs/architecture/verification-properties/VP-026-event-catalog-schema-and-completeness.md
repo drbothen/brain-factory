@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-026
 title: "Event catalog: JSON schema validity and emit-site completeness"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -146,9 +146,15 @@ and meta-lint.bats extension to cover event catalog cross-reference
 
 ## Changelog
 
+### v1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS15-C1 — version-bump for Pass 14 Changelog amendments):** Pass 14 architect burst (07466a4) amended this file's Changelog section without bumping its version, in violation of the F-PASS13-C2 incremental scope discipline. This v1.2 burst applies the missing version bump. No new body modifications past v1.1 — only this version-bump-and-Changelog-entry closure. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS15-I1 — F-PASS10-C1/I1 bullet cell-count and H1-directionality correction):** The v1.1 Changelog claimed "all three derived cells aligned" for VP-026. ARCH-INDEX v0.1.12 records only two cells with drift for VP-026: the Document Map Purpose cell and the VP-INDEX Summary Title cell. Corrected: two of three derived cells (ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned TO the canonical VP-026 H1 during the Pass 10 27-VP sweep; the VP-INDEX Title cell was already aligned (per VP-INDEX v0.1.5 — VP-026 does not appear in the "already aligned" inventory explicitly, but ARCH-INDEX v0.1.12 records drift only for Document Map Purpose and VP-INDEX Summary Title, not VP-INDEX Title). [audit-trail]
+
 ### v1.1 (2026-05-16)
 
 Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
 
 - **F-PASS3-S1:** VP-026 counterexample wording corrected from present-tense to past-tense per the event_type naming convention (SS-17, ADR-009). ARCH-INDEX v0.1.4 entry records: "VP-026 counterexample wording corrected from present-tense to past-tense per the event_type naming convention (SS-17, ADR-009)." [audit-trail]
-- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-026 H1 title and all three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned during the Pass 10 27-VP sweep. ARCH-INDEX v0.1.12 entry records drift resolved for VP-026 Document Map Purpose and VP-INDEX Summary Title cells. [audit-trail]
+- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** Two of three derived cells (ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned TO the canonical VP-026 H1 during the Pass 10 27-VP sweep; the VP-INDEX Title cell was already aligned. ARCH-INDEX v0.1.12 entry records drift resolved for VP-026 Document Map Purpose and VP-INDEX Summary Title cells. [audit-trail]
