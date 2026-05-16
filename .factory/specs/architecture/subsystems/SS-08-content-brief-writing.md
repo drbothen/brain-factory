@@ -85,5 +85,5 @@ Both are P1 (v0.9) features; the skill stubs them out in v0.1 with a "not yet im
 
 ## Test Surface
 
-- `bats/skills.bats` — brief frontmatter schema present; ONE THING section non-empty; voice hook fires on brief write; avoid-list advisory on known-trigger words
+- `tests/skills.bats` — brief frontmatter schema present; ONE THING section non-empty; voice hook fires on brief write; avoid-list advisory on known-trigger words
 - Integration: end-to-end brief → write → adversary-review pipeline in local-dev-test.sh

@@ -59,5 +59,5 @@ Rate-limit handling for all templates calling external APIs: uses `scripts/lib/a
 
 ## Test Surface
 
-- `bats/upgrade.bats` — template YAML is valid (yamllint); install-actions copies correct files; rate-limit retry fires on 429 fixture
+- `tests/upgrade.bats` — template YAML is valid (yamllint); install-actions copies correct files; rate-limit retry fires on 429 fixture
 - CI: v0.1 core 6 templates run green on ubuntu-latest against smoke-brain fixture

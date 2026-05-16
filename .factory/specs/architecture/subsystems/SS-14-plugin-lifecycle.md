@@ -38,7 +38,7 @@ Manages plugin install, upgrade, and migration. Validates the plugin manifest (p
 
 ### Plugin manifest structure
 
-`plugins/brain-factory/.claude-plugin/plugin.json` declares skills, agents, and the hook template reference. Validated in `bats/upgrade.bats` via `jq` schema check (required fields present, `version` matches semver regex, `hooks` field points to the template).
+`plugins/brain-factory/.claude-plugin/plugin.json` declares skills, agents, and the hook template reference. Validated in `tests/upgrade.bats` via `jq` schema check (required fields present, `version` matches semver regex, `hooks` field points to the template).
 
 `hooks.json.template` lists all 13 hooks across 4 tool-event types. Validated by counting hook entries and asserting the count equals 13 (or the expected count for the installed version).
 
@@ -65,4 +65,4 @@ The hook chain does not write to `${CLAUDE_PLUGIN_ROOT}`. Skills read templates 
 
 ## Test Surface
 
-- `bats/upgrade.bats` — plugin.json JSON schema valid; hooks.json.template contains all 13 hooks; upgrade-brain runs migration idempotently
+- `tests/upgrade.bats` — plugin.json JSON schema valid; hooks.json.template contains all 13 hooks; upgrade-brain runs migration idempotently

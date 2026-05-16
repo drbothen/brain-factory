@@ -74,5 +74,5 @@ The writescore loop is implemented in the `/brain:adversary-review` skill body: 
 
 ## Test Surface
 
-- `bats/adversary.bats` — structured verdict JSON schema validation; streak counter increments correctly; finding list non-empty on known bad artifact
+- `tests/adversary.bats` — structured verdict JSON schema validation; streak counter increments correctly; finding list non-empty on known bad artifact
 - Integration: end-to-end review of fixture brief → assert pass/fail verdict returned

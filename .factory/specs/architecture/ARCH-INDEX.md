@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.4"
+version: "0.1.5"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -338,6 +338,24 @@ Additional Self-Audit items:
 
 ## Changelog
 
+### v0.1.5 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS4-C2 + F-PASS4-I3 — sweep-by-canonical-pattern: bats/ → tests/):** 16 architecture files contained the deprecated `bats/<name>.bats` path prefix instead of the canonical `tests/<name>.bats` pattern. Affected files: SS-04, SS-06, SS-07, SS-08, SS-09, SS-10, SS-11, SS-12 (2 occurrences), SS-13, SS-14 (2 occurrences), SS-15, SS-16, SS-17, SS-18 (F-PASS4-I3 — internal contradiction), ADR-003. All replaced with canonical `tests/<name>.bats` form. Positive-pattern sweep confirms canonical references present; negative-pattern sweep confirms only changelog audit-trail references remain in the `bats/X.bats` form (ARCH-INDEX changelog entries for F-PASS1-I2/I3 and F-PASS1-I12 — these record historical before/after states and are correctly preserved as audit trail).
+
+**STRUCTURAL FIX (F-PASS4-C3 — ADR-012 dual defect: workflow extension + missing positional output-dir):** ADR-012 §Integration corrected: `workflows/scale-test.yml` → `workflows/scale-test.yaml` (Lobster workflows use `.yaml` per ADR-006; `.yml` was inadvertently introduced by F-PASS1-C2 which conflated GH Actions naming with Lobster workflow naming — see corrective note in v0.1.2 F-PASS1-C2 entry below). Positional `<output-dir>` added to the `gen-test-corpus.sh` invocation: `gen-test-corpus.sh --sources 10000 /tmp/scale-brain`. This aligns with the script's interface spec (ADR-012 §Script interface) which requires a positional output-dir.
+
+**STRUCTURAL FIX (sweep-by-canonical-pattern discipline introduced):** When a convention establishes a canonical pattern (e.g., test path `tests/X.bats`), a fix-burst closing a violation MUST grep for BOTH: (a) the canonical pattern present (positive grep) AND (b) the deprecated pattern absent (negative grep). Sweep-by-changed-token alone is insufficient — it catches direct rename targets but misses broader pattern violations across other artifacts. F-PASS3 sibling-sweep verified `ingest.bats`/`wiki.bats` deprecations but missed the broader `bats/X.bats` → `tests/X.bats` canonical-pattern shift across 16 architecture files. This discipline is now recorded as a standing rule for all future fix-bursts.
+
+### v0.1.4 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS3-I1 — retry policy aligned to BC-2.13.003):** ADR-013 and ADR-016 updated to document the authoritative retry policy for GH Action templates: 3 retries maximum, 60-second base backoff interval, exit 1 advisory on retry exhaustion. Aligns with BC-2.13.003 contract and the `api-retry.sh` helper specification in ADR-016.
+
+**STRUCTURAL FIX (F-PASS3-I2 — VP-027 gen-test-corpus.sh CLI canonical):** VP-027 counterexample and proof harness updated to use the canonical `gen-test-corpus.sh` CLI: `--sources` flag for source count and positional `<output-dir>` argument. Removes ambiguity about the output path parameter.
+
+**STRUCTURAL FIX (F-PASS3-S1 — VP-026 counterexample past-tense):** VP-026 counterexample wording corrected from present-tense to past-tense per the event_type naming convention (SS-17, ADR-009). Counterexample describes completed-event semantics consistently.
+
+**STRUCTURAL FIX (F-PASS3-S2 — ADR-013 cold-start.yml aligned to brief):** ADR-013 `cold-start.yml` GH Action template description updated to align with brief v0.4.15 §cold-start section. Template name and trigger pattern now match the authoritative product brief description.
+
 ### v0.1.3 (2026-05-16)
 
 **STRUCTURAL FIX (F-PASS2-C2 — Lobster workflow filenames + extension decision):** ADR-006 extended with §Workflow file inventory decision and §Workflow extension convention. Canonical decision: `.yaml` extension for Lobster workflows (not `.lobster`); Option A filenames (ingest-url, ingest-source, brief-to-publish, daily-ritual, weekly-refresh, scale-test) as authoritative. BC-2.12.003 alignment delegated to PO downstream burst.
@@ -358,7 +376,7 @@ Additional Self-Audit items:
 
 **STRUCTURAL FIX (F-PASS1-C7 api-retry.sh path):** SS-13 Key Design section updated from `scripts/api-retry.sh` to `scripts/lib/api-retry.sh`. ADR-013 §Rate-limit handling updated from `hooks/lib/api-retry.sh` to `scripts/lib/api-retry.sh` (with explanation of the dual-copy pattern per ADR-016). The `hooks/lib/` version is for Claude Code session context; `scripts/lib/` is for GH Actions runner context.
 
-**STRUCTURAL FIX (F-PASS1-C2 ADR-012 .yml/.yaml drift):** ADR-012 §Integration updated `workflows/scale-test.yaml` → `workflows/scale-test.yml` to match ADR-013's canonical filename.
+**STRUCTURAL FIX (F-PASS1-C2 ADR-012 .yml/.yaml drift):** ADR-012 §Integration updated `workflows/scale-test.yaml` → `workflows/scale-test.yml` to match ADR-013's canonical filename. **Corrective note (F-PASS4-C3):** This fix was incorrect. It conflated GH Actions template naming (`.yml`, per ADR-013) with Lobster workflow naming (`.yaml`, per ADR-006). The scale-test workflow lives in `workflows/` as a Lobster workflow file and must use the `.yaml` extension. The F-PASS4-C3 fix in v0.1.5 corrects this: `workflows/scale-test.yml` → `workflows/scale-test.yaml`. The GH Actions template directory (`templates/github-action-templates/`) retains `.yml` as before.
 
 **STRUCTURAL FIX (F-PASS1-I2 + F-PASS1-I3 SS-01 test surface):** SS-01 Test Surface updated: `bats/init.bats` → `tests/integration.bats` (init tests are end-to-end skill tests belonging in integration.bats per NFR-019's 9-suite roster; no `tests/init.bats` exists). Already-initialized brain edge case changed from "idempotent scaffold (no overwrite)" to "E-INIT-002 hard-fail". Architectural decisions section added documenting both the zero-argument CLI decision and the hard-fail decision with full rationale.
 

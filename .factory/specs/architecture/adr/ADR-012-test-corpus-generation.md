@@ -86,7 +86,7 @@ The seed controls `shuf --random-source=<(seq $SEED)` for word and topic distrib
 
 ### Integration with scale-test workflow
 
-`workflows/scale-test.yml` calls `gen-test-corpus.sh --sources 10000` as its first step, then pipes the output directory to the ingest pipeline for timing measurement. The workflow captures timing and memory metrics per step and writes them to `.brain/logs/scale-test-YYYY-MM-DD.jsonl`.
+`workflows/scale-test.yaml` calls `gen-test-corpus.sh --sources 10000 /tmp/scale-brain` as its first step, then pipes the output directory to the ingest pipeline for timing measurement. The workflow captures timing and memory metrics per step and writes them to `.brain/logs/scale-test-YYYY-MM-DD.jsonl`.
 
 ### Fixture corpus for bats tests
 

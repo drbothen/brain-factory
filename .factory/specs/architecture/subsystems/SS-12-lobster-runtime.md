@@ -47,7 +47,7 @@ In interactive mode (no flag): prints the skill invocation command and waits for
 
 ### Workflow YAML schema (six files)
 
-Schema validated by `bats/integration.bats` — each field is required:
+Schema validated by `tests/integration.bats` — each field is required:
 - `name`: string, workflow identifier
 - `description`: string, human-readable purpose
 - `steps`: array of step objects (id, skill, args, depends_on)
@@ -83,4 +83,4 @@ Lobster-run's own exit code:
 
 ## Test Surface
 
-- `bats/integration.bats` — topological sort with fixture YAML; cycle detection → E-LOBSTER-001; headless execution of smoke workflow in temp brain
+- `tests/integration.bats` — topological sort with fixture YAML; cycle detection → E-LOBSTER-001; headless execution of smoke workflow in temp brain

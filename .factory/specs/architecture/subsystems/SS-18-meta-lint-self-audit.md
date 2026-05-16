@@ -30,7 +30,7 @@ The factory tests itself. `meta-lint.bats` validates that brain-factory's own SK
 
 ## Interfaces
 
-**Inbound:** `bats/meta-lint.bats` and 8 other bats suite files; CI matrix; pre-push hook
+**Inbound:** `tests/meta-lint.bats` and 8 other bats suite files; CI matrix; pre-push hook
 
 **Outbound:** pass/fail report; structured bats TAP output
 

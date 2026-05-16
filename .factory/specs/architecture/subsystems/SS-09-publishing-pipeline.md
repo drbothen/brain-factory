@@ -78,5 +78,5 @@ published/linkedin/<slug>.md      (status: published — moved here after post)
 
 ## Test Surface
 
-- `bats/skills.bats` — state machine transitions; `--schedule` flag parses date correctly; monthly-perf JSON schema valid
+- `tests/skills.bats` — state machine transitions; `--schedule` flag parses date correctly; monthly-perf JSON schema valid
 - Integration: publish-content with LinkedIn DTU mock (not real API in bats)

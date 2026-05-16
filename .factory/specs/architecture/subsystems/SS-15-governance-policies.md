@@ -80,4 +80,4 @@ Required fields per policy: `id` (POL-NNN), `name` (kebab-case), `description` (
 
 ## Test Surface
 
-- `bats/policies.bats` — 10 baseline policies present after init; policy-add with valid schema → appended; policy-add with missing field → E-POLICY-001; policy-registry-validate on fixture with invalid entry → invalid count > 0
+- `tests/policies.bats` — 10 baseline policies present after init; policy-add with valid schema → appended; policy-add with missing field → E-POLICY-001; policy-registry-validate on fixture with invalid entry → invalid count > 0

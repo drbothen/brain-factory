@@ -62,4 +62,4 @@ Reads `inbox/*.md` notes (quick captures from the operator). For each note, clas
 
 ## Test Surface
 
-- `bats/skills.bats` — connect output has valid wikilinks; synthesize output has valid frontmatter; process-inbox moves file from inbox/ to wiki/{type}/
+- `tests/skills.bats` — connect output has valid wikilinks; synthesize output has valid frontmatter; process-inbox moves file from inbox/ to wiki/{type}/

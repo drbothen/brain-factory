@@ -93,5 +93,5 @@ This check runs at meta-lint time, not at hook runtime — it's a static analysi
 
 ## Test Surface
 
-- `bats/hooks.bats` — stderr capture assertion: each hook produces ≥ 1 JSONL event (NFR-011); stdout contains only the verdict JSON
+- `tests/hooks.bats` — stderr capture assertion: each hook produces ≥ 1 JSONL event (NFR-011); stdout contains only the verdict JSON
 - `meta-lint.bats` — catalog completeness: all emit_event calls have catalog entries; no stdout echo in hook scripts

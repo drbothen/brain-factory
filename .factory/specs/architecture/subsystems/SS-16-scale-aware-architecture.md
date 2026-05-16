@@ -73,5 +73,5 @@ See ADR-012 for full design. Produces a reproducible synthetic brain vault tree 
 
 ## Test Surface
 
-- `bats/integration.bats` — token JSONL valid JSON after ingest; budget alert fires at 2x threshold; gen-test-corpus.sh produces deterministic output
+- `tests/integration.bats` — token JSONL valid JSON after ingest; budget alert fires at 2x threshold; gen-test-corpus.sh produces deterministic output
 - NFR-004 scale test via scale-test.yml; NFR-005 memory via `/usr/bin/time -v`

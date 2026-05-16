@@ -45,7 +45,7 @@ Required fields:
 }
 ```
 
-Version field uses semver. The `skills` and `agents` glob patterns are resolved relative to the plugin root at install time. `plugin.json` is validated by `bats/upgrade.bats` (VP-009).
+Version field uses semver. The `skills` and `agents` glob patterns are resolved relative to the plugin root at install time. `plugin.json` is validated by `tests/upgrade.bats` (VP-009).
 
 ### hooks.json.template location and schema
 

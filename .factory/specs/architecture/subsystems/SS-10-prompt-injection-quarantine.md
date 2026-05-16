@@ -76,4 +76,4 @@ Provides an explicit operator-invocable check on a local file or URL, returning 
 
 ## Test Surface
 
-- `bats/quarantine.bats` — positive: clean URL preview → exit 0; negative: injected content → E-QUARANTINE-001 exit 2; edge: curl timeout → exit 2 (fail-closed per NFR-016)
+- `tests/quarantine.bats` — positive: clean URL preview → exit 0; negative: injected content → E-QUARANTINE-001 exit 2; edge: curl timeout → exit 2 (fail-closed per NFR-016)

@@ -76,7 +76,7 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 
 ## Test Surface
 
-- `bats/hooks.bats` — covers all 13 hooks with ≥ 3 test cases per hook (positive + negative + edge); per NFR-019 this is the single bats file for hook tests in the 9-suite roster
+- `tests/hooks.bats` — covers all 13 hooks with ≥ 3 test cases per hook (positive + negative + edge); per NFR-019 this is the single bats file for hook tests in the 9-suite roster
 - NFR-001 perf assertion: `time <hook> < fixture.json` → assert under 100ms
 - NFR-016 fail-closed: inject malformed stdin → assert exit 2
 
