@@ -24,7 +24,7 @@ Given a wiki/index.md containing a known set of page slugs S, and a wiki page bo
 
 ## Verification Mechanism
 
-bats (wiki.bats and hooks.bats) — two layers:
+bats (skills.bats and hooks.bats) — two layers:
 
 **Layer 1 — pure unit test on resolution algorithm:**
 ```bash

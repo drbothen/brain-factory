@@ -82,4 +82,4 @@ Enforced at two levels:
 ## Test Surface
 
 - `bats/hooks.bats` (immutability assertions): existing source path → E-SOURCE-001; new path → exit 0
-- `bats/ingest.bats`: manifest.json valid JSON after ingest; `chunks` field present and empty; `last_ingest` populated
+- `tests/skills.bats`: manifest.json valid JSON after ingest; `chunks` field present and empty; `last_ingest` populated (covered by VP-012 Group 2)

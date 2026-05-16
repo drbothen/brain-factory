@@ -58,4 +58,4 @@ Partial-failure fan-out (BC-2.03.004): the same per-page result envelope used in
 
 ## Test Surface
 
-- `bats/ingest.bats` — positive: local markdown file → source + wiki; negative: path outside vault → E-INGEST-001; edge: path resolves to symlink outside vault → E-INGEST-001; partial failure: one wiki page blocked → fan-out envelope with that failure surfaced
+- `tests/skills.bats` — positive: local markdown file → source + wiki; negative: path outside vault → E-INGEST-001; edge: path resolves to symlink outside vault → E-INGEST-001; partial failure: one wiki page blocked → fan-out envelope with that failure surfaced

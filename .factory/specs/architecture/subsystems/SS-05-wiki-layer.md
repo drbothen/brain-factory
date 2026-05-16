@@ -81,5 +81,5 @@ If any step fails, `git checkout .` is called before reporting failure (no parti
 
 ## Test Surface
 
-- `bats/wiki.bats` — lint all 7 checks; rename positive + negative + edge; wikilink resolution with fixture index
+- `tests/skills.bats` — lint all 7 checks; rename positive + negative + edge; wikilink resolution with fixture index
 - Scale test: lint 10K-page synthetic corpus under 600s (NFR-003)

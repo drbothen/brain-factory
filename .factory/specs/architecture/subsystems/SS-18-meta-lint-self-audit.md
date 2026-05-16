@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-18
 title: "Meta-Lint and Self-Audit"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -38,16 +38,24 @@ The factory tests itself. `meta-lint.bats` validates that brain-factory's own SK
 
 ### 9 bats suites
 
-The 9 bats suites (NFR-019 — exactly 9):
+The 9 bats suites (NFR-019 — exactly 9), aligned to brief v0.4.15 §Test architecture per
+Source-of-Truth Precedence (brief is parent spec; SS-18 derives). An earlier draft of this
+section used `ingest.bats` and `wiki.bats` (more functional naming for SS-02/03 and SS-05);
+brief v0.4.15 commits to `skills.bats` and `templates.bats` as the broader category names.
+SS-18 is aligned to brief naming per CLAUDE.md Source-of-Truth Precedence + brain-factory-001
+(F-PASS2-I4 decision). Functional coverage is unchanged — the brief names reflect that
+ingest and wiki manipulation are skill-level operations, and templates covers GH Action
+templates plus plugin lifecycle templates.
+
 1. `tests/meta-lint.bats` — factory self-audit (SKILL.md / AGENT.md / hook script structure)
 2. `tests/hooks.bats` — all 13 hooks: exit codes, stdin fixtures, stderr JSONL, stdout verdict
-3. `tests/ingest.bats` — SS-02 + SS-03 ingest pipeline integration
-4. `tests/wiki.bats` — SS-05 wiki layer: lint checks, rename, wikilink resolution
+3. `tests/skills.bats` — SS-02 + SS-03 ingest pipeline, SS-05 wiki layer (lint, rename, wikilink resolution), SS-08 content brief, SS-09 publish, SS-11 knowledge synthesis
+4. `tests/templates.bats` — SS-13 GH Action templates: YAML validity, trigger config; SS-14 + SS-15 plugin lifecycle and policies templates
 5. `tests/quarantine.bats` — SS-10 quarantine: injection pattern detection
 6. `tests/adversary.bats` — SS-07 adversarial review: verdict schema, streak counter
 7. `tests/policies.bats` — SS-15 governance: policy-add, registry-validate
-8. `tests/upgrade.bats` — SS-13 + SS-14: template YAML, plugin.json, migration idempotency
-9. `tests/integration.bats` — SS-12 lobster: topological sort, headless execution; SS-16 token log
+8. `tests/upgrade.bats` — SS-14 plugin.json schema, migration idempotency; SS-13 template YAML
+9. `tests/integration.bats` — SS-12 lobster: topological sort, headless execution; SS-16 token log; SS-01 brain init (end-to-end skill flows)
 
 ### meta-lint.bats assertions (BC-2.18.001..BC-2.18.004)
 

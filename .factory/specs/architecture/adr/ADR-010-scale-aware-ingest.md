@@ -44,7 +44,7 @@ NFR-004 requires sub-linear latency growth: T(10K) / T(1K) ≤ 20. This is achie
 }
 ```
 
-On every ingest invocation, the skill reads manifest.json (a small JSON file, even at 10K sources) and checks if the incoming URL or path is already present. If present: reject with `E-SOURCE-002` (already ingested). If absent: proceed with ingest, write the source file, generate wiki pages, append the manifest entry, and commit.
+On every ingest invocation, the skill reads manifest.json (a small JSON file, even at 10K sources) and checks if the incoming URL or path is already present. If present: reject with `E-INGEST-001` (already ingested). If absent: proceed with ingest, write the source file, generate wiki pages, append the manifest entry, and commit.
 
 The skill never reads the wiki corpus or source files to determine "what already exists." manifest.json is the O(1) lookup (jq key lookup) for existence checking.
 

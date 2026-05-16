@@ -76,6 +76,23 @@ Six workflow YAML files in `plugins/brain-factory/workflows/`:
 5. `weekly-refresh.yaml` — connect → synthesize → weekly-refresh
 6. `scale-test.yaml` — gen-test-corpus → batch-ingest → lint-wiki → health-check
 
+### Workflow file inventory decision (F-PASS2-C2)
+
+BC-2.12.003 drafted `.lobster` as the extension and named the six files differently from SS-12 and ADR-006. The canonical decision (architect-owned, Phase 1d Pass 2 fix-burst):
+
+**Extension: `.yaml`.** Lobster workflow files use the `.yaml` extension. Rationale: yq-compatible, conventional YAML tooling reads them without plugin installation, and the v0.x bash runner consumes them directly. The `.lobster` extension was never formally adopted in an ADR — it appeared only in a BC draft. This ADR supersedes that draft naming.
+
+**Filenames: Option A (SS-12 / ADR-006 set).** The six canonical workflow filenames are those defined here and in SS-12: `ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`. Rationale: this set provides functional coverage of v0.x scope — both ingest surfaces (URL + local file), the full brief → publish pipeline, the daily ritual, the weekly refresh, and the scale validation workflow. The BC-2.12.003 draft set (`weekly-synthesis`, `monthly-perf`, `quarterly-mirror`, `cold-start-recovery`) either conflicts with BC names in other subsystems or duplicates ritual functions already covered by `daily-ritual.yaml` and `weekly-refresh.yaml`. PO downstream burst aligns BC-2.12.003 to this canonical set.
+
+### Workflow extension convention (F-PASS2-I2)
+
+Two file extension conventions apply across brain-factory; the path disambiguates:
+
+- **Lobster workflow files** at `plugins/brain-factory/workflows/` use **`.yaml`**. Examples: `ingest-url.yaml`, `daily-ritual.yaml`. yq-compatible; consumed by `bin/lobster-run`.
+- **GitHub Action workflow templates** at `templates/github-action-templates/` use **`.yml`**. Examples: `daily-brief.yml`, `scale-test.yml`. GitHub's canonical extension; required for GH Actions runner detection.
+
+Workflow files and Action templates may share base names (`scale-test.yaml` vs `scale-test.yml`); the directory path is the disambiguator. No file at either path uses the other extension.
+
 ## Consequences
 
 **Positive:**

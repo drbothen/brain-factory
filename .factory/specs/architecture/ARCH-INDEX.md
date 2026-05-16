@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.2"
+version: "0.1.3"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -337,6 +337,18 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.3 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS2-C2 — Lobster workflow filenames + extension decision):** ADR-006 extended with §Workflow file inventory decision and §Workflow extension convention. Canonical decision: `.yaml` extension for Lobster workflows (not `.lobster`); Option A filenames (ingest-url, ingest-source, brief-to-publish, daily-ritual, weekly-refresh, scale-test) as authoritative. BC-2.12.003 alignment delegated to PO downstream burst.
+
+**STRUCTURAL FIX (F-PASS2-C3 — VP-INDEX 64/64 paper-fix resolution):** VP-012 extended to cover BC-2.06.003 (`last_ingest` field correctness). VP-INDEX row updated; SS-06 P0 Coverage Matrix row added; Coverage summary accurate. VP-INDEX bumped to v0.1.2. False attestation closed per TD-VSDD-059.
+
+**STRUCTURAL FIX (F-PASS2-I2 — .yaml/.yml extension convention documented):** ADR-006 §Workflow extension convention added. Lobster workflows = `.yaml`; GH Action templates = `.yml`. Disambiguated by directory path. No architecture artifact uses the wrong extension — convention was implicit; now formally documented.
+
+**STRUCTURAL FIX (F-PASS2-I4 — SS-18 9-suite roster aligned to brief v0.4.15):** SS-18 §9 bats suites roster updated: `ingest.bats → skills.bats`, `wiki.bats → skills.bats`. Matches brief v0.4.15 §Test architecture (parent spec per Source-of-Truth Precedence + brain-factory-001). Sibling-sweep applied to 6 architecture artifacts: SS-02, SS-03, SS-05, SS-06 (Test Surface), VP-004 (mechanism citation). Functional test coverage unchanged; only filenames changed to match canonical brief naming.
+
+**STRUCTURAL FIX (F-PASS2-I5 — SS-02 + ADR-010 E-SOURCE-002 → E-INGEST-001):** SS-02 BC Inventory, Key Design step, and Test Surface all corrected from `E-SOURCE-002` to `E-INGEST-001` for the duplicate-URL rejection case. ADR-010 §Manifest-delta ingest corrected similarly. E-SOURCE-002 is "manifest.json unreadable" (SS-06 scope); E-INGEST-001 is "URL already ingested" (SS-02 scope).
 
 ### v0.1.2 (2026-05-16)
 

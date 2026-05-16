@@ -1,7 +1,7 @@
 ---
 document_type: vp-index
 level: L3
-version: "0.1.1"
+version: "0.1.2"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -34,7 +34,7 @@ last_updated: 2026-05-15
 | VP-009 | Plugin manifest schema correctness | bats (upgrade.bats) | BC-2.14.004, BC-2.14.005 | P0 | proposed |
 | VP-010 | Adversarial 3-CLEAN convergence | adversary cascade protocol | BC-2.07.001..BC-2.07.004 | P1 | proposed |
 | VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | BC-2.10.002, BC-2.04.001 | P0 | proposed |
-| VP-012 | Manifest write atomicity | bats (integration.bats) | NFR-018, BC-2.03.002 | P0 | proposed |
+| VP-012 | Manifest write atomicity and last_ingest field correctness | bats (integration.bats) | NFR-018, BC-2.03.002, BC-2.06.003 | P0 | proposed |
 | VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | BC-2.04.015, NFR-001 | P0 | proposed |
 | VP-014 | Brain init scaffold completeness | bats (integration.bats) | BC-2.01.001, BC-2.01.002, BC-2.01.003, BC-2.01.004 | P0 | proposed |
 | VP-015 | URL ingest pipeline: Defuddle to manifest to wiki pages | bats (integration.bats) | BC-2.02.001, BC-2.02.002, BC-2.02.003, BC-2.02.004, BC-2.02.006 | P0 | proposed |
@@ -58,8 +58,9 @@ last_updated: 2026-05-15
 ## P0 Coverage Matrix
 
 All 64 P0 BCs across all 18 subsystems have at least one VP. Coverage is exact: 64 of 64
-P0 BCs covered as of v0.1.1 (fix-burst F-1c-CV-01). The table below enumerates coverage
-by subsystem for auditability.
+P0 BCs covered. The table below enumerates coverage by subsystem for auditability.
+BC-2.06.003 coverage was corrected in v0.1.2 (F-PASS2-C3): VP-012 frontmatter claimed
+it but the body and index table did not reflect it; VP-012 extended with Group 2 tests.
 
 | Subsystem | P0 BCs | Covered by | VP(s) |
 |-----------|--------|-----------|-------|
@@ -78,6 +79,7 @@ by subsystem for auditability.
 | SS-05 Wiki Layer | BC-2.05.002 | VP-004 | wikilink resolution |
 | SS-05 Wiki Layer | BC-2.05.006 | VP-005 | frontmatter schema |
 | SS-06 Source Immutability | BC-2.06.001 | VP-003 | source immutability |
+| SS-06 Source Immutability | BC-2.06.003 | VP-012 | last_ingest field correctness |
 | SS-07 Adversarial Review | BC-2.07.001..BC-2.07.004 | VP-010 | 3-CLEAN convergence (P1) |
 | SS-08 Content Brief | BC-2.08.001, BC-2.08.002 | VP-019 | brief pipeline |
 | SS-09 Publishing | BC-2.09.001, BC-2.09.004, BC-2.09.005 | VP-020 | publish state machine |
@@ -93,7 +95,7 @@ by subsystem for auditability.
 | SS-17 Event Catalog | BC-2.17.003, BC-2.17.004 | VP-026 | schema + emit-site |
 | SS-18 Meta-Lint | BC-2.18.001..BC-2.18.005 | VP-006 | meta-lint self-audit |
 
-**Coverage summary:** 64 of 64 P0 BCs covered. No deferrals.
+**Coverage summary:** 64 of 64 P0 BCs covered. No deferrals. (BC-2.06.003 covered by VP-012 Group 2 — see VP-012 v1.1 changelog.)
 
 ---
 
@@ -105,8 +107,20 @@ by subsystem for auditability.
 - [x] VP-INDEX total (27) matches the count of VP files in this directory
 - [x] VP-013 verifies_bcs field updated: now [BC-2.04.015, NFR-001] — BC-2.02.007 moved to VP-027
 - [x] VP-027 Phase P1 (slow lane — requires gen-test-corpus.sh infrastructure); VP-022 (lobster headless) Phase P0
+- [x] VP-012 extended to cover BC-2.06.003 (last_ingest field); SS-06 row in P0 Coverage Matrix updated; Coverage summary accurate 64/64 (F-PASS2-C3)
 
 ## Changelog
+
+### v0.1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS2-C3 — VP-INDEX 64/64 paper-fix resolution):** VP-012 row
+updated: title extended to "Manifest write atomicity and last_ingest field correctness";
+Target BCs column now includes BC-2.06.003. P0 Coverage Matrix SS-06 row extended with
+`| SS-06 Source Immutability | BC-2.06.003 | VP-012 | last_ingest field correctness |`.
+Coverage summary corrected from a stale claim to accurate 64/64 attribution noting the
+v0.1.2 correction. VP-012 file itself extended with Group 2 bats harness asserting
+last_ingest field presence, ISO 8601 format, and v0.x write-once equality with
+ingested_at. False attestation from F-1c-CV-01 fix-burst resolved.
 
 ### v0.1.1 (2026-05-15)
 

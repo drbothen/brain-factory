@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-02
 title: "URL Ingest Pipeline"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -27,7 +27,7 @@ Fetches a URL via Defuddle (Node 20+ utility), writes the cleaned source to `sou
 | BC-2.02.003 | Writes JSONL token record to `.brain/logs/ingest-tokens.jsonl` | P0 |
 | BC-2.02.004 | Operates on manifest delta only (no full-corpus re-reads) | P0 |
 | BC-2.02.005 | Warns when source exceeds 50K-token chunk threshold | P1 |
-| BC-2.02.006 | Rejects already-ingested URL with E-SOURCE-002 | P0 |
+| BC-2.02.006 | Rejects already-ingested URL with E-INGEST-001 | P0 |
 | BC-2.02.007 | Latency stays sub-linear as wiki grows 1K→10K pages | P1 |
 
 ## Interfaces
@@ -42,7 +42,7 @@ Fetches a URL via Defuddle (Node 20+ utility), writes the cleaned source to `sou
 
 The ingest workflow orchestrated by `workflows/ingest-url.yaml`:
 1. **fetch step:** `scripts/defuddle-fetch.mjs <url>` → cleaned markdown (70-90% token reduction per phased-build-plan.md §1)
-2. **check-duplicate step:** `jq -e '.sources["sources/{topic}/{slug}.md"]' manifest.json` → if key exists → E-SOURCE-002, exit 2
+2. **check-duplicate step:** `jq -e '.sources["sources/{topic}/{slug}.md"]' manifest.json` → if key exists → E-INGEST-001, exit 2
 3. **write-source step:** Write to `sources/{topic}/{slug}.md` → triggers PostToolUse hooks (validate-source-immutability.sh)
 4. **generate-wiki step:** brain:librarian agent with source + wiki/index.md context → 5–15 wiki page writes → partial-failure fan-out envelope
 5. **write-manifest step:** atomic manifest.json update via manifest-write.sh (sha256 computed)
@@ -64,5 +64,5 @@ The 50K-token threshold check (BC-2.02.005) happens after fetch, before write-so
 
 ## Test Surface
 
-- `bats/ingest.bats` — positive: fresh URL → source + wiki pages written; negative: duplicate URL → E-SOURCE-002; edge: 50K+ word source → advisory exit 1
+- `tests/skills.bats` — positive: fresh URL → source + wiki pages written; negative: duplicate URL → E-INGEST-001 (exit 2); edge: 50K+ word source → advisory exit 1
 - Scale test via `workflows/scale-test.yaml` — T(10K) / T(1K) ≤ 20 (NFR-004)
