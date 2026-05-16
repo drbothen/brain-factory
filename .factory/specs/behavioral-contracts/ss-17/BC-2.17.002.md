@@ -19,21 +19,21 @@ modified: []
 
 ## Description
 
-Each row in the structured event catalog has a defined schema. The catalog is a markdown table in `plugins/brain-factory/docs/event-catalog.md`. The schema ensures observability tools and the adversary can validate emitted events against the catalog.
+Each entry in the structured event catalog has a defined schema. The catalog is a JSON array at `${CLAUDE_PLUGIN_ROOT}/scripts/event-catalog.json`. The schema ensures observability tools and the adversary can validate emitted events against the catalog.
 
 ## Preconditions
 
-1. `plugins/brain-factory/docs/event-catalog.md` exists.
+1. `${CLAUDE_PLUGIN_ROOT}/scripts/event-catalog.json` exists and is valid JSON.
 
 ## Postconditions
 
-1. Each catalog row contains: `event_type` (string, unique), `hook_name` (string), `severity` (INFO|WARN|ERROR), `trigger` (what causes this event), `fields` (name:type:description for each), `example_payload` (valid JSON JSONL line).
-2. Table is human-readable markdown.
+1. Each catalog entry is a JSON object containing: `event_type` (string, unique), `hook_name` (string), `severity` (info|warn|error), `fields` (array of field names), `example` (valid JSONL object).
+2. The catalog is machine-parseable JSON (not markdown table format).
 
 ## Invariants
 
-1. All `event_type` values match the pattern `<subsystem>.<action>` (dot-separated, lowercase).
-2. `example_payload` is valid JSON.
+1. All `event_type` values match the pattern `<domain>.<past-tense-verb>` per SS-17 §Event-type naming convention (dot-separated, lowercase, past-tense). Examples: `quarantine.blocked`, `source.immutability.violated`, `wiki.wikilink.broken`. Imperative or noun forms are forbidden.
+2. `example` field in each entry is a valid JSON object parseable by `jq empty`.
 
 ## Edge Cases
 
@@ -47,9 +47,10 @@ Each row in the structured event catalog has a defined schema. The catalog is a 
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| Parse event-catalog.md as markdown table | All rows have required columns | happy-path |
-| `jq empty` on each example_payload | All parse as valid JSON | happy-path |
-| Catalog contains row for `hook.removed_event` but no hook emits it | Cross-reference check flags stale row; bats fails | edge-case |
+| Parse `scripts/event-catalog.json` via `jq .` | Valid JSON array; all entries have required fields (`event_type`, `hook_name`, `severity`, `fields`, `example`) | happy-path |
+| `jq empty` on each `example` field in `scripts/event-catalog.json` | All parse as valid JSON objects | happy-path |
+| Catalog contains entry for `hook.removed_event` (past-tense) but no hook emits it | Cross-reference check flags stale entry; bats fails | edge-case |
+| Catalog entry with `event_type: "source.immutability.violation"` (noun form, not past-tense) | meta-lint.bats event_type naming check fails; CI blocks the PR | error |
 
 ## Verification Properties
 

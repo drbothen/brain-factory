@@ -33,14 +33,17 @@ modified: []
 1. Hook performs `git add -A` and `git commit -m "brain(auto): flush session state"` (conventional-commit prefix `brain(auto):`).
 2. Hook exits 0.
 3. stdout: `{"verdict": "allow", "message": "Session state committed: <short-sha>.", "trace": "<uuid>"}`.
+4. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "session.state.committed", "hook_name": "flush-state-and-commit.sh", "sha": "<short-sha>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On no uncommitted changes:**
 1. Hook exits 0.
 2. stdout: `{"verdict": "allow", "message": "No changes to flush.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "session.state.flushed", "hook_name": "flush-state-and-commit.sh", "committed": false}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On git commit failure:**
 1. Hook exits 1 (advisory — session closes but operator is warned).
 2. stdout: `{"verdict": "advise", "code": "E-FLUSH-001", "message": "Failed to auto-commit brain state. Manual commit required: <git-error>.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "session.state.commit_failed", "hook_name": "flush-state-and-commit.sh", "error": "<git-error>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

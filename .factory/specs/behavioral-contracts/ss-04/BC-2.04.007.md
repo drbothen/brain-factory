@@ -31,9 +31,11 @@ modified: []
 **On invalid wiki type directory:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-WIKI-005", "message": "Invalid wiki type directory '<type>' in path <path>. Must be one of: concepts, people, frameworks, syntheses, observations, questions.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "wiki.page_type.rejected", "hook_name": "validate-page-type-policy.sh", "path": "<path>", "invalid_type": "<type>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On valid wiki type:**
 1. Hook exits 0.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "wiki.page_type.accepted", "hook_name": "validate-page-type-policy.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

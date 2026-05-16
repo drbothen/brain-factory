@@ -32,14 +32,17 @@ modified: []
 **On missing `embedding_status`:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-SCHEMA-001", "message": "Missing required frontmatter field: embedding_status. Add embedding_status: pending to <path>.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "frontmatter.schema.violated", "hook_name": "validate-frontmatter-schema.sh", "path": "<path>", "missing_field": "embedding_status"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On present `embedding_status` with valid value (pending|computed|stale):**
 1. Hook exits 0.
 2. stdout: `{"verdict": "allow", "message": "Frontmatter schema valid.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "frontmatter.schema.validated", "hook_name": "validate-frontmatter-schema.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On present `embedding_status` with invalid value:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-SCHEMA-002", "message": "Invalid embedding_status value '<val>' in <path>. Must be one of: pending, computed, stale.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "frontmatter.schema.violated", "hook_name": "validate-frontmatter-schema.sh", "path": "<path>", "invalid_field": "embedding_status", "invalid_value": "<val>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

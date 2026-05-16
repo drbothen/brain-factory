@@ -33,9 +33,11 @@ modified: []
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-NAMING-001", "message": "Filename '<name>' is not kebab-case. Rename to '<suggested-kebab-name>' before writing.", "trace": "<uuid>"}`.
 3. The suggested name converts the input to kebab-case (lowercase, spaces→hyphens, underscores→hyphens).
+4. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "naming.kebab_case.rejected", "hook_name": "enforce-kebab-case.sh", "filename": "<name>", "suggested": "<suggested-kebab-name>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On kebab-case filename:**
 1. Hook exits 0.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "naming.kebab_case.accepted", "hook_name": "enforce-kebab-case.sh", "filename": "<name>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

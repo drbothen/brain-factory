@@ -33,10 +33,12 @@ modified: []
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-WIKI-001", "message": "Broken wikilink [[<slug>]] in <path>. No matching wiki page found.", "trace": "<uuid>"}`.
 3. Reports ALL broken links in a single response (not just the first).
+4. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "wiki.wikilink.broken", "hook_name": "validate-wikilink-integrity.sh", "path": "<path>", "broken_slugs": ["<slug>"]}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On all wikilinks resolve:**
 1. Hook exits 0.
 2. stdout: `{"verdict": "allow", "message": "All wikilinks valid.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "wiki.wikilink.validated", "hook_name": "validate-wikilink-integrity.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On no wikilinks in file:**
 1. Hook exits 0 (no links = no broken links).

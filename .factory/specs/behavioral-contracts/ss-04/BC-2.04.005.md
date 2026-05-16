@@ -30,13 +30,16 @@ Beyond `embedding_status` (BC-2.04.004), wiki pages have additional mandatory fr
 **On any missing mandatory field:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-SCHEMA-006", "message": "Missing required frontmatter field(s): [<field1>, <field2>] in <path>.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "frontmatter.schema.violated", "hook_name": "validate-frontmatter-schema.sh", "path": "<path>", "missing_fields": ["<field1>"]}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On all mandatory fields present and valid:**
 1. Hook exits 0. stdout: `{"verdict": "allow", ...}`.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "frontmatter.schema.validated", "hook_name": "validate-frontmatter-schema.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On invalid `type` value:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-SCHEMA-007", "message": "Invalid wiki type '<val>' in <path>. Must be one of: concepts, people, frameworks, syntheses, observations, questions.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "frontmatter.schema.violated", "hook_name": "validate-frontmatter-schema.sh", "path": "<path>", "invalid_field": "type", "invalid_value": "<val>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

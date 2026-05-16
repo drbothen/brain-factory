@@ -291,7 +291,7 @@ Target: < 100ms wall-clock on GitHub Actions ubuntu-latest.
 **Actor:** devops-engineer  
 **Precondition:** 10K-source synthetic corpus from `scripts/gen-test-corpus.sh`  
 **Steps:**
-1. Generate corpus: `bash scripts/gen-test-corpus.sh 10000 --seed 42 --dir /tmp/scale-brain`
+1. Generate corpus: `bash scripts/gen-test-corpus.sh --sources 10000 --seed 42 /tmp/scale-brain`
 2. Run `/brain:lint-wiki` on the 10K-page wiki
 3. Measure wall-clock time
 4. Ingest 10 additional URLs; measure per-ingest latency

@@ -31,9 +31,11 @@ modified: []
 **On avoid-list match found:**
 1. Hook exits 1 (advisory).
 2. stdout: `{"verdict": "advise", "code": "E-VOICE-001", "matches": ["<term1>", "<term2>"], "message": "Voice avoid-list matches found. Review before finalizing.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "voice.avoid_list.matched", "hook_name": "validate-voice-avoid-list.sh", "path": "<path>", "match_count": N}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On no avoid-list match:**
 1. Hook exits 0. stdout: `{"verdict": "allow", ...}`.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "voice.avoid_list.passed", "hook_name": "validate-voice-avoid-list.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

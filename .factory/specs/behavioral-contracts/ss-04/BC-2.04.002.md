@@ -32,12 +32,12 @@ modified: []
 **On overwrite attempt (path matches an existing manifest entry):**
 1. Hook exits 2.
 2. Hook writes to stdout: `{"verdict": "block", "code": "E-SOURCE-001", "message": "Source file <path> already exists in manifest. Sources are immutable. Use /brain:rename-page to rename.", "trace": "<uuid>"}`.
-3. Hook emits JSONL event to stderr: `{"ts": "...", "event_type": "source.immutability.violation", "hook_name": "validate-source-immutability.sh", "path": "<path>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "...", "event_type": "source.immutability.violated", "hook_name": "validate-source-immutability.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On new source write (path not in manifest):**
 1. Hook exits 0.
 2. Hook writes to stdout: `{"verdict": "allow", "message": "New source accepted.", "trace": "<uuid>"}`.
-3. Hook emits JSONL event: `{"ts": "...", "event_type": "source.new", "hook_name": "validate-source-immutability.sh", "path": "<path>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "...", "event_type": "source.added", "hook_name": "validate-source-immutability.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 
@@ -82,4 +82,4 @@ modified: []
 
 - BC-2.04.016 — composes with (universal hook I/O contract)
 - BC-2.06.001 — depends on (source immutability invariant)
-- BC-2.04.017 — composes with (event emission)
+- BC-2.04.017 — composes with (event emission: source.immutability.violated, source.added — past-tense per SS-17)

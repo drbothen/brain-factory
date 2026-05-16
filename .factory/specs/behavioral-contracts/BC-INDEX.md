@@ -1,7 +1,7 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.2"
+version: "0.1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -247,6 +247,22 @@ The gate must return zero output on all five files. ARCH-INDEX.md is the fifth f
 ---
 
 ## Changelog
+
+### v0.1.3 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS2-C1 — event_type past-tense sibling-sweep):** BC-2.04.002 event_type values corrected to past-tense (`source.immutability.violated`, `source.added`). BC-2.04.003 through BC-2.04.014 received explicit event_type enumeration per BC-2.04.017 universal requirement. All use `<domain>.<past-tense-verb>` per SS-17 §Event-type naming convention.
+
+**STRUCTURAL FIX (F-PASS2-C4 — BC-2.17.002 SS-17 schema alignment):** Catalog location, format, fields, and event_type pattern corrected to match SS-17 architecture.
+
+**STRUCTURAL FIX (F-PASS2-I3 — BC-2.13.003 api-retry path):** `scripts/api-retry.sh` → `scripts/lib/api-retry.sh`.
+
+**STRUCTURAL FIX (F-PASS2-I7 — policies template filename):** `templates/policies-yaml-template.yaml` → `templates/policies.yaml` in BC-2.15.001 and BC-2.01.001.
+
+**STRUCTURAL FIX (F-PASS2-I8 — BC-2.08.003 companion-posts count):** "3–5 files" → "3 files" throughout BC-2.08.003.
+
+**STRUCTURAL FIX (Decision 1 — BC-2.12.003 workflow filenames + extension):** `.lobster` → `.yaml`; six canonical filenames per ADR-006: `ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`.
+
+**STRUCTURAL FIX (Decision 3 — BC-2.06.003 VP coverage):** VP-012 (Group 2) added to Verification Properties and VP Anchors; "(no direct VP — P0; VP gap noted)" removed.
 
 ### v0.1.2 (2026-05-16)
 

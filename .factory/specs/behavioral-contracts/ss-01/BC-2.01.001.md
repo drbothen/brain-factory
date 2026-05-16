@@ -45,7 +45,7 @@ removal_reason: null
    - `.brain/logs/`, `.brain/STATE.md` (initialized with six-dimensional convergence tracking)
    - `.github/workflows/` (6 core GH Action template files from v0.1 set)
    - `CLAUDE.md` (brain CLAUDE.md from `${CLAUDE_PLUGIN_ROOT}/templates/claude-md-template.md`)
-   - `.brain/policies.yaml` (initialized with 10 baseline policies from `${CLAUDE_PLUGIN_ROOT}/templates/policies-yaml-template.yaml`)
+   - `.brain/policies.yaml` (initialized with 10 baseline policies from `${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml`)
    - `.brain/manifest.json` (initialized with empty sources array and schema that supports `chunks` array and `embeddings_model: null`)
    - `wiki/index.md` (initialized empty index)
    - `wiki/log.md` (initialized empty ingest log)

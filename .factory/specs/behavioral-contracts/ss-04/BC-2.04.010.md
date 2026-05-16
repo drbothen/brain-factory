@@ -32,9 +32,11 @@ modified: []
 **On invalid state transition:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-PUBLISH-001", "message": "Invalid state transition: '<from>' → '<to>' is not allowed. Valid transitions: draft→ready, ready→published.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "publish.state.transition_rejected", "hook_name": "validate-publish-state.sh", "path": "<path>", "from_state": "<from>", "to_state": "<to>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On valid transition or new file creation:**
 1. Hook exits 0.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "publish.state.transition_accepted", "hook_name": "validate-publish-state.sh", "path": "<path>", "to_state": "<to>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

@@ -19,7 +19,7 @@ modified: []
 
 ## Description
 
-`/brain:write` supports two optional flags absorbed from wclaude: `--companion-posts` generates 3–5 companion social posts atomized from the main article (written to `drafts/linkedin/companions/`); `--hero-prompt` generates a hero image prompt written to `drafts/assets/{slug}-hero-prompt.md`. Both flags are additive — they do not change the main article output.
+`/brain:write` supports two optional flags absorbed from wclaude: `--companion-posts` generates 3 companion social posts atomized from the main article (written to `drafts/linkedin/companions/`); `--hero-prompt` generates a hero image prompt written to `drafts/assets/{slug}-hero-prompt.md`. Both flags are additive — they do not change the main article output.
 
 ## Preconditions
 
@@ -29,7 +29,7 @@ modified: []
 ## Postconditions
 
 **`--companion-posts`:**
-1. 3–5 companion posts written to `drafts/linkedin/companions/{slug}-companion-{N}.md`.
+1. 3 companion posts written to `drafts/linkedin/companions/{slug}-companion-{N}.md`.
 2. Each companion has distinct insight; no duplicate with main article or other companions.
 
 **`--hero-prompt`:**
@@ -52,14 +52,14 @@ modified: []
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| `--companion-posts` | 3–5 companion files in `drafts/linkedin/companions/`; exit 0 | happy-path |
+| `--companion-posts` | 3 companion files in `drafts/linkedin/companions/`; exit 0 | happy-path |
 | `--hero-prompt` | Hero prompt file in `drafts/assets/`; exit 0 | happy-path |
 
 ## Verification Properties
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| (no VP — P1) | --companion-posts creates 3–5 files | bats skills.bats |
+| (no VP — P1) | --companion-posts creates 3 files | bats skills.bats |
 | (no VP — P1) | --hero-prompt creates prompt file | bats skills.bats |
 
 ## Traceability

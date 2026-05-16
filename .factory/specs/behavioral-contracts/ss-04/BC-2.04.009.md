@@ -32,9 +32,11 @@ modified: []
 **On unresolved source ID:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-WIKI-007", "message": "Unresolved source_id '<slug>' in <path>. No matching entry in manifest.json.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "source.citation.unresolved", "hook_name": "validate-source-id-citation.sh", "path": "<path>", "missing_source_id": "<slug>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On all source IDs resolve (or `source_ids: []` — empty):**
 1. Hook exits 0.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "source.citation.resolved", "hook_name": "validate-source-id-citation.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

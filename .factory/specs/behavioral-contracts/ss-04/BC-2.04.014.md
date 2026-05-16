@@ -31,13 +31,16 @@ modified: []
 **In a valid brain with GREEN overall state:**
 1. Hook exits 0.
 2. stdout: `{"verdict": "allow", "message": "Brain health: GREEN. <summary>", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "brain.health.checked", "hook_name": "brain-health-check.sh", "overall_state": "GREEN"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **In a valid brain with YELLOW or RED state:**
 1. Hook exits 1 (advisory).
 2. stdout: `{"verdict": "advise", "code": "E-HEALTH-002", "message": "Brain health: <YELLOW|RED>. <dimension summaries with issues>", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "brain.health.checked", "hook_name": "brain-health-check.sh", "overall_state": "<YELLOW|RED>", "red_dimensions": ["<dim>"]}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **Not in a brain directory (`.brain/STATE.md` absent):**
 1. Hook exits 0 silently (no banner shown — not every session is a brain session).
+2. No event emitted (not a brain session; no catalog row needed for the silent no-op path).
 
 ## Invariants
 

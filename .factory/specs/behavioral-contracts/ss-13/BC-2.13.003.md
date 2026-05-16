@@ -35,7 +35,7 @@ Any GH Action template that calls an external API (LinkedIn, Readwise, Raindrop)
 ## Invariants
 
 1. All 3 API-calling templates (LinkedIn, Readwise, Raindrop) implement this logic.
-2. Backoff logic is shared (not copy-pasted per template) — centralized in `scripts/api-retry.sh`.
+2. Backoff logic is shared (not copy-pasted per template) — centralized in `scripts/lib/api-retry.sh`.
 
 ## Canonical Test Vectors
 

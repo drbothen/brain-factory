@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.3"
+version: "0.1.4"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -397,17 +397,17 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC-2.01.004 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | tests/integration.bats |
 | BC-2.01.005 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | tests/integration.bats |
 | BC-2.01.006 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | tests/integration.bats |
-| BC-2.02.001 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
-| BC-2.02.002 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
-| BC-2.02.003 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
-| BC-2.02.004 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
-| BC-2.02.005 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | tests/ingest.bats |
-| BC-2.02.006 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.02.001 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/skills.bats |
+| BC-2.02.002 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/skills.bats |
+| BC-2.02.003 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/skills.bats |
+| BC-2.02.004 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/skills.bats |
+| BC-2.02.005 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | tests/skills.bats |
+| BC-2.02.006 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/skills.bats |
 | BC-2.02.007 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | tests/integration.bats (scale — slow lane) |
-| BC-2.03.001 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
-| BC-2.03.002 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
-| BC-2.03.003 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
-| BC-2.03.004 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.03.001 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/skills.bats |
+| BC-2.03.002 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/skills.bats |
+| BC-2.03.003 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/skills.bats |
+| BC-2.03.004 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/skills.bats |
 | BC-2.04.001 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/quarantine.bats |
 | BC-2.04.002 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
 | BC-2.04.003 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
@@ -425,15 +425,15 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC-2.04.015 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats (perf assertion — p99 latency) |
 | BC-2.04.016 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
 | BC-2.04.017 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.05.001 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats (scale path) |
-| BC-2.05.002 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats (property-based) |
-| BC-2.05.003 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats |
-| BC-2.05.004 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats |
-| BC-2.05.005 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats |
+| BC-2.05.001 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats (scale path) |
+| BC-2.05.002 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats (property-based) |
+| BC-2.05.003 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats |
+| BC-2.05.004 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats |
+| BC-2.05.005 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats |
 | BC-2.05.006 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/hooks.bats |
 | BC-2.06.001 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/hooks.bats |
-| BC-2.06.002 | CAP-006 | SS-06: Source Layer and Immutability | P1 | tests/ingest.bats |
-| BC-2.06.003 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/ingest.bats |
+| BC-2.06.002 | CAP-006 | SS-06: Source Layer and Immutability | P1 | tests/skills.bats |
+| BC-2.06.003 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/integration.bats |
 | BC-2.06.004 | CAP-006 | SS-06: Source Layer and Immutability | P1 | tests/integration.bats |
 | BC-2.07.001 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | tests/adversary.bats |
 | BC-2.07.002 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | tests/adversary.bats |
@@ -534,6 +534,26 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
 ## Changelog
 
+### v0.1.4 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS2-C1 sibling-sweep — event_type past-tense in all hook BCs):** BC-2.04.002 `event_type` values corrected to past-tense: `source.immutability.violation` → `source.immutability.violated`; `source.new` → `source.added`. BC-2.04.003 through BC-2.04.014 each received explicit `event_type` enumeration in Postconditions per BC-2.04.017 universal requirement. All event_types use `<domain>.<past-tense-verb>` pattern per SS-17 §Event-type naming convention.
+
+**STRUCTURAL FIX (F-PASS2-C4 — BC-2.17.002 align with SS-17 catalog schema):** BC-2.17.002 updated: catalog location changed from `plugins/brain-factory/docs/event-catalog.md` to `${CLAUDE_PLUGIN_ROOT}/scripts/event-catalog.json`; format changed from "markdown table" to "JSON array"; fields aligned with SS-17 schema (`event_type`, `hook_name`, `severity`, `fields`, `example` — no `trigger`; `example` not `example_payload`); event_type pattern changed from `<subsystem>.<action>` to `<domain>.<past-tense-verb>` per SS-17 §Event-type naming convention. Canonical test vectors updated to reflect JSON format.
+
+**STRUCTURAL FIX (F-PASS2-I1 — test-vectors.md gen-test-corpus CLI sibling-sweep):** `prd-supplements/test-vectors.md` Scenario 4 (Scale Test) corrected: `bash scripts/gen-test-corpus.sh 10000 --seed 42 --dir /tmp/scale-brain` → `bash scripts/gen-test-corpus.sh --sources 10000 --seed 42 /tmp/scale-brain` per ADR-012 §Script interface and BC-2.16.006.
+
+**STRUCTURAL FIX (F-PASS2-I3 — BC-2.13.003 api-retry path sibling-sweep):** BC-2.13.003 Invariant 2 corrected: `scripts/api-retry.sh` → `scripts/lib/api-retry.sh` per ADR-013, ADR-016, and SS-13.
+
+**STRUCTURAL FIX (F-PASS2-I7 — canonical policies template filename):** BC-2.15.001 and BC-2.01.001 updated: `templates/policies-yaml-template.yaml` → `templates/policies.yaml` per SS-15 and ARCH-INDEX source-of-truth precedence.
+
+**STRUCTURAL FIX (F-PASS2-I8 — BC-2.08.003 companion-posts count):** BC-2.08.003 Description, Postconditions, Canonical Test Vector, and Verification Properties updated: "3–5 files" → "3 files" per F-PASS1-I7 closure and `prd-supplements/interface-definitions.md`.
+
+**STRUCTURAL FIX (Decision 1 — BC-2.12.003 Lobster workflow filenames + extension):** BC-2.12.003 updated throughout: extension changed from `.lobster` to `.yaml`; six workflow filenames changed to canonical ADR-006 set: `ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`. Postconditions, Invariants, and Canonical Test Vectors updated. Traceability Capability Anchor Justification updated to cite ADR-006 §Workflow file inventory decision.
+
+**STRUCTURAL FIX (Decision 2 — 9-suite roster downstream sweep):** §7 RTM rows corrected: `tests/ingest.bats` → `tests/skills.bats` for BC-2.02.001..006, BC-2.03.001..004, BC-2.06.002; `tests/wiki.bats` → `tests/skills.bats` for BC-2.05.001..005. BC-2.06.003 RTM row updated to `tests/integration.bats` (VP-012 Group 2 coverage via integration pipeline). All RTM rows now use only brief v0.4.15 canonical 9-suite names per SS-18 §9 bats suites alignment decision (F-PASS2-I4).
+
+**STRUCTURAL FIX (Decision 3 — BC-2.06.003 VP coverage update):** BC-2.06.003 Verification Properties table updated: "(no direct VP — P0; VP gap noted)" replaced with "VP-012 (Group 2: last_ingest field correctness)". VP Anchors section added citing VP-012.
+
 ### v0.1.3 (2026-05-16)
 
 **STRUCTURAL FIX (F-PASS1-C1):** BC-2.13.001 Description and Postconditions updated to use ADR-013 canonical v0.1 template names (`daily-brief.yml`, `weekly-refresh.yml`, `ingest-rss.yml`, `health-check.yml`, `lint-wiki.yml`, `scale-test.yml`). Removed erroneous names (`weekly-lint.yml`, `weekly-synthesis.yml`, `schema-refresh.yml`, `wikilink-check.yml`, `quarterly-mirror.yml`). `quarterly-mirror.yml` is a v0.5 addition per ADR-013 §Template inventory — it must not appear in the v0.1 list. Canonical test vector updated to enumerate the 6 correct filenames.
@@ -548,7 +568,7 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
 **STRUCTURAL FIX (F-PASS1-I10):** VP-TBD placeholders in all 95 BC files replaced with actual VP IDs from VP-INDEX P0 Coverage Matrix. P0 BCs with VP coverage: updated to cite VP-NNN directly. P1/P2 BCs with no VP coverage: placeholder replaced with `(no VP — P1/P2; deferred per VP-INDEX coverage policy)`. One P0 VP gap noted: BC-2.06.003 (last_ingest timestamps) has no direct VP in VP-INDEX v0.1.1; gap noted inline pending VP-INDEX v0.1.2 update (architect scope).
 
-**STRUCTURAL FIX (F-PASS1-I11):** §7 RTM Test Type column header and all values renamed from ambiguous short-form labels (`integration/bats`, `unit/bats (hooks.bats)`, etc.) to explicit canonical 9-suite file names per SS-18 roster: `tests/integration.bats`, `tests/hooks.bats`, `tests/ingest.bats`, `tests/wiki.bats`, `tests/quarantine.bats`, `tests/adversary.bats`, `tests/policies.bats`, `tests/upgrade.bats`, `tests/meta-lint.bats`. Column header renamed from "Test Type" to "Test Suite (SS-18 canonical 9-suite roster)".
+**STRUCTURAL FIX (F-PASS1-I11):** §7 RTM Test Type column header and all values renamed from ambiguous short-form labels to explicit canonical 9-suite file names per SS-18 roster. Column header renamed from "Test Type" to "Test Suite (SS-18 canonical 9-suite roster)". Note: subsequent F-PASS2 Decision 2 sweep corrected `tests/ingest.bats` → `tests/skills.bats` and `tests/wiki.bats` → `tests/skills.bats` throughout the RTM to align with brief v0.4.15 naming (see v0.1.4 changelog).
 
 **STRUCTURAL FIX (F-PASS1-I1 — architect decision applied):** `/brain:init` public CLI verified as zero-argument in `interface-definitions.md`. Already correct — no change required. Confirmed per SS-01 §Architectural Decisions §Public CLI: zero arguments.
 

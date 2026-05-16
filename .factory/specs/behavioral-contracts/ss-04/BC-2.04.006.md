@@ -31,9 +31,11 @@ modified: []
 **On coherence violation (index has page not in log, or vice versa):**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-WIKI-003", "message": "Index-log coherence violation: [<slug>] appears in index but not in log.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "wiki.index_log.coherence_violated", "hook_name": "validate-index-log-coherence.sh", "missing_slug": "<slug>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On coherent state:**
 1. Hook exits 0. stdout: `{"verdict": "allow", ...}`.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "wiki.index_log.coherence_verified", "hook_name": "validate-index-log-coherence.sh"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

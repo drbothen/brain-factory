@@ -19,12 +19,12 @@ modified: []
 
 ## Description
 
-`.brain/policies.yaml` is the brain's governance configuration file. `/brain:init` copies the default template from `${CLAUDE_PLUGIN_ROOT}/templates/policies-yaml-template.yaml` to `.brain/policies.yaml`. The template ships pre-populated with 10 baseline policies enumerated in plugin-plan.md §10.2. Operators may extend via `/brain:policy-add`.
+`.brain/policies.yaml` is the brain's governance configuration file. `/brain:init` copies the default template from `${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml` to `.brain/policies.yaml`. The template ships pre-populated with 10 baseline policies enumerated in plugin-plan.md §10.2. Operators may extend via `/brain:policy-add`.
 
 ## Preconditions
 
 1. `/brain:init` is executing its template-expansion phase.
-2. `${CLAUDE_PLUGIN_ROOT}/templates/policies-yaml-template.yaml` is present.
+2. `${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml` is present.
 
 ## Postconditions
 
@@ -41,7 +41,7 @@ modified: []
 
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
-| EC-001 | `${CLAUDE_PLUGIN_ROOT}/templates/policies-yaml-template.yaml` is missing or corrupt at init time | `/brain:init` exits with E-INIT-004 ("Plugin root not found — reinstall brain-factory"); `.brain/policies.yaml` is not created; brain scaffold is rolled back |
+| EC-001 | `${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml` is missing or corrupt at init time | `/brain:init` exits with E-INIT-004 ("Plugin root not found — reinstall brain-factory"); `.brain/policies.yaml` is not created; brain scaffold is rolled back |
 | EC-002 | `.brain/policies.yaml` already exists when `/brain:init` is run (re-init attempt) | `/brain:init` exits with E-INIT-002 before reaching the policy-copy phase; existing `.brain/policies.yaml` is not overwritten |
 | EC-003 | The policies template contains a policy with a duplicate key (malformed template at authoring time) | `yq eval '.' .brain/policies.yaml` fails YAML parse after copy; `/brain:policy-registry-validate` detects the duplicate and exits 1; operator is directed to reinstall the plugin |
 

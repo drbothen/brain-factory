@@ -31,9 +31,11 @@ modified: []
 **On AI attribution token found:**
 1. Hook exits 2.
 2. stdout: `{"verdict": "block", "code": "E-ATTR-001", "message": "Forbidden AI attribution token detected in bash command. Remove 'Co-Authored-By: Claude' / robot emoji / 'Generated with Claude Code' from the command.", "trace": "<uuid>"}`.
+3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "attribution.token.blocked", "hook_name": "block-ai-attribution.sh", "matched_pattern": "<pattern>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On no attribution tokens:**
 1. Hook exits 0.
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "attribution.token.cleared", "hook_name": "block-ai-attribution.sh"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 

@@ -50,7 +50,7 @@ Each manifest entry contains `last_ingest` (ISO8601) recording the most recent t
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| (no direct VP — P0; VP gap noted per F-PASS1-I10 backfill; covered by integration.bats ingest pipeline implicitly) | last_ingest present and valid ISO8601 | bats integration.bats |
+| VP-012 (Group 2: last_ingest field correctness) | last_ingest present and valid ISO8601 after successful ingest | bats integration.bats |
 
 ## Traceability
 
@@ -60,6 +60,10 @@ Each manifest entry contains `last_ingest` (ISO8601) recording the most recent t
 | Architecture Module | SS-06: Source Layer and Immutability |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1 |
+
+## VP Anchors
+
+- VP-012 — Manifest schema integrity (Group 2: last_ingest field correctness)
 
 ## Related BCs
 
