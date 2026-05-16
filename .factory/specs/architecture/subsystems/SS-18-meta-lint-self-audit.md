@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-18
 title: "Meta-Lint and Self-Audit"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -38,10 +38,13 @@ The factory tests itself. `meta-lint.bats` validates that brain-factory's own SK
 
 ### 9 bats suites
 
-The 9 bats suites (NFR-019 — exactly 9), aligned to brief v0.4.15 §Test architecture per
+The 9 bats suites (NFR-019 — exactly 9), aligned to brief v0.4.17 §Test architecture per
 Source-of-Truth Precedence (brief is parent spec; SS-18 derives). An earlier draft of this
 section used `ingest.bats` and `wiki.bats` (more functional naming for SS-02/03 and SS-05);
-brief v0.4.15 commits to `skills.bats` and `templates.bats` as the broader category names.
+brief v0.4.17 commits to `skills.bats` and `templates.bats` as the broader category names.
+(Version cite updated F-PASS5-I2: v0.4.15 → v0.4.17. Brief v0.4.16 modified §Bring-up plan
++ §bin/lobster-run only — §Test architecture was unchanged. Brief v0.4.17 adds policies
+filename sweep per PO's parallel Pass 5 burst — §Test architecture remains unchanged.)
 SS-18 is aligned to brief naming per CLAUDE.md Source-of-Truth Precedence + brain-factory-001
 (F-PASS2-I4 decision). Functional coverage is unchanged — the brief names reflect that
 ingest and wiki manipulation are skill-level operations, and templates covers GH Action

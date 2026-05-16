@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.5"
+version: "0.1.6"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -10,7 +10,7 @@ traces_to: ../prd/index.md
 inherits_from: prd@v0.1.1
 deployment_topology: single-service
 created: 2026-05-15
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 ---
 
 # Architecture Index: brain-factory
@@ -276,7 +276,7 @@ graph TD
 | VP-004 | Wikilink resolution correctness | bats (unit + integration) | P0 |
 | VP-005 | Frontmatter schema conformance | bats (hooks.bats) | P0 |
 | VP-006 | Meta-lint factory self-audit | meta-lint.bats | P0 |
-| VP-007 | Lobster workflow determinism | bats (unit) | P0 |
+| VP-007 | Lobster workflow determinism | bats (integration.bats) | P0 |
 | VP-008 | Hook event catalog completeness | meta-lint.bats cross-ref | P0 |
 | VP-009 | Plugin manifest schema correctness | bats (upgrade.bats) | P0 |
 | VP-010 | Adversarial 3-CLEAN convergence | adversary cascade protocol | P1 |
@@ -333,10 +333,19 @@ Additional Self-Audit items:
 - [x] All HIGH-impact risks addressed (see subsystem design docs)
 - [x] deployment_topology field present in frontmatter
 - [x] Document Map complete with all section files listed
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS5 — prevents stale last_updated drift.)
 
 ---
 
 ## Changelog
+
+### v0.1.6 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS5-I1 — VP-007 mechanism label drift):** VP-INDEX Summary table row for VP-007 corrected from `bats (unit)` to `bats (integration.bats)`. VP-007 body (source of truth per Source-of-Truth Precedence: VP file supersedes VP-INDEX) specifies `bats (integration.bats)`. ARCH-INDEX VP-INDEX Summary is a derived summary; it must match the VP file body.
+
+**STRUCTURAL FIX (F-PASS5-I3 — last_updated stale):** ARCH-INDEX frontmatter `last_updated` bumped from `2026-05-15` to `2026-05-16`. Freshness invariant: last_updated >= MAX(date in any Changelog entry) = 2026-05-16. Satisfied.
+
+**STRUCTURAL FIX (F-PASS5 Self-Audit addition — last_updated freshness check):** Added `last_updated freshness check` item to Self-Audit Checklist: before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). Prevents silent last_updated drift across future fix-bursts.
 
 ### v0.1.5 (2026-05-16)
 

@@ -1,14 +1,14 @@
 ---
 document_type: vp-index
 level: L3
-version: "0.1.2"
+version: "0.1.3"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 created: 2026-05-15
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 ---
 
 # Verification Property Index: brain-factory
@@ -29,7 +29,7 @@ last_updated: 2026-05-15
 | VP-004 | Wikilink resolution correctness | bats (unit + integration) | BC-2.04.003, BC-2.05.002 | P0 | proposed |
 | VP-005 | Frontmatter schema conformance | bats (hooks.bats) | BC-2.04.004, BC-2.04.005, BC-2.05.006 | P0 | proposed |
 | VP-006 | Meta-lint factory self-audit | meta-lint.bats | BC-2.18.001..BC-2.18.005 | P0 | proposed |
-| VP-007 | Lobster workflow determinism | bats (unit) | BC-2.12.001, BC-2.12.002 | P0 | proposed |
+| VP-007 | Lobster workflow determinism | bats (integration.bats) | BC-2.12.001, BC-2.12.002 | P0 | proposed |
 | VP-008 | Hook event catalog completeness | meta-lint.bats cross-ref | BC-2.17.001, BC-2.17.002 | P0 | proposed |
 | VP-009 | Plugin manifest schema correctness | bats (upgrade.bats) | BC-2.14.004, BC-2.14.005 | P0 | proposed |
 | VP-010 | Adversarial 3-CLEAN convergence | adversary cascade protocol | BC-2.07.001..BC-2.07.004 | P1 | proposed |
@@ -110,6 +110,12 @@ it but the body and index table did not reflect it; VP-012 extended with Group 2
 - [x] VP-012 extended to cover BC-2.06.003 (last_ingest field); SS-06 row in P0 Coverage Matrix updated; Coverage summary accurate 64/64 (F-PASS2-C3)
 
 ## Changelog
+
+### v0.1.3 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS5-I1 — VP-007 mechanism label drift):** VP-007 row Mechanism column corrected from `bats (unit)` to `bats (integration.bats)`. The VP-007 body (source of truth per Source-of-Truth Precedence: VP file supersedes VP-INDEX) specifies `bats (integration.bats)` at its Verification Mechanism heading. VP-INDEX label was stale from initial draft; now aligned to VP file body.
+
+**STRUCTURAL FIX (F-PASS5-I3 — last_updated stale):** VP-INDEX frontmatter `last_updated` bumped from `2026-05-15` to `2026-05-16` to reflect today's fix-burst edits. Freshness check: last_updated >= MAX(date in any Changelog entry) = 2026-05-16. Satisfied.
 
 ### v0.1.2 (2026-05-16)
 
