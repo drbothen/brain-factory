@@ -4,7 +4,7 @@ id: ADR-006
 title: "Lobster runtime as bash workflow orchestrator (not LangChain, not Temporal)"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -117,3 +117,12 @@ Workflow files and Action templates may share base names (`scale-test.yaml` vs `
 - BC-2.12.003 (six workflow YAML files)
 - BC-2.12.004 (headless execution)
 - ADR-012 (scale-test workflow integration)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS2-C2:** §Workflow file inventory decision section added — canonical `.yaml` extension decision and Option A filename set formalized as authoritative. BC-2.12.003 alignment note added. [audit-trail]
+- **F-PASS2-I2:** §Workflow extension convention section added — disambiguates `plugins/brain-factory/workflows/*.yaml` (Lobster) from `templates/github-action-templates/*.yml` (GH Actions) by directory path. [audit-trail]

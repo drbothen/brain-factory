@@ -4,7 +4,7 @@ id: ADR-013
 title: "GitHub Action templates strategy: 19 total templates across v0.x (15 author + 4 community-optional)"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -103,3 +103,14 @@ BC-2.13.001 requires the v0.1 core set (6 templates) to "run green on push." Thi
 - BC-2.13.003 (rate-limit handling: 429 exponential backoff)
 - BC-2.13.004 (4 community-optional templates in tarball)
 - ADR-016 (api-retry.sh shared helper)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS1-C7:** §Rate-limit handling `api-retry.sh` path corrected from `hooks/lib/api-retry.sh` to `scripts/lib/api-retry.sh` for GH Actions context. Explanation of the dual-copy pattern added (hooks/lib/ for Claude Code session; scripts/lib/ for GH Actions runner). [audit-trail]
+- **F-PASS3-I1:** §Rate-limit handling authoritative retry policy explicitly documented: 3 retries maximum, 60-second base backoff interval, exit 1 advisory on retry exhaustion. Aligns with BC-2.13.003. [audit-trail]
+- **F-PASS3-S2:** `cold-start.yml` description updated to align with brief §cold-start section — template name and trigger pattern now match the authoritative product brief description. [audit-trail]
+- **F-1c-CV-04:** Count Disambiguation Note section added — `plugin-plan.md` reference to 18 templates superseded by this ADR and PRD §1.2 (authoritative count: 19 templates, 15 author + 4 community-optional). [audit-trail]

@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-014
 title: "Brain initialization scaffolds complete folder structure"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -141,3 +141,11 @@ bats (integration.bats) — end-to-end init assertion on a temp brain.
 ## Status
 
 proposed — pending Phase 3 implementation of init skill and integration.bats
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS9-C1 (pass sweep) / F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-014 H1 title and all three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned to canonical form during the Pass 10 27-VP sweep. VP-014 was one of the VPs with drift resolved. [audit-trail]

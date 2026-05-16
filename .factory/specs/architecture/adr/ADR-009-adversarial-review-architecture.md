@@ -4,7 +4,7 @@ id: ADR-009
 title: "Adversarial review architecture: cognitive-diversity model family; fresh-context information asymmetry; BC-5.39.001 3-CLEAN"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -93,3 +93,11 @@ The same architectural pattern applies at two levels:
 - BC-2.07.004 (structured pass/fail verdict)
 - BC-5.39.001 (3-CLEAN protocol — VSDD pipeline protocol)
 - VP-010 (adversarial cascade convergence verification property)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS6-I2:** §Spec-level vs content-level (within §Decision) narrative cite corrected from version-specific "PRD v0.1.1 + architecture" to version-agnostic "current PRD + architecture". Converted further to final version-agnostic form in F-PASS7-I1-arch sweep. [audit-trail]

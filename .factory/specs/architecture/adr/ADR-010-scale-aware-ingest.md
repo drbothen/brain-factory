@@ -4,7 +4,7 @@ id: ADR-010
 title: "Scale-aware ingest pipeline: manifest-delta only; sub-linear latency growth"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -104,3 +104,11 @@ If the write fails between mktemp and mv, the original manifest.json is unchange
 - BC-2.16.005 (per-ingest cost ≤ 3x baseline at 10K corpus)
 - ADR-005 (single-tenant scale disciplines)
 - ADR-012 (gen-test-corpus.sh)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS2-I5:** §Manifest-delta ingest duplicate-URL rejection error code corrected from `E-SOURCE-002` to `E-INGEST-001` (E-SOURCE-002 is "manifest.json unreadable" in SS-06 scope; E-INGEST-001 is "URL already ingested" in SS-02/ADR-010 scope). [audit-trail]

@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-004
 title: "Wikilink resolution correctness"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -77,3 +77,11 @@ bats (skills.bats and hooks.bats) — two layers:
 ## Status
 
 proposed — pending Phase 3 implementation
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS2-I4:** §Verification Mechanism bats suite filename corrected from `ingest.bats` / `wiki.bats` to `skills.bats` (sibling-sweep of SS-18 §9 bats suites roster change — six artifacts affected including VP-004 mechanism citation). Functional test coverage unchanged; only the bats filename aligned to the canonical 9-suite roster. [audit-trail]

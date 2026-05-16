@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-027
 title: "Sub-linear ingest latency as wiki grows from 1K to 10K pages"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -149,3 +149,12 @@ bats (integration.bats — slow lane, gated by `BATS_SLOW=1`):
 proposed — pending Phase 3 infrastructure (`gen-test-corpus.sh`, `INGEST_SKIP_NETWORK`
 shim); scale tests are Phase P1 (v0.9 gate). The manifest-delta unit test is Phase P0
 and runs in standard CI.
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS3-I2:** §Verification Mechanism proof harness and counterexample updated to use the canonical `gen-test-corpus.sh` CLI: `--sources` flag for source count and positional `<output-dir>` argument. Removed ambiguity about the output path parameter. [audit-trail]
+- **F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-027 H1 title and all three derived cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned during the Pass 10 27-VP sweep; VP-027 was one of the VPs with drift resolved. [audit-trail]

@@ -4,7 +4,7 @@ id: ADR-004
 title: "Sharded .factory/ layout for specs and behavioral contracts"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -86,3 +86,12 @@ The `.factory/` layout uses domain sharding for behavioral contracts and a separ
 - Current PRD + BC-INDEX.md (the canonical sharding index over 95 BCs across 18 subsystems)
 - BC-2.01.001 through BC-2.18.005 (the 95 BC files that live in this layout)
 - SESSION-HANDOFF.md §10 (worktree layout standing directive)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS6-I2:** §References narrative cite corrected from version-specific "PRD v0.1.6 + BC-INDEX.md" to version-agnostic "Current PRD + BC-INDEX.md" (F-PASS7-I1-arch follow-on: converted to version-agnostic form). [audit-trail]
+- **F-PASS8-I1:** Three stale absolute document-size annotations in the §Decision sharded-layout code block replaced with semantic anchors describing each file's role (product-brief.md, index.md, BC-INDEX.md). [audit-trail]

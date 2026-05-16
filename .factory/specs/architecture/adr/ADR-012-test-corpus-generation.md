@@ -4,7 +4,7 @@ id: ADR-012
 title: "Test corpus generation strategy: gen-test-corpus.sh interface and output format"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -115,3 +115,12 @@ A smaller fixture corpus (`plugins/brain-factory/tests/fixtures/smoke-brain/`) i
 - NFR-007 (token cost at scale — validated via scale test)
 - ADR-005 (single-tenant power-user scale target)
 - ADR-010 (scale-aware ingest pipeline)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS1-C2 (reverted by F-PASS4-C3):** §Integration `scale-test.yaml` → `scale-test.yml` (F-PASS1-C2 initial change). This was incorrect — later corrected back to `.yaml` by F-PASS4-C3 (Lobster workflows use `.yaml`; the F-PASS1-C2 change conflated Lobster naming with GH Actions naming). [audit-trail]
+- **F-PASS4-C3:** §Integration `scale-test.yml` corrected back to `scale-test.yaml`; positional `<output-dir>` added to the `gen-test-corpus.sh` invocation in the integration example to align with the §Script interface specification. [audit-trail]

@@ -4,7 +4,7 @@ id: ADR-003
 title: "Plugin packaging via plugin.json + hooks.json.template"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -138,3 +138,11 @@ The `scripts/` directory (Node 20+ utilities) is included because Defuddle CLI a
 - BC-2.14.004 (plugin.json valid JSON with semver)
 - BC-2.14.005 (hooks.json.template references all 13 hooks via ${CLAUDE_PLUGIN_ROOT})
 - VP-009 (plugin manifest correctness verification property)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS4-C2:** `bats/upgrade.bats` path corrected to canonical `tests/upgrade.bats` form (sweep-by-canonical-pattern discipline: `bats/X.bats` → `tests/X.bats` across 16 architecture files, ADR-003 was one of the 16 affected). [audit-trail]

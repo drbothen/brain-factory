@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-021
 title: "Quarantine check skill activation and corpus location resolution"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -160,3 +160,11 @@ EOF
 ## Status
 
 proposed — pending Phase 3 implementation of quarantine-check skill and quarantine.bats
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS1-I9 (F-PASS9-C1 pass sweep) / F-PASS10-C1/I1 (27-VP H1 canonical-baseline sweep):** VP-021 Counterexamples section's missing-corpus regression pattern rewritten to clearly mark the contracted behavior (exit 2 fail-closed vs buggy exit 0). Additionally, VP-021 H1 title and all three derived cells aligned during the Pass 10 27-VP sweep; VP-021 was one of the VPs with drift resolved. [audit-trail]

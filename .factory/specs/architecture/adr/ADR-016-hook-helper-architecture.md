@@ -4,7 +4,7 @@ id: ADR-016
 title: "Hook helper architecture: hook-event-emit.sh, api-retry.sh, manifest-write.sh"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -205,3 +205,12 @@ start; the GH Actions context has no equivalent resolver.
 - NFR-018 (manifest atomicity)
 - ADR-002 (hook chain contract)
 - ADR-014 (error taxonomy enforcement — emit_verdict with E-SCOPE-NNN codes)
+
+## Changelog
+
+### v1.1 (2026-05-16)
+
+Content edits past initial creation detected (timestamp 2026-05-16T00:00:00 > created 2026-05-15). Changelog back-filled per F-PASS13-C2 architecture artifact Changelog discipline.
+
+- **F-PASS3-I1:** `api-retry.sh` retry policy explicitly documented in §api-retry.sh: 3 retries maximum, 60-second base backoff interval, exit 1 advisory on retry exhaustion. Aligns with BC-2.13.003. [audit-trail]
+- **F-1c-CV-06:** §api-retry.sh Delivery for GitHub Actions section added — clarifies the dual-copy delivery pattern: `hooks/lib/api-retry.sh` (Claude Code session context) and `scripts/lib/api-retry.sh` (GH Actions runner context). Rationale for deliberate dual-copy (not DRY violation) documented. [audit-trail]
