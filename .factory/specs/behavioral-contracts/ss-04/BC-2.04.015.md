@@ -85,7 +85,7 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 
 ## Architecture Anchors
 
-- `architecture/SS-TBD-hooks.md`
+- `architecture/subsystems/SS-04-hook-enforcement-chain.md`
 
 ## Story Anchor
 

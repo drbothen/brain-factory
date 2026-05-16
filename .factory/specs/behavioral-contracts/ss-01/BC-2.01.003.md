@@ -83,7 +83,7 @@ removal_reason: null
 
 ## Architecture Anchors
 
-- `architecture/SS-TBD-init.md` — [filled by architect — Phase 1c]
+- `architecture/subsystems/SS-01-brain-init-scaffold.md`
 
 ## Story Anchor
 

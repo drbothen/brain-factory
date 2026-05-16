@@ -99,7 +99,7 @@ This BC defines the universal hook I/O contract that applies to all 13 bash hook
 
 ## Architecture Anchors
 
-- `architecture/SS-TBD-hooks.md`
+- `architecture/subsystems/SS-04-hook-enforcement-chain.md`
 
 ## Story Anchor
 

@@ -105,7 +105,7 @@ removal_reason: null
 
 ## Architecture Anchors
 
-- `architecture/SS-TBD-hooks.md`
+- `architecture/subsystems/SS-04-hook-enforcement-chain.md`
 
 ## Story Anchor
 

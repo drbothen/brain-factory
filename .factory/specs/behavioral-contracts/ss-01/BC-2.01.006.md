@@ -86,7 +86,7 @@ removal_reason: null
 
 ## Architecture Anchors
 
-- `architecture/SS-TBD-health.md`
+- `architecture/subsystems/SS-01-brain-init-scaffold.md`
 
 ## Story Anchor
 

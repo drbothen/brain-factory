@@ -84,7 +84,7 @@ The 5-minute init SLA is a tested contract, not an aspiration. The v0.1 ship gat
 
 ## Architecture Anchors
 
-- `architecture/SS-TBD-init.md` — [filled by architect — Phase 1c]
+- `architecture/subsystems/SS-01-brain-init-scaffold.md`
 
 ## Story Anchor
 

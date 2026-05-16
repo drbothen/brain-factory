@@ -86,7 +86,7 @@ The `embedding_status` frontmatter field is mandatory in all wiki pages from v0.
 
 ## Architecture Anchors
 
-- `architecture/SS-TBD-wiki-layer.md` — [filled by architect]
+- `architecture/subsystems/SS-05-wiki-layer.md`
 
 ## Story Anchor
 
