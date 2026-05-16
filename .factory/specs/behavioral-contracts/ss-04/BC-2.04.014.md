@@ -24,7 +24,7 @@ modified: []
 ## Preconditions
 
 1. SessionStart event fires.
-2. Working directory is a brain (`.brain/STATE.md` exists) OR is not a brain (in which case the hook exits 0 silently).
+2. Working directory is a brain (`.brain/STATE.md` exists) OR is not a brain (in which case the hook exits 0 and emits `brain.health.skipped` per NFR-011).
 
 ## Postconditions
 
@@ -39,8 +39,8 @@ modified: []
 3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "brain.health.checked", "hook_name": "brain-health-check.sh", "overall_state": "<YELLOW|RED>", "red_dimensions": ["<dim>"]}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **Not in a brain directory (`.brain/STATE.md` absent):**
-1. Hook exits 0 silently (no banner shown — not every session is a brain session).
-2. No event emitted (not a brain session; no catalog row needed for the silent no-op path).
+1. Hook exits 0 (no banner shown — not every session is a brain session).
+2. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "brain.health.skipped", "hook_name": "brain-health-check.sh", "reason": "not_a_brain_session", "path": "<cwd>"}` (per BC-2.04.017 universal emission requirement + NFR-011).
 
 ## Invariants
 
@@ -51,7 +51,7 @@ modified: []
 
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
-| EC-001 | Not in a brain directory | Exit 0 silently. |
+| EC-001 | Not in a brain directory | Exit 0; emit `brain.health.skipped` JSONL event to stderr (NFR-011 + BC-2.04.017). |
 | EC-002 | `.brain/STATE.md` exists but is malformed | Exit 1 with advisory: "Brain STATE.md unreadable — run /brain:health for diagnosis." |
 
 ## Canonical Test Vectors
@@ -60,7 +60,7 @@ modified: []
 |-------|----------------|----------|
 | SessionStart in healthy brain | `{"verdict": "allow", "message": "Brain health: GREEN..."}` ; exit 0 | happy-path |
 | SessionStart in brain with RED wiki dimension | `{"verdict": "advise", ...}` ; exit 1 | edge-case |
-| SessionStart outside a brain directory | No output; exit 0 | edge-case |
+| SessionStart outside a brain directory | stderr: `{"event_type": "brain.health.skipped", ...}`; exit 0 | edge-case |
 
 ## Verification Properties
 
@@ -68,7 +68,7 @@ modified: []
 |--------|----------|-------------|
 | (no VP — P1) | GREEN brain → exit 0 | bats hooks.bats |
 | (no VP — P1) | RED dimension → exit 1 (never 2) | bats hooks.bats |
-| (no VP — P1) | Non-brain directory → exit 0 silently | bats hooks.bats |
+| (no VP — P1) | Non-brain directory → exit 0 + `brain.health.skipped` event on stderr | bats hooks.bats |
 
 ## Traceability
 

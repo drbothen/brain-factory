@@ -3,7 +3,7 @@ artifact_type: product-brief
 project: brain-factory
 phase: phase-1a
 status: draft
-version: 0.4.15
+version: 0.4.16
 target_release: v0.x (MVP through v0.9)
 v1_dependency: factory-dispatcher (planned)
 created: 2026-05-14
@@ -51,6 +51,9 @@ locked_decisions:
 ---
 
 # Product Brief: brain-factory
+
+**Changes in v0.4.16 (2026-05-16):**
+- **STRUCTURAL FIX (F-PASS4-I2): Workflow extension sibling-sweep** — the §Bring-up plan citation of `ingest-url.lobster` (line 333) updated to `ingest-url.yaml` to align with ADR-006 §Workflow extension convention (Lobster workflows at `plugins/brain-factory/workflows/` use `.yaml`). Source-of-Truth Precedence rule 2: ADR supersedes earlier artifacts for operational decisions. The §bin/lobster-run section (line 514) contained a second prescriptive citation of 6 workflow filenames with `.lobster` extension and a non-canonical filename set (`weekly-synthesis`, `monthly-perf`, `quarterly-mirror`, `cold-start-recovery`); updated to the ADR-006 canonical set (`ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`) with ADR-006 source citation. Sibling-sweep confirmed no further prescriptive `.lobster` references remain in the brief; remaining `.lobster` occurrences (§GH Action templates v0.5 table as historical enumeration of forbidden patterns; §Test architecture changelog audit-trail) are intentional historical or illustrative references, not prescriptions. (F-PASS4-I2)
 
 **Changes in v0.4.15 (2026-05-15):**
 - **STRUCTURAL FIX (Post-convergence cleanup — gate-coverage extension + exclusion-list-extension protocol + audit-trail wording calibration):** The adversarial cascade reached streak 3/3 (CONVERGED) at Pass 22 on brief v0.4.14 (commit 7035315). This v0.4.15 burst closes three deferred non-blocking items before Phase 1b PRD work begins. (F-PASS20-S1, F-PASS20-O1, F-PASS21-S1)
@@ -330,7 +333,7 @@ Each criterion is measurable and tested; none are aspirational.
 - All 13 hooks fire on Write/Edit and emit verdicts (verified via `.brain/logs/hooks-*.jsonl`). (Adjusted from `llm-second-brain-phased-build-plan.md` §5.11's 12 hooks: wclaude absorption adds `validate-publish-state.sh`; see §"13 bash hooks" for full list.)
 - `/brain:init` scaffolds the `briefs/research/` subdirectory in the target brain's folder structure (extending phased-build-plan §A.2's `briefs/` directory; the actual `/brain:research` skill that writes into this directory ships in v0.9 per §26 Scope).
 - Adversary PASS on a sample brief produced by `/brain:brief`. (`llm-second-brain-phased-build-plan.md` §5.11)
-- `bin/lobster-run` executes a sample workflow YAML headlessly (the `ingest-url.lobster` pipeline from `plugins/brain-factory/workflows/`).
+- `bin/lobster-run` executes a sample workflow YAML headlessly (the `ingest-url.yaml` pipeline from `plugins/brain-factory/workflows/`).
 - CI workflow runs green on a sample push. (`llm-second-brain-phased-build-plan.md` §5.11)
 - Meta-lint bats suite passes on all `SKILL.md`, `AGENT.md`, and hook scripts. (CLAUDE.md Meta-Lint Contract)
 - **Hook performance budget test:** the v0.1 ship gate adds **explicit hook-performance test cases inside `plugins/brain-factory/tests/hooks.bats`** (within the existing 9-suite bats coverage; these are per-hook latency assertions within `hooks.bats`, **not a new suite — bats count remains 9**). The test asserts every hook in the 13-hook set processes its sample payload in under 100ms p99. **This is a new addition to the gate, supplementing phased-build-plan §5.11's exit criteria.** Wikilink validation across a 500+ page wiki may exceed this budget; that case is incremental-design (Phase 1c architecture concern), not a v0.1 gate criterion.
@@ -511,7 +514,7 @@ Community-optional add-ons (4) — shipped in the v0.5 tarball for per-operator 
 
 Note: The 15 author-committed templates are covered by adversarial review, bats coverage, and CHANGELOG accountability. The 4 community-optional templates ship in the tarball for per-operator opt-in; they are not author-maintained integrations and carry no support commitment. Total templates in tarball: 19. (`llm-second-brain-plan.md` §8.1–§8.18; elicitation-notes.md §5.1)
 
-**bin/lobster-run:** a bash interpreter for Lobster YAML workflow files. The runtime behavior (reads workflow YAML; executes skill steps in declared dependency order; exits 0/1/2) is the commitment. Implementation footprint is not a brief-level commitment. Ships in v0.1 and enables headless GH Actions execution without Node runtime overhead. 6 workflow YAML files ship in `plugins/brain-factory/workflows/`: `ingest-url.lobster`, `daily-ritual.lobster`, `weekly-synthesis.lobster`, `monthly-perf.lobster`, `quarterly-mirror.lobster`, `cold-start-recovery.lobster`. (`llm-second-brain-plugin-plan.md` §8.1; locked decision in brief prompt §lobster-runtime-lock)
+**bin/lobster-run:** a bash interpreter for Lobster YAML workflow files. The runtime behavior (reads workflow YAML; executes skill steps in declared dependency order; exits 0/1/2) is the commitment. Implementation footprint is not a brief-level commitment. Ships in v0.1 and enables headless GH Actions execution without Node runtime overhead. 6 workflow YAML files ship in `plugins/brain-factory/workflows/`: `ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`. (ADR-006 §Workflow extension convention: `.yaml` is canonical for Lobster workflow files; filename set per ADR-006 §Six workflow files shipped + SS-12. `llm-second-brain-plugin-plan.md` §8.1; locked decision in brief prompt §lobster-runtime-lock)
 
 **Additional v0.x deliverables:**
 - ~20 templates via `${CLAUDE_PLUGIN_ROOT}/templates/...` (CLAUDE.md template, 6 wiki page type templates — one per wiki type: concepts, people, frameworks, syntheses, observations, questions — 3 source type templates, 5 brief templates, 1 policies.yaml template, 1 STATE.md template, 1 manifest template, GitHub Action YAML templates). The `policies-yaml-template.yaml` template at `${CLAUDE_PLUGIN_ROOT}/templates/policies-yaml-template.yaml` ships pre-populated with the 10 baseline policies enumerated in plugin-plan.md §10.2. `/brain:init` copies this template to the target brain's `.brain/policies.yaml`, which the operator can then extend via `/brain:policy-add`. (`llm-second-brain-plugin-plan.md` §9, §10.2)
