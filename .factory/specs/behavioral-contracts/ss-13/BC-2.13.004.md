@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -35,11 +36,21 @@ The v0.5 tarball includes 4 community-optional templates: `garden-publish.yml`, 
 1. Exactly 4 community-optional templates in v0.5 tarball.
 2. Community-optional templates are not covered by bats suites (no author testing commitment).
 
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | Operator installs a community-optional template but does not have the required external service configured (e.g., Telegram bot token absent) | The template fails at runtime with a service-configuration error; the failure is contained to that template run; no other brain operations are affected |
+| EC-002 | Community-optional template header comment is missing or truncated in the tarball | `grep assertion` (VP-TBD) detects missing or partial comment; tarball integrity check fails; release gate blocks |
+| EC-003 | A contributor submits a PR adding a 5th community-optional template | The PR must document the addition; the template must include the standard disclaimer comment; the BC invariant (exactly 4) is updated to reflect the new count via a separate BC amendment — the current count is not silently exceeded |
+
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
 | `head -3 garden-publish.yml` | Community optional comment present | happy-path |
+| `head -3 telegram-bridge.yml` | Community optional comment present | happy-path |
+| `garden-publish.yml` with disclaimer comment removed | `grep` assertion fails; tarball check blocks release | edge-case |
 
 ## Verification Properties
 

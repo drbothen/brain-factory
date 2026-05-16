@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -33,6 +34,14 @@ See BC-2.02.003 for the full specification of the token instrumentation JSONL re
 
 1. Token records are append-only. No record is ever modified or deleted.
 2. Records are written on every ingest invocation — not batched or deferred.
+
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | Ingest completes partially (some wiki pages written, then a hook blocks) | JSONL record is still appended with `status: partial` and the token count up to the point of failure; the record is never omitted |
+| EC-002 | `.brain/logs/ingest-tokens.jsonl` does not exist at ingest time | The file is created by the first ingest invocation; the directory `.brain/logs/` is created if absent; exit 0; record written |
+| EC-003 | Corpus reaches 10K sources and a new ingest is run; JSONL file exceeds 1MB in size | The JSONL record is still appended without truncation; the file grows append-only; operators use `/brain:monthly-perf` to aggregate, not raw file reads on the full log |
 
 ## Canonical Test Vectors
 

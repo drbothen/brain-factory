@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -38,6 +39,14 @@ For hook scripts, `meta-lint.bats` validates: first line is `#!/usr/bin/env bash
 2. `eval` is always a failure.
 3. `set -euo pipefail` must appear within first 10 lines.
 
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | A hook script has `set -euo pipefail` on line 11 (one line beyond the 10-line boundary) | `meta-lint.bats` fails with a message identifying the hook file and the actual line where `set -euo pipefail` appears; the implementer must move it within the first 10 lines |
+| EC-002 | A hook script has `exit` inside a here-doc string (e.g., `echo "Do not exit"` contains the word `exit`) | `meta-lint.bats` must use a word-boundary grep (`\bexit\b`) rather than a substring match to avoid false positives; if the implementation uses substring match, the test itself is a defect |
+| EC-003 | A new hook is added to `hooks/` but its corresponding `.bats` test file is not created | `meta-lint.bats` detects the missing test file using `ls plugins/brain-factory/tests/<hook-name>.bats`; CI blocks the PR; the implementer must create the bats file with at minimum a happy-path, error, and edge-case test |
+
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
@@ -45,6 +54,7 @@ For hook scripts, `meta-lint.bats` validates: first line is `#!/usr/bin/env bash
 | Valid hook.sh | meta-lint passes | happy-path |
 | Hook with bare `exit` | meta-lint fails | error |
 | Hook with `eval "$cmd"` | meta-lint fails | error |
+| Hook with `set -euo pipefail` on line 11 | meta-lint fails; identifies line number in message | edge-case |
 
 ## Verification Properties
 

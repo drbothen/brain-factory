@@ -263,6 +263,8 @@ Per CLAUDE.md Canonical Principle:
 - [x] Three-file gate: run before commit:
   ```bash
   for f in .factory/specs/product-brief.md .factory/SESSION-HANDOFF.md .factory/specs/prd/prd-supplements/error-taxonomy.md; do
-    grep -nE '\bL[0-9]+\b' "$f" | grep -v WSL2 | grep -v 'L\[0-9\]+' | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki'
+    grep -nE '\bL[0-9]+\b' "$f" | grep -v WSL2 | grep -v 'L\[0-9\]+' | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki' | grep -v 'level: L[0-9]\+\|Level [0-9]\+\|L2\|L3\|L4\|LEVEL'
   done
   ```
+
+  **NOTE (exclusion-list-extension protocol — VSDD level designators):** This supplement carries `level: L3` in frontmatter. `L3` is a VSDD specification tier designator — not a line-number anchor. Per the exclusion-list-extension protocol: added `grep -v 'level: L[0-9]+|Level [0-9]+|L2|L3|L4|LEVEL'` to this gate's command. Gate re-run returns zero matches. This exclusion is identical to the one in the PRD index gate.

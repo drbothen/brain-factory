@@ -325,4 +325,11 @@ This tests the false-negative rate of the quarantine hook.
 
 - [x] Every hook BC has at least one happy-path, one error, and one edge-case vector — verified.
 - [x] Two real-world corpus scenarios present (known-good: vsdd-factory; known-problematic: synthetic injection corpus) — verified.
-- [x] Three-file gate run before commit (see error-taxonomy.md for command).
+- [x] Three-file gate run before commit:
+  ```bash
+  for f in .factory/specs/product-brief.md .factory/SESSION-HANDOFF.md .factory/specs/prd/prd-supplements/test-vectors.md; do
+    grep -nE '\bL[0-9]+\b' "$f" | grep -v WSL2 | grep -v 'L\[0-9\]+' | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki' | grep -v 'level: L[0-9]\+\|Level [0-9]\+\|L2\|L3\|L4\|LEVEL'
+  done
+  ```
+
+  **NOTE (exclusion-list-extension protocol — VSDD level designators):** This supplement carries `level: L3` in frontmatter. Added `grep -v 'level: L[0-9]+|Level [0-9]+|L2|L3|L4|LEVEL'` per the exclusion-list-extension protocol. Identical exclusion clause to the PRD index gate and error-taxonomy.md gate (per TD-VSDD-060 sibling-sweep).

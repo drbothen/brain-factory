@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -36,11 +37,21 @@ The v0.5 tarball adds 9 more author-committed templates: `rss-inbox.yml`, `issue
 1. Exactly 9 new author-committed templates at v0.5 (total: 15 author-committed).
 2. Matrix parallelism is explicit in the YAML (`strategy.matrix` declaration).
 
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | One matrix job fails (single feed returns 429 after all retries exhaust) | The failed job exits 2; other matrix jobs complete successfully; the overall Action run fails; no data loss for feeds that succeeded; the failed feed is retryable on the next scheduled run |
+| EC-002 | `strategy.matrix` declaration is absent from a multi-source template | `meta-lint.bats` detects the missing matrix declaration and fails; CI blocks the PR until the declaration is added |
+| EC-003 | v0.5 tarball assembled without one of the 9 required templates | The tarball integrity check (bats upgrade.bats) detects the missing template and fails; tarball is rejected; release gate does not pass |
+
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
 | `rss-inbox.yml` with 5 feeds | 5 parallel jobs via matrix; all complete; exit 0 | happy-path |
+| `rss-inbox.yml` with 1 feed returning 429 after max retries | That matrix job exits 2; other jobs succeed; Action run fails; no data lost for other feeds | error |
+| `readwise-sync.yml` with `strategy.matrix` removed | `meta-lint.bats` reports missing matrix declaration; CI blocks merge | edge-case |
 
 ## Verification Properties
 

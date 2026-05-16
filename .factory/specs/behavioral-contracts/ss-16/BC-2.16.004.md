@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -35,11 +36,21 @@ At 10K-source scale, memory usage during operations (especially `/brain:lint-wik
 1. The 2GB limit applies to any single operation — not cumulative across parallel operations.
 2. Measurement is on the GitHub Actions `ubuntu-latest` runner specification.
 
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | `/brain:lint-wiki` on a wiki exactly at the 10K-page boundary (10,000 pages, not 10,001) | The operation completes within the 2GB limit; this is the reference measurement point for the scale gate; the measurement is repeatable across three runs |
+| EC-002 | A concurrent GH Action step is running while `/brain:lint-wiki` executes on the same runner | The 2GB limit applies to the lint-wiki process alone (single-operation scope); concurrent processes on the same runner are outside this BC's scope; the measurement must isolate the lint-wiki process memory via `/usr/bin/time -v` on that PID |
+| EC-003 | The wiki contains pages with extremely large embedded content (a page with a 50KB description field in frontmatter) | The operation must still complete under 2GB even with outlier pages; if the limit is breached, the bats test fails and the architect must investigate the O(n) read path for memory accumulation |
+
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
 | `/brain:lint-wiki` on 10K-page wiki | Peak RSS < 2GB | scale |
+| `/brain:lint-wiki` on 1K-page wiki | Peak RSS < 200MB (proportional scaling check) | scale |
+| `/brain:lint-wiki` with one page containing 50KB frontmatter | Peak RSS < 2GB; lint completes | edge-case |
 
 ## Verification Properties
 

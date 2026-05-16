@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -36,11 +37,21 @@ modified: []
 1. Exactly 10 baseline policies at v0.1.
 2. Template is the source of truth — init always copies from template.
 
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | `${CLAUDE_PLUGIN_ROOT}/templates/policies-yaml-template.yaml` is missing or corrupt at init time | `/brain:init` exits with E-INIT-004 ("Plugin root not found — reinstall brain-factory"); `.brain/policies.yaml` is not created; brain scaffold is rolled back |
+| EC-002 | `.brain/policies.yaml` already exists when `/brain:init` is run (re-init attempt) | `/brain:init` exits with E-INIT-002 before reaching the policy-copy phase; existing `.brain/policies.yaml` is not overwritten |
+| EC-003 | The policies template contains a policy with a duplicate key (malformed template at authoring time) | `yq eval '.' .brain/policies.yaml` fails YAML parse after copy; `/brain:policy-registry-validate` detects the duplicate and exits 1; operator is directed to reinstall the plugin |
+
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
 | Fresh init; `yq eval '.' .brain/policies.yaml` | Valid YAML; 10 policies present | happy-path |
+| Init with template file absent | E-INIT-004 message; exit 2; no `.brain/policies.yaml` created | error |
+| Init on a directory that already has `.brain/` | E-INIT-002 message; exit 2; existing policies.yaml untouched | edge-case |
 
 ## Verification Properties
 

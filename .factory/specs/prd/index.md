@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.0"
+version: "0.1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -332,7 +332,7 @@ NFR-NNN non-functional requirements with numerical targets. Key areas: hook perf
 > **Supplement:** Full error taxonomy is in `prd-supplements/error-taxonomy.md`.
 > This section provides a summary reference only.
 
-Error codes follow `E-{SCOPE}-NNN` convention. Scopes: HOOK, INIT, INGEST, WIKI, PUBLISH, QUARANTINE, LOBSTER, POLICY, SCALE. Every error defines: code, category, severity (broken/degraded/cosmetic), exit code, message format with `<placeholder>` syntax. See `prd-supplements/error-taxonomy.md` for the complete taxonomy.
+Error codes follow `E-{SCOPE}-NNN` convention. Scopes (21 total, matching `prd-supplements/error-taxonomy.md` scope headings): ADVERSARY, ATTR, FLUSH, HEALTH, HOOK, INGEST, INIT, LOBSTER, NAMING, PERF, POLICY, PUBLISH, QUARANTINE, RATE, RENAME, SCHEMA, SOURCE, UPGRADE, VOICE, WIKI, WRITE. Every error defines: code, category, severity (broken/degraded/cosmetic), exit code, message format with `<placeholder>` syntax. See `prd-supplements/error-taxonomy.md` for the complete taxonomy.
 
 ## 5b. Test Vectors
 
@@ -501,23 +501,35 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 - [x] Did I paper-fix a finding by renaming, doc-commenting, or asserting-only when the real fix is structural? **No.** Each BC has testable preconditions, postconditions, invariants, edge cases, and canonical test vectors.
 - [x] Did I sibling-sweep all callsites when I changed a hook signature, exit-code semantic, or canonical identifier? **Yes.** Hook names, exit codes, and subsystem IDs are consistent across PRD index, BC files, supplements, and traceability matrix.
 - [x] Did I modify a planning artifact in `docs/planning/` without explicit human direction? **No.** All writes to `.factory/specs/`.
-- [x] **Changelog audit-trail discipline (inherited three-file gate):** Before committing this PRD burst, run:
+- [x] **Changelog audit-trail discipline (inherited four-file gate):** Before committing this PRD burst, run:
 
   ```bash
-  for f in .factory/specs/product-brief.md .factory/SESSION-HANDOFF.md .factory/specs/prd/index.md; do
+  for f in .factory/specs/product-brief.md .factory/SESSION-HANDOFF.md .factory/specs/prd/index.md .factory/specs/behavioral-contracts/BC-INDEX.md; do
     grep -nE '\bL[0-9]+\b' "$f" | grep -v WSL2 | grep -v 'L\[0-9\]+' | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki' | grep -v 'level: L[0-9]\+\|Level [0-9]\+\|L2\|L3\|L4\|LEVEL'
   done
   ```
 
-  and confirm it returns zero output. All three files (brief, handoff, PRD index) must be free of literal line-number anchors. The exclusion list (`WSL2`, `L\[0-9\]+`, and the listed legitimate L-prefixed words including `L2`/`L3`/`L4` VSDD level designators) is the authoritative set; new domain tokens must be added to the exclusion list before introduction.
+  and confirm it returns zero output. All four files (brief, handoff, PRD index, BC-INDEX) must be free of literal line-number anchors. The exclusion list (`WSL2`, `L\[0-9\]+`, and the listed legitimate L-prefixed words including `L2`/`L3`/`L4` VSDD level designators) is the authoritative set; new domain tokens must be added to the exclusion list before introduction.
 
   **NOTE (exclusion-list-extension protocol — VSDD level designators):** The `L2`, `L3`, `L4` tokens in this PRD's frontmatter (`level: L3`) and in BC files (`level: L3`) are VSDD specification tier designators — not line-number references. Added exclusion `grep -v 'level: L[0-9]+|Level [0-9]+|L2|L3|L4|LEVEL'` per the exclusion-list-extension protocol (a) add exclusion; (b) re-run gate — zero matches; (c) rationale: VSDD spec level designators are domain-standard tokens, not line-number anchors.
 
   **NOTE (exclusion-list-extension protocol):** To add a new token: (a) add to `grep -v` clause; (b) re-run gate; (c) record rationale in changelog. Do NOT work around the gate by reverting the writing-technique principle.
 
+  **NOTE (four-file gate extension — F-1b-CV-01):** The three-file gate has been extended to a four-file gate by adding `.factory/specs/behavioral-contracts/BC-INDEX.md`. The BC-INDEX was created during the F-1b-CV-01 fix-burst (2026-05-15) as the canonical sharding index over all 95 BC files per DF-020a criterion 22.
+
 ---
 
 ## Changelog
+
+### v0.1.1 (2026-05-15)
+
+**STRUCTURAL FIX (F-1b-CV-01 — BC sharding integrity):** Created `behavioral-contracts/BC-INDEX.md` as the canonical sharding index over all 95 BC files per DF-020a criterion 22. Added `traces_to: ../BC-INDEX.md` to all 95 BC frontmatter blocks. Extended the Self-Audit Checklist gate from a three-file gate to a four-file gate (brief + handoff + prd/index.md + BC-INDEX.md). Both the PRD index gate and BC-INDEX gate use the identical canonical four-file command.
+
+**STRUCTURAL FIX (F-1b-CV-02 — BC edge-case coverage):** Added `## Edge Cases` sections with 3 concrete edge cases each to 14 BC files that previously had zero edge-case coverage: BC-2.13.002, BC-2.13.004, BC-2.15.001, BC-2.15.003, BC-2.16.001, BC-2.16.003, BC-2.16.004, BC-2.16.005, BC-2.16.006, BC-2.17.002, BC-2.17.003, BC-2.18.002, BC-2.18.003, BC-2.18.004. Canonical test vector tables extended with matching edge-case rows in the same files.
+
+**STRUCTURAL FIX (F-1b-CV-03 — §5 error scope list):** Corrected the §5 Error Taxonomy summary scope list. Removed `SCALE` (non-existent scope). Added 12 scopes that were missing: ADVERSARY, ATTR, FLUSH, HEALTH, NAMING, PERF, RATE, RENAME, SCHEMA, SOURCE, UPGRADE, VOICE, WRITE. §5 now enumerates all 21 actual scopes from `prd-supplements/error-taxonomy.md` in alphabetical order.
+
+**STRUCTURAL FIX (F-1b-CV-04 — supplement gate VSDD level-designator exclusion):** Extended the Self-Audit Checklist gate in all 4 supplements (`error-taxonomy.md`, `nfr-catalog.md`, `interface-definitions.md`, `test-vectors.md`) to include `grep -v 'level: L[0-9]+|Level [0-9]+|L2|L3|L4|LEVEL'`. Each supplement now has an inline gate command (replacing the "see error-taxonomy.md for command" pointer) with the complete canonical exclusion list per TD-VSDD-060 sibling-sweep.
 
 ### v0.1.0 (2026-05-15)
 

@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -38,11 +39,21 @@ modified: []
 1. Same N + seed → identical corpus on every run.
 2. Generated sources are valid source-layer markdown (correct frontmatter, valid content).
 
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | Target directory already contains existing source files from a prior run | The script detects the conflict and exits 1 with a message identifying the conflict; it does not overwrite existing files; the operator must remove the target directory or specify a clean one |
+| EC-002 | N=0 is specified (empty corpus) | The script exits 1 with a usage error; it does not create a target directory or manifest; minimum N is 1 |
+| EC-003 | Two contributors run the script with the same seed on different OS implementations of `bash` | The corpus must be byte-identical across macOS bash 5+ and Linux bash 4+; the random number generator used must be implemented in the script itself (not via shell `$RANDOM`) to ensure cross-platform reproducibility |
+
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
 | `gen-test-corpus.sh 10000 --seed 42 --dir /tmp/test-brain` | 10K source files; manifest with 9999 entries | happy-path |
+| Same command run twice | Second run detects conflict; exits 1 | edge-case |
+| `gen-test-corpus.sh 0 --seed 42 --dir /tmp/test-brain` | Usage error; exit 1; no files created | error |
 
 ## Verification Properties
 

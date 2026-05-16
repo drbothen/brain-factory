@@ -4,6 +4,7 @@ level: L3
 version: "1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
+traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
@@ -36,6 +37,14 @@ For all tracked repo files, `meta-lint.bats` validates: no file contains `Co-Aut
 2. `--no-verify` is always a failure (no exceptions without explicit documented justification).
 3. Hardcoded `.claude/templates/` is always a failure.
 
+## Edge Cases
+
+| ID | Description | Expected Behavior |
+|----|-------------|-------------------|
+| EC-001 | A meta-lint rule is weakened (e.g., the `Co-Authored-By: Claude` grep is changed to only check commit messages, not tracked files) | The weakening is itself detectable: the meta-lint test for Surface 4 must itself be tested for regression; if the rule weakening causes a previously-failing fixture to pass, the meta-lint self-audit bats test (which runs the old fixture) catches it; rule weakening to make a failing artifact pass is a P1 finding per CLAUDE.md §Meta-Lint Contract |
+| EC-002 | A skill file references `.claude/templates/` (the development-time path) instead of `${CLAUDE_PLUGIN_ROOT}/templates/` | `meta-lint.bats` detects the hardcoded path via grep; CI blocks; the author must replace with `${CLAUDE_PLUGIN_ROOT}/templates/` before merge |
+| EC-003 | An internal markdown link in a SKILL.md or AGENT.md points to a file that was renamed (link rot) | `meta-lint.bats` resolves each `[...](path)` link relative to the repo root; the renamed file is no longer at the expected path; bats fails; the link must be updated to the new path or the old path restored |
+
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
@@ -43,6 +52,7 @@ For all tracked repo files, `meta-lint.bats` validates: no file contains `Co-Aut
 | Tracked file with `Co-Authored-By: Claude` | meta-lint fails | error |
 | Tracked file with `${CLAUDE_PLUGIN_ROOT}/templates/valid-template.md` where file exists | meta-lint passes | happy-path |
 | Tracked file with `${CLAUDE_PLUGIN_ROOT}/templates/nonexistent.md` | meta-lint fails | error |
+| Tracked skill file with `.claude/templates/foo.md` hardcoded | meta-lint fails; hardcoded path detected | edge-case |
 
 ## Verification Properties
 
