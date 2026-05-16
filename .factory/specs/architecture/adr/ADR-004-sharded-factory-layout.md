@@ -33,16 +33,16 @@ The `.factory/` layout uses domain sharding for behavioral contracts and a separ
 ```
 .factory/
   specs/
-    product-brief.md                 (single file — 802 lines; index is the file itself)
+    product-brief.md                 (single file; the file is its own index)
     prd/
-      index.md                       (PRD index — summaries + RTM; 535 lines)
+      index.md                       (PRD index — summaries + RTM)
       prd-supplements/
         interface-definitions.md
         error-taxonomy.md
         nfr-catalog.md
         test-vectors.md
     behavioral-contracts/
-      BC-INDEX.md                    (canonical sharding index — 231 lines)
+      BC-INDEX.md                    (canonical sharding index over 95 BCs across 18 subsystems)
       ss-01/ .. ss-18/               (18 subsystem directories, 95 BC files)
     architecture/
       ARCH-INDEX.md                  (this file's canonical sharding index)

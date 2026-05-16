@@ -3,12 +3,12 @@ document_type: verification-property
 id: VP-012
 title: "Manifest write atomicity and last_ingest field correctness"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
 timestamp: 2026-05-15T00:00:00
-verifies_bcs: [BC-2.03.002, BC-2.06.003]
+verifies_bcs: [NFR-018, BC-2.03.002, BC-2.06.003]
 created: 2026-05-15
 status: proposed
 ---
@@ -133,6 +133,15 @@ ISO
 proposed — pending Phase 3 implementation of manifest-write.sh and ingest-source skill
 
 ## Changelog
+
+### v1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS8-I2):** Added NFR-018 to `verifies_bcs` frontmatter. VP-INDEX line 37
+already enumerated "NFR-018, BC-2.03.002, BC-2.06.003" as VP-012's target BCs. VP-012 body
+Group 1 asserts atomicity (NFR-018 — manifest write atomicity invariant) alongside BC-2.03.002.
+Per Source-of-Truth Precedence rule 4 (VP file supersedes VP-INDEX for the property it covers),
+the frontmatter is authoritative; the missing NFR-018 was an omission. Now frontmatter matches
+VP-INDEX enumeration. [audit-trail]
 
 ### v1.1 (2026-05-16)
 

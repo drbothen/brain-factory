@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.9"
+version: "0.1.10"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -307,7 +307,7 @@ Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when
 | VP-009 | Plugin manifest schema correctness | bats (upgrade.bats) | P0 |
 | VP-010 | Adversarial 3-CLEAN convergence | adversary cascade protocol | P1 |
 | VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | P0 |
-| VP-012 | Manifest write atomicity | bats (integration.bats) | P0 |
+| VP-012 | Manifest write atomicity and last_ingest field correctness | bats (integration.bats) | P0 |
 | VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | P0 |
 | VP-014 | Brain init scaffold completeness | bats (integration.bats) | P0 |
 | VP-015 | URL ingest pipeline: Defuddle to manifest to wiki pages | bats (integration.bats) | P0 |
@@ -372,6 +372,16 @@ Additional Self-Audit items:
 
 ## Changelog
 
+### v0.1.10 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS8-I1 — ADR-004 stale absolute line counts):** ADR-004 lines 36, 38, 45 contained stale absolute line counts (802, 535, 231) that had drifted from actual file sizes. Brief v0.4.6 established the discipline of using semantic anchors instead of absolute line counts (wc-l-vs-Read-tool drift). That discipline was not propagated to architecture artifacts. Replaced with semantic anchors: product-brief.md "(single file; the file is its own index)", index.md "(PRD index — summaries + RTM)", BC-INDEX.md "(canonical sharding index over 95 BCs across 18 subsystems)". Sibling-sweep (`grep -rn "\b[0-9]+ lines\b"`) across all ADRs, SS-NN, and VPs confirms: remaining "[0-9]+ lines" references are code-size estimates (~5 lines in ADR-016 with tilde prefix) or behavioral specs ("first 10 lines" in VP-006 and SS-18 — not document anchors). No further stale line counts found. Line-count-drift discipline now extended to architecture artifacts. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS8-I2 — VP-012 verifies_bcs missing NFR-018):** VP-012 frontmatter `verifies_bcs` updated from `[BC-2.03.002, BC-2.06.003]` to `[NFR-018, BC-2.03.002, BC-2.06.003]`. VP-INDEX already enumerated NFR-018 as a target BC for VP-012 (VP-012 row, Target BCs column); VP-012 body Group 1 asserts atomicity (NFR-018 invariant). The missing NFR-018 in frontmatter was a propagation omission. VP-012 bumped v1.1 → v1.2. ARCH-INDEX VP-INDEX Summary VP-012 title updated from "Manifest write atomicity" to "Manifest write atomicity and last_ingest field correctness" (aligning with VP-012 file title, set in v1.1 extension). [audit-trail]
+
+**STRUCTURAL FIX (F-PASS8-I3 — v0.1.8 changelog factual correction):** The v0.1.8 F-PASS7-C2-arch changelog entry contained a factual error: "PRD was bumped to v0.1.7 during the Pass 7 state-manager-persist burst (burst 1)". Fact: PRD was already at v0.1.7 from Pass 6 PO closure burst (commit e0e143c); the Pass 7 state-manager-persist burst (commit 90acdbf) refreshed STATE/HANDOFF/TASK-LIST only. The architect burst (Pass 7 burst 2) saw PRD at v0.1.7 and pinned correctly. The pin decision was correct; only the rationale was wrong. A NOTE has been appended to the v0.1.8 entry correcting the historical record per audit-trail convention (original entry preserved). [audit-trail]
+
+**UPDATE (F-PASS8-O2 — SS-18 audit-trail range extended to v0.4.19):** SS-18 §9 bats suites audit-trail version range extended from "v0.4.15..v0.4.18" to "v0.4.15..v0.4.19". Brief v0.4.19 added Clause 2 to the five-file gate (not §Test architecture); §Test architecture content is unchanged through v0.4.19. SS-18 bumped v1.2 → v1.3. [audit-trail]
+
 ### v0.1.9 (2026-05-16)
 
 **STRUCTURAL FIX (Option B final-reconciliation — inherits_from re-pin: prd@v0.1.7 → prd@v0.1.8):** ARCH-INDEX frontmatter `inherits_from` re-pinned from `prd@v0.1.7` (architect burst 2 pin) to `prd@v0.1.8` (post-all-bursts PRD version) by state-manager FINAL burst. PO burst 3 (commit 1c0251c) bumped PRD from v0.1.7 to v0.1.8 after the architect burst committed; the architect burst's `inherits_from` became stale relative to the final post-all-bursts PRD version. §Versioning Policy "Application to ARCH-INDEX" updated to reflect prd@v0.1.8 and document the final-reconciliation re-pin discipline. This is the first execution of the standing rule established by the §Parallel-burst hazard mitigation amendment (v0.1.8): the state-manager FINAL burst re-pins all `inherits_from` fields to post-all-bursts parent versions.
@@ -379,6 +389,8 @@ Additional Self-Audit items:
 ### v0.1.8 (2026-05-16)
 
 **STRUCTURAL FIX (F-PASS7-C2-arch — inherits_from stale: prd@v0.1.6 → prd@v0.1.7):** ARCH-INDEX frontmatter `inherits_from` corrected from `prd@v0.1.6` to `prd@v0.1.7`. PRD was bumped to v0.1.7 during the Pass 7 state-manager-persist burst (burst 1); architect burst (burst 2) runs after, so prd@v0.1.7 is the correct pin at this burst's commit time. §Versioning Policy "Application to ARCH-INDEX" updated to reflect prd@v0.1.7.
+
+**NOTE (F-PASS8-I3 factual correction):** The rationale above contains a factual error. PRD was already at v0.1.7 from Pass 6 PO closure burst (commit e0e143c); the Pass 7 state-manager-persist burst (commit 90acdbf) only refreshed STATE/HANDOFF/TASK-LIST and did NOT bump the PRD. The architect burst (Pass 7 burst 2) saw PRD at v0.1.7 and pinned correctly. The pin decision was correct; the "bumped to v0.1.7 during the Pass 7 state-manager-persist burst" rationale was wrong. This NOTE corrects the historical record while preserving the original entry per audit-trail convention. [audit-trail]
 
 **POLICY AMENDMENT (F-PASS7-C2-arch — Option B parallel-burst hazard mitigation):** Revised §Versioning Policy to add a new sub-section "Parallel-burst hazard mitigation (post-Pass-7 amendment)." Pass 7 demonstrated that Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when architect and PO bursts run in parallel, each burst can only pin to the parent version visible at ITS OWN commit time, not the post-all-bursts version. Mitigation: adopt Path B — serialized burst sequence (state-manager-persist → architect → PO → state-manager-FINAL) where the LAST burst re-pins all `inherits_from` fields to post-all-bursts parent versions. This preserves Option B's per-burst simplicity while eliminating the parallel-bump hazard. The sequential Pass 7 closure discipline implements this standing rule.
 

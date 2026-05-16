@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-18
 title: "Meta-Lint and Self-Audit"
 level: L3
-version: "1.2"
+version: "1.3"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -44,7 +44,8 @@ section used `ingest.bats` and `wiki.bats` (more functional naming for SS-02/03 
 the brief commits to `skills.bats` and `templates.bats` as the broader category names.
 (Version cite history for audit: v0.4.15 (original) → v0.4.17 (F-PASS5-I2 update) → v0.4.18
 (F-PASS7-I1 — converted to version-agnostic; §Test architecture content unchanged across
-v0.4.15..v0.4.18.))
+v0.4.15..v0.4.18.) → v0.4.19 (F-PASS8-O2 — Clause 2 added in v0.4.19 did not touch §Test
+architecture; §Test architecture content unchanged across v0.4.15..v0.4.19.))
 SS-18 is aligned to brief naming per CLAUDE.md Source-of-Truth Precedence + brain-factory-001
 (F-PASS2-I4 decision). Functional coverage is unchanged — the brief names reflect that
 ingest and wiki manipulation are skill-level operations, and templates covers GH Action
