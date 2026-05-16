@@ -1,13 +1,13 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.7"
+version: "0.1.8"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 artifact_type: prd
-inherits_from: product-brief.md@v0.4.16
+inherits_from: product-brief.md@v0.4.19
 created: 2026-05-15
 last_updated: 2026-05-16
 traces_to: product-brief.md
@@ -526,7 +526,7 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   **NOTE (five-file gate history):** Three-file gate introduced at v0.1.0. Extended to four-file at v0.1.1 by adding BC-INDEX.md (F-1b-CV-01). Extended to five-file at v0.1.3 by adding ARCH-INDEX.md (F-PASS1-C6 closure, 2026-05-16). The architecture ID token exclusion clause was added at the same time via sibling-sweep with the BC-INDEX and ARCH-INDEX canonical gate commands. Plain-prose `line [0-9]+` clause added at v0.1.7 (F-PASS6-I1 closure, sibling-swept with BC-INDEX).
 
-  **Clause 2 — plain-prose line-number check (added v0.1.7, F-PASS6-I1):** In addition to the L-prefixed gate above, also run:
+  **Clause 2 — plain-prose line-number check (added v0.1.7, F-PASS6-I1; exclusion improved v0.1.8, F-PASS7-C1):** In addition to the L-prefixed gate above, also run:
 
   ```bash
   for f in \
@@ -538,29 +538,39 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
     echo "--- $f ---"
     grep -nE '\bline [0-9]+\b' "$f" \
       | grep -v '```' \
-      | grep -v '\[audit-trail\]'
+      | grep -v '\`line [0-9]\+\`'
   done
   ```
 
-  and confirm it returns zero output. Legitimate exclusions: (a) content inside code-block fences (backtick context) — these are illustrative or literal code, not narrative anchors; (b) audit-trail references explicitly tagged `[audit-trail]` in changelog entries dated before v0.4.18 (must be tagged to be excluded). Currently NO other legitimate uses of plain `line N` in narrative prose are recognized.
+  and confirm it returns zero output. Legitimate exclusions: (a) content inside triple-backtick code-block fences — shell command examples, bats harness code, and generated output blocks legitimately reference line numbers as command arguments or tool output; (b) single-backtick inline code spans (`line N`) — inline code references are not narrative prose anchors. The writing-technique principle still applies: prefer behavioral descriptions over `line N` references even in inline code contexts. Descriptions of this defect class MUST use semantic terms (e.g., "plain-prose line-number citation in §Bring-up plan") — never quote a specific line number, which the gate cannot distinguish from an active citation.
 
-  **NOTE (exclusion-list-extension protocol — plain-prose clause):** To add a new exclusion for the plain-prose clause: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Code-block context is the only pre-approved exclusion category.
+  **NOTE (exclusion-list-extension protocol — plain-prose clause):** To add a new exclusion for the plain-prose clause: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Triple-backtick fences and single-backtick inline spans are the two pre-approved exclusion categories (sibling-swept from ARCH-INDEX v0.1.8 improved Clause 2).
 
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.7 (2026-05-16). **PASS.**
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.8 (2026-05-16). **PASS.**
 
 ---
 
 ## Changelog
 
+### v0.1.8 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS7-C1-PO — Clause 2 gate self-violation: plain-prose line-number citations in PRD v0.1.7 changelog):** The PRD v0.1.7 changelog entry for F-PASS6-I1 described the finding by citing plain-prose line-number references (both as specific integers following the word "line") inside single-backtick inline code spans. The Clause 2 gate's `grep -v '```'` exclusion covers only triple-backtick fences, not single-backtick inline spans — so these inline citations are matched by the gate, self-violating the rule the entry was adding. Fix: the violating descriptions replaced with semantic equivalents referencing the §Bring-up plan and §bin/lobster-run sections where the violations appeared. Structural fix: Clause 2 improved with additional `grep -v '\`line [0-9]\+\`'` exclusion for single-backtick inline spans, mirroring ARCH-INDEX v0.1.8 improved Clause 2. BC-INDEX sibling-swept. Writing-technique NOTE added: descriptions of this defect class must use semantic terms — never quote a specific line number. (F-PASS7-C1)
+
+**STRUCTURAL FIX (F-PASS7-C2-PO — inherits_from re-pin to post-burst brief version per Option B):** `inherits_from` re-pinned from `product-brief.md@v0.4.16` to `product-brief.md@v0.4.19`. The v0.1.6 entry (F-PASS5-C1) recorded Option A reasoning ("pinned to the brief version at PRD authoring time, not the latest"). F-PASS6-C2 architect adjudication (ARCH-INDEX v0.1.7) chose Option B (pin-at-burst-end). This burst bumps the brief 0.4.18→0.4.19, making v0.4.19 the post-burst brief version — the correct Option B pin. Corrective note added to the v0.1.6 entry recording the Option A→B transition. (F-PASS7-C2)
+
+**STRUCTURAL FIX (F-PASS7-I3-PO sibling-sweep from ARCH-INDEX — note history):** F-PASS7-I3 added Clause 2 to ARCH-INDEX Self-Audit Checklist (architect burst). F-PASS7-I3-PO propagates the improved Clause 2 exclusion (single-backtick inline span filter) to PRD and BC-INDEX Clause 2 gates per TD-VSDD-060 sibling-sweep obligation. (F-PASS7-I3-PO)
+
 ### v0.1.7 (2026-05-16)
 
-**STRUCTURAL FIX (F-PASS6-I1 — five-file gate extended with plain-prose `line [0-9]+` clause):** The existing L-prefixed gate (`\bL[0-9]+\b`) does not catch plain-prose line-number citations of the form `line 333` or `line 514`. F-PASS6-I1 identified two such violations in brief v0.4.16 changelog entry. Gate extended: Clause 2 added to PRD Self-Audit Checklist using `grep -nE '\bline [0-9]+\b'` with documented exclusion protocol (code-block fences; `[audit-trail]`-tagged entries). Sibling-swept to BC-INDEX §Self-Audit Checklist per TD-VSDD-060. (F-PASS6-I1)
+**STRUCTURAL FIX (F-PASS6-I1 — five-file gate extended with plain-prose `line [0-9]+` clause):** The existing L-prefixed gate (`\bL[0-9]+\b`) does not catch plain-prose line-number citations in the form of a bare integer following the word "line." F-PASS6-I1 identified two such violations in the brief v0.4.16 changelog entry — one in §Bring-up plan and one in §bin/lobster-run. Gate extended: Clause 2 added to PRD Self-Audit Checklist using `grep -nE '\bline [0-9]+\b'` with documented exclusion protocol (code-block fences; `[audit-trail]`-tagged entries). Sibling-swept to BC-INDEX §Self-Audit Checklist per TD-VSDD-060. (F-PASS6-I1)
 
 **STRUCTURAL FIX (F-PASS6-O1-PO — last_updated freshness check added to PRD Self-Audit):** Per Pass 5 architect introduction in ARCH-INDEX, the `last_updated freshness check` item is now present in PRD Self-Audit Checklist: "Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry)." Sibling-swept to BC-INDEX §Self-Audit Checklist per TD-VSDD-060. (F-PASS6-O1-PO)
 
 ### v0.1.6 (2026-05-16)
 
 **STRUCTURAL FIX (F-PASS5-C1 — PRD §2 stale paragraph + inherits_from drift):** `inherits_from` updated from `product-brief.md@v0.4.15` to `product-brief.md@v0.4.16` (the brief version current at PRD creation time; v0.4.17 is the post-this-burst brief version — inherits_from is pinned to the brief version at PRD authoring time, not the latest). §2 opening blockquote rewritten: stale "Architecture has not yet been produced (Phase 1c); subsystem field uses `SS-TBD` placeholder" replaced with current-state text reflecting Phase 1c COMPLETED status and all 95 BCs carrying canonical `subsystem: SS-NN` labels per ARCH-INDEX. `last_updated` bumped to 2026-05-16. (F-PASS5-C1)
+
+> **NOTE (post-Pass-7 amendment per ARCH-INDEX v0.1.8 §Versioning Policy):** This entry's claim "inherits_from is pinned to the brief version at PRD authoring time, not the latest" embedded Option A reasoning. F-PASS6-C2 architect adjudication (ARCH-INDEX v0.1.7) chose Option B (pin-at-burst-end). F-PASS7-C2 PO closure (this commit) re-pins to post-burst brief version per Option B. The Option A reasoning in the original v0.1.6 entry is historical; the current invariant is Option B + final-reconciliation discipline (ARCH-INDEX v0.1.8 §Parallel-burst hazard mitigation).
 
 ### v0.1.5 (2026-05-16)
 

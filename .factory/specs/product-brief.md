@@ -3,7 +3,7 @@ artifact_type: product-brief
 project: brain-factory
 phase: phase-1a
 status: draft
-version: 0.4.18
+version: 0.4.19
 target_release: v0.x (MVP through v0.9)
 v1_dependency: factory-dispatcher (planned)
 created: 2026-05-14
@@ -51,6 +51,9 @@ locked_decisions:
 ---
 
 # Product Brief: brain-factory
+
+**Changes in v0.4.19 (2026-05-16):**
+- **STRUCTURAL FIX (F-PASS7-I3-PO — Clause 2 plain-prose line-number gate added to brief Self-Audit Checklist):** The brief Self-Audit Checklist had only Clause 1 (L-prefixed gate) for its two-file scope (brief + SESSION-HANDOFF). Clause 2 added: plain-prose line-number anchor check using `grep -nE '\bline [0-9]+\b'` with exclusions for triple-backtick fences and single-backtick inline spans, mirroring ARCH-INDEX v0.1.8 improved Clause 2. Two-file scope preserved by design — narrower than the five-file PRD/BC-INDEX/ARCH-INDEX gate. Writing-technique NOTE added: descriptions of this defect class must use semantic terms (e.g., "plain-prose line-number citation in §Bring-up plan") — never quote a specific line number, which the gate cannot distinguish from an active citation. (F-PASS7-I3-PO)
 
 **Changes in v0.4.18 (2026-05-16):**
 - **STRUCTURAL FIX (F-PASS6-I1 — plain-prose line-number anchors in v0.4.16 changelog):** The v0.4.16 changelog entry (F-PASS4-I2) contained two plain-prose line-number citations in parenthetical form. The existing grep gate matches the L-prefixed form `\bL[0-9]+\b` but does not match the plain-prose form `\bline [0-9]+\b` — this is the finding's root cause. Fixed: both parenthetical line-number citations replaced with semantic section anchors using the same `§Bring-up plan` and `§bin/lobster-run` labels already present in the entry's body text. Five-file gate extended in PRD §Self-Audit Checklist and BC-INDEX §Self-Audit Checklist to add Clause 2 matching `\bline [0-9]+\b` with documented exclusion protocol (code-block fences; `[audit-trail]`-tagged entries). `last_updated freshness check` Self-Audit item added to PRD and BC-INDEX checklists (F-PASS6-O1-PO). (F-PASS6-I1, F-PASS6-O1-PO)
@@ -809,3 +812,18 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
   and confirm it returns zero output. Both the product-brief and the SESSION-HANDOFF (the writer's working-memory document) must be free of literal line-number anchors — Pass 19 demonstrated that handoff drift can re-prime the writer's vocabulary and reintroduce literal anchors in the brief. The exclusion list (`WSL2`, `L\[0-9\]+`, and the listed legitimate L-prefixed words) is the authoritative set of acceptable matches; new domain tokens beyond this set must be added to the exclusion list before introducing them (see exclusion-list-extension NOTE below). Pass 19 (F-PASS19-C1) demonstrated that absent this gate, the v0.4.10 scope-close claim regresses on the very fix-burst that addresses the recurrence. Use semantic terms (e.g., "literal line-number anchor", "L-prefixed token") in prose when describing this defect class — never quote the literal token, which the grep gate cannot distinguish from an active citation.
 
   NOTE (exclusion-list-extension protocol): The gate's exclusion list (`WSL2`, the regex literal `L\[0-9\]+`, and the listed legitimate L-prefixed words such as `LinkedIn`, `License`, `LTS`, `Linux`, `Lobster`, `Lock`, `Loom`, `Loki`) is the authoritative enumeration of acceptable `\bL[0-9]+\b`-shaped matches. If a future content addition introduces a new domain-specific token matching this pattern (e.g., Ubuntu LTS version reference, OpenAI model identifier, memory address, chess opening abbreviation), the writer MUST extend the exclusion list BEFORE introducing the new token. Do NOT work around the gate by reverting the writing-technique principle. The exclusion-list-extension protocol is: (a) add the new token name to the trailing `grep -v` clause; (b) re-run the gate to confirm clean; (c) include the rationale for the new exclusion in the same fix-burst's changelog entry.
+
+- ☐ **Clause 2 — plain-prose line-number check (added v0.4.19, F-PASS7-I3-PO):** In addition to the L-prefixed gate above, also run:
+
+  ```bash
+  # Clause 2: plain-prose line-number anchor check (two-file scope: brief + handoff)
+  for f in .factory/specs/product-brief.md .factory/SESSION-HANDOFF.md; do
+    grep -nE '\bline [0-9]+\b' "$f" | grep -v '```' | grep -v '\`line [0-9]\+\`'
+  done
+  ```
+
+  and confirm it returns zero output. Legitimate exclusions: (a) content inside triple-backtick code-block fences — shell command examples, bats harness code, and generated output blocks legitimately reference line numbers as command arguments or tool output; (b) single-backtick inline code spans (`line N`) — inline code references are not narrative prose anchors. The writing-technique principle still applies: prefer behavioral descriptions over `line N` references even in inline code contexts. Descriptions of this defect class MUST use semantic terms (e.g., "plain-prose line-number citation in §Bring-up plan") — never quote a specific line number, which the gate cannot distinguish from an active citation.
+
+  NOTE (two-file scope rationale): This brief gate covers only brief + SESSION-HANDOFF — narrower than the five-file gate in PRD/BC-INDEX/ARCH-INDEX by design. The SESSION-HANDOFF is the writer's working-memory document; Pass 19 demonstrated that handoff drift can re-prime the writer's vocabulary and reintroduce literal anchors in the brief. The five-file artifacts (PRD, BC-INDEX, ARCH-INDEX) carry the Clause 2 gate in their own Self-Audit Checklists.
+
+  NOTE (exclusion-list-extension protocol — plain-prose clause): To add a new exclusion: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Triple-backtick fences and single-backtick inline spans are the two pre-approved exclusion categories (mirrored from ARCH-INDEX v0.1.8 improved Clause 2).
