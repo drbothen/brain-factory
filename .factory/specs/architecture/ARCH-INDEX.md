@@ -1,13 +1,13 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.8"
+version: "0.1.9"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.7
+inherits_from: prd@v0.1.8
 deployment_topology: single-service
 created: 2026-05-15
 last_updated: 2026-05-16
@@ -249,7 +249,7 @@ graph TD
 
 **Propagation note (PO action required):** Under Option B, PRD's `inherits_from` should reference `product-brief.md@v0.4.17` (the brief's post-burst version) rather than `v0.4.16`. This is PO scope — the architect surfaces it to the orchestrator for the parallel PO burst.
 
-**Application to ARCH-INDEX:** `inherits_from: prd@v0.1.7` (PRD's current version at this burst's commit time). Updated from prd@v0.1.6 per F-PASS7-C2.
+**Application to ARCH-INDEX:** `inherits_from: prd@v0.1.8` (Pass 7 final-reconciliation per §Parallel-burst hazard mitigation; pinned to post-all-bursts PRD version). Updated from prd@v0.1.7 (architect burst 2 pin) to prd@v0.1.8 (PO burst 3 final PRD version) by state-manager FINAL re-pin.
 
 ### Parallel-burst hazard mitigation (post-Pass-7 amendment)
 
@@ -371,6 +371,10 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.9 (2026-05-16)
+
+**STRUCTURAL FIX (Option B final-reconciliation — inherits_from re-pin: prd@v0.1.7 → prd@v0.1.8):** ARCH-INDEX frontmatter `inherits_from` re-pinned from `prd@v0.1.7` (architect burst 2 pin) to `prd@v0.1.8` (post-all-bursts PRD version) by state-manager FINAL burst. PO burst 3 (commit 1c0251c) bumped PRD from v0.1.7 to v0.1.8 after the architect burst committed; the architect burst's `inherits_from` became stale relative to the final post-all-bursts PRD version. §Versioning Policy "Application to ARCH-INDEX" updated to reflect prd@v0.1.8 and document the final-reconciliation re-pin discipline. This is the first execution of the standing rule established by the §Parallel-burst hazard mitigation amendment (v0.1.8): the state-manager FINAL burst re-pins all `inherits_from` fields to post-all-bursts parent versions.
 
 ### v0.1.8 (2026-05-16)
 

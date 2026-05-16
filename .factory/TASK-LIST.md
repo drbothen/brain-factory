@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot taken at handoff: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS — cascade running (6 passes, 12 fix-bursts, streak 0/3).** Top-of-stack: Pass 6 closure fix-bursts (architect: F-PASS6-C1/C2/I2/O1-arch; PO: F-PASS6-I1/O1-PO) then Pass 7.
+> Snapshot taken at handoff: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS — cascade running (7 passes, 14 fix-bursts, streak 0/3).** Top-of-stack: dispatch Pass 8.
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST. It contains the complete clean-context resume procedure. Phase 1b/1c/1d sequence is pre-authorized by user (2026-05-15).
 > See SESSION-HANDOFF.md §9 for resume procedure summary.
 
@@ -64,7 +64,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.0 landed at commit 23e3a91. Fresh-context consistency audit returned CONDITIONAL-GO with 5 findings. Fix-burst at commit 7935faa closed 4 of 5 findings (F-1b-CV-05 OBSERVATION accepted). PRD bumped to v0.1.1. Independent orchestrator verification: CLEAN. 95 BCs + BC-INDEX + 4 supplements materialized. Four-file gate canonical. |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | **PASS** (0 findings of any class). Post-convergence verification on brief v0.4.15. All 4 v0.4.15 cleanup items VERIFIED. Two-file gate self-test clean on both files. 13/13 disciplines hold, 26/26 prior-pass fixes preserved. **Cascade officially CLOSED on v0.4.15.** |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.0 landed at b7679ee (50 files: ARCH-INDEX + 17 ADRs + 18 SS designs + 14 VPs). Consistency audit returned CONDITIONAL-GO with 7 findings. Architect fix-burst at 7e8f96f closed 5 findings (+14 VPs achieving 64/64 P0 BC coverage); architecture bumped to v0.1.1. Product-owner SS-NN sweep at cd6c3ba (95 BCs + PRD §7 RTM + BC-INDEX gate). PO body sibling-sweep at 1a10e45 (TD-VSDD-060). PO Architecture Module backfill at d89ea4b (95 BC Traceability tables). All audit findings closed. Five-file gate canonical. |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade running. 6 passes complete (all FAIL), 12 fix-bursts applied. Current versions: brief v0.4.17, PRD v0.1.6, BC-INDEX v0.1.5, ARCH-INDEX v0.1.6, VP-INDEX v0.1.3. Streak 0/3. Cascade toward 3/3 convergence. |
+| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade running. 7 passes complete (all FAIL), 14 fix-bursts applied. Current versions: brief v0.4.19, PRD v0.1.8, BC-INDEX v0.1.7, ARCH-INDEX v0.1.9, VP-INDEX v0.1.4. Streak 0/3. Cascade toward 3/3 convergence. |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | `/vsdd-factory:create-prd` skill dispatch. 95 BCs across 18 subsystems, 4 supplements, BC format BC-2.NN.NNN. Commit 23e3a91. |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings (F-1b-CV-01 through F-1b-CV-05). Four actionable; one OBSERVATION accepted. |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Closed 4 of 5 consistency findings: BC-INDEX creation, traces_to backfill on 95 BCs, Edge Cases on 14 BCs, PRD §5 scope list update, supplement gate VSDD exclusion. Commit 7935faa. |
@@ -93,10 +93,15 @@
 | 83 | COMPLETED | Phase 1d adversary pass 5 | FAIL: 2C+3I. Report at adversary-pass-5.md. Persist commit ba8ea7f. |
 | 84 | COMPLETED | Phase 1d Pass 5 architect fix-burst | architecture v0.1.5 → v0.1.6, VP-INDEX v0.1.2 → v0.1.3. Commit d588aa7. |
 | 85 | COMPLETED | Phase 1d Pass 5 PO fix-burst | brief v0.4.16 → v0.4.17, PRD v0.1.5 → v0.1.6, BC-INDEX v0.1.4 → v0.1.5. Commit 96a2a14. |
-| 86 | COMPLETED | Phase 1d adversary pass 6 + state-manager F-PASS6-I3 closure | FAIL: 2C+3I. Report persisted at adversary-pass-6.md. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md body content updated to current versions (this burst). F-PASS6-I3 CLOSED. |
-| 87 | PENDING | Phase 1d Pass 6 architect fix-burst | F-PASS6-C1 (ARCH-INDEX inherits_from), F-PASS6-C2 (inherits_from policy adjudication + 4-index changelog sweep), F-PASS6-I2 (ADR stale PRD version cites + broader sweep), F-PASS6-O1 architect portion (VP-INDEX Self-Audit). |
-| 88 | PENDING | Phase 1d Pass 6 PO fix-burst | F-PASS6-I1 (brief changelog plain-prose "line N" + extend gate to `line [0-9]+`), F-PASS6-O1 PO portion (PRD + BC-INDEX Self-Audit freshness items). |
-| 89 | PENDING | Phase 1d adversary pass 7 | After Pass 6 fix-bursts complete. Continue cascade toward streak 3/3. |
+| 86 | COMPLETED | Phase 1d adversary pass 6 + state-manager F-PASS6-I3 closure | FAIL: 2C+3I. Report persisted at adversary-pass-6.md. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md body content updated to current versions. F-PASS6-I3 CLOSED. Commit 533d7db. |
+| 87 | COMPLETED | Phase 1d Pass 6 architect fix-burst | architecture v0.1.6 → v0.1.7 + VP-INDEX v0.1.3 → v0.1.4. F-PASS6-C1/C2/I2/O1-arch + inherits_from policy adjudication. Commit 0827566. |
+| 88 | COMPLETED | Phase 1d Pass 6 PO fix-burst | brief v0.4.17 → v0.4.18 + PRD v0.1.6 → v0.1.7 + BC-INDEX v0.1.5 → v0.1.6. F-PASS6-I1/O1-PO + gate extension. Commit e0e143c. |
+| 89 | COMPLETED | Phase 1d adversary pass 7 | FAIL: 2C+3I (Option B parallel-burst hazard + plain-prose gate self-violation + 14-dim drift). Report persisted at adversary-pass-7.md. Commit 90acdbf. |
+| 90 | COMPLETED | Phase 1d Pass 7 state-manager persist | STATE.md + SESSION-HANDOFF.md + TASK-LIST.md body content refreshed to post-Pass-6 versions. Commit 90acdbf (same as persist). |
+| 91 | COMPLETED | Phase 1d Pass 7 architect fix-burst | architecture v0.1.7 → v0.1.8. F-PASS7-C2-arch/I1/I3-arch + Option B parallel-burst hazard amendment in ARCH-INDEX §Versioning Policy. Commit 7e60898. |
+| 92 | COMPLETED | Phase 1d Pass 7 PO fix-burst | brief v0.4.18 → v0.4.19 + PRD v0.1.7 → v0.1.8 + BC-INDEX v0.1.6 → v0.1.7. F-PASS7-C1/C2-PO/I3-PO. Commit 1c0251c. |
+| 93 | COMPLETED | Phase 1d Pass 7 state-manager FINAL | ARCH-INDEX inherits_from re-pin: prd@v0.1.7 → prd@v0.1.8 (Option B final-reconciliation). ARCH-INDEX v0.1.8 → v0.1.9. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md full refresh to post-all-bursts versions. This commit. |
+| 94 | PENDING | Phase 1d adversary pass 8 | After all Pass 7 fix-bursts complete. Continue cascade toward streak 3/3. |
 
 ## Next steps (in dependency order)
 
@@ -105,12 +110,10 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED (architecture v0.1.1 across commits b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b).~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#86: Phase 1d Passes 1–6 + fix-bursts — COMPLETED (6 passes, 12 fix-bursts; F-PASS6-I3 closed this burst).~~
+~~Tasks #71–#93: Phase 1d Passes 1–7 + fix-bursts — COMPLETED (7 passes, 14 fix-bursts; state-manager FINAL burst 4 of 4 complete).~~
 
-1. **Task #87 — PENDING (top of stack):** Phase 1d Pass 6 architect fix-burst. F-PASS6-C1/C2/I2/O1-arch. See adversary-pass-6.md for full finding details.
-2. **Task #88 — PENDING:** Phase 1d Pass 6 PO fix-burst. F-PASS6-I1/O1-PO. After architect fix-burst completes.
-3. **Task #89 — PENDING:** Phase 1d adversary pass 7. After both fix-bursts complete.
-4. Subsequent adversary passes continue per BC-5.39.001 protocol until streak 3/3.
-5. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
+1. **Task #94 — PENDING (top of stack):** Phase 1d adversary Pass 8. Dispatch after all Pass 7 fix-bursts confirmed complete (they are — this is the FINAL burst).
+2. Subsequent adversary passes continue per BC-5.39.001 protocol until streak 3/3.
+3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS (cascade running, 6 passes, streak 0/3).** The writing-technique principle, five-file gate, and exclusion-list-extension protocol carry forward. **Resume on fresh context: read `.factory/STATE.md` FIRST.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS (cascade running, 7 passes, streak 0/3).** The writing-technique principle (including plain-prose `line N` in any context), five-file gate, and exclusion-list-extension protocol carry forward. **Resume on fresh context: read `.factory/STATE.md` FIRST.**
