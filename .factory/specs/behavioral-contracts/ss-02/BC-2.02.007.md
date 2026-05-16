@@ -61,7 +61,7 @@ The ingest pipeline must remain performant as the wiki grows. At 10K pages, an O
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Success Criteria §v0.9 ship gate ("`/brain:ingest-url` retrieval-plus-wiki-write latency stays sub-linear (O(log n) or better) as the wiki grows from 1K to 10K pages"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-02: URL Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.9 ship gate §Scale test |
 

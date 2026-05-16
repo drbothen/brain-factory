@@ -64,7 +64,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 1 — Skills: frontmatter, canonical 6-section structure, Iron Law ≤ 200 chars, Red Flags ≥ 1 bullet, numbered Procedure, no `.claude/templates/` paths"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-18: Meta-Lint and Self-Audit |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |
 

@@ -64,7 +64,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Scope §Phase 2–3 polish skills (#18: `/brain:monthly-perf — pull performance data from LinkedIn Posts API (Community Management) + registered extensions`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-09: Publishing Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 2–3 polish skills (#18); §Scalability Design Principles §5 |
 

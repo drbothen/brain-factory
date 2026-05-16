@@ -64,6 +64,6 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-011 ("Knowledge Synthesis and Connection") per brief §Scope §Phase 0/1 primitives skill #5 (`/brain:process-inbox — classify and route inbox notes`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-11: Knowledge Synthesis and Connection |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#5) |

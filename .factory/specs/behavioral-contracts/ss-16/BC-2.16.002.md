@@ -65,6 +65,6 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Scalability Design Principles §5 ("Operators receive an alert via `/brain:health` if the 30-day trailing average exceeds 2x the baseline."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-16: Scale-Aware Architecture |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §5 |

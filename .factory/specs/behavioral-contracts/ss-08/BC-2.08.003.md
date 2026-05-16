@@ -67,7 +67,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-008 ("Content Brief and Writing") per brief §Scope §Phase 0/1 primitives (#10: `flags: --companion-posts, --hero-prompt`) and §Family Positioning §wclaude absorption ("`--companion-posts` flag on `/brain:write`; `--hero-prompt` flag on `/brain:write`"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-08: Content Brief and Writing |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#10); §Family Positioning §wclaude absorption |
 

@@ -65,7 +65,7 @@ Every invocation of `/brain:ingest-url` writes a JSONL record to `.brain/logs/in
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §5 ("Token budget instrumentation: `/brain:ingest-url` writes a JSONL record to `.brain/logs/ingest-tokens.jsonl` on every invocation"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-02: URL Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §5 |
 

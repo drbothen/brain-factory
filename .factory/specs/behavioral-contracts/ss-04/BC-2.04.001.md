@@ -91,7 +91,7 @@ removal_reason: null
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#2 `quarantine-fetch.sh`) and §Constraints §Technical ("Prompt-injection quarantine non-optional. Every ingest pipeline MUST run `/brain:quarantine-check` before content reaches a Claude session with tool access. This is the most important rule in the entire system."). |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#2); §Constraints §Technical; §Value Proposition §Core differentiator #1 |
 

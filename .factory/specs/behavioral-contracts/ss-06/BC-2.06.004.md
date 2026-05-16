@@ -59,7 +59,7 @@ The `sources/` directory uses topic-based subdirectories to prevent a flat singl
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Scalability Design Principles §3 ("`sources/` uses `sources/{topic}/` subdirectories (7 default categories: ai, health, psychology, productivity, business, books, podcasts; extensible)") and §Scope §Additional v0.x deliverables ("7 default topic categories scaffolded by `/brain:init`"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-06: Source Layer and Immutability |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §3; §Scope §Additional v0.x deliverables |
 

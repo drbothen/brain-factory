@@ -58,7 +58,7 @@ This BC defines the error-case branch of BC-2.05.003: the rename-page skill perf
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scope §Phase 0/1 primitives (#12). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#12) |
 

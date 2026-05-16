@@ -58,7 +58,7 @@ See BC-2.02.003 for test vectors.
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Scalability Design Principles §5 ("Token budget instrumentation: Every operation reports its token consumption."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-16: Scale-Aware Architecture |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §5 |
 

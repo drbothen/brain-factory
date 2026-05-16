@@ -61,7 +61,7 @@ Every invocation of `/brain:adversary-review` returns a machine-readable structu
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-007 ("Adversarial Review and Writescore") per brief §Scope §Phase 0/1 primitives (#13). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-07: Adversarial Review and Writescore |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#13) |
 

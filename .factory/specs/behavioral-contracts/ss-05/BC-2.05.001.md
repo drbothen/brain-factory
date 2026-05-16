@@ -68,7 +68,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scope §Phase 0/1 primitives skill #6 (`/brain:lint-wiki`) and §Success Criteria §v0.9 ship gate ("`/brain:lint-wiki` full health pass completes in under 10 minutes on a 10K-page wiki"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#6); §Success Criteria §v0.9 ship gate; §Scalability Design Principles §2 |
 

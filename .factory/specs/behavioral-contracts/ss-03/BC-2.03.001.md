@@ -69,7 +69,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-003 ("Source Ingest Pipeline") per brief §Scope §Phase 0/1 primitives skill #4 (`/brain:ingest-source <path>`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-03: Source Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#4) |
 

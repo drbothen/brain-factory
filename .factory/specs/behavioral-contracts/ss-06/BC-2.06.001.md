@@ -61,7 +61,7 @@ A source file, once written to `sources/{topic}/{slug}.md`, is immutable. It can
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Value Proposition §Core differentiator #1 ("source-immutability enforced by hooks the agent cannot bypass"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-06: Source Layer and Immutability |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Value Proposition §Core differentiator #1; §Scalability Design Principles §1 |
 

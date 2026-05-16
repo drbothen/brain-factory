@@ -56,6 +56,6 @@ Any GH Action template that calls an external API (LinkedIn, Readwise, Raindrop)
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-013 ("GitHub Action Templates") per brief §Scalability Design Principles §4 ("Rate-limit handling (LinkedIn Posts API, Readwise, Raindrop) is explicit: 429 responses trigger exponential backoff with `retry-after` header respect, not hard failures."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-13: GitHub Action Templates |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §4 |

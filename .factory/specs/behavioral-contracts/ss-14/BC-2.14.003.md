@@ -59,6 +59,6 @@ The engine/target split is a fundamental architectural constraint: the plugin fi
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-014 ("Plugin Lifecycle and Upgrade") per brief §Constraints §Technical ("Engine read-only at runtime. Plugin files are never modified by a running brain operation. State lives exclusively in the target's `.brain/`.") and plugin-plan.md §2 ("engine/target split rule 1"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-14: Plugin Lifecycle and Upgrade |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Constraints §Technical |

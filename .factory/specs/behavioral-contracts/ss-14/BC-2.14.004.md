@@ -65,6 +65,6 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-014 ("Plugin Lifecycle and Upgrade") per brief §Success Criteria §v0.1 ship gate ("`plugin.json` valid, version 0.1.0") and §Scope §Additional v0.x deliverables ("`plugin.json` — Claude Code plugin manifest"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-14: Plugin Lifecycle and Upgrade |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate; §Scope §Additional v0.x deliverables |

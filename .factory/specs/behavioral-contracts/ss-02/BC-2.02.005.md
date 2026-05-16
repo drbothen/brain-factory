@@ -66,7 +66,7 @@ When the Defuddle-extracted content of a URL exceeds the 50K-token per-chunk thr
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §7 ("Page-chunking readiness: `/brain:ingest-url` detects when source content exceeds the 50K-token threshold... outputs a warning in v0.1"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-02: URL Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §7 |
 

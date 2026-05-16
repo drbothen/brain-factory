@@ -68,7 +68,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-012 ("Lobster Runtime") per brief §Scope §bin/lobster-run ("a bash interpreter for Lobster YAML workflow files. The runtime behavior (reads workflow YAML; executes skill steps in declared dependency order; exits 0/1/2) is the commitment.") and locked decision SL-3 (Ship bin/lobster-run in v0.x). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-12: Lobster Runtime |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §bin/lobster-run; locked decisions SL-3 |
 

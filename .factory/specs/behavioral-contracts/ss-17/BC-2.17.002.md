@@ -63,7 +63,7 @@ Each row in the structured event catalog has a defined schema. The catalog is a 
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Logging ("Format: JSONL on stderr with `ts`, `event_type`, `plugin`, `trace`, plus event-specific fields. All `event_type` values must be registered in the structured event catalog BC before the PR merges."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-17: Structured Event Catalog |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Logging |
 

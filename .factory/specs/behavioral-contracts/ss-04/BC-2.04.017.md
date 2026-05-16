@@ -69,7 +69,7 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief CLAUDE.md §Logging ("Hooks emit structured events via `hook-event:emit`. Format: JSONL on stderr with `ts`, `event_type`, `plugin`, `trace`, plus event-specific fields. All `event_type` values must be registered in the structured event catalog BC before the PR merges.") and brief §Structured event emission. |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Logging; §Structured event emission |
 

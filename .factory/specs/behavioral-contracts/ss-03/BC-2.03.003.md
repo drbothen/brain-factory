@@ -67,7 +67,7 @@ To prevent accidental ingestion of system files or credential files, `/brain:ing
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-003 ("Source Ingest Pipeline") per brief §Scope §Phase 0/1 primitives (#4) and §Constraints §Technical ("Engine read-only at runtime. State lives exclusively in the target's `.brain/`."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-03: Source Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Constraints §Technical |
 

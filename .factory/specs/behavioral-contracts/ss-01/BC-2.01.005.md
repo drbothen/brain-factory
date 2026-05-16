@@ -66,7 +66,7 @@ removal_reason: null
 |-------|-------|
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #1 and §Scope §Phase 2–3 new skill item #26 (`/brain:research` writes to `briefs/research/<topic>-research.md`; directory created by init). |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-01: Brain Initialization and Scaffold |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 2–3 new skill (#26 `/brain:research`); §Success Criteria §v0.1 ship gate |
 

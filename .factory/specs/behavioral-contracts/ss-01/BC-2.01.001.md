@@ -96,7 +96,7 @@ removal_reason: null
 |-------|-------|
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #1 (`/brain:init`). This BC defines the complete structural postcondition of the init skill, which is exactly what CAP-001: Brain Initialization and Scaffold covers. |
 | L2 Domain Invariants | N/A (L2 domain spec not yet produced — Phase 1a) |
-| Architecture Module | [filled by architect — Phase 1c] |
+| Architecture Module | SS-01: Brain Initialization and Scaffold |
 | Stories | [filled by story-writer — Phase 2] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (skill #1), §Success Criteria §v0.1 ship gate |
 

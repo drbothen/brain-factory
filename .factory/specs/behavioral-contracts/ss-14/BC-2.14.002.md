@@ -61,6 +61,6 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-014 ("Plugin Lifecycle and Upgrade") per brief §Scope §Phase 2–3 polish skills (#20: `/brain:upgrade-brain — upgrade the plugin and migrate `.brain/` state if needed`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-14: Plugin Lifecycle and Upgrade |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 2–3 polish skills (#20) |

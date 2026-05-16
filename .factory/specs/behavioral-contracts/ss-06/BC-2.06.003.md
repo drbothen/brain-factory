@@ -57,7 +57,7 @@ Each manifest entry contains `last_ingest` (ISO8601) recording the most recent t
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Scalability Design Principles §1 ("The brain's `manifest.json` records `last_ingest` timestamps per source."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-06: Source Layer and Immutability |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1 |
 

@@ -71,7 +71,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#9 `validate-page-type-policy.sh`) and §Scalability Design Principles §3 ("wiki/{type}/{slug}.md; 6 wiki types per plan.md §3.4"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#9); §Scalability Design Principles §3 |
 

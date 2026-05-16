@@ -80,7 +80,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scope §Phase 0/1 primitives skill #3 (`/brain:ingest-url`). This BC defines the complete contract for URL ingestion — the primary knowledge-acquisition pathway. |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-02: URL Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#3); §Scalability Design Principles §1, §5, §7 |
 

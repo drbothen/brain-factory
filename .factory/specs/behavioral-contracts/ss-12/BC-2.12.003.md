@@ -63,6 +63,6 @@ The six workflows: `ingest-url.lobster`, `daily-ritual.lobster`, `weekly-synthes
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-012 ("Lobster Runtime") per brief §Scope §bin/lobster-run ("6 workflow YAML files ship in `plugins/brain-factory/workflows/`: ingest-url.lobster, daily-ritual.lobster, weekly-synthesis.lobster, monthly-perf.lobster, quarterly-mirror.lobster, cold-start-recovery.lobster"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-12: Lobster Runtime |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §bin/lobster-run |

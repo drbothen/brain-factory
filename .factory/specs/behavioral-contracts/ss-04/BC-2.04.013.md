@@ -76,7 +76,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#12 `flush-state-and-commit.sh`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#12) |
 

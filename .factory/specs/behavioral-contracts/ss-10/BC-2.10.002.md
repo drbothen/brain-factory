@@ -59,7 +59,7 @@ The quarantine hook registration in `hooks.json.template` uses `matcher: WebFetc
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-010 ("Prompt-Injection Quarantine") per brief §Constraints §Technical ("Prompt-injection quarantine non-optional. Every ingest pipeline MUST run `/brain:quarantine-check` before content reaches a Claude session with tool access. This is the most important rule in the entire system.") and brief §Problem Statement ("The PreToolUse hook on WebFetch is invoked by the Claude Code harness, not by the agent. The agent cannot bypass it."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-10: Prompt-Injection Quarantine |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Problem Statement; §Constraints §Technical |
 

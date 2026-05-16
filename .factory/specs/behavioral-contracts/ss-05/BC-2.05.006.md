@@ -62,7 +62,7 @@ Every wiki page — whether created by ingest, manually, or by any skill — mus
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scalability Design Principles §6 ("Every wiki page's frontmatter MUST include an `embedding_status` field... `validate-frontmatter-schema.sh` hook enforces presence on `wiki/*` writes"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §6 |
 

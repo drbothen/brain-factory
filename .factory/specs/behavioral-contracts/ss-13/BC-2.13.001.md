@@ -62,6 +62,6 @@ The v0.1 plugin tarball includes 6 GitHub Action YAML templates: `daily-brief.ym
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-013 ("GitHub Action Templates") per brief §Scope §19 GitHub Action templates ("v0.1 core set — author-committed (6)") and §Success Criteria §v0.1 ship gate ("CI workflow runs green on a sample push"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-13: GitHub Action Templates |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §GH Action templates; §Success Criteria §v0.1 ship gate |

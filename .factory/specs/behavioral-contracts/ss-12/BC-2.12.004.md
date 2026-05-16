@@ -59,7 +59,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-012 ("Lobster Runtime") per brief §Success Criteria §v0.1 ship gate ("`bin/lobster-run` executes a sample workflow YAML headlessly") and §Scope §bin/lobster-run. |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-12: Lobster Runtime |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate; §Scope §bin/lobster-run |
 

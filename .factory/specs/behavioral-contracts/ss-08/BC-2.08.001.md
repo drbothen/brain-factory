@@ -63,7 +63,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-008 ("Content Brief and Writing") per brief §Scope §Phase 0/1 primitives skill #9 (`/brain:brief <topic> — generate a content brief in ONE THING / PROOF / TRANSFORMATION format`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-08: Content Brief and Writing |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#9) |
 

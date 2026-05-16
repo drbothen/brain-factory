@@ -63,6 +63,6 @@ At 10K-source scale, memory usage during operations (especially `/brain:lint-wik
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Success Criteria §v0.9 ship gate ("Peak resident memory for any single operation stays under 2GB (measured via `/usr/bin/time -v` or equivalent on the Actions runner)."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-16: Scale-Aware Architecture |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.9 ship gate §Scale test |

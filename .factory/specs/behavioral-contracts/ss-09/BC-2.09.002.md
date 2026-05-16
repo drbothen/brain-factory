@@ -64,7 +64,7 @@ LinkedIn articles (long-form, > 3000 chars) must be published manually via the L
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Family Positioning ("`--finalize --url "..."` flag pattern: absorbed into `/brain:publish-content` for manual platforms including LinkedIn articles"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-09: Publishing Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Family Positioning §wclaude absorption; §Scope §Phase 2–3 polish skills (#22) |
 

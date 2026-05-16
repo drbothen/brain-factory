@@ -64,6 +64,6 @@ At 10K-source corpus size, the per-ingest token cost may be higher than at 1K sc
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Success Criteria §v0.9 ship gate ("Token budget at scale: per-ingest cost stays within 3x the 50K-token baseline (i.e., ≤150K input tokens per ingest including chunking overhead at the 10K-source corpus size)."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-16: Scale-Aware Architecture |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.9 ship gate §Scale test |

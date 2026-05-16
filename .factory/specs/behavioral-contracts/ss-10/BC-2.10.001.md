@@ -70,7 +70,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-010 ("Prompt-Injection Quarantine") per brief §Scope §Phase 0/1 primitives skill #11 (`/brain:quarantine-check <path> — scrub prompt-injection patterns from content before agent access`) and §Constraints §Technical ("Prompt-injection quarantine non-optional. Every ingest pipeline MUST run `/brain:quarantine-check` before content reaches a Claude session with tool access. This is the most important rule in the entire system."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-10: Prompt-Injection Quarantine |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#11); §Constraints §Technical |
 

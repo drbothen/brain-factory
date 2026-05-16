@@ -65,7 +65,7 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Logging ("No `echo "..."` for user-facing output from hooks — hooks emit JSON on stdout, structured events on stderr."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-17: Structured Event Catalog |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Logging |
 

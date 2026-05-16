@@ -74,7 +74,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#3 `enforce-kebab-case.sh`) and CLAUDE.md §Conventions ("Filenames are kebab-case, lowercase, no spaces. Wiki filenames are IMMUTABLE after creation"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#3); CLAUDE.md brain-factory-002 |
 

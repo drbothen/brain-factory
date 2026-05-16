@@ -78,7 +78,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#8 `validate-frontmatter-schema.sh`) and §Scalability Design Principles §6 ("embedding_status field is mandatory in v0.1; `validate-frontmatter-schema.sh` hook enforces presence on `wiki/*` writes"). |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §6; §Success Criteria §v0.1 ship gate (embedding_status enforcement test) |
 

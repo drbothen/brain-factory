@@ -74,7 +74,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#5 `validate-source-immutability.sh`) and §Value Proposition §Core differentiator #1 ("source-immutability enforced by hooks the agent cannot bypass"). |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#5); §Scalability Design Principles §1 (incremental ingest, manifest.json) |
 

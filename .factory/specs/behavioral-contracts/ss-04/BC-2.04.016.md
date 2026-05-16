@@ -86,7 +86,7 @@ This BC defines the universal hook I/O contract that applies to all 13 bash hook
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Constraints §Technical ("Hook contract: `#!/usr/bin/env bash` + `set -euo pipefail`. Reads JSON on stdin; writes JSON verdict on stdout; exits 0 (ok), 1 (advisory), 2 (block). Never bare `exit`. Never `eval`."). This BC defines the universal hook I/O contract shared by all 13 hooks. |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Constraints §Technical; §Scope §13 bash hooks; CLAUDE.md §Bash hook contract |
 

@@ -70,7 +70,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scope §Phase 0/1 primitives skill #12 (`/brain:rename-page <old-slug> <new-slug> — rename wiki page and propagate all backlinks`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#12); CLAUDE.md brain-factory-002 |
 

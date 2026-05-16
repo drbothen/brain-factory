@@ -62,6 +62,6 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-015 ("Governance and Policies") per brief §Scope §Phase 2–3 polish skills (#24: `/brain:policy-registry-validate — validate all policies in `.brain/policies.yaml` against the schema`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-15: Governance and Policies |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 2–3 polish skills (#24) |

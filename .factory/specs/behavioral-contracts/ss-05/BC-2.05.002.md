@@ -58,7 +58,7 @@ Wikilink resolution in `/brain:lint-wiki` must be implemented using index-first 
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scalability Design Principles §2 ("No quadratic hot paths: `/brain:lint-wiki` completes wikilink integrity checks via index-first lookup (O(n) scan of `index.md`, not O(n²) cross-product)."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §2 |
 

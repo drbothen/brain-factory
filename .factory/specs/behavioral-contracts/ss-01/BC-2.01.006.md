@@ -75,7 +75,7 @@ removal_reason: null
 |-------|-------|
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #2 (`/brain:health`) and §Scope §Additional v0.x deliverables ("Six-dimensional convergence tracking in `.brain/STATE.md`"). |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-01: Brain Initialization and Scaffold |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives skill #2; §Scalability Design Principles §5 (token budget alert) |
 

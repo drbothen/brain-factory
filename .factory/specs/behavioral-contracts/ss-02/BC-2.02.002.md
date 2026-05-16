@@ -70,7 +70,7 @@ After the source file is written, `/brain:ingest-url` triggers the wiki page gen
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Success Criteria §v0.1 ship gate ("`/brain:ingest-url` in the test brain produces 5+ wiki pages with cross-references and adversary-review PASS"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-02: URL Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate; §Scope §Phase 0/1 primitives (#3) |
 

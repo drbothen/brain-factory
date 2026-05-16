@@ -73,7 +73,7 @@ The 5-minute init SLA is a tested contract, not an aspiration. The v0.1 ship gat
 |-------|-------|
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #1. This BC specifically covers the performance SLA of the init operation, which is part of the CAP-001 initialization contract. |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect — Phase 1c] |
+| Architecture Module | SS-01: Brain Initialization and Scaffold |
 | Stories | [filled by story-writer — Phase 2] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate (5-minute init SLA; `assert_under_5_minutes`) |
 

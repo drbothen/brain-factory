@@ -64,6 +64,6 @@ The v0.5 tarball adds 9 more author-committed templates: `rss-inbox.yml`, `issue
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-013 ("GitHub Action Templates") per brief §Scope §GH Action templates ("v0.5 additions — author-committed (9)") and §Scalability Design Principles §4 ("GH Action parallelism: rss-inbox.yml fans out per feed; readwise-sync.yml fans out per batch"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-13: GitHub Action Templates |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §GH Action templates; §Scalability Design Principles §4 |

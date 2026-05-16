@@ -62,7 +62,7 @@ The quarantine pattern corpus is stored in `scripts/quarantine.mjs` at the plugi
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-010 ("Prompt-Injection Quarantine") per brief §Scope §Additional v0.x deliverables ("Prompt-injection corpus patterns in `scripts/quarantine.mjs`"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-10: Prompt-Injection Quarantine |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables |
 

@@ -59,7 +59,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-011 ("Knowledge Synthesis and Connection") per brief §Scope §Phase 0/1 primitives skill #8 (`/brain:synthesize — weekly synthesis, builds a thesis from connection layer`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-11: Knowledge Synthesis and Connection |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#8) |
 

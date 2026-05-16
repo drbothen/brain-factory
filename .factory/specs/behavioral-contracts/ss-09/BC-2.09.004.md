@@ -65,7 +65,7 @@ The publishing workflow follows a strict three-state machine: `draft` (in `draft
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Family Positioning ("Frontmatter state machine (draft → ready → published): absorbed into `/brain:publish-content` + new `validate-publish-state.sh` hook"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-09: Publishing Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Family Positioning §wclaude absorption |
 

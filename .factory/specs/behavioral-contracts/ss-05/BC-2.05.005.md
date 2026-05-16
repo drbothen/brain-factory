@@ -62,7 +62,7 @@ The wiki layer is organized by TYPE, not by topic. The 6 valid wiki type directo
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scalability Design Principles §3 ("wiki/{type}/{slug}.md; 6 wiki types per plan.md §3.4: concepts, people, frameworks, syntheses, observations, questions"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §3 |
 

@@ -64,7 +64,7 @@ Cognitive diversity in adversarial review requires that the `brain:adversary-rev
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-007 ("Adversarial Review and Writescore") per brief §Constraints §Technical ("Cognitive diversity in adversary review. The `brain:adversary-reviewer` agent MUST run in a different model family than the agent that produced the work under review (in brain-factory v0.x: Opus and Sonnet are different families for adversary-review purposes)."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-07: Adversarial Review and Writescore |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Constraints §Technical; §Value Proposition §Core differentiator #2; §Open Questions #2 (Resolved) |
 

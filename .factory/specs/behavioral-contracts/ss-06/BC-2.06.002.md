@@ -58,7 +58,7 @@ Every manifest entry includes a `chunks` array from v0.1, even though the chunki
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Scalability Design Principles §6 ("The `manifest.json` schema includes an `embeddings_model` field (default: null in v0.x)") and §7 ("The `manifest.json` schema supports a `chunks: [...]` array from v0.1"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-06: Source Layer and Immutability |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §6, §7 |
 

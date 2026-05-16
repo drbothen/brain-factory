@@ -62,6 +62,6 @@ For agent files, `meta-lint.bats` validates: frontmatter present with `name`, `s
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 3 — Agents: frontmatter with name/scope/tool-profile, routing table reference, allowed/denied tools enumerated, kebab-case filename"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-18: Meta-Lint and Self-Audit |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |

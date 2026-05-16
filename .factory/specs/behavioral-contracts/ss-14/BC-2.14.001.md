@@ -64,6 +64,6 @@ The primary distribution mechanism for brain-factory is the `drbothen/claude-mp`
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-014 ("Plugin Lifecycle and Upgrade") per brief §Success Criteria §v0.1 ship gate ("`/plugin install brain-factory@claude-mp` succeeds in a fresh Claude session"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-14: Plugin Lifecycle and Upgrade |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate |

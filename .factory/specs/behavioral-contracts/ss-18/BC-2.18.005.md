@@ -65,7 +65,7 @@ brain-factory ships 9 bats test suites: 8 functional (`skills.bats`, `hooks.bats
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief §Scope §Additional v0.x deliverables ("9 bats test suites (8 functional: skills.bats, hooks.bats, templates.bats, policies.bats, adversary.bats, quarantine.bats, integration.bats, upgrade.bats; plus meta-lint.bats per CLAUDE.md Meta-Lint Contract)"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-18: Meta-Lint and Self-Audit |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables; CLAUDE.md §Meta-Lint Contract |
 

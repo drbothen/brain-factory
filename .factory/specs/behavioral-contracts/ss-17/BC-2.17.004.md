@@ -59,6 +59,6 @@ Security constraint: hook scripts must never echo tokens, API keys, credential v
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Conventions ("No secrets in stdout/logs. Hook scripts must never echo tokens, API keys, or credential values."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-17: Structured Event Catalog |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Conventions |

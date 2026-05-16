@@ -74,7 +74,7 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Constraints §Technical ("Hook performance budget: <100ms; v0.1 ship gate includes a bats test asserting tail latency under load.") and §Success Criteria §v0.1 ship gate ("Hook performance budget test: v0.1 ship gate adds explicit hook-performance test cases inside `plugins/brain-factory/tests/hooks.bats`"). |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Constraints §Technical (hook performance budget); §Success Criteria §v0.1 ship gate (hook performance bats test); §Scalability Design Principles §2 (O(log n) or O(n) max) |
 

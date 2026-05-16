@@ -67,6 +67,6 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Scope §Additional v0.x deliverables ("`scripts/gen-test-corpus.sh` — synthetic-corpus generator producing N source files + manifest.json for the v0.9 scale test (Phase 3 deliverable owned by devops-engineer, designed during Phase 1c architecture, built during Phase 3 alongside scale-test execution)"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-16: Scale-Aware Architecture |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables; §Success Criteria §v0.9 ship gate §Scale test |

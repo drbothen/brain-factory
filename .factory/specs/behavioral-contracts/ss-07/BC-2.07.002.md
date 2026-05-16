@@ -65,7 +65,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-007 ("Adversarial Review and Writescore") per brief §Scope §Phase 0/1 primitives (#13: `/brain:adversary-review <path> — fresh-context quality gate with multi-pass writescore revision loop via the four absorbed wclaude validation agents`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-07: Adversarial Review and Writescore |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#13); §Family Positioning §wclaude absorption |
 

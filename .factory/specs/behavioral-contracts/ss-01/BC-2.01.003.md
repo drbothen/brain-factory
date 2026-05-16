@@ -73,7 +73,7 @@ removal_reason: null
 |-------|-------|
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #1 and §Target Users §Non-users ("Users without git/GitHub" — `/brain:init` requires `git init -b main`). This BC covers the error-case branch of the init contract. |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect — Phase 1c] |
+| Architecture Module | SS-01: Brain Initialization and Scaffold |
 | Stories | [filled by story-writer — Phase 2] |
 | Source Brief Section | product-brief.md §Target Users §Non-users, §Scope §Phase 0/1 primitives |
 

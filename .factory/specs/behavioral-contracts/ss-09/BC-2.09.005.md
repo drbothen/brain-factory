@@ -59,7 +59,7 @@ The brain's content lifecycle directory structure uses platform-specific subdire
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Family Positioning ("`drafts/{platform}/`, `to-publish/{platform}/`, `published/{platform}/` directory structure: adopted in the target brain's content layer as a brief-introduced extension beyond phased-build-plan §A.2's simpler `published/` baseline"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-09: Publishing Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Family Positioning §wclaude absorption |
 

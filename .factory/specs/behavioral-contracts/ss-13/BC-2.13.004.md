@@ -63,6 +63,6 @@ The v0.5 tarball includes 4 community-optional templates: `garden-publish.yml`, 
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-013 ("GitHub Action Templates") per brief §Scope §GH Action templates ("Community-optional add-ons (4) — shipped in the v0.5 tarball for per-operator opt-in; no author support commitment"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-13: GitHub Action Templates |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §GH Action templates |

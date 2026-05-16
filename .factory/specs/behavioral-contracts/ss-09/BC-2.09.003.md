@@ -63,7 +63,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Family Positioning ("`--schedule <date>` flag on `/brain:publish-content` (no new skill).") and §Scope §Phase 2–3 polish skills (#22: `flags: --finalize, --schedule`). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-09: Publishing Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Family Positioning §wclaude absorption; §Scope §Phase 2–3 polish skills (#22) |
 

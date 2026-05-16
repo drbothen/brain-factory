@@ -78,7 +78,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#6 `validate-wikilink-integrity.sh`) and §Prior Art ("Nguyen's 6-month practitioner report: documents index-log drift and orphan-page accumulation"). |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#6); §Prior Art §Real-world practitioner reports |
 

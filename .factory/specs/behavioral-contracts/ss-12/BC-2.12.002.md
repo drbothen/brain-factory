@@ -55,7 +55,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-012 ("Lobster Runtime") per brief §Scope §bin/lobster-run ("exits 0/1/2"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-12: Lobster Runtime |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §bin/lobster-run |
 

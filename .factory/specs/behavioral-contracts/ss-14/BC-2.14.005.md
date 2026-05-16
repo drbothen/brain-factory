@@ -63,7 +63,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-014 ("Plugin Lifecycle and Upgrade") per brief §Success Criteria §v0.1 ship gate ("`hooks.json.template` valid JSON; references all hooks via `${CLAUDE_PLUGIN_ROOT}`") and §Scope §Additional v0.x deliverables ("`hooks.json.template`"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-14: Plugin Lifecycle and Upgrade |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate; §Scope §Additional v0.x deliverables |
 

@@ -64,7 +64,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-007 ("Adversarial Review and Writescore") per brief §Family Positioning ("Writescore + revision-loop: multi-pass revision with score threshold baked into `/brain:adversary-review`."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-07: Adversarial Review and Writescore |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Family Positioning §wclaude absorption |
 

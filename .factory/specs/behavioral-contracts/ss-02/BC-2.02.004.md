@@ -65,7 +65,7 @@ At 10K sources, a full corpus re-read on each ingest would cost millions of toke
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §1 ("Incremental ingest: `/brain:ingest-url` and `/brain:ingest-source` operate on the manifest delta. They never read the entire `sources/` tree on each invocation."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-02: URL Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1 |
 

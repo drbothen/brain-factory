@@ -66,7 +66,7 @@ Source immutability applies not just at the file-system level (via the hook) but
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §1 (incremental ingest; manifest-delta; source immutability). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-02: URL Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1; §Scope §Phase 0/1 primitives (#3) |
 

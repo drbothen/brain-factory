@@ -72,7 +72,7 @@ modified: []
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#1 `brain-health-check.sh`) and §Scope §Additional v0.x deliverables ("Six-dimensional convergence tracking... User-visible via `/brain:health` and SessionStart hook banner"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#1); §Scope §Additional v0.x deliverables |
 

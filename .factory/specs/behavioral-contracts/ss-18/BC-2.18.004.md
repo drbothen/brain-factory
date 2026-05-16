@@ -66,6 +66,6 @@ For all tracked repo files, `meta-lint.bats` validates: no file contains `Co-Aut
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 4 — Cross-cutting: no AI attribution, no --no-verify, every CLAUDE_PLUGIN_ROOT ref resolves, every internal markdown link resolves"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-18: Meta-Lint and Self-Audit |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |

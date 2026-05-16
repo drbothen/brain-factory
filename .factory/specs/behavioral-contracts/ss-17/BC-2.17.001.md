@@ -60,7 +60,7 @@ The structured event catalog is a machine-readable registry of all event types e
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Structured event emission ("Every `hook-event:emit` site must appear as a row in the structured event catalog BC before the PR merges. New emission sites added without a corresponding catalog row are a P1 finding in adversarial review."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-17: Structured Event Catalog |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Structured event emission |
 

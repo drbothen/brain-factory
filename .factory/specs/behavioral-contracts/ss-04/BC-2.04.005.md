@@ -73,7 +73,7 @@ Beyond `embedding_status` (BC-2.04.004), wiki pages have additional mandatory fr
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#8 `validate-frontmatter-schema.sh`) and §Scalability Design Principles §3 (wiki/{type}/{slug}.md layout; 6 wiki types). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#8); §Scalability Design Principles §3 |
 

@@ -74,7 +74,7 @@ The `embedding_status` frontmatter field is mandatory in all wiki pages from v0.
 |-------|-------|
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scalability Design Principles §6 ("Vector-indexing interface reservation") — every wiki page template written by init must include `embedding_status: pending` to establish the non-breaking v1.0+ interface. |
 | L2 Domain Invariants | N/A |
-| Architecture Module | [filled by architect — Phase 1c] |
+| Architecture Module | SS-01: Brain Initialization and Scaffold |
 | Stories | [filled by story-writer — Phase 2] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §6; §Success Criteria §v0.1 ship gate (`validate-frontmatter-schema.sh` enforcement test) |
 

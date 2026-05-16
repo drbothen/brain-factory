@@ -65,6 +65,6 @@ The v0.9 scale gate requires that the GH Action templates process 100 sources pe
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Success Criteria §v0.9 ship gate ("GH Actions process the target ingest rate (100 sources/day sustained over 5 days of the test run) without rate-limit-induced data loss or hard failures"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-16: Scale-Aware Architecture |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Success Criteria §v0.9 ship gate §Scale test |

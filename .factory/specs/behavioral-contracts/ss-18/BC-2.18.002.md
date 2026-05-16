@@ -69,7 +69,7 @@ For hook scripts, `meta-lint.bats` validates: first line is `#!/usr/bin/env bash
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 2 — Hooks: shebang, set -euo pipefail, no bare exit, no eval, has bats file, shellcheck exits 0, shfmt exits 0"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-18: Meta-Lint and Self-Audit |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |
 

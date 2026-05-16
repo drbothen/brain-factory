@@ -64,7 +64,7 @@ The voice avoid-list is a 30-entry list of words and phrases that degrade the au
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-008 ("Content Brief and Writing") per brief §Scope §Additional v0.x deliverables ("30-entry voice avoid-list in `rules/voice-avoid-list.txt`"). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-08: Content Brief and Writing |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables |
 

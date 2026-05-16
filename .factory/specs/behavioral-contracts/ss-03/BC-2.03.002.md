@@ -61,7 +61,7 @@ Same manifest-delta contract as BC-2.02.004 applied to local source ingest. The 
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-003 ("Source Ingest Pipeline") per brief §Scalability Design Principles §1. |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-03: Source Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1; §Scope §Phase 0/1 primitives (#4) |
 

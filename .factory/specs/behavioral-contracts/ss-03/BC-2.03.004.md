@@ -65,7 +65,7 @@ When wiki page generation produces a mix of successes and failures (e.g., 8 of 1
 | Field | Value |
 |-------|-------|
 | Capability Anchor Justification | CAP-003 ("Source Ingest Pipeline") per CLAUDE.md §Error handling ("Partial-failure fan-out (e.g., batch wiki page generation): propagate per-item results; do not swallow and return empty."). |
-| Architecture Module | [filled by architect] |
+| Architecture Module | SS-03: Source Ingest Pipeline |
 | Stories | [filled by story-writer] |
 | Source Brief Section | CLAUDE.md §Error handling |
 
