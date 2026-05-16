@@ -1,0 +1,314 @@
+---
+document_type: arch-index
+level: L3
+version: "0.1.0"
+status: draft
+producer: "vsdd-factory:architect"
+phase: phase-1c
+traces_to: ../prd/index.md
+inherits_from: prd@v0.1.1
+deployment_topology: single-service
+created: 2026-05-15
+last_updated: 2026-05-15
+---
+
+# Architecture Index: brain-factory
+
+> This is the canonical sharding index over all architecture artifacts in
+> `.factory/specs/architecture/`. Architecture section files, ADRs, subsystem
+> designs, and verification properties all carry `traces_to: ../ARCH-INDEX.md`
+> pointing back to this file.
+>
+> **Writing-technique principle applies.** No literal line-number tokens in spec
+> content. Self-Audit Checklist runs five-file gate before every commit.
+>
+> **Deployment topology:** `single-service` — brain-factory is one plugin
+> tarball, one tech stack (bash + Node 20+ utilities), one deployment target
+> (Claude Code plugin registry). No independent services, no separate release
+> cycles across components.
+
+---
+
+## Document Map
+
+| Document | Path | Purpose |
+|----------|------|---------|
+| ARCH-INDEX.md (this) | `architecture/ARCH-INDEX.md` | Canonical sharding index over all architecture artifacts |
+| ADR-001 | `architecture/adr/ADR-001-bash-bats-stack.md` | Toolchain choice: bash + bats for v0.x |
+| ADR-002 | `architecture/adr/ADR-002-hook-chain-contract.md` | Hook stdin/stdout/exit-code canonical contract |
+| ADR-003 | `architecture/adr/ADR-003-plugin-packaging.md` | Plugin manifest: plugin.json + hooks.json.template |
+| ADR-004 | `architecture/adr/ADR-004-sharded-factory-layout.md` | Sharded .factory/ layout for specs and BCs |
+| ADR-005 | `architecture/adr/ADR-005-single-tenant-scale.md` | Single-tenant power-user architecture; no multi-brain |
+| ADR-006 | `architecture/adr/ADR-006-lobster-runtime.md` | Lobster: bash workflow orchestrator in v0.x |
+| ADR-007 | `architecture/adr/ADR-007-dispatcher-relationship.md` | v0.x bare bash; v1.0 WASM dispatcher migration |
+| ADR-008 | `architecture/adr/ADR-008-wiki-layer-architecture.md` | Wiki wikilink resolution + immutability + partial-failure |
+| ADR-009 | `architecture/adr/ADR-009-adversarial-review-architecture.md` | Cognitive-diversity adversarial review pattern |
+| ADR-010 | `architecture/adr/ADR-010-scale-aware-ingest.md` | Manifest-delta ingest; sub-linear latency growth |
+| ADR-011 | `architecture/adr/ADR-011-self-vsdd-bootstrap.md` | Self-VSDD: brain-factory built with its own pipeline |
+| ADR-012 | `architecture/adr/ADR-012-test-corpus-generation.md` | gen-test-corpus.sh interface and output format |
+| ADR-013 | `architecture/adr/ADR-013-github-action-templates.md` | GH Action templates strategy: 19 total across v0.x |
+| ADR-014 | `architecture/adr/ADR-014-error-taxonomy-enforcement.md` | Error taxonomy enforcement at hook layer |
+| ADR-015 | `architecture/adr/ADR-015-source-immutability-hash.md` | Source immutability: sha256 algorithm and storage |
+| ADR-016 | `architecture/adr/ADR-016-hook-helper-architecture.md` | hook-event-emit.sh design and shared helpers |
+| ADR-017 | `architecture/adr/ADR-017-plugin-lifecycle-phases.md` | Install, upgrade, downgrade, uninstall lifecycle |
+| SS-01 design | `architecture/subsystems/SS-01-brain-init-scaffold.md` | Brain initialization and scaffold design |
+| SS-02 design | `architecture/subsystems/SS-02-url-ingest-pipeline.md` | URL ingest pipeline design |
+| SS-03 design | `architecture/subsystems/SS-03-source-ingest-pipeline.md` | Source ingest pipeline design |
+| SS-04 design | `architecture/subsystems/SS-04-hook-enforcement-chain.md` | Hook enforcement chain design |
+| SS-05 design | `architecture/subsystems/SS-05-wiki-layer.md` | Wiki layer and wikilink integrity design |
+| SS-06 design | `architecture/subsystems/SS-06-source-layer-immutability.md` | Source layer and immutability design |
+| SS-07 design | `architecture/subsystems/SS-07-adversarial-review.md` | Adversarial review and writescore design |
+| SS-08 design | `architecture/subsystems/SS-08-content-brief-writing.md` | Content brief and writing design |
+| SS-09 design | `architecture/subsystems/SS-09-publishing-pipeline.md` | Publishing pipeline design |
+| SS-10 design | `architecture/subsystems/SS-10-prompt-injection-quarantine.md` | Prompt-injection quarantine design |
+| SS-11 design | `architecture/subsystems/SS-11-knowledge-synthesis.md` | Knowledge synthesis and connection design |
+| SS-12 design | `architecture/subsystems/SS-12-lobster-runtime.md` | Lobster runtime design |
+| SS-13 design | `architecture/subsystems/SS-13-github-action-templates.md` | GitHub Action templates design |
+| SS-14 design | `architecture/subsystems/SS-14-plugin-lifecycle.md` | Plugin lifecycle and upgrade design |
+| SS-15 design | `architecture/subsystems/SS-15-governance-policies.md` | Governance and policies design |
+| SS-16 design | `architecture/subsystems/SS-16-scale-aware-architecture.md` | Scale-aware architecture design |
+| SS-17 design | `architecture/subsystems/SS-17-structured-event-catalog.md` | Structured event catalog design |
+| SS-18 design | `architecture/subsystems/SS-18-meta-lint-self-audit.md` | Meta-lint and self-audit design |
+| VP-001 | `architecture/verification-properties/VP-001-hook-exit-code-semantics.md` | Hook exit-code bats coverage |
+| VP-002 | `architecture/verification-properties/VP-002-posttooluse-hook-trigger.md` | PostToolUse hook trigger on wiki writes |
+| VP-003 | `architecture/verification-properties/VP-003-source-immutability.md` | Source immutability enforcement |
+| VP-004 | `architecture/verification-properties/VP-004-wikilink-resolution.md` | Wikilink resolution correctness |
+| VP-005 | `architecture/verification-properties/VP-005-frontmatter-schema-conformance.md` | Frontmatter schema conformance |
+| VP-006 | `architecture/verification-properties/VP-006-meta-lint-suite.md` | Meta-lint factory self-audit |
+| VP-007 | `architecture/verification-properties/VP-007-lobster-determinism.md` | Lobster workflow determinism |
+| VP-008 | `architecture/verification-properties/VP-008-hook-event-catalog-completeness.md` | Hook event catalog completeness |
+| VP-009 | `architecture/verification-properties/VP-009-plugin-manifest-correctness.md` | Plugin manifest schema correctness |
+| VP-010 | `architecture/verification-properties/VP-010-adversarial-cascade-convergence.md` | Adversarial 3-CLEAN convergence |
+| VP-011 | `architecture/verification-properties/VP-011-quarantine-coverage.md` | Quarantine on every WebFetch |
+| VP-012 | `architecture/verification-properties/VP-012-manifest-atomicity.md` | Manifest write atomicity |
+| VP-013 | `architecture/verification-properties/VP-013-hook-performance-budget.md` | Hook p99 latency under 100ms |
+| VP-INDEX.md | `architecture/verification-properties/VP-INDEX.md` | Canonical index over all VPs |
+
+---
+
+## Subsystem Registry
+
+> Canonical SS-NN assignment replacing `SS-TBD` in all 95 BC frontmatter files.
+> Order preserved from the 18 ss-NN BC directories (ss-01 through ss-18).
+> Default mapping: SS-NN = ss-NN = CAP-NNN where N matches.
+> No architectural re-grouping; the 18 PRD capability anchors form a coherent
+> decomposition with clean purity boundaries and independent test surfaces.
+
+| SS-NN | ss-NN placeholder | CAP-NNN | Title | BC IDs | BC Count |
+|-------|-------------------|---------|-------|--------|----------|
+| SS-01 | ss-01 | CAP-001 | Brain Initialization and Scaffold | BC-2.01.001..BC-2.01.006 | 6 |
+| SS-02 | ss-02 | CAP-002 | URL Ingest Pipeline | BC-2.02.001..BC-2.02.007 | 7 |
+| SS-03 | ss-03 | CAP-003 | Source Ingest Pipeline | BC-2.03.001..BC-2.03.004 | 4 |
+| SS-04 | ss-04 | CAP-004 | Hook Enforcement Chain | BC-2.04.001..BC-2.04.017 | 17 |
+| SS-05 | ss-05 | CAP-005 | Wiki Layer and Wikilink Integrity | BC-2.05.001..BC-2.05.006 | 6 |
+| SS-06 | ss-06 | CAP-006 | Source Layer and Immutability | BC-2.06.001..BC-2.06.004 | 4 |
+| SS-07 | ss-07 | CAP-007 | Adversarial Review and Writescore | BC-2.07.001..BC-2.07.004 | 4 |
+| SS-08 | ss-08 | CAP-008 | Content Brief and Writing | BC-2.08.001..BC-2.08.004 | 4 |
+| SS-09 | ss-09 | CAP-009 | Publishing Pipeline | BC-2.09.001..BC-2.09.006 | 6 |
+| SS-10 | ss-10 | CAP-010 | Prompt-Injection Quarantine | BC-2.10.001..BC-2.10.003 | 3 |
+| SS-11 | ss-11 | CAP-011 | Knowledge Synthesis and Connection | BC-2.11.001..BC-2.11.003 | 3 |
+| SS-12 | ss-12 | CAP-012 | Lobster Runtime | BC-2.12.001..BC-2.12.004 | 4 |
+| SS-13 | ss-13 | CAP-013 | GitHub Action Templates | BC-2.13.001..BC-2.13.004 | 4 |
+| SS-14 | ss-14 | CAP-014 | Plugin Lifecycle and Upgrade | BC-2.14.001..BC-2.14.005 | 5 |
+| SS-15 | ss-15 | CAP-015 | Governance and Policies | BC-2.15.001..BC-2.15.003 | 3 |
+| SS-16 | ss-16 | CAP-016 | Scale-Aware Architecture | BC-2.16.001..BC-2.16.006 | 6 |
+| SS-17 | ss-17 | CAP-017 | Structured Event Catalog | BC-2.17.001..BC-2.17.004 | 4 |
+| SS-18 | ss-18 | CAP-018 | Meta-Lint and Self-Audit | BC-2.18.001..BC-2.18.005 | 5 |
+
+**Total:** 95 BCs across 18 subsystems. Default 1:1 mapping preserved. Rationale for no deviation: the PRD's 18 capability anchors map cleanly to independent hook scripts (SS-04, SS-10, SS-17), independent skills (SS-01..SS-03, SS-05..SS-09, SS-11..SS-13, SS-16), and cross-cutting infrastructure (SS-14, SS-15, SS-18). No two subsystems share a primary data boundary that would make grouping produce a cleaner purity boundary.
+
+---
+
+## Component Diagram
+
+```mermaid
+graph TD
+  subgraph ENGINE ["Plugin Engine (plugins/brain-factory/ — read-only at runtime)"]
+    SKILLS["Skills Layer\n26 SKILL.md files\n/brain:init, /brain:ingest-url,\n/brain:write, etc."]
+    HOOKS["Hook Chain\n13 bash hooks\nPreToolUse / PostToolUse / SessionStart / Stop"]
+    LOBSTER["Lobster Runtime\nbin/lobster-run\n6 workflow YAML files"]
+    MANIFEST_ENGINE["Plugin Manifest\nplugin.json\nhooks.json.template"]
+    GH_ACTIONS["GH Action Templates\n19 templates\n(15 author + 4 community-optional)"]
+    AGENTS["Specialist Agents\n14 AGENT.md files"]
+    HELPERS["Shared Hook Helpers\nhooks/lib/hook-event-emit.sh\nhooks/lib/api-retry.sh\nhooks/lib/manifest-write.sh"]
+    EVENT_CATALOG["Structured Event Catalog\nscripts/event-catalog.json\n(read-only registry)"]
+    QUARANTINE_CORPUS["Quarantine Corpus\nscripts/quarantine.mjs\n(Node 20+ utility)"]
+    DEFUDDLE["Defuddle CLI\nscripts/defuddle-fetch.mjs\n(Node 20+ utility)"]
+  end
+
+  subgraph TARGET ["Brain Vault (user repo — mutable data)"]
+    SOURCES["sources/{topic}/{slug}.md\n(immutable after creation)"]
+    WIKI["wiki/{type}/{slug}.md\n6 types"]
+    BRIEFS["briefs/ + published/\ncontent pipeline"]
+    BRAIN_STATE[".brain/\nSTATE.md, manifest.json,\npolicies.yaml, logs/"]
+    INBOX["inbox/ + .brain/cycles/"]
+  end
+
+  subgraph RUNTIME ["Claude Code Runtime"]
+    CLAUDE_CODE["Claude Code Harness\n(tool-event dispatcher)"]
+  end
+
+  CLAUDE_CODE -->|"fires hooks at tool events"| HOOKS
+  CLAUDE_CODE -->|"executes skills"| SKILLS
+  SKILLS -->|"reads templates via\n${CLAUDE_PLUGIN_ROOT}"| ENGINE
+  SKILLS -->|"writes/reads"| TARGET
+  HOOKS -->|"reads stdin JSON\nwrites stdout JSON verdict"| CLAUDE_CODE
+  HOOKS -->|"reads source-of-truth"| SOURCES
+  HOOKS -->|"validates writes to"| WIKI
+  HOOKS -->|"reads"| EVENT_CATALOG
+  HELPERS -->|"used by all hooks"| HOOKS
+  LOBSTER -->|"dispatches skills"| SKILLS
+  MANIFEST_ENGINE -->|"registered in"| CLAUDE_CODE
+  GH_ACTIONS -->|"scheduled via"| BRAIN_STATE
+  QUARANTINE_CORPUS -->|"used by"| HOOKS
+  DEFUDDLE -->|"used by"| SKILLS
+```
+
+---
+
+## Pure-Core / Effectful-I/O Boundary
+
+> This boundary determines which components can be formally verified (bats
+> property tests) vs which require integration testing only.
+
+### Pure Core (deterministic, testable with fixed inputs)
+
+| Component | Why Pure | Verification |
+|-----------|----------|-------------|
+| Hook decision logic | Given fixed stdin JSON payload, always produces same stdout verdict and exit code (except `ts` + `trace` fields) | bats property test: same payload re-run twice, stdout JSON equal modulo `ts`/`trace` |
+| Wikilink resolution algorithm | Given a set of wiki filenames and a markdown body, resolution is deterministic | bats unit test with fixture wiki dir |
+| Frontmatter schema validation | Given a YAML string, schema check is deterministic | bats unit test with fixture payloads |
+| Quarantine pattern matching | Given content string and pattern set, match result is deterministic | bats unit test with fixture payloads |
+| Lobster dependency resolution | Given workflow YAML with declared deps, step ordering is deterministic | bats unit test: same YAML input → same ordering |
+| Error code selection | Given an error condition, the E-SCOPE-NNN code assigned is deterministic | bats unit test with error-condition matrix |
+| Manifest delta computation | Given current manifest.json and a new source path, delta entry is deterministic | bats unit test with fixture manifest |
+| Filename kebab-case check | Given a filename string, kebab-case verdict is deterministic | bats unit test |
+
+### Effectful Shell (I/O-dependent, integration tested)
+
+| Component | I/O Surface | Verification |
+|-----------|-------------|-------------|
+| Defuddle fetch + write | Network (URL fetch) + filesystem (write source file) | integration/bats with mock URL or real URL in scale test |
+| Manifest write (atomicity) | Filesystem (tmp-file + mv pattern) | bats integration: inject write failure mid-op |
+| `flush-state-and-commit.sh` | Git operations (add, commit) | bats integration: verify git log |
+| LinkedIn Posts API call | Network (POST to LinkedIn API) | bats integration with DTU clone (LinkedIn mock) |
+| GH Actions execution | GitHub Actions runner + external network | CI matrix: run on ubuntu-latest |
+| `brain-health-check.sh` | Filesystem (read .brain/ state) | bats integration with fixture .brain/ |
+| Session-start + stop hooks | Claude Code runtime lifecycle | end-to-end local-dev-test.sh |
+
+---
+
+## ADR Index
+
+| ADR-ID | Title | Status | Supersedes | Superseded By |
+|--------|-------|--------|------------|---------------|
+| ADR-001 | Bash + bats + markdown stack for v0.x | accepted | — | — |
+| ADR-002 | Hook chain canonical contract (exit 0/1/2; JSON I/O) | accepted | — | — |
+| ADR-003 | Plugin packaging via plugin.json + hooks.json.template | accepted | — | — |
+| ADR-004 | Sharded .factory/ layout | accepted | — | — |
+| ADR-005 | Single-tenant power-user architecture | accepted | — | — |
+| ADR-006 | Lobster runtime as bash workflow orchestrator | accepted | — | — |
+| ADR-007 | factory-dispatcher relationship (v0.x bash; v1.0 WASM) | accepted | — | — |
+| ADR-008 | Wiki layer architecture | accepted | — | — |
+| ADR-009 | Adversarial review architecture | accepted | — | — |
+| ADR-010 | Scale-aware ingest pipeline | accepted | — | — |
+| ADR-011 | Self-VSDD bootstrap | accepted | — | — |
+| ADR-012 | Test corpus generation strategy | accepted | — | — |
+| ADR-013 | GitHub Action templates strategy | accepted | — | — |
+| ADR-014 | Error taxonomy enforcement at hook layer | accepted | — | — |
+| ADR-015 | Source immutability hash algorithm | accepted | — | — |
+| ADR-016 | Hook helper architecture (hook-event-emit.sh) | accepted | — | — |
+| ADR-017 | Plugin lifecycle phases (install/upgrade/downgrade/uninstall) | accepted | — | — |
+
+---
+
+## Module-to-CAP Traceability
+
+> Every CAP-NNN capability anchor mapped to its implementing architecture module(s).
+
+| CAP-NNN | Module(s) | SS-NN | Notes |
+|---------|-----------|-------|-------|
+| CAP-001 | skills/init/SKILL.md, skills/health/SKILL.md, templates/brain-scaffold/ | SS-01 | /brain:init + /brain:health |
+| CAP-002 | skills/ingest-url/SKILL.md, scripts/defuddle-fetch.mjs, hooks/validate-source-immutability.sh | SS-02 | URL ingest + Defuddle + immutability guard |
+| CAP-003 | skills/ingest-source/SKILL.md, hooks/validate-source-immutability.sh | SS-03 | Local file ingest |
+| CAP-004 | hooks/*.sh (all 13 hook scripts), hooks/lib/ (shared helpers) | SS-04 | Enforcement chain |
+| CAP-005 | skills/lint-wiki/SKILL.md, skills/rename-page/SKILL.md, hooks/validate-wikilink-integrity.sh | SS-05 | Wiki integrity |
+| CAP-006 | hooks/validate-source-immutability.sh, manifest.json schema, templates/source/ | SS-06 | Source immutability |
+| CAP-007 | skills/adversary-review/SKILL.md, agents/adversary/AGENT.md, agents/content-reviewer/AGENT.md | SS-07 | Adversarial review |
+| CAP-008 | skills/brief/SKILL.md, skills/write/SKILL.md, hooks/validate-voice-avoid-list.sh, rules/voice-avoid-list.txt | SS-08 | Content pipeline |
+| CAP-009 | skills/publish-content/SKILL.md, skills/monthly-perf/SKILL.md, hooks/validate-publish-state.sh | SS-09 | Publishing |
+| CAP-010 | hooks/quarantine-fetch.sh, scripts/quarantine.mjs | SS-10 | Quarantine |
+| CAP-011 | skills/connect/SKILL.md, skills/synthesize/SKILL.md, skills/process-inbox/SKILL.md | SS-11 | Knowledge synthesis |
+| CAP-012 | bin/lobster-run, workflows/*.yaml | SS-12 | Lobster runtime |
+| CAP-013 | templates/github-action-templates/*.yml | SS-13 | GH Actions |
+| CAP-014 | .claude-plugin/plugin.json, hooks/hooks.json.template, skills/upgrade-brain/SKILL.md | SS-14 | Plugin lifecycle |
+| CAP-015 | skills/policy-add/SKILL.md, skills/policy-registry-validate/SKILL.md, templates/policies.yaml | SS-15 | Governance |
+| CAP-016 | bin/lobster-run (token instrumentation), scripts/gen-test-corpus.sh, .brain/logs/ | SS-16 | Scale observability |
+| CAP-017 | scripts/event-catalog.json, hooks/lib/hook-event-emit.sh | SS-17 | Event catalog |
+| CAP-018 | tests/meta-lint.bats, tests/run-all.sh, tests/local-dev-test.sh | SS-18 | Meta-lint |
+
+---
+
+## VP-INDEX Summary
+
+> Full VP-INDEX at `architecture/verification-properties/VP-INDEX.md`.
+
+| VP-ID | Title | Mechanism | Phase |
+|-------|-------|-----------|-------|
+| VP-001 | Hook exit-code semantics coverage | bats (hooks.bats) | P0 |
+| VP-002 | PostToolUse hook trigger on wiki writes | bats (integration.bats) | P0 |
+| VP-003 | Source immutability enforcement | bats (hooks.bats) | P0 |
+| VP-004 | Wikilink resolution correctness | bats (unit + integration) | P0 |
+| VP-005 | Frontmatter schema conformance | bats (hooks.bats) | P0 |
+| VP-006 | Meta-lint factory self-audit | meta-lint.bats | P0 |
+| VP-007 | Lobster workflow determinism | bats (unit) | P0 |
+| VP-008 | Hook event catalog completeness | meta-lint.bats cross-ref | P0 |
+| VP-009 | Plugin manifest schema correctness | bats (upgrade.bats) | P0 |
+| VP-010 | Adversarial 3-CLEAN convergence | adversary cascade protocol | P1 |
+| VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | P0 |
+| VP-012 | Manifest write atomicity | bats (integration.bats) | P0 |
+| VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | P0 |
+
+---
+
+## Self-Audit Checklist (five-file gate)
+
+Per the inherited Phase 1b disciplines, run this gate before every architecture commit:
+
+```bash
+for f in \
+  .factory/specs/product-brief.md \
+  .factory/SESSION-HANDOFF.md \
+  .factory/specs/prd/index.md \
+  .factory/specs/behavioral-contracts/BC-INDEX.md \
+  .factory/specs/architecture/ARCH-INDEX.md; do
+  echo "--- $f ---"
+  grep -nE '\bL[0-9]+\b' "$f" \
+    | grep -v WSL2 \
+    | grep -v 'L\[0-9\]+' \
+    | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki' \
+    | grep -v 'level: L[0-9]\+\|Level [0-9]\+\|L2\|L3\|L4\|LEVEL' \
+    | grep -v 'SS-[0-9]\+\|CAP-[0-9]\+\|NFR-[0-9]\+\|ADR-[0-9]\+\|VP-[0-9]\+'
+done
+```
+
+**NOTE (exclusion-list-extension protocol — architecture ID tokens):** Architecture artifacts carry `SS-NN`, `CAP-NNN`, `NFR-NNN`, `ADR-NNN`, and `VP-NNN` token patterns throughout. These are canonical spec identifiers — not line-number anchors. Added `grep -v 'SS-[0-9]+|CAP-[0-9]+|NFR-[0-9]+|ADR-[0-9]+|VP-[0-9]+'` per the exclusion-list-extension protocol: (a) add exclusion; (b) re-run gate — zero matches; (c) rationale: architecture spec ID tokens are domain-standard identifiers, not line-number anchors. This exclusion is ARCH-INDEX-scope; sibling-sweep to all architecture section files is required when this gate is extended.
+
+Additional Self-Audit items:
+- [x] No "pending architect review" / "TODO for architect" for questions answerable in scope
+- [x] No blanket-coverage wording ("permanently eliminates", "at all callsites", "all entries")
+- [x] No AI attribution tokens
+- [x] No `--no-verify`
+- [x] Every module has a purity boundary classification (see Pure-Core / Effectful-I/O section)
+- [x] Every VP has a viable proof strategy (bats mechanism specified per VP)
+- [x] All HIGH-impact risks addressed (see subsystem design docs)
+- [x] deployment_topology field present in frontmatter
+- [x] Document Map complete with all section files listed
+
+---
+
+## Changelog
+
+### v0.1.0 (2026-05-15)
+
+**STRUCTURAL FIX (Phase 1c Architecture entry):** Created ARCH-INDEX.md as the canonical sharding index over architecture artifacts. Assigned canonical SS-NN subsystem IDs to all 18 placeholder subsystems (default 1:1 mapping; no re-grouping). Established pure-core / effectful-I/O boundary classification. Defined 17 ADRs, 13 VPs, and 18 subsystem design documents. Extended the four-file Self-Audit gate to a five-file gate by adding ARCH-INDEX.md. Added architecture ID token exclusion (`SS-NN`, `CAP-NNN`, `NFR-NNN`, `ADR-NNN`, `VP-NNN`) to the gate per exclusion-list-extension protocol.
