@@ -8,7 +8,9 @@ current_brief_line_count: 802
 current_brief_path: .factory/specs/product-brief.md
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: "3/3 at v0.4.15 (CONVERGED — preserved through post-convergence cleanup)"
-current_pass_number: 23 (PASS — post-convergence verification; cascade remains CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED)
+current_pass_number: 23 (PASS — post-convergence verification; cascade remains CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED); Phase 1b APPROVED by user 2026-05-15 — next-session orchestrator dispatches product-owner directly
+phase_1b_status: APPROVED-READY-FOR-DISPATCH
+session_continuity: clean-context-resume-authorized
 pass_15_verdict: FAIL
 pass_16_verdict: FAIL
 pass_17_verdict: FAIL
@@ -186,18 +188,15 @@ v0.4.15 closes three post-convergence cleanup items. The gate now covers both wr
 
 **Pass 23 (post-convergence verification) PASSED on v0.4.15.** The 13 structural-fix disciplines (10 from prior passes + 3 v0.4.15 extensions: gate-coverage-handoff, exclusion-list-protocol, audit-trail-wording-calibration) hold. The cascade is officially CLOSED on brief v0.4.15.
 
+**USER APPROVAL:** On 2026-05-15, the user explicitly approved Phase 1b PRD entry. The next-session orchestrator (starting from zero context) must NOT ask for re-approval — dispatch `vsdd-factory:product-owner` with `/vsdd-factory:create-prd` directly per the resume procedure in `.factory/STATE.md`. The user also requested durable state for clean-context resume; STATE.md was created in this commit as the canonical entry point per CLAUDE.md Project References.
+
 ## 6. Open questions for next session
 
 **PHASE 1a STAGE 5 CLOSED. Pass 23 PASSED. Cascade CONVERGED on v0.4.15.** Brief v0.4.15 (802 lines, commit 9ff0504) is the final Phase 1a Stage 5 artifact. Phase 1a Stage 6 (Finalize brief) is READY. Phase 1b (PRD) is BLOCKED-ON-HUMAN-APPROVAL per CLAUDE.md Pipeline Authority.
 
 **Pass 19 escalation question (machine-enforced hook script): CLOSED-BY-CONVERGENCE** — cultural enforcement + writing-technique principle + gate hardening proved sufficient across three consecutive fresh-context passes.
 
-**Human approval gate — Phase 1b PRD entry:**
-
-Phase 1b begins with `vsdd-factory:product-owner` dispatch using `/vsdd-factory:create-prd` skill. The PRD elaborates the converged brief into behavioral contracts (BCs) with error taxonomy and edge cases. The PRD itself undergoes its own 3-CLEAN adversarial cascade per BC-5.39.001 (Phase 1d). On human approval to advance, orchestrator initiates Phase 1b. Until then, the orchestrator stops.
-
-**Question for human review when resuming:**
-- After Pass 23 PASS confirmed, should the brief move directly to PRD phase or is there a human review gate first?
+**Phase 1b PRD entry: APPROVED by user (2026-05-15).** Next-session orchestrator dispatches product-owner directly. No further user approval required.
 
 ## 7. Artifacts on disk (all persisted)
 
@@ -243,6 +242,7 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
+| (this commit) | factory(state): create durable STATE.md + mark Phase 1b APPROVED — clean-context resume authorized |
 | 8228adc | factory(adversary): persist Pass 23 PASS — post-convergence verification; cascade CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED |
 | a0783df | factory(handoff): refresh state for v0.4.15 post-convergence cleanup completion — Pass 23 verification pending |
 | 9ff0504 | factory(spec): bump brief to v0.4.15 — post-convergence cleanup (F-PASS20-S1/O1 + F-PASS21-S1; gate extension + audit-trail wording calibration) |
@@ -287,23 +287,17 @@ commits — the brief on disk at v0.4.15 is the authoritative artifact.
 
 ## 9. Resume procedure
 
-1. Read THIS file end-to-end.
-2. Read `.factory/specs/product-brief.md` (v0.4.15, 802 lines — FINAL Phase 1a Stage 5 artifact).
-3. Read `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-23.md` (Pass 23 post-convergence verification — cascade closed).
+**PHASE 1a STAGE 5 CLOSED. PHASE 1b APPROVED. Cascade CONVERGED on v0.4.15.**
 
-**PHASE 1a STAGE 5 CLOSED. Cascade CONVERGED on v0.4.15.**
+**For a fresh-context orchestrator session:** Read `.factory/STATE.md` FIRST — it is the canonical entry point per CLAUDE.md Project References. STATE.md contains the complete clean-context resume procedure for Phase 1b.
 
-**Next step requires HUMAN APPROVAL** (orchestrator does NOT auto-advance phases per CLAUDE.md Pipeline Authority):
+In summary:
+1. Run `vsdd-factory:devops-engineer` factory-worktree-health (BLOCKING preflight; expect intentional non-canonical layout per §10)
+2. Read CLAUDE.md, STATE.md, THIS FILE, TASK-LIST.md, brief v0.4.15, adversary-pass-23.md
+3. Dispatch `vsdd-factory:product-owner` with `/vsdd-factory:create-prd` skill — Phase 1b PRD entry is USER-APPROVED, no further approval needed
+4. Then Phase 1c (architecture) and Phase 1d (adversarial spec review)
 
-4. Phase 1b (PRD) entry on human direction:
-   - Orchestrator marks Phase 1a Stage 6 (Finalize brief) COMPLETE.
-   - Orchestrator dispatches `vsdd-factory:product-owner` with `/vsdd-factory:create-prd` skill.
-   - PRD elaborates converged brief into behavioral contracts (BCs) with error taxonomy and edge cases.
-   - Phase 1d will run a fresh BC-5.39.001 3-CLEAN adversarial cascade against the PRD.
-
-5. The writing-technique principle, two-file gate, and exclusion-list-extension protocol carry forward to Phase 1b (the PRD is the writer's primary artifact in Phase 1b; the handoff continues as working memory; the disciplines remain in force).
-
-**Until human authorization to advance: orchestrator stops here.**
+Carry forward to Phase 1b: writing-technique principle, two-file gate (extend to cover new PRD), exclusion-list-extension protocol, no blanket-coverage wording, single-commit-per-burst, NO AI attribution. Full discipline catalog in STATE.md.
 
 ## 10. Standing user directives (carry forward)
 
