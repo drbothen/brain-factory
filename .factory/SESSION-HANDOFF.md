@@ -22,7 +22,7 @@ phase_1b_initial_commit: 23e3a91
 phase_1c_completion_commits: [b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b]
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: "0/3 (reset after Pass 7 FAIL; has not recovered)"
-current_pass_number: 11 (FAIL — 2C+3I; persist commit 63cf130; architect a3a83b1; state-mgr FINAL PENDING self-commit)
+current_pass_number: 11 (FAIL — 2C+3I; persist commit 63cf130; architect a3a83b1; state-mgr FINAL e37f1e3)
 phase_1b_status: COMPLETED — PRD v0.1.1 landed; consistency audit closed; Phase 1c authorized
 phase_1c_status: COMPLETED — architecture v0.1.1 + SS-NN backfill across BCs/PRD/BC-INDEX; consistency audit closed; five-file gate canonical; 64/64 P0 BC VP coverage
 phase_1d_status: IN-PROGRESS — 11 passes complete; 23 fix-bursts committed; streak 0/3; Pass 11 closed; ready for Pass 12
@@ -30,7 +30,7 @@ cascade_status: CLOSED — v0.4.15 is the final Phase 1a Stage 5 artifact
 total_passes_completed: 23
 total_fix_bursts: 15
 total_phase_1d_passes_completed: 11
-total_phase_1d_fix_bursts: 23 (Pass 11 architect a3a83b1 + state-mgr FINAL PENDING self-commit)
+total_phase_1d_fix_bursts: 23 (Pass 11 architect a3a83b1 + state-mgr FINAL e37f1e3)
 phase_1d_pass_1_verdict: FAIL
 phase_1d_pass_2_verdict: FAIL
 phase_1d_pass_3_verdict: FAIL
@@ -156,7 +156,7 @@ Plus from later session decisions (not in stage-3-locks.md):
 
 | SHA | Message |
 |-----|---------|
-| [state-mgr FINAL] | factory(state): Phase 1d Pass 11 FINAL — STATE refresh + 8-sub-check FINAL discipline (PENDING self-commit) |
+| e37f1e3 | factory(state): Phase 1d Pass 11 FINAL — STATE refresh + 8-sub-check FINAL discipline (add adversary pre-flight verification sub-check (h) per F-PASS11-O1) |
 | a3a83b1 | factory(spec): architecture v0.1.12 → v0.1.13 + VP-INDEX v0.1.5 → v0.1.6 — Phase 1d Pass 11 architect |
 | 7b1be59 | factory(state): durable resume snapshot — Phase 1d 11-pass cascade in progress |
 | 63cf130 | factory(adversary): persist Phase 1d Pass 11 FAIL — 2 CRITICAL + 3 IMPORTANT |
@@ -224,7 +224,7 @@ Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 11 passes to
 | 8 | FAIL | 1C+3I | a6917e4 | architect bf34582 + state-mgr FINAL 35fd7c2 | 0/3 |
 | 9 | FAIL | 1C+2I | 3296100 | architect 8c7dc97 + state-mgr FINAL 47824c4 | 0/3 |
 | 10 | FAIL | 2C+3I | 5a61476 | architect cc9ba18 + state-mgr FINAL c468276 | 0/3 |
-| 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + state-mgr FINAL PENDING self-commit | 0/3 |
+| 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + state-mgr FINAL e37f1e3 | 0/3 |
 
 **CRITICAL trajectory:** 7→4→2→3→2→2→2→1→1→2→2. Regression at Pass 10–11; novel-class findings driving uplift.
 
@@ -232,4 +232,4 @@ Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 11 passes to
 
 **Pass reports:** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..11}.md`
 
-**Pass 11 closure:** persist 63cf130 + architect a3a83b1 (recovered from API-error mid-commit via Option A) + state-mgr FINAL PENDING self-commit.
+**Pass 11 closure:** persist 63cf130 + architect a3a83b1 (recovered from API-error mid-commit via Option A) + state-mgr FINAL e37f1e3.

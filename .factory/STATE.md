@@ -8,8 +8,8 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: IN-PROGRESS — 11 passes complete (all FAIL); 23 fix-bursts committed (architect a3a83b1 + state-mgr FINAL PENDING self-commit); streak 0/3; ready for Pass 12 dispatch
-session_continuity: ACTIVE — Pass 11 fully closed; state-mgr FINAL burst in progress
+phase_1d_status: IN-PROGRESS — 11 passes complete (all FAIL); 23 fix-bursts committed (architect a3a83b1 + state-mgr FINAL e37f1e3); streak 0/3; ready for Pass 12 dispatch
+session_continuity: ACTIVE — Pass 11 fully closed at state-mgr FINAL e37f1e3
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
@@ -68,7 +68,7 @@ Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX +
 | 8 | FAIL | 1C+3I | a6917e4 | architect bf34582 + state-mgr FINAL 35fd7c2 | 0/3 |
 | 9 | FAIL | 1C+2I | 3296100 | architect 8c7dc97 + state-mgr FINAL 47824c4 | 0/3 |
 | 10 | FAIL | 2C+3I | 5a61476 | architect cc9ba18 + state-mgr FINAL c468276 | 0/3 |
-| 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + state-mgr FINAL PENDING self-commit | 0/3 |
+| 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + state-mgr FINAL e37f1e3 | 0/3 |
 
 **CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2.
 

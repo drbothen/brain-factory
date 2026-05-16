@@ -121,7 +121,7 @@
 | 105 | COMPLETED | Phase 1d Pass 10 state-manager FINAL | Extended FINAL discipline (7 sub-checks). Commit c468276 |
 | 106 | COMPLETED | Phase 1d adversary pass 11 | FAIL: 2C+3I. Persist commit 63cf130. Report at adversary-pass-11.md |
 | 107 | COMPLETED | Phase 1d Pass 11 architect burst | ARCH-INDEX v0.1.13 + VP-INDEX v0.1.6 + timestamp canonical-baseline sweep + dual-scope retroactive audit + adversary pre-flight codification. Recovered via Option A; committed at a3a83b1. |
-| 108 | COMPLETED | Phase 1d Pass 11 state-manager FINAL | 8-sub-check FINAL discipline applied. All 5 findings addressed. State docs updated. Commit PENDING self-commit (this burst). |
+| 108 | COMPLETED | Phase 1d Pass 11 state-manager FINAL | 8-sub-check FINAL discipline applied. All 5 findings addressed. State docs updated. Commit e37f1e3. |
 | 109 | NEXT-ACTION | Phase 1d adversary pass 12 | Dispatch after state-mgr FINAL commits. Continue cascade toward streak 3/3. |
 
 ## Next steps (in dependency order)
