@@ -3,7 +3,7 @@ artifact_type: product-brief
 project: brain-factory
 phase: phase-1a
 status: draft
-version: 0.4.16
+version: 0.4.17
 target_release: v0.x (MVP through v0.9)
 v1_dependency: factory-dispatcher (planned)
 created: 2026-05-14
@@ -51,6 +51,9 @@ locked_decisions:
 ---
 
 # Product Brief: brain-factory
+
+**Changes in v0.4.17 (2026-05-16):**
+- **STRUCTURAL FIX (F-PASS5-C2 — policies template filename divergence):** Replaced both occurrences of `policies-yaml-template.yaml` in §Additional v0.x deliverables with the canonical filename `policies.yaml` — the filename agreed upon by SS-15, ARCH-INDEX, BC-2.15.001, and BC-2.01.001 (updated during F-PASS2-I7 in those BC files). Brief now reads `The \`policies.yaml\` template at \`${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml\` ships pre-populated...`. Sibling-sweep confirmed zero remaining `policies-yaml-template` occurrences in the brief; the BC files were already corrected at F-PASS2-I7 (BC-INDEX v0.1.3 changelog). (F-PASS5-C2)
 
 **Changes in v0.4.16 (2026-05-16):**
 - **STRUCTURAL FIX (F-PASS4-I2): Workflow extension sibling-sweep** — the §Bring-up plan citation of `ingest-url.lobster` (line 333) updated to `ingest-url.yaml` to align with ADR-006 §Workflow extension convention (Lobster workflows at `plugins/brain-factory/workflows/` use `.yaml`). Source-of-Truth Precedence rule 2: ADR supersedes earlier artifacts for operational decisions. The §bin/lobster-run section (line 514) contained a second prescriptive citation of 6 workflow filenames with `.lobster` extension and a non-canonical filename set (`weekly-synthesis`, `monthly-perf`, `quarterly-mirror`, `cold-start-recovery`); updated to the ADR-006 canonical set (`ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`) with ADR-006 source citation. Sibling-sweep confirmed no further prescriptive `.lobster` references remain in the brief; remaining `.lobster` occurrences (§GH Action templates v0.5 table as historical enumeration of forbidden patterns; §Test architecture changelog audit-trail) are intentional historical or illustrative references, not prescriptions. (F-PASS4-I2)
@@ -517,7 +520,7 @@ Note: The 15 author-committed templates are covered by adversarial review, bats 
 **bin/lobster-run:** a bash interpreter for Lobster YAML workflow files. The runtime behavior (reads workflow YAML; executes skill steps in declared dependency order; exits 0/1/2) is the commitment. Implementation footprint is not a brief-level commitment. Ships in v0.1 and enables headless GH Actions execution without Node runtime overhead. 6 workflow YAML files ship in `plugins/brain-factory/workflows/`: `ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`. (ADR-006 §Workflow extension convention: `.yaml` is canonical for Lobster workflow files; filename set per ADR-006 §Six workflow files shipped + SS-12. `llm-second-brain-plugin-plan.md` §8.1; locked decision in brief prompt §lobster-runtime-lock)
 
 **Additional v0.x deliverables:**
-- ~20 templates via `${CLAUDE_PLUGIN_ROOT}/templates/...` (CLAUDE.md template, 6 wiki page type templates — one per wiki type: concepts, people, frameworks, syntheses, observations, questions — 3 source type templates, 5 brief templates, 1 policies.yaml template, 1 STATE.md template, 1 manifest template, GitHub Action YAML templates). The `policies-yaml-template.yaml` template at `${CLAUDE_PLUGIN_ROOT}/templates/policies-yaml-template.yaml` ships pre-populated with the 10 baseline policies enumerated in plugin-plan.md §10.2. `/brain:init` copies this template to the target brain's `.brain/policies.yaml`, which the operator can then extend via `/brain:policy-add`. (`llm-second-brain-plugin-plan.md` §9, §10.2)
+- ~20 templates via `${CLAUDE_PLUGIN_ROOT}/templates/...` (CLAUDE.md template, 6 wiki page type templates — one per wiki type: concepts, people, frameworks, syntheses, observations, questions — 3 source type templates, 5 brief templates, 1 policies.yaml template, 1 STATE.md template, 1 manifest template, GitHub Action YAML templates). The `policies.yaml` template at `${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml` ships pre-populated with the 10 baseline policies enumerated in plugin-plan.md §10.2. `/brain:init` copies this template to the target brain's `.brain/policies.yaml`, which the operator can then extend via `/brain:policy-add`. (`llm-second-brain-plugin-plan.md` §9, §10.2)
 - **7 default topic categories** scaffolded by `/brain:init` in the target brain's `sources/` folder per `llm-second-brain-plan.md` §3.3: `ai`, `health`, `psychology`, `productivity`, `business`, `books`, `podcasts`. Customizable via `/brain:weekly-refresh` after install. **Two additional source subdirs (`highlights/` and `bookmarks/`) are created on-demand by the v0.5 GH Action templates `readwise-sync.yml` and `raindrop-sync.yml` respectively** (per phased-build-plan §A.2's full 9-subdir layout); they are not part of the v0.1 `/brain:init` scaffold.
 - 10 baseline policies in `.brain/policies.yaml`. (`llm-second-brain-plugin-plan.md` §10.2)
 - 30-entry voice avoid-list in `rules/voice-avoid-list.txt`. (`llm-second-brain-phased-build-plan.md` §A.10)

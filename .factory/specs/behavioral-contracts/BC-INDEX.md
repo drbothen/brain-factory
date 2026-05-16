@@ -1,15 +1,15 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.4"
+version: "0.1.5"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.0
+inherits_from: prd@v0.1.6
 created: 2026-05-15
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 ---
 
 # Behavioral Contract Index: brain-factory
@@ -247,6 +247,10 @@ The gate must return zero output on all five files. ARCH-INDEX.md is the fifth f
 ---
 
 ## Changelog
+
+### v0.1.5 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS5-C1 — inherits_from drift + metadata refresh):** `inherits_from` updated from `prd@v0.1.0` to `prd@v0.1.6` (the PRD version current after this fix-burst). `last_updated` bumped to 2026-05-16. (F-PASS5-C1)
 
 ### v0.1.4 (2026-05-16)
 

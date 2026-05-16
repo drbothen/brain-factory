@@ -1,15 +1,15 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.5"
+version: "0.1.6"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 artifact_type: prd
-inherits_from: product-brief.md@v0.4.15
+inherits_from: product-brief.md@v0.4.16
 created: 2026-05-15
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 traces_to: product-brief.md
 supplements:
   - prd-supplements/interface-definitions.md
@@ -84,11 +84,7 @@ The plugin eliminates this burden by centralizing the methodology as versioned a
 
 ## 2. Behavioral Contracts Index
 
-> BCs are grouped by domain subsystem. Individual BC files live in
-> `../behavioral-contracts/ss-NN/BC-S.SS.NNN.md`. Architecture has not yet
-> been produced (Phase 1c); subsystem field in BC frontmatter uses `SS-TBD`
-> placeholder pending architect assignment. CAP-NNN capability anchors are
-> defined below and referenced verbatim in each BC file.
+> Behavioral contracts are sharded under `.factory/specs/behavioral-contracts/ss-NN/BC-S.SS.NNN.md`. Phase 1c architecture COMPLETED at commit b7679ee + subsequent fix-bursts; all 95 BCs now carry canonical `subsystem: SS-NN` labels per the ARCH-INDEX Subsystem Registry. CAP-NNN capability anchors are defined below and referenced verbatim in each BC file.
 
 ### 2.1 Brain Initialization and Scaffold (CAP-001)
 
@@ -533,6 +529,10 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 ---
 
 ## Changelog
+
+### v0.1.6 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS5-C1 — PRD §2 stale paragraph + inherits_from drift):** `inherits_from` updated from `product-brief.md@v0.4.15` to `product-brief.md@v0.4.16` (the brief version current at PRD creation time; v0.4.17 is the post-this-burst brief version — inherits_from is pinned to the brief version at PRD authoring time, not the latest). §2 opening blockquote rewritten: stale "Architecture has not yet been produced (Phase 1c); subsystem field uses `SS-TBD` placeholder" replaced with current-state text reflecting Phase 1c COMPLETED status and all 95 BCs carrying canonical `subsystem: SS-NN` labels per ARCH-INDEX. `last_updated` bumped to 2026-05-16. (F-PASS5-C1)
 
 ### v0.1.5 (2026-05-16)
 
