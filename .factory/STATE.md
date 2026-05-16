@@ -8,14 +8,14 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: APPROVED-READY-FOR-DISPATCH
+phase_1d_status: IN-PROGRESS — cascade running; 6 passes complete; 12 fix-bursts complete; streak 0/3
 session_continuity: clean-context-resume
 canonical_state_doc: .factory/SESSION-HANDOFF.md
 canonical_task_list: .factory/TASK-LIST.md
-canonical_brief: .factory/specs/product-brief.md (v0.4.15, 802 lines, commit 9ff0504)
-canonical_prd: .factory/specs/prd/index.md (v0.1.2, ~547 lines, commit cd6c3ba)
-canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.1, commit cd6c3ba)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.1, commit 7e8f96f) + 17 ADRs + 18 SS-NN designs + 27 VPs (commit d89ea4b for BC content alignment with architecture)
+canonical_brief: .factory/specs/product-brief.md (v0.4.17, 808 lines, commit 96a2a14)
+canonical_prd: .factory/specs/prd/index.md (v0.1.6, 607 lines, commit 96a2a14)
+canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.5, commit 96a2a14)
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.6, commit d588aa7) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.3 + 27 VPs
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
 ---
 
@@ -27,9 +27,9 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 **Mode:** GREENFIELD (no existing implementation; planning artifacts in `docs/planning/` serve as Phase 0 equivalent).
 
-**Phase:** 1d Adversarial spec review (APPROVED — proceed directly to dispatch).
+**Phase:** 1d Adversarial spec review — IN PROGRESS (cascade running).
 
-**Top-of-stack action:** Orchestrator dispatches `vsdd-factory:adversary` for Phase 1d BC-5.39.001 3-CLEAN cascade against the converged spec package: brief v0.4.15 + PRD v0.1.2 + BC-INDEX v0.1.1 + 95 BCs + architecture v0.1.1 (ARCH-INDEX + 17 ADRs + 18 SS-NN designs + 27 VPs).
+**Top-of-stack action:** Phase 1d BC-5.39.001 3-CLEAN cascade in progress. 6 passes complete, 12 fix-bursts complete, streak 0/3. Next actions: Pass 6 closure fix-bursts (architect: F-PASS6-C1/C2/I2/O1-arch; product-owner: F-PASS6-I1/O1-PO), then Pass 7.
 
 ## Phase 1a Stage 5 — CLOSED
 
@@ -69,7 +69,23 @@ Architecture v0.1.0 produced by `vsdd-factory:architect` at commit b7679ee. Fres
 - Five-file gate now canonical: brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md
 - Cycle: b7679ee (architecture v0.1.0) → 7e8f96f (architect fix-burst) → cd6c3ba (PO SS-NN sweep) → 1a10e45 (PO body sibling-sweep) → d89ea4b (PO Architecture Module backfill)
 
-## What Phase 1d inherits from Phase 1b/1c
+## Phase 1d Adversarial Cascade — IN PROGRESS
+
+| Pass | Verdict | Findings | Fix-burst SHAs | Streak after |
+|------|---------|----------|----------------|--------------|
+| 1 | FAIL | 7C+12I+5S+4O | f5adb81 (architect) + 034f0cc (PO) | 0/3 |
+| 2 | FAIL | 4C+8I+3S+4O | 4fe045a (architect) + 5023852 (PO) | 0/3 |
+| 3 | FAIL | 2C+4I+2S+2O | 2df98db (architect) + c6617bd (PO) | 0/3 |
+| 4 | FAIL | 3C+3I | b68a52b (architect) + ee67abb (PO) | 0/3 |
+| 5 | FAIL | 2C+3I | d588aa7 (architect) + 96a2a14 (PO) | 0/3 |
+| 6 | FAIL | 2C+3I | this burst (state-manager F-PASS6-I3 closed; architect + PO fix-bursts pending) | 0/3 |
+
+New structural-fix disciplines introduced during Phase 1d cascade (additive to Phase 1a's 13):
+- Pass 4: "sweep-by-canonical-pattern, not sweep-by-changed-token"
+- Pass 5: "last_updated freshness check" (metadata freshness invariant on spec indices)
+- Pass 6: "inherits_from chain integrity" + "broaden writing-technique gate to cover plain-prose line-N forms" + "operational state docs in freshness audit scope" (STATE.md, SESSION-HANDOFF, TASK-LIST)
+
+## What Phase 1d in-cascade carries from Phase 1b/1c
 
 The adversary (Phase 1d) MUST inherit and apply these disciplines:
 
@@ -94,6 +110,8 @@ The adversary (Phase 1d) MUST inherit and apply these disciplines:
 10. **Adversary writes pass reports to `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md`** (new cycle directory; create on first pass).
 
 11. **After convergence, Phase 2 (Story Decomposition) is next** per CLAUDE.md Pipeline Authority — separate human gate or pre-authorization required.
+
+12. **Operational state docs in freshness audit scope** (NEW — Pass 6): STATE.md, SESSION-HANDOFF.md, TASK-LIST.md are subject to the same last_updated/body-freshness invariants as spec indices. When running a freshness audit on spec indices after a fix-burst, also sweep these three operational docs.
 
 ## What Phase 1b inherits from Phase 1a
 
@@ -145,20 +163,25 @@ In order:
 7. `/Users/jmagady/Dev/brain-factory/.factory/specs/behavioral-contracts/BC-INDEX.md` — BC sharding index (v0.1.1, 95 BCs across 18 subsystems)
 8. `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/ARCH-INDEX.md` — Phase 1c deliverable (v0.1.1, 17 ADRs + 18 SS-NN designs + 27 VPs)
 
-### Step 2 — Dispatch Phase 1d Adversarial spec review (NO FURTHER USER APPROVAL NEEDED — pre-authorized 2026-05-15)
+### Step 2 — Continue Phase 1d Adversarial spec review (cascade IN PROGRESS — pre-authorized 2026-05-15)
 
-Spawn `vsdd-factory:adversary` for BC-5.39.001 3-CLEAN cascade. Inputs:
-- Brief: `.factory/specs/product-brief.md` (v0.4.15)
-- PRD: `.factory/specs/prd/index.md` (v0.1.2) + 4 supplements
-- BC-INDEX: `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.1, 95 BCs across 18 subsystems)
-- Architecture: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.1) + 17 ADRs + 18 SS-NN designs + 27 VPs
+Phase 1d cascade is running. 6 passes complete (all FAIL), 12 fix-bursts applied, streak 0/3.
+
+**Immediate next actions (Pass 6 closure fix-bursts, not yet applied):**
+- **architect**: F-PASS6-C1 (ARCH-INDEX inherits_from), F-PASS6-C2 (adjudicate inherits_from policy + sweep all 4 indices), F-PASS6-I2 (ADR stale PRD version cites sweep), F-PASS6-O1 architect portion (VP-INDEX Self-Audit freshness item)
+- **product-owner**: F-PASS6-I1 (brief changelog plain-prose "line N" + extend gate), F-PASS6-O1 PO portion (PRD + BC-INDEX Self-Audit freshness items)
+- Then dispatch **Pass 7**
+
+Cascade inputs (current versions):
+- Brief: `.factory/specs/product-brief.md` (v0.4.17, 808 lines)
+- PRD: `.factory/specs/prd/index.md` (v0.1.6, 607 lines) + 4 supplements
+- BC-INDEX: `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.5, 95 BCs across 18 subsystems)
+- Architecture: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.6) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.3 + 27 VPs
 - Planning context: `docs/planning/llm-second-brain-{plan,phased-build-plan,plugin-plan}.md` (immutable per brain-factory-001)
 - Locked decisions: `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - Project conventions: `CLAUDE.md`
 
-Pass reports: `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md` (create cycle directory on first pass).
-
-Disciplines to inherit: all items enumerated in "What Phase 1d inherits from Phase 1b/1c" above.
+Pass reports: `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md` (Passes 1–6 already written).
 
 ### Step 3 — After Phase 1d convergence
 
@@ -167,11 +190,11 @@ After 3-CLEAN cascade converges, Phase 2 (Story Decomposition) requires a separa
 ## Worktree layout — current durable state
 
 `.factory/` is a REGULAR DIRECTORY tracked on `main` (NOT a canonical orphan-branch worktree). Factory artifacts are durably persisted on `main` via `factory(...)` conventional commits. This is intentional pre-v0.1 state per SESSION-HANDOFF §10 standing directive. Recent commits include:
-- `d89ea4b` — PO Architecture Module cell backfill across 95 BC Traceability tables
-- `1a10e45` — PO 9-BC body-prose sibling-sweep follow-up (TD-VSDD-060)
-- `cd6c3ba` — PO SS-NN frontmatter sweep (95 BCs) + PRD §7 RTM + BC-INDEX five-file gate
-- `7e8f96f` — architect fix-burst v0.1.0 → v0.1.1 (+14 VPs achieving 64/64 P0 coverage)
-- `b7679ee` — architecture v0.1.0 initial creation (50 files: ARCH-INDEX + 17 ADRs + 18 SS designs + 14 VPs)
+- `96a2a14` — PO Phase 1d Pass 5 fixes: brief v0.4.16→v0.4.17, PRD v0.1.5→v0.1.6, BC-INDEX v0.1.4→v0.1.5
+- `d588aa7` — architect Phase 1d Pass 5 fixes: architecture v0.1.5→v0.1.6, VP-INDEX v0.1.2→v0.1.3
+- `ba8ea7f` — persist Phase 1d Pass 5 FAIL report (2C+3I)
+- `b68a52b` — architect Phase 1d Pass 4 fixes: architecture v0.1.4→v0.1.5
+- `ee67abb` — PO Phase 1d Pass 4 fixes: brief v0.4.15→v0.4.16
 
 Run `git -C /Users/jmagady/Dev/brain-factory log --oneline | head -30` to see the full commit history.
 
@@ -193,11 +216,11 @@ These were surfaced during Phase 1a but deferred for human direction at appropri
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md` (cascade history, locked decisions, recent commits, Phase 1b/1c completion details)
 - **Task ledger:** `.factory/TASK-LIST.md` (Task #57 / #71 are top of stack — Phase 1d entry, APPROVED-READY-FOR-DISPATCH)
 - **Adversary cascade reports (Phase 1a):** `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-{1..23}.md` (immutable historical record)
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md` (forthcoming)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..6}.md` (Passes 1–6 written)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
-- **Product brief (final):** `.factory/specs/product-brief.md` (v0.4.15, 802 lines)
-- **PRD (current):** `.factory/specs/prd/index.md` (v0.1.2) + supplements
-- **BC-INDEX (current):** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.1, 95 BCs)
-- **Architecture (current):** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.1) + 17 ADRs + 18 SS-NN designs + 27 VPs
+- **Product brief (current):** `.factory/specs/product-brief.md` (v0.4.17, 808 lines)
+- **PRD (current):** `.factory/specs/prd/index.md` (v0.1.6) + supplements
+- **BC-INDEX (current):** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.5, 95 BCs)
+- **Architecture (current):** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.6) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.3 + 27 VPs
 - **Project conventions:** `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 - **Planning artifacts (IMMUTABLE per brain-factory-001):** `docs/planning/llm-second-brain-{plan,phased-build-plan,plugin-plan}.md`, `docs/planning/vsdd-dispatcher-extraction-plan.md`
