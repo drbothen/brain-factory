@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.1"
+version: "0.1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -391,101 +391,101 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 
 | BC ID | Source (CAP) | Module(s) | Priority | Test Type |
 |-------|-------------|-----------|----------|-----------|
-| BC-2.01.001 | CAP-001 | [architect] | P0 | integration/bats |
-| BC-2.01.002 | CAP-001 | [architect] | P0 | integration/bats (assert_under_5_minutes) |
-| BC-2.01.003 | CAP-001 | [architect] | P0 | unit/bats |
-| BC-2.01.004 | CAP-001 | [architect] | P0 | unit/bats |
-| BC-2.01.005 | CAP-001 | [architect] | P1 | unit/bats |
-| BC-2.01.006 | CAP-001 | [architect] | P1 | integration/bats |
-| BC-2.02.001 | CAP-002 | [architect] | P0 | integration/bats |
-| BC-2.02.002 | CAP-002 | [architect] | P0 | integration/bats |
-| BC-2.02.003 | CAP-002 | [architect] | P0 | unit/bats |
-| BC-2.02.004 | CAP-002 | [architect] | P0 | unit/bats |
-| BC-2.02.005 | CAP-002 | [architect] | P1 | unit/bats |
-| BC-2.02.006 | CAP-002 | [architect] | P0 | unit/bats |
-| BC-2.02.007 | CAP-002 | [architect] | P1 | integration/bats (scale) |
-| BC-2.03.001 | CAP-003 | [architect] | P0 | integration/bats |
-| BC-2.03.002 | CAP-003 | [architect] | P0 | unit/bats |
-| BC-2.03.003 | CAP-003 | [architect] | P0 | unit/bats |
-| BC-2.03.004 | CAP-003 | [architect] | P0 | integration/bats |
-| BC-2.04.001 | CAP-004 | [architect] | P0 | unit/bats (quarantine.bats) |
-| BC-2.04.002 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.003 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.004 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.005 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.006 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.007 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.008 | CAP-004 | [architect] | P1 | unit/bats (hooks.bats) |
-| BC-2.04.009 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.010 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.011 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.012 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.04.013 | CAP-004 | [architect] | P1 | unit/bats (hooks.bats) |
-| BC-2.04.014 | CAP-004 | [architect] | P1 | unit/bats (hooks.bats) |
-| BC-2.04.015 | CAP-004 | [architect] | P0 | perf/bats (hooks.bats latency assert) |
-| BC-2.04.016 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats contract) |
-| BC-2.04.017 | CAP-004 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.05.001 | CAP-005 | [architect] | P0 | integration/bats (scale) |
-| BC-2.05.002 | CAP-005 | [architect] | P0 | property/bats |
-| BC-2.05.003 | CAP-005 | [architect] | P0 | integration/bats |
-| BC-2.05.004 | CAP-005 | [architect] | P0 | unit/bats |
-| BC-2.05.005 | CAP-005 | [architect] | P0 | unit/bats |
-| BC-2.05.006 | CAP-005 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.06.001 | CAP-006 | [architect] | P0 | unit/bats (hooks.bats) |
-| BC-2.06.002 | CAP-006 | [architect] | P1 | unit/bats |
-| BC-2.06.003 | CAP-006 | [architect] | P0 | unit/bats |
-| BC-2.06.004 | CAP-006 | [architect] | P1 | integration/bats |
-| BC-2.07.001 | CAP-007 | [architect] | P0 | integration/adversary.bats |
-| BC-2.07.002 | CAP-007 | [architect] | P0 | integration/adversary.bats |
-| BC-2.07.003 | CAP-007 | [architect] | P1 | integration/adversary.bats |
-| BC-2.07.004 | CAP-007 | [architect] | P0 | unit/adversary.bats |
-| BC-2.08.001 | CAP-008 | [architect] | P0 | integration/skills.bats |
-| BC-2.08.002 | CAP-008 | [architect] | P0 | integration/skills.bats |
-| BC-2.08.003 | CAP-008 | [architect] | P1 | unit/skills.bats |
-| BC-2.08.004 | CAP-008 | [architect] | P1 | unit/hooks.bats |
-| BC-2.09.001 | CAP-009 | [architect] | P0 | integration/skills.bats |
-| BC-2.09.002 | CAP-009 | [architect] | P1 | integration/skills.bats |
-| BC-2.09.003 | CAP-009 | [architect] | P1 | unit/skills.bats |
-| BC-2.09.004 | CAP-009 | [architect] | P0 | unit/hooks.bats |
-| BC-2.09.005 | CAP-009 | [architect] | P0 | unit/skills.bats |
-| BC-2.09.006 | CAP-009 | [architect] | P1 | integration/skills.bats |
-| BC-2.10.001 | CAP-010 | [architect] | P0 | integration/quarantine.bats |
-| BC-2.10.002 | CAP-010 | [architect] | P0 | unit/quarantine.bats |
-| BC-2.10.003 | CAP-010 | [architect] | P0 | unit/quarantine.bats |
-| BC-2.11.001 | CAP-011 | [architect] | P1 | integration/skills.bats |
-| BC-2.11.002 | CAP-011 | [architect] | P1 | integration/skills.bats |
-| BC-2.11.003 | CAP-011 | [architect] | P1 | integration/skills.bats |
-| BC-2.12.001 | CAP-012 | [architect] | P0 | unit/integration.bats |
-| BC-2.12.002 | CAP-012 | [architect] | P0 | unit/integration.bats |
-| BC-2.12.003 | CAP-012 | [architect] | P1 | unit/integration.bats |
-| BC-2.12.004 | CAP-012 | [architect] | P0 | integration/integration.bats |
-| BC-2.13.001 | CAP-013 | [architect] | P0 | integration/upgrade.bats |
-| BC-2.13.002 | CAP-013 | [architect] | P1 | integration/upgrade.bats |
-| BC-2.13.003 | CAP-013 | [architect] | P1 | unit/upgrade.bats |
-| BC-2.13.004 | CAP-013 | [architect] | P2 | documentation |
-| BC-2.14.001 | CAP-014 | [architect] | P0 | integration/upgrade.bats |
-| BC-2.14.002 | CAP-014 | [architect] | P1 | integration/upgrade.bats |
-| BC-2.14.003 | CAP-014 | [architect] | P0 | unit/integration.bats |
-| BC-2.14.004 | CAP-014 | [architect] | P0 | unit/integration.bats |
-| BC-2.14.005 | CAP-014 | [architect] | P0 | unit/integration.bats |
-| BC-2.15.001 | CAP-015 | [architect] | P1 | unit/policies.bats |
-| BC-2.15.002 | CAP-015 | [architect] | P1 | unit/policies.bats |
-| BC-2.15.003 | CAP-015 | [architect] | P1 | unit/policies.bats |
-| BC-2.16.001 | CAP-016 | [architect] | P0 | unit/integration.bats |
-| BC-2.16.002 | CAP-016 | [architect] | P1 | integration/integration.bats |
-| BC-2.16.003 | CAP-016 | [architect] | P1 | integration/upgrade.bats (scale) |
-| BC-2.16.004 | CAP-016 | [architect] | P1 | perf/integration.bats |
-| BC-2.16.005 | CAP-016 | [architect] | P1 | perf/integration.bats (scale) |
-| BC-2.16.006 | CAP-016 | [architect] | P1 | unit/integration.bats |
-| BC-2.17.001 | CAP-017 | [architect] | P0 | unit/hooks.bats |
-| BC-2.17.002 | CAP-017 | [architect] | P0 | documentation |
-| BC-2.17.003 | CAP-017 | [architect] | P0 | unit/hooks.bats |
-| BC-2.17.004 | CAP-017 | [architect] | P0 | unit/hooks.bats + security |
-| BC-2.18.001 | CAP-018 | [architect] | P0 | meta-lint.bats |
-| BC-2.18.002 | CAP-018 | [architect] | P0 | meta-lint.bats |
-| BC-2.18.003 | CAP-018 | [architect] | P0 | meta-lint.bats |
-| BC-2.18.004 | CAP-018 | [architect] | P0 | meta-lint.bats |
-| BC-2.18.005 | CAP-018 | [architect] | P0 | meta-lint.bats |
+| BC-2.01.001 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | integration/bats |
+| BC-2.01.002 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | integration/bats (assert_under_5_minutes) |
+| BC-2.01.003 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | unit/bats |
+| BC-2.01.004 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | unit/bats |
+| BC-2.01.005 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | unit/bats |
+| BC-2.01.006 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | integration/bats |
+| BC-2.02.001 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | integration/bats |
+| BC-2.02.002 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | integration/bats |
+| BC-2.02.003 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | unit/bats |
+| BC-2.02.004 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | unit/bats |
+| BC-2.02.005 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | unit/bats |
+| BC-2.02.006 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | unit/bats |
+| BC-2.02.007 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | integration/bats (scale) |
+| BC-2.03.001 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | integration/bats |
+| BC-2.03.002 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | unit/bats |
+| BC-2.03.003 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | unit/bats |
+| BC-2.03.004 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | integration/bats |
+| BC-2.04.001 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (quarantine.bats) |
+| BC-2.04.002 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.003 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.004 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.005 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.006 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.007 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.008 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | unit/bats (hooks.bats) |
+| BC-2.04.009 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.010 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.011 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.012 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.04.013 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | unit/bats (hooks.bats) |
+| BC-2.04.014 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | unit/bats (hooks.bats) |
+| BC-2.04.015 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | perf/bats (hooks.bats latency assert) |
+| BC-2.04.016 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats contract) |
+| BC-2.04.017 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
+| BC-2.05.001 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | integration/bats (scale) |
+| BC-2.05.002 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | property/bats |
+| BC-2.05.003 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | integration/bats |
+| BC-2.05.004 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | unit/bats |
+| BC-2.05.005 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | unit/bats |
+| BC-2.05.006 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | unit/bats (hooks.bats) |
+| BC-2.06.001 | CAP-006 | SS-06: Source Layer and Immutability | P0 | unit/bats (hooks.bats) |
+| BC-2.06.002 | CAP-006 | SS-06: Source Layer and Immutability | P1 | unit/bats |
+| BC-2.06.003 | CAP-006 | SS-06: Source Layer and Immutability | P0 | unit/bats |
+| BC-2.06.004 | CAP-006 | SS-06: Source Layer and Immutability | P1 | integration/bats |
+| BC-2.07.001 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | integration/adversary.bats |
+| BC-2.07.002 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | integration/adversary.bats |
+| BC-2.07.003 | CAP-007 | SS-07: Adversarial Review and Writescore | P1 | integration/adversary.bats |
+| BC-2.07.004 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | unit/adversary.bats |
+| BC-2.08.001 | CAP-008 | SS-08: Content Brief and Writing | P0 | integration/skills.bats |
+| BC-2.08.002 | CAP-008 | SS-08: Content Brief and Writing | P0 | integration/skills.bats |
+| BC-2.08.003 | CAP-008 | SS-08: Content Brief and Writing | P1 | unit/skills.bats |
+| BC-2.08.004 | CAP-008 | SS-08: Content Brief and Writing | P1 | unit/hooks.bats |
+| BC-2.09.001 | CAP-009 | SS-09: Publishing Pipeline | P0 | integration/skills.bats |
+| BC-2.09.002 | CAP-009 | SS-09: Publishing Pipeline | P1 | integration/skills.bats |
+| BC-2.09.003 | CAP-009 | SS-09: Publishing Pipeline | P1 | unit/skills.bats |
+| BC-2.09.004 | CAP-009 | SS-09: Publishing Pipeline | P0 | unit/hooks.bats |
+| BC-2.09.005 | CAP-009 | SS-09: Publishing Pipeline | P0 | unit/skills.bats |
+| BC-2.09.006 | CAP-009 | SS-09: Publishing Pipeline | P1 | integration/skills.bats |
+| BC-2.10.001 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | integration/quarantine.bats |
+| BC-2.10.002 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | unit/quarantine.bats |
+| BC-2.10.003 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | unit/quarantine.bats |
+| BC-2.11.001 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | integration/skills.bats |
+| BC-2.11.002 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | integration/skills.bats |
+| BC-2.11.003 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | integration/skills.bats |
+| BC-2.12.001 | CAP-012 | SS-12: Lobster Runtime | P0 | unit/integration.bats |
+| BC-2.12.002 | CAP-012 | SS-12: Lobster Runtime | P0 | unit/integration.bats |
+| BC-2.12.003 | CAP-012 | SS-12: Lobster Runtime | P1 | unit/integration.bats |
+| BC-2.12.004 | CAP-012 | SS-12: Lobster Runtime | P0 | integration/integration.bats |
+| BC-2.13.001 | CAP-013 | SS-13: GitHub Action Templates | P0 | integration/upgrade.bats |
+| BC-2.13.002 | CAP-013 | SS-13: GitHub Action Templates | P1 | integration/upgrade.bats |
+| BC-2.13.003 | CAP-013 | SS-13: GitHub Action Templates | P1 | unit/upgrade.bats |
+| BC-2.13.004 | CAP-013 | SS-13: GitHub Action Templates | P2 | documentation |
+| BC-2.14.001 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | integration/upgrade.bats |
+| BC-2.14.002 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P1 | integration/upgrade.bats |
+| BC-2.14.003 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | unit/integration.bats |
+| BC-2.14.004 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | unit/integration.bats |
+| BC-2.14.005 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | unit/integration.bats |
+| BC-2.15.001 | CAP-015 | SS-15: Governance and Policies | P1 | unit/policies.bats |
+| BC-2.15.002 | CAP-015 | SS-15: Governance and Policies | P1 | unit/policies.bats |
+| BC-2.15.003 | CAP-015 | SS-15: Governance and Policies | P1 | unit/policies.bats |
+| BC-2.16.001 | CAP-016 | SS-16: Scale-Aware Architecture | P0 | unit/integration.bats |
+| BC-2.16.002 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | integration/integration.bats |
+| BC-2.16.003 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | integration/upgrade.bats (scale) |
+| BC-2.16.004 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | perf/integration.bats |
+| BC-2.16.005 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | perf/integration.bats (scale) |
+| BC-2.16.006 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | unit/integration.bats |
+| BC-2.17.001 | CAP-017 | SS-17: Structured Event Catalog | P0 | unit/hooks.bats |
+| BC-2.17.002 | CAP-017 | SS-17: Structured Event Catalog | P0 | documentation |
+| BC-2.17.003 | CAP-017 | SS-17: Structured Event Catalog | P0 | unit/hooks.bats |
+| BC-2.17.004 | CAP-017 | SS-17: Structured Event Catalog | P0 | unit/hooks.bats + security |
+| BC-2.18.001 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
+| BC-2.18.002 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
+| BC-2.18.003 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
+| BC-2.18.004 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
+| BC-2.18.005 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
 
 ---
 
@@ -495,7 +495,7 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
 - [x] Did I rationalize any decision with "MVP," "for now," "good enough," or "we can fix later"? **No.** All BC preconditions and postconditions are fully specified. All counts (26 skills, 14 agents, 13 hooks, 18 CAP subsystems, 95 BCs total across 18 subsystems, 9 bats suites) are stated as exact commitments. No "TBD" or placeholder language in BC bodies.
 - [x] Did I add a new tech-debt-register entry without all three of: explicit human direction, concrete future dependency, and a specific future story/wave anchor? **No.** No tech-debt-register entries created.
-- [x] Did I leave any "pending architect review," "TODO for architect," or "Placeholder for architect" in a spec artifact for a question I could have answered in scope? **No.** Module column in traceability matrix uses `[architect]` as a deliberate placeholder for Phase 1c — this is legitimate cross-component work requiring architect output, not a question answerable in current scope.
+- [x] Did I leave any "pending architect review," "TODO for architect," or "Placeholder for architect" in a spec artifact for a question I could have answered in scope? **No.** Module column in traceability matrix originally used a Phase 1b placeholder at delivery time (legitimate cross-component work requiring architect output). Backfilled with canonical SS-NN module labels during F-1c-CV-07 fix-burst (2026-05-15) after architect Subsystem Registry landed.
 - [x] Did I find a bug or gap in another AI's output and surface it as a question/advisory instead of fixing it in scope? **No.** All brief underspecifications elaborated into full BCs in scope.
 - [x] Did I default to the cheapest mechanism instead of the correct mechanism? **No.** All 18 subsystems fully specified. No "see brief" deferrals.
 - [x] Did I paper-fix a finding by renaming, doc-commenting, or asserting-only when the real fix is structural? **No.** Each BC has testable preconditions, postconditions, invariants, edge cases, and canonical test vectors.
@@ -520,6 +520,10 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 ---
 
 ## Changelog
+
+### v0.1.2 (2026-05-15)
+
+**STRUCTURAL FIX (F-1c-CV-07 closure + Phase 1c handoff):** §7 RTM Module column backfilled with SS-NN subsystem labels per architect's Subsystem Registry (ARCH-INDEX.md). The 95 BC rows in the Requirements Traceability Matrix now carry canonical module assignments (SS-01 through SS-18) matching the 1:1 mapping established by the Phase 1c architect. Self-Audit Checklist note updated to reflect that Phase 1c has landed and the placeholder is no longer active.
 
 ### v0.1.1 (2026-05-15)
 

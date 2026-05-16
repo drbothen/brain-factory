@@ -8,7 +8,7 @@ traces_to: ../BC-INDEX.md
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 origin: greenfield
-subsystem: "SS-TBD"
+subsystem: "SS-06"
 capability: "CAP-006"
 lifecycle_status: active
 introduced: v0.1.0
