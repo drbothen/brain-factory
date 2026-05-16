@@ -1,9 +1,10 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.0"
+version: "0.1.1"
 status: draft
 producer: "vsdd-factory:architect"
+timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.1
@@ -82,6 +83,20 @@ last_updated: 2026-05-15
 | VP-011 | `architecture/verification-properties/VP-011-quarantine-coverage.md` | Quarantine on every WebFetch |
 | VP-012 | `architecture/verification-properties/VP-012-manifest-atomicity.md` | Manifest write atomicity |
 | VP-013 | `architecture/verification-properties/VP-013-hook-performance-budget.md` | Hook p99 latency under 100ms |
+| VP-014 | `architecture/verification-properties/VP-014-brain-init-scaffold.md` | Brain init scaffold completeness |
+| VP-015 | `architecture/verification-properties/VP-015-url-ingest-pipeline.md` | URL ingest pipeline end-to-end |
+| VP-016 | `architecture/verification-properties/VP-016-source-ingest-pipeline.md` | Source ingest and vault path rejection |
+| VP-017 | `architecture/verification-properties/VP-017-hook-naming-and-attribution.md` | Kebab-case gate and AI attribution block |
+| VP-018 | `architecture/verification-properties/VP-018-wiki-layer-integrity.md` | Wiki layer schema, state machine, partial-failure |
+| VP-019 | `architecture/verification-properties/VP-019-content-brief-pipeline.md` | Content brief ONE THING / PROOF / TRANSFORMATION |
+| VP-020 | `architecture/verification-properties/VP-020-publish-state-machine.md` | Publish state machine and LinkedIn API shape |
+| VP-021 | `architecture/verification-properties/VP-021-quarantine-skill-and-corpus.md` | Quarantine skill activation and corpus location |
+| VP-022 | `architecture/verification-properties/VP-022-lobster-headless-execution.md` | Lobster headless execution |
+| VP-023 | `architecture/verification-properties/VP-023-github-action-templates.md` | GH Action templates v0.1 core set validity |
+| VP-024 | `architecture/verification-properties/VP-024-plugin-lifecycle.md` | Plugin install completeness and upgrade idempotency |
+| VP-025 | `architecture/verification-properties/VP-025-scale-token-instrumentation.md` | Token JSONL on every ingest |
+| VP-026 | `architecture/verification-properties/VP-026-event-catalog-schema-and-completeness.md` | Event catalog schema and emit-site completeness |
+| VP-027 | `architecture/verification-properties/VP-027-sub-linear-ingest-latency.md` | Sub-linear ingest latency 1K→10K pages |
 | VP-INDEX.md | `architecture/verification-properties/VP-INDEX.md` | Canonical index over all VPs |
 
 ---
@@ -268,6 +283,20 @@ graph TD
 | VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | P0 |
 | VP-012 | Manifest write atomicity | bats (integration.bats) | P0 |
 | VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | P0 |
+| VP-014 | Brain init scaffold completeness | bats (integration.bats) | P0 |
+| VP-015 | URL ingest pipeline: Defuddle to manifest to wiki pages | bats (integration.bats) | P0 |
+| VP-016 | Source ingest: local file ingest and vault path rejection | bats (skills.bats + integration.bats) | P0 |
+| VP-017 | Hook enforcement: kebab-case gate and AI attribution block | bats (hooks.bats) | P0 |
+| VP-018 | Wiki layer: page schema, embedding state machine, partial-failure fan-out | bats (skills.bats + integration.bats) | P0 |
+| VP-019 | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION enforcement | bats (skills.bats) | P0 |
+| VP-020 | Publishing pipeline: state machine enforcement and LinkedIn API call shape | bats (hooks.bats + skills.bats + LinkedIn DTU) | P0 |
+| VP-021 | Quarantine skill activation and corpus location resolution | bats (quarantine.bats) | P0 |
+| VP-022 | Lobster headless execution: no interactive prompts in non-TTY context | bats (integration.bats) | P0 |
+| VP-023 | GitHub Action templates: v0.1 core set YAML validity and trigger config | bats (meta-lint.bats) | P0 |
+| VP-024 | Plugin lifecycle: install completeness and upgrade migration idempotency | bats (upgrade.bats) | P0 |
+| VP-025 | Scale token instrumentation: JSONL record on every ingest invocation | bats (integration.bats) | P0 |
+| VP-026 | Event catalog: JSON schema validity and emit-site completeness | bats (meta-lint.bats + hooks.bats) | P0 |
+| VP-027 | Sub-linear ingest latency as wiki grows from 1K to 10K pages | bats (integration.bats — slow lane) | P1 |
 
 ---
 
@@ -308,6 +337,36 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.1 (2026-05-15)
+
+**STRUCTURAL FIX (F-1c-CV-01 VP coverage):** Added VP-014 through VP-027 (14 new VPs)
+to close P0 BC coverage gaps across SS-01, SS-02 (URL ingest + BC-2.02.007 in VP-027),
+SS-03, SS-04 (kebab-case, AI attribution, stdout/stderr separation), SS-05 (wiki layer),
+SS-08 (content brief), SS-09 (publishing state machine), SS-10 (quarantine skill), SS-12
+(headless execution), SS-13 (GH Action templates), SS-14 (plugin lifecycle), SS-16
+(token instrumentation), and SS-17 (event catalog). P0 coverage is now 64 of 64 BCs
+across all 18 subsystems. VP-INDEX updated to v0.1.1 with P0 Coverage Matrix.
+
+**STRUCTURAL FIX (F-1c-CV-03 timestamp backfill):** Added `timestamp: 2026-05-15T00:00:00`
+to all 49 existing architecture artifacts (17 ADRs, 18 subsystem designs, ARCH-INDEX,
+VP-INDEX, VP-001..VP-013). All new VP files (VP-014..VP-027) have timestamp in their
+initial frontmatter.
+
+**STRUCTURAL FIX (F-1c-CV-04 GH Action count disambiguation):** Added Count Disambiguation
+Note section to ADR-013 clarifying that `plugin-plan.md`'s reference to 18 templates is
+superseded by this ADR and PRD §1.2 (authoritative count: 19 templates).
+
+**STRUCTURAL FIX (F-1c-CV-05 VP-013 reconciliation):** VP-013 `verifies_bcs` corrected
+from `[BC-2.04.015, BC-2.02.007]` to `[BC-2.04.015, NFR-001]`. BC-2.02.007 is now covered
+by dedicated VP-027. VP-INDEX Self-Audit claim updated from misleading partial-coverage
+wording to an accurate enumerated P0 Coverage Matrix (64/64 BCs covered).
+
+**STRUCTURAL FIX (F-1c-CV-06 api-retry.sh delivery):** Added `api-retry.sh Delivery for
+GitHub Actions` section to ADR-016 clarifying the dual-copy delivery pattern:
+`hooks/lib/api-retry.sh` (Claude Code session context) and `scripts/lib/api-retry.sh`
+(GH Actions runner context, installed by `/brain:install-actions`). Rationale for
+dual-copy documented.
 
 ### v0.1.0 (2026-05-15)
 

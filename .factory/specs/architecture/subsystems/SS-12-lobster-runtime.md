@@ -5,6 +5,7 @@ title: "Lobster Runtime"
 level: L3
 version: "1.0"
 producer: "vsdd-factory:architect"
+timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 capability_anchor: CAP-012

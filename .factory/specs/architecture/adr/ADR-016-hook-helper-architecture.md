@@ -6,6 +6,7 @@ status: accepted
 level: L3
 version: "1.0"
 producer: "vsdd-factory:architect"
+timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 supersedes: null
@@ -168,6 +169,30 @@ Hooks that don't need a specific field simply don't parse it. jq parse failure â
 **Neutral:**
 - The helpers are part of the plugin tarball (included in hooks/lib/)
 - meta-lint validates that each hook sources hook-event-emit.sh (BC-2.18.002 extension)
+
+## api-retry.sh Delivery for GitHub Actions
+
+ADR-013 states that all 19 GH Action templates invoke `api-retry.sh` for rate-limit
+handling (BC-2.13.003). GH Actions runners do NOT have access to `${CLAUDE_PLUGIN_ROOT}`
+paths at runtime because the plugin is installed in the user's local Claude Code session,
+not in the Actions runner environment.
+
+**Resolution:** `api-retry.sh` is delivered to GH Actions via a second canonical location:
+`scripts/lib/api-retry.sh` (separate from `hooks/lib/api-retry.sh`). The GH Action
+templates reference it via a repo-relative path (the operator's brain vault contains
+a copy of `scripts/lib/api-retry.sh` installed by `/brain:install-actions`).
+
+The `hooks/lib/api-retry.sh` version is used exclusively by hook scripts running in the
+Claude Code session. The `scripts/lib/api-retry.sh` version is used exclusively by GH
+Action templates. Both versions implement identical logic (same bash function body) and
+are kept in sync by meta-lint (BC-2.18.003: structural equivalence check between the
+two copies). This is a deliberate dual-copy pattern, not DRY violation â€” the deployment
+contexts have incompatible `${CLAUDE_PLUGIN_ROOT}` resolution environments.
+
+Rationale for not using a shared symlink or install-time substitution: GH Action YAML
+files that reference scripts must use paths relative to `$GITHUB_WORKSPACE`, which maps
+to the brain vault root. The hook context resolves `${CLAUDE_PLUGIN_ROOT}` at session
+start; the GH Actions context has no equivalent resolver.
 
 ## References
 

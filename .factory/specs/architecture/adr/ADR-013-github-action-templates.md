@@ -6,6 +6,7 @@ status: accepted
 level: L3
 version: "1.0"
 producer: "vsdd-factory:architect"
+timestamp: 2026-05-15T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 supersedes: null
@@ -14,6 +15,16 @@ created: 2026-05-15
 ---
 
 # ADR-013: GitHub Action templates strategy
+
+## Count Disambiguation Note
+
+The planning artifact `plugin-plan.md` references 18 GitHub Action templates in several
+places. This ADR and PRD §1.2 are authoritative for the operational count: 19 templates
+total (15 author-committed + 4 community-optional opt-in). The discrepancy arose because
+the PRD elaborated the community-optional set from the original planning estimate. Per
+CLAUDE.md Source-of-Truth Precedence, PRD and architecture supersede planning artifacts
+for operational counts. `plugin-plan.md` is immutable (brain-factory-001) and records
+the original planning intent; this ADR records the authoritative resolved count of 19.
 
 ## Context
 

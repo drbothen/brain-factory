@@ -7,7 +7,8 @@ version: "1.0"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
-verifies_bcs: [BC-2.04.015, BC-2.02.007]
+timestamp: 2026-05-15T00:00:00
+verifies_bcs: [BC-2.04.015, NFR-001]
 created: 2026-05-15
 status: proposed
 ---
@@ -18,7 +19,7 @@ status: proposed
 
 For every hook script, the wall-clock time from hook invocation (stdin delivered) to exit (verdict written to stdout) is under 100ms at the p99 percentile when measured with a canonical 2KB payload on GitHub Actions ubuntu-latest. This applies to all 13 hooks.
 
-The sub-linear latency property for wikilink resolution (BC-2.02.007): the wikilink integrity hook's latency when processing a page with 5 wikilinks against a 10K-page index remains under 100ms p99 (O(n) grep-F is fast enough at 10K lines).
+The wikilink integrity hook's per-invocation latency when processing a page with 5 wikilinks against a 10K-page index remains under 100ms p99 (O(n) grep-F is fast enough at 10K lines). This is distinct from the end-to-end ingest sub-linear latency property (BC-2.02.007), which is covered by VP-027.
 
 ## Verification Mechanism
 
