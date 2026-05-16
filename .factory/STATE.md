@@ -8,14 +8,14 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: IN-PROGRESS — cascade running; 10 passes complete; 22 fix-bursts complete; streak 0/3
-session_continuity: clean-context-resume
-canonical_state_doc: .factory/SESSION-HANDOFF.md
+phase_1d_status: IN-PROGRESS-PAUSED — 11 passes complete (all FAIL); 22 fix-bursts complete; streak 0/3; PAUSED MID-PASS-11 with architect work uncommitted on disk awaiting fresh-context disposition
+session_continuity: PAUSED-FOR-CLEAN-CONTEXT-RESUME — user requested durable state snapshot 2026-05-16 mid-Pass-11
+canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
 canonical_prd: .factory/specs/prd/index.md (v0.1.8, commit 1c0251c)
 canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.7, commit 1c0251c)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.12, commit cc9ba18) + 17 ADRs + 18 SS-NN designs (SS-02 v1.2, SS-18 v1.4) + VP-INDEX v0.1.5 + 27 VPs (VP-012 v1.3)
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.12 LAST COMMITTED at commit cc9ba18; v0.1.13 uncommitted on disk per Pass 11 architect work) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.5 LAST COMMITTED (v0.1.6 uncommitted on disk) + 27 VPs
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
 ---
 
@@ -23,13 +23,41 @@ worktree_layout_note: .factory/ is a regular directory tracked on main with fact
 
 This is the canonical state-discovery entry point. Read it FIRST when starting any new orchestrator session.
 
-## Current pipeline position
+---
+
+## PAUSED MID-PASS-11 — Critical Resume Notice
+
+**Last committed state:** commit `63cf130` — Pass 11 FAIL persist (2 CRITICAL + 3 IMPORTANT).
+
+**UNCOMMITTED on disk** (34 files modified, intentional, complete content): Pass 11 architect burst hit API error DURING commit. Files are intact; only the commit step failed. Architect's intended subject:
+
+`factory(spec): architecture v0.1.12 → v0.1.13 + VP-INDEX v0.1.5 → v0.1.6 — Phase 1d Pass 11 architect (F-PASS11-C1/C2/I1/I2/I3 + timestamp canonical-baseline sweep + retroactive dual-scope audit + adversary pre-flight codification)`
+
+**Fresh-context orchestrator MUST FIRST DECIDE disposition before any further cascade work:**
+
+OPTION A (recommended): commit the architect's work as-is.
+```bash
+cd /Users/jmagady/Dev/brain-factory
+git add .factory/specs/architecture/
+git commit -m "factory(spec): architecture v0.1.12 → v0.1.13 + VP-INDEX v0.1.5 → v0.1.6 — Phase 1d Pass 11 architect (F-PASS11-C1/C2/I1/I2/I3 + timestamp canonical-baseline sweep + retroactive dual-scope audit + adversary pre-flight codification)"
+```
+Then proceed with Pass 11 state-mgr FINAL burst (apply 8-sub-check FINAL discipline per the codified items in v0.1.13 changelog).
+
+OPTION B: re-dispatch architect to verify-and-commit (slower; risks introducing drift if architect re-edits).
+
+OPTION C: discard via `git checkout -- .factory/specs/architecture/` (loses Pass 11 architect work; cascade reverts to post-Pass-10 state at c468276).
+
+**Verification BEFORE deciding:** spot-check ARCH-INDEX line ~35+ for "F-PASS11-C1/I3" timestamp policy codification. If present, architect work is complete and Option A is safe.
+
+---
+
+## Current pipeline position (last committed state)
 
 **Mode:** GREENFIELD (no existing implementation; planning artifacts in `docs/planning/` serve as Phase 0 equivalent).
 
-**Phase:** 1d Adversarial spec review — IN PROGRESS (cascade running).
+**Phase:** 1d Adversarial spec review — IN-PROGRESS-PAUSED.
 
-**Top-of-stack action:** Phase 1d BC-5.39.001 3-CLEAN cascade in progress. 10 passes complete, 22 fix-bursts complete, streak 0/3. Next action: dispatch Pass 11.
+**Top-of-stack action:** Decide Pass 11 architect work disposition (Option A/B/C per section above). Then: Pass 11 state-mgr FINAL → Pass 12 adversary dispatch.
 
 ## Phase 1a Stage 5 — CLOSED
 
@@ -37,182 +65,127 @@ The brain-factory product brief reached BC-5.39.001 3-CLEAN convergence after 23
 - **Final brief:** `.factory/specs/product-brief.md` v0.4.15, 802 lines, commit 9ff0504
 - **Convergence:** Streak 3/3 reached at Pass 22 on v0.4.14; preserved through post-convergence cleanup at Pass 23 on v0.4.15
 - **Final pass report:** `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-23.md`
-- **Cascade history:** Pass 1 (v0.2.0, 312 lines) through Pass 23 (v0.4.15, 802 lines)
 
 ## Phase 1b PRD entry — COMPLETED
 
-PRD v0.1.0 created by `vsdd-factory:product-owner` at commit 23e3a91. Fresh-context consistency-validator returned CONDITIONAL-GO with 5 findings. Fix-burst at commit 7935faa (PRD v0.1.0 → v0.1.1) closed 4 of 5 findings; F-1b-CV-05 (OBSERVATION: PRD doesn't enumerate 7 reference repos — brief is authoritative) accepted. Independent orchestrator verification of fix-burst claims: CLEAN.
-
-**PRD package inventory (101 files total):**
-- 1 PRD index: `.factory/specs/prd/index.md` (v0.1.1, 535 lines)
-- 4 supplements: `error-taxonomy.md`, `nfr-catalog.md`, `interface-definitions.md`, `test-vectors.md`
-- 95 BC files across 18 subsystems (ss-01:6, ss-02:7, ss-03:4, ss-04:17, ss-05:6, ss-06:4, ss-07:4, ss-08:4, ss-09:6, ss-10:3, ss-11:3, ss-12:4, ss-13:4, ss-14:5, ss-15:3, ss-16:6, ss-17:4, ss-18:5)
-- 1 BC-INDEX: `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.0, 231 lines)
+PRD v0.1.1 landed at commit 7935faa. 95 BCs across 18 subsystems, 1 BC-INDEX, 4 supplements. Consistency audit CONDITIONAL-GO; 4 of 5 findings closed. Independent orchestrator verification: CLEAN.
 
 ## Phase 1c Architecture entry — COMPLETED
 
-Architecture v0.1.0 produced by `vsdd-factory:architect` at commit b7679ee. Fresh-context consistency-validator returned CONDITIONAL-GO with 7 findings. Architect fix-burst at commit 7e8f96f (architecture v0.1.0 → v0.1.1) closed 5 findings. Product-owner SS-NN sweep + BC-INDEX gate + PRD §7 RTM at commit cd6c3ba closed the remaining actionable finding (F-1c-CV-02). PO body sibling-sweep follow-up at commit 1a10e45 (TD-VSDD-060 closure). PO Architecture Module cell backfill at commit d89ea4b (Production-Grade Default Rule 6 closure). Independent orchestrator verification of all 4 fix-bursts: CLEAN.
+Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX + 17 ADRs + 18 SS-NN designs + 27 VPs (64/64 P0 BC coverage). Five-file gate canonical. Independent orchestrator verification: CLEAN.
 
-**Architecture package inventory (64 files total):**
-- 1 ARCH-INDEX: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.12, commit cc9ba18)
-- 17 ADRs: `ADR-001` through `ADR-017` (all `status: accepted`)
-- 18 SS-NN subsystem designs: `SS-01` through `SS-18` (1:1 with ss-NN BC dirs; 1:1 with CAP-001..CAP-018)
-- 1 VP-INDEX + 27 VPs: `VP-001` through `VP-027` (64/64 P0 BC coverage achieved)
+## Phase 1d Adversarial Cascade — IN-PROGRESS-PAUSED
 
-## Phase 1d Adversarial Cascade — IN PROGRESS
+| Pass | Verdict | Findings | Persist SHA | Fix-burst SHAs | Streak after |
+|------|---------|----------|-------------|----------------|--------------|
+| 1 | FAIL | 7C+12I+5S+4O | 484bc05 | architect f5adb81 + PO 034f0cc | 0/3 |
+| 2 | FAIL | 4C+8I+3S+4O | 15eee88 | architect 4fe045a + PO 5023852 | 0/3 |
+| 3 | FAIL | 2C+4I+2S+2O | c3f32db | architect 2df98db + PO c6617bd | 0/3 |
+| 4 | FAIL | 3C+3I | 984f9d6 | architect b68a52b + PO ee67abb | 0/3 |
+| 5 | FAIL | 2C+3I | ba8ea7f | architect d588aa7 + PO 96a2a14 | 0/3 |
+| 6 | FAIL | 2C+3I | 533d7db | architect 0827566 + PO e0e143c | 0/3 |
+| 7 | FAIL | 2C+3I | 90acdbf | architect 7e60898 + PO 1c0251c + state-mgr FINAL fd033d1 | 0/3 |
+| 8 | FAIL | 1C+3I | a6917e4 | architect bf34582 + state-mgr FINAL 35fd7c2 | 0/3 |
+| 9 | FAIL | 1C+2I | 3296100 | architect 8c7dc97 + state-mgr FINAL 47824c4 | 0/3 |
+| 10 | FAIL | 2C+3I | 5a61476 | architect cc9ba18 + state-mgr FINAL c468276 | 0/3 |
+| 11 | FAIL | 2C+3I | 63cf130 | architect UNCOMMITTED on disk (34 files) + state-mgr FINAL PENDING | 0/3 |
 
-| Pass | Verdict | Findings | Fix-burst SHAs | Streak after |
-|------|---------|----------|----------------|--------------|
-| 1 | FAIL | 7C+12I+5S+4O | f5adb81 (architect) + 034f0cc (PO) | 0/3 |
-| 2 | FAIL | 4C+8I+3S+4O | 4fe045a (architect) + 5023852 (PO) | 0/3 |
-| 3 | FAIL | 2C+4I+2S+2O | 2df98db (architect) + c6617bd (PO) | 0/3 |
-| 4 | FAIL | 3C+3I | b68a52b (architect) + ee67abb (PO) | 0/3 |
-| 5 | FAIL | 2C+3I | d588aa7 (architect) + 96a2a14 (PO) | 0/3 |
-| 6 | FAIL | 2C+3I | 533d7db (state-manager persist) + 0827566 (architect) + e0e143c (PO) | 0/3 |
-| 7 | FAIL | 2C+3I | 90acdbf (persist) + 7e60898 (architect) + 1c0251c (PO) + fd033d1 (state-manager FINAL) | 0/3 |
-| 8 | FAIL | 1C+3I | a6917e4 (persist) + bf34582 (architect) + 35fd7c2 (state-manager FINAL) | 0/3 |
-| 9 | FAIL | 1C+2I | 3296100 (persist) + 8c7dc97 (architect) + 47824c4 (state-manager FINAL) | 0/3 |
-| 10 | FAIL | 2C+3I | 5a61476 (persist) + cc9ba18 (architect) + this commit (state-manager FINAL) | 0/3 |
+**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2.
 
-New structural-fix disciplines introduced during Phase 1d cascade (additive to Phase 1a's 13):
-- Pass 4: "sweep-by-canonical-pattern, not sweep-by-changed-token"
-- Pass 5: "last_updated freshness check" (metadata freshness invariant on spec indices)
-- Pass 6: "inherits_from chain integrity" + "broaden writing-technique gate to cover plain-prose line-N forms" + "operational state docs in freshness audit scope" (STATE.md, SESSION-HANDOFF, TASK-LIST)
-- Pass 7: "pass-closure burst sequencing: state-manager refresh is FINAL commit, not intermediate" (F-PASS7-I2/O1) + "Option B parallel-burst hazard mitigation: state-manager FINAL re-pins all inherits_from to post-all-bursts parent versions" (ARCH-INDEX v0.1.8 §Versioning Policy amendment) + "writing-technique principle extended to plain-prose `line N` literals even in backticks" (F-PASS7-C1) + "Clause 2 gate sibling-sweep to brief + ARCH-INDEX Self-Audit Checklists" (F-PASS7-I3) + "narrative version cites converted to version-agnostic shorthand to scope-eliminate stale-cite class" (F-PASS7-I1 approach)
-- Pass 8: "path-currency check on operational state docs" (F-PASS8-C1 closure — state-manager FINAL MUST verify every .factory/specs/... path cited in STATE.md/SESSION-HANDOFF.md/TASK-LIST.md resolves to an existing file via test -e before commit) + "architecture-artifact line-count drift discipline extended from brief-only to all spec artifacts including SS-NN and ADR files" (F-PASS8-I1 closure) + "VP file ↔ VP-INDEX row consistency for NFR coverage verification" (F-PASS8-I2) + "changelog narrative factual accuracy: corrective NOTE pattern for after-the-fact corrections" (F-PASS8-I3) + "state-manager FINAL discipline EXTENDED: inherits_from re-pin [existing], path-currency check [new], absolute-quantity audit [new], cited-SHA verification [new], changelog factual-accuracy spot-check [new]" (F-PASS8-O1 codification)
-- Pass 9: "in-document title-cell sibling-sweep — within ARCH-INDEX, verify Document Map Purpose cells match VP-INDEX Summary title cells for any VPs whose titles were updated in a burst" (F-PASS9-C1 closure) + "writing-technique principle extension to architecture-layer changelog entries: applies WITH OR WITHOUT [audit-trail] tag — gate exemption does not exempt from the principle itself" (F-PASS9-I1 closure) + "SS-NN template Changelog discipline — any SS-NN file bumped past v1.0 MUST carry an in-file ## Changelog section" (F-PASS9-I2 closure) + "state-manager FINAL discipline EXTENDED to 6 sub-checks: (a) inherits_from re-pin, (b) path-currency check, (c) absolute-quantity audit, (d) cited-SHA verification, (e) changelog factual-accuracy spot-check, (f) [NEW] in-document title-cell sibling-sweep" (F-PASS9-C1 closure drives sub-check (f))
-- Pass 10: "canonical-baseline scope discipline — every codified discipline declares (a) incremental scope (every burst) and (b) canonical-baseline scope (one-time sweep at codification time)" (F-PASS10-O1 codification) + "VP file H1 is canonical title; VP-INDEX Title cell + ARCH-INDEX VP-INDEX Summary cell + ARCH-INDEX Document Map Purpose cell all derive from VP file H1 — three-location alignment required" (F-PASS10-C1+I1 codification) + "writing-technique self-audit sub-rule: when describing a writing-technique violation in a changelog entry, the description must not quote the violating token" (F-PASS10-C2 codification) + "timestamp tri-partite semantic: created (creation date) + timestamp (most recent meaningful content edit) + last_updated (most recent commit touch)" (F-PASS10-I3 codification) + "SS-NN Changelog discipline enforcement via Self-Audit bash sweep" (F-PASS10-I2 enforcement) + "state-manager FINAL discipline EXTENDED to 7 sub-checks: (a)..(f) [existing] + (g) [NEW] dual-scope discipline verification — for each newly codified discipline, confirm both incremental and canonical-baseline scopes are declared"
+## 21+ Structural-Fix Disciplines Codified During Phase 1d
 
-## What Phase 1d in-cascade carries from Phase 1b/1c
+Inherited from Phase 1a (13 disciplines — see brief v0.4.19 Changelog or SESSION-HANDOFF §5).
 
-The adversary (Phase 1d) MUST inherit and apply these disciplines:
+Phase 1d additions (8 confirmed committed disciplines):
+1. (Pass 4) Sweep-by-canonical-pattern — for canonical-target patterns (tests/X.bats), sweep both positive (present) and negative (deprecated absent)
+2. (Pass 5) last_updated freshness check — last_updated >= max(changelog date)
+3. (Pass 6) inherits_from chain integrity — child references parent's current version per Option B (pin-at-burst-end)
+4. (Pass 6) Plain-prose `line N` Clause 2 gate — sibling to L-prefixed Clause 1 gate
+5. (Pass 7) Sequential pass-closure discipline — bursts run sequentially (persist → architect → PO → state-mgr FINAL), not parallel; Option B parallel-burst hazard mitigation
+6. (Pass 8) Operational state doc path-currency check — test -e on every cited path
+7. (Pass 9) In-document title-cell sibling-sweep — within ARCH-INDEX, Doc Map cells match VP-INDEX Summary cells
+8. (Pass 10) Dual-scope discipline — every codified discipline declares incremental scope + canonical-baseline scope (one-time sweep at codification)
 
-1. **Five-file gate** — Self-Audit Checklist `grep \bL[0-9]+\b ...` clean on brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md before any commit. Five-file gate is now canonical.
+PENDING from Pass 11 architect uncommitted work (will land if Option A executed):
+- Timestamp tri-partite semantic (created / timestamp / last_updated) + canonical-baseline sweep (F-PASS11-I3)
+- Retroactive dual-scope audit of all 8 prior disciplines (F-PASS11-C2)
+- Adversary self-audit pre-flight: run gate before flagging writing-tech recursion findings (F-PASS11-O1)
+- F-PASS11-I1 corrective NOTE: v0.1.12 F-PASS10-C2 changelog entry annotated as false-positive no-op
+- F-PASS11-C1: [inspect ARCH-INDEX v0.1.13 for details]
+- F-PASS11-I2: [closed via dual-scope retroactive audit]
 
-2. **All 13 Phase 1a structural-fix disciplines** remain in force (catalog in brief v0.4.15 Changelog block).
+## state-manager FINAL discipline (7 sub-checks, extended to 8 pending Pass 11)
 
-3. **Production-grade default applies** (CLAUDE.md Canonical Principle). No blanket-coverage wording; no "pending architect review" for answerable questions.
+Before committing, state-manager FINAL MUST run:
+- (a) inherits_from re-pin to post-all-bursts parent versions
+- (b) path-currency check via `test -e` on all cited .factory/specs/ paths
+- (c) absolute-quantity audit — verify counts match actual artifact state
+- (d) cited-SHA verification — confirm all commit SHAs cited in state docs exist
+- (e) changelog factual-accuracy spot-check — scan for corrective-NOTE pattern
+- (f) in-document title-cell sibling-sweep — ARCH-INDEX Document Map vs VP-INDEX Summary
+- (g) dual-scope discipline verification — every newly codified discipline declares both scopes
+- (h) [PENDING — Pass 11] adversary pre-flight verification — confirm adversary ran gate before flagging writing-tech recursion findings
 
-4. **Single-commit-per-burst** (TD-VSDD-053) — one commit per logical burst; no multi-commit chains with "Stage 1" / "Stage 2" / "backfill" in consecutive subjects.
-
-5. **NO AI attribution** — no `Co-Authored-By: Claude`, no robot emoji, no "Generated with Claude Code". NO `--no-verify`.
-
-6. **NO blanket-coverage wording** — use scoped language: "extends X to cover Y", "scope-eliminates within this version's coverage (re-verify in subsequent passes)".
-
-7. **Writing-technique principle** — never quote literal line-number tokens (capital-L followed immediately by digits, or plain-prose `line N` in any context) in spec content. Describe such defects in semantic terms.
-
-8. **Citation shorthand sibling-sweep** — when citing docs, grep-verify ALL callsites after any shorthand change.
-
-9. **Adversarial 3-CLEAN protocol (BC-5.39.001)** — minimum 3 consecutive zero-blocking-finding fresh-context passes for cascade convergence.
-
-10. **Adversary writes pass reports to `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md`** (new cycle directory; create on first pass).
-
-11. **After convergence, Phase 2 (Story Decomposition) is next** per CLAUDE.md Pipeline Authority — separate human gate or pre-authorization required.
-
-12. **Operational state docs in freshness audit scope** (NEW — Pass 6): STATE.md, SESSION-HANDOFF.md, TASK-LIST.md are subject to the same last_updated/body-freshness invariants as spec indices. When running a freshness audit on spec indices after a fix-burst, also sweep these three operational docs.
-
-13. **Pass-closure burst sequencing** (NEW — Pass 7): state-manager refresh is the FINAL commit of a pass-closure sequence, not an intermediate commit. The sequence is: persist → architect → PO → state-manager-FINAL. This ensures the state-manager sees all specialist bumps before recording final versions.
-
-14. **Option B parallel-burst hazard mitigation** (NEW — Pass 7): In any pass-closure sequence with parallel or serialized specialist bursts, the state-manager FINAL burst re-pins all `inherits_from` fields to post-all-bursts parent versions. Architect and PO bursts each pin `inherits_from` at their own commit time; only the FINAL burst sees all post-all-bursts versions.
-
-15. **Path-currency check on operational state docs** (NEW — Pass 8, F-PASS8-C1 closure): state-manager FINAL burst MUST verify every `.factory/specs/...` path cited in STATE.md / SESSION-HANDOFF.md / TASK-LIST.md resolves to an existing file via `test -e` before commit. F-PASS8-C1 demonstrated SESSION-HANDOFF cited non-existent VP-INDEX paths (missing `architecture/` segment); a fresh-context resume would have failed at the Read step. Canonical VP path: `.factory/specs/architecture/verification-properties/VP-INDEX.md`.
-
-16. **state-manager FINAL discipline EXTENDED** (Pass 8 F-PASS8-O1 codification, extended at Pass 9 F-PASS9-C1 to 6 sub-checks, extended at Pass 10 F-PASS10-O1 to 7 sub-checks): Before committing, state-manager FINAL MUST run: (a) inherits_from re-pin to post-all-bursts parent versions, (b) path-currency check via `test -e` on all cited .factory/specs/ paths, (c) absolute-quantity audit — verify any count ("10 passes", "22 fix-bursts", "v0.1.12") matches actual artifact state, (d) cited-SHA verification — run `git log --oneline` and confirm all commit SHAs cited in state docs exist, (e) changelog factual-accuracy spot-check — scan changelogs for entries claiming closures that happened in a different burst (corrective NOTE pattern applies when found), (f) in-document title-cell sibling-sweep — verify ARCH-INDEX Document Map Purpose cells match VP-INDEX Summary title cells for any VP whose title was updated in a burst; a VP-INDEX row update without a matching Document Map cell update is a propagation gap, (g) [NEW — Pass 10] dual-scope discipline verification — for each newly codified discipline in the current burst, confirm both incremental scope and canonical-baseline scope are explicitly declared; an incremental-only codification is a defect.
-
-17. **Canonical-baseline scope requirement** (NEW — Pass 10, F-PASS10-O1): Disciplines that catch incremental drift only allow pre-existing defect inventory to survive indefinitely. Every discipline codified during the cascade must name both scopes. Incremental scope = checked on every burst (cheap, forward-only). Canonical-baseline scope = one-time sweep over entire spec inventory at codification time (catches inherited drift).
-
-## What Phase 1b inherits from Phase 1a
-
-The PRD writer (Phase 1b product-owner) MUST inherit and apply these disciplines (the Phase 1a cascade established them; their absence in the PRD will surface as Phase 1d adversarial findings):
-
-1. **Two-file gate** — Self-Audit Checklist runs `grep \bL[0-9]+\b ...` clean on the new PRD (and the still-active SESSION-HANDOFF) before any commit. Use the v0.4.15-introduced two-file `for`-loop pattern, extended to cover the PRD file.
-
-2. **Writing-technique principle** — never quote literal line-number tokens with the pattern of a capital-L followed immediately by digits. Describe line-number-anchor defects in semantic terms ("literal-line-number anchor", "line-prefixed token"). The grep gate cannot distinguish quoted-literal from active citation.
-
-3. **Exclusion-list-extension protocol** — three-step procedure for adding legitimate prefixed tokens to the gate's exclusion list: (a) add to `grep -v` clause; (b) re-run gate; (c) record rationale in changelog. Do NOT work around the gate by reverting the writing-technique principle.
-
-4. **13 structural-fix disciplines** (catalog in brief v0.4.15 Changelog block).
-
-5. **No blanket-coverage wording** — never write "permanently eliminates", "at all callsites", "all entries", "all callsites" in spec content.
-
-## Resume procedure (FRESH-CONTEXT ORCHESTRATOR — execute in order)
+## Resume procedure for FRESH-CONTEXT ORCHESTRATOR
 
 ### Step 0 — Worktree health check (BLOCKING)
 
-Run the factory-worktree-health skill via devops-engineer:
 ```
-Agent(subagent_type="vsdd-factory:devops-engineer", prompt="cd /Users/jmagady/Dev/brain-factory && run the factory-worktree-health skill...")
+Agent(subagent_type="vsdd-factory:devops-engineer", prompt="cd /Users/jmagady/Dev/brain-factory && run factory-worktree-health skill")
+```
+Expected: .factory/ regular directory on main per §10 (intentional pre-v0.1).
+
+### Step 1 — Read these documents IN ORDER
+
+1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
+2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file)
+3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
+4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
+5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-11.md` (latest pass report)
+
+### Step 2 — Verify uncommitted architect work
+
+Run `git status` to confirm 34 uncommitted architect files on disk. Then:
+```bash
+grep -n "F-PASS11-C1\|F-PASS11-I3\|timestamp.*policy\|adversary.*pre-flight" \
+  /Users/jmagady/Dev/brain-factory/.factory/specs/architecture/ARCH-INDEX.md | head -10
+```
+If matches found: architect work is complete; Option A is safe.
+
+### Step 3 — DECIDE disposition (Option A/B/C per PAUSED section above)
+
+### Step 4 — If Option A: commit architect work
+
+```bash
+cd /Users/jmagady/Dev/brain-factory
+git add .factory/specs/architecture/
+git commit -m "factory(spec): architecture v0.1.12 → v0.1.13 + VP-INDEX v0.1.5 → v0.1.6 — Phase 1d Pass 11 architect (F-PASS11-C1/C2/I1/I2/I3 + timestamp canonical-baseline sweep + retroactive dual-scope audit + adversary pre-flight codification)"
 ```
 
-Expected: the check will report `.factory/` is a regular directory tracked on `main` (NOT a canonical orphan-branch worktree). This is INTENTIONAL pre-v0.1 state per SESSION-HANDOFF §10 standing directive. Do NOT auto-restructure the layout.
+Then dispatch state-mgr FINAL Pass 11 (apply 8-sub-check FINAL discipline including new sub-check (h) adversary pre-flight verification).
 
-### Step 1 — Read canonical state documents
+### Step 5 — Continue cascade
 
-In order:
-1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md` — project conventions, routing table, production-grade default principle
-2. THIS FILE (STATE.md) — current pipeline position
-3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` — detailed handoff with cascade history, locked decisions, recent commits
-4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` — task ledger (Task #57 / Task #102 are top of stack)
-5. `/Users/jmagady/Dev/brain-factory/.factory/specs/product-brief.md` — Phase 1a deliverable (v0.4.19)
-6. `/Users/jmagady/Dev/brain-factory/.factory/specs/prd/index.md` — Phase 1b deliverable (v0.1.8)
-7. `/Users/jmagady/Dev/brain-factory/.factory/specs/behavioral-contracts/BC-INDEX.md` — BC sharding index (v0.1.7, 95 BCs across 18 subsystems)
-8. `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/ARCH-INDEX.md` — Phase 1c deliverable (v0.1.12, 17 ADRs + 18 SS-NN designs + 27 VPs)
+Dispatch Pass 12 (or higher Pass N) per BC-5.39.001 cascade protocol. Target: streak 3/3 for convergence. CRITICAL trajectory shows 1-2 per recent pass — convergence approaching.
 
-### Step 2 — Continue Phase 1d Adversarial spec review (cascade IN PROGRESS — pre-authorized 2026-05-15)
+## Open questions for human
 
-Phase 1d cascade is running. 10 passes complete (all FAIL), 22 fix-bursts applied, streak 0/3.
+1. **Worktree migration** — should `.factory/` migrate from regular-directory-on-main to orphan-branch worktree before v0.1? Defer to Phase 2 prep or v0.1 release prep.
 
-**Immediate next action:** Dispatch Pass 11.
+2. **Pass 19 escalation** — add a real `.factory/hooks/validate-changelog-anchors.sh`? DEFER-TO-PHASE-1D.
 
-Cascade inputs (current versions):
-- Brief: `.factory/specs/product-brief.md` (v0.4.19)
-- PRD: `.factory/specs/prd/index.md` (v0.1.8) + 4 supplements
-- BC-INDEX: `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, 95 BCs across 18 subsystems)
-- Architecture: `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.12) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.5 + 27 VPs
-- Planning context: `docs/planning/llm-second-brain-{plan,phased-build-plan,plugin-plan}.md` (immutable per brain-factory-001)
-- Locked decisions: `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
-- Project conventions: `CLAUDE.md`
+3. **Pass 11 architect uncommitted disposition** (NEW) — fresh-context orchestrator decides (no human input needed per pre-authorization unless Option C is chosen).
 
-Pass reports: `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-N.md` (Passes 1–10 written).
-
-### Step 3 — After Phase 1d convergence
-
-After 3-CLEAN cascade converges, Phase 2 (Story Decomposition) requires a separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
-
-## Worktree layout — current durable state
-
-`.factory/` is a REGULAR DIRECTORY tracked on `main` (NOT a canonical orphan-branch worktree). Factory artifacts are durably persisted on `main` via `factory(...)` conventional commits. This is intentional pre-v0.1 state per SESSION-HANDOFF §10 standing directive. Recent commits include:
-- this commit — state-manager Phase 1d Pass 10 FINAL
-- `cc9ba18` — architect Phase 1d Pass 10 fixes: architecture v0.1.11→v0.1.12 + VP-INDEX v0.1.4→v0.1.5 (F-PASS10-C1/C2/I1/I2/I3/O1)
-- `5a61476` — persist Phase 1d Pass 10 FAIL report (2C+3I)
-- `47824c4` — state-manager Phase 1d Pass 9 FINAL
-- `8c7dc97` — architect Phase 1d Pass 9 fixes: architecture v0.1.10→v0.1.11 (F-PASS9-C1/I1/I2)
-
-Run `git -C /Users/jmagady/Dev/brain-factory log --oneline | head -30` to see the full commit history.
-
-## Open questions for human (carried forward but NOT blocking Phase 1d)
-
-These were surfaced during Phase 1a but deferred for human direction at appropriate phase boundaries:
-
-1. **Worktree migration to canonical orphan-branch layout** — should `.factory/` migrate from regular-directory-on-main to orphan-branch worktree before v0.1? Currently working as-is; migration is structural housekeeping. Defer to Phase 2 prep or v0.1 release prep.
-
-2. **Pass 19 escalation question (closed by convergence but worth re-evaluating)** — should we add a real `.factory/hooks/validate-changelog-anchors.sh` script with lefthook or factory-dispatcher pre-commit integration? DEFER-TO-PHASE-1D: this is a Phase 1d toolchain deliverable per the brief's commitments.
-
-3. **Standing user directives (carry forward)** — see SESSION-HANDOFF §10 for the full list. Most relevant to Phase 1d:
-   - "No pragmatic convergence. Fix all issues before build." (CLAUDE.md Canonical Principle)
-   - "Keep following protocol" (consistently chosen at multiple BC-5.39.001 checkpoints)
-   - NO AI attribution in commits
+4. **Phase 1d convergence threshold** (NEW) — cascade has run 11 passes finding meta-rule application failures (not content defects). At what point does the user accept "convergence by stable discipline catalog" vs strict 3/3 zero-finding? Cascade could continue indefinitely refining process-gaps.
 
 ## Where to find the rest
 
-- **Detailed handoff:** `.factory/SESSION-HANDOFF.md` (cascade history, locked decisions, recent commits, Phase 1b/1c completion details)
-- **Task ledger:** `.factory/TASK-LIST.md` (Task #57 / #102 are top of stack — Phase 1d entry IN-PROGRESS + Pass 10 dispatch complete / Pass 11 next)
-- **Adversary cascade reports (Phase 1a):** `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-{1..23}.md` (immutable historical record)
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..10}.md` (Passes 1–10 written)
+- **Detailed handoff:** `.factory/SESSION-HANDOFF.md`
+- **Task ledger:** `.factory/TASK-LIST.md` (Task #34 / Task #57 are top of stack)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..11}.md` (Passes 1–11 written)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
-- **Product brief (current):** `.factory/specs/product-brief.md` (v0.4.19)
-- **PRD (current):** `.factory/specs/prd/index.md` (v0.1.8) + supplements
-- **BC-INDEX (current):** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, 95 BCs)
-- **Architecture (current):** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.12) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.5 + 27 VPs
+- **Product brief:** `.factory/specs/product-brief.md` (v0.4.19)
+- **PRD:** `.factory/specs/prd/index.md` (v0.1.8) + supplements
+- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, 95 BCs)
+- **Architecture (LAST COMMITTED):** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.12 at cc9ba18) + 17 ADRs + 18 SS-NN + VP-INDEX v0.1.5 + 27 VPs
 - **Project conventions:** `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
-- **Planning artifacts (IMMUTABLE per brain-factory-001):** `docs/planning/llm-second-brain-{plan,phased-build-plan,plugin-plan}.md`, `docs/planning/vsdd-dispatcher-extraction-plan.md`
