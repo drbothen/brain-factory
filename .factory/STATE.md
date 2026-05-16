@@ -8,14 +8,14 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: IN-PROGRESS — 14 passes complete (all FAIL); 30+ fix-bursts complete; streak 0/3; Pass 14 closed with strict-enumeration Changelog corrections + bash sweep cleanup; CRITICAL count decreased from 2 to 1 first time in 5 passes
-session_continuity: ACTIVE — Pass 13 fully closed at state-mgr FINAL d3016a3; Pass 14 fully closed at state-mgr FINAL this commit
+phase_1d_status: IN-PROGRESS — 15 passes complete (all FAIL); 32+ fix-bursts complete; streak 0/3; Pass 15 closed with 6-file version-bump self-violation closure + narrative directionality corrections; CRITICAL count held at 1 for 2nd consecutive pass — first stabilization signal
+session_continuity: ACTIVE — Pass 14 fully closed at state-mgr FINAL 2bf91af; Pass 15 fully closed at state-mgr FINAL this commit
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
 canonical_prd: .factory/specs/prd/index.md (v0.1.9, commit ecbe056)
 canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.8, commit ecbe056)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.16, commit 07466a4) + 17 ADRs (8 now at v1.1 with Changelog) + 18 SS-NN designs (all at v1.1+) + VP-INDEX v0.1.6 + 27 VPs (5 now at v1.1 with Changelog)
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.17, commit 7af2546) + 17 ADRs (6 at v1.1 + 2 at v1.2 = 8 with Changelog sections) + 18 SS-NN designs (16 at v1.1 + SS-02 at v1.2 + SS-18 at v1.4 = all with Changelog) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2 + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog sections)
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
 ---
 
@@ -37,7 +37,7 @@ Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered vi
 
 **Phase:** 1d Adversarial spec review — IN-PROGRESS.
 
-**Top-of-stack action:** Dispatch Pass 15 adversary per BC-5.39.001 cascade protocol (chat-only output per F-PASS12-O1; mandatory enumeration discipline per F-PASS14-C1 applies to any architect back-fill bursts).
+**Top-of-stack action:** Dispatch Pass 16 adversary per BC-5.39.001 cascade protocol (chat-only per F-PASS12-O1; enumeration discipline per F-PASS14-C1; cell-count specificity per F-PASS15-I1; initial-creation discipline per F-PASS15-I2). CRITICAL trajectory plateau at 1 for 2 passes — if Pass 16 also at 1 CRITICAL or finds only meta-rule gaps, orchestrator should consider escalating to human per F-PASS12-O2 cascade-health observation.
 
 ## Phase 1a Stage 5 — CLOSED
 
@@ -71,9 +71,10 @@ Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX +
 | 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + 343c378 (header correction) + c35de6f (inventory correction) + state-mgr FINAL e37f1e3 + 7ea3f71 (back-fill) | 0/3 |
 | 12 | FAIL | 2C+3I+2O | a58de7e | architect 71c51b3 + PO ecbe056 + state-mgr FINAL 0781716 | 0/3 |
 | 13 | FAIL | 2C+3I+2O | a2fab66 | architect 52b7f19 + state-mgr FINAL d3016a3 | 0/3 |
-| 14 | FAIL | 1C+2I+2O | ace7b4b | architect 07466a4 + state-mgr FINAL ✓ (this commit) | 0/3 |
+| 14 | FAIL | 1C+2I+2O | ace7b4b | architect 07466a4 + state-mgr FINAL 2bf91af | 0/3 |
+| 15 | FAIL | 1C+2I+1O | 65633ef | architect 7af2546 + state-mgr FINAL ✓ (this commit) | 0/3 |
 
-**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2→2→1. CRITICAL count reached 1 for first time in 5 passes (Passes 10–13 all at 2); signals cascade progress.
+**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1. CRITICAL count held at 1 for 2nd consecutive pass (Pass 14 and Pass 15 both at 1 CRITICAL) — first stabilization signal; previous plateau was at 2 CRITICAL for Passes 10–13.
 
 ## 21+ Structural-Fix Disciplines Codified During Phase 1d
 
@@ -97,6 +98,10 @@ Phase 1d additions (13 confirmed committed disciplines):
 15. (Pass 13) Count balance check Self-Audit sub-rule — for any count claim in a canonical-baseline-scope clause (N bumped / M retained), verify N + M = total artifact count cited in the same clause before commit (F-PASS13-C1)
 16. (Pass 13) Cascade table FINAL-marker format change — state-mgr FINAL rows no longer carry self-SHA placeholder; use textual marker "state-mgr FINAL ✓ (this commit)" instead; self-SHA back-fill bursts eliminated going forward (F-PASS13-I1 closure)
 17. (Pass 14) Changelog reconstruction enumeration discipline — when back-filling a Changelog section, grep ARCH-INDEX for target file ID first; one bullet per modification; no invented attributions; insufficient-attribution acknowledged rather than fabricated (F-PASS14-C1)
+18. (Pass 15) Changelog amendments count as body modifications requiring version bump (F-PASS15-C1 clarification of F-PASS13-C2)
+19. (Pass 15) Derived-cell-count enumeration discipline — cite SPECIFIC cells from ARCH-INDEX entries, not "all three" claims (F-PASS15-I1)
+20. (Pass 15) Initial-creation content discipline — F-PASS14-C1 enumeration targets POST-CREATION modifications only; initial-creation content reflecting parent-document decisions does NOT require attribution (F-PASS15-I2)
+21. (Pass 15) Bash sweep timestamp-invariant check — `timestamp >= created` enforcement (F-PASS15-O1)
 
 ## TD-VSDD-053-spirit Advisories (corrective-burst-within-pass pattern)
 
@@ -138,11 +143,11 @@ Expected: .factory/ regular directory on main per §10 (intentional pre-v0.1).
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
-5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-14.md` (latest pass report)
+5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-15.md` (latest pass report)
 
 ### Step 2 — Continue cascade
 
-Dispatch Pass 15 adversary per BC-5.39.001 cascade protocol. IMPORTANT: Pass 15 dispatch MUST use chat-only output protocol (adversary produces findings as chat text; orchestrator routes to state-manager for persistence; adversary must NOT be instructed to Write or Commit files). Target: streak 3/3 for convergence.
+Dispatch Pass 16 adversary per BC-5.39.001 cascade protocol. IMPORTANT: Pass 16 dispatch MUST use chat-only output protocol (adversary produces findings as chat text; orchestrator routes to state-manager for persistence; adversary must NOT be instructed to Write or Commit files). Target: streak 3/3 for convergence. CRITICAL plateau at 1 for 2 passes — consider escalating convergence health observation to human if Pass 16 shows same pattern.
 
 ## Open questions for human
 
@@ -150,16 +155,16 @@ Dispatch Pass 15 adversary per BC-5.39.001 cascade protocol. IMPORTANT: Pass 15 
 
 2. **Pass 19 escalation** — add a real `.factory/hooks/validate-changelog-anchors.sh`? DEFER-TO-PHASE-1D.
 
-3. **Phase 1d convergence threshold** — cascade has run 14 passes finding a mix of meta-rule application failures and genuine content defects. At what point does the user accept "convergence by stable discipline catalog" vs strict 3/3 zero-finding? Pass 14 CRITICAL count dropped to 1 (first time in 5 passes), a positive signal; cascade continues per BC-5.39.001 strict protocol.
+3. **Phase 1d convergence threshold** — cascade has run 15 passes finding a mix of meta-rule application failures and genuine content defects. At what point does the user accept "convergence by stable discipline catalog" vs strict 3/3 zero-finding? CRITICAL count held at 1 for 2 consecutive passes (Pass 14 and Pass 15) — first stabilization signal; cascade continues per BC-5.39.001 strict protocol.
 
 ## Where to find the rest
 
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md`
 - **Task ledger:** `.factory/TASK-LIST.md`
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..13}.md` (Passes 1–13 written)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..15}.md` (Passes 1–15 written)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - **Product brief:** `.factory/specs/product-brief.md` (v0.4.19)
 - **PRD:** `.factory/specs/prd/index.md` (v0.1.9) + supplements
 - **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.8, 95 BCs)
-- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.16, commit 07466a4) + 17 ADRs (8 at v1.1) + 18 SS-NN (all at v1.1+) + VP-INDEX v0.1.6 + 27 VPs (5 at v1.1)
+- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.17, commit 7af2546) + 17 ADRs (6 at v1.1 + 2 at v1.2 = 8 with Changelog) + 18 SS-NN (all at v1.1+) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2 + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog)
 - **Project conventions:** `/Users/jmagady/Dev/brain-factory/CLAUDE.md`

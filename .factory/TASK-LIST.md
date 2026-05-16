@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — 14 passes complete (all FAIL), 30+ fix-bursts committed, streak 0/3. Pass 14 closed; ready for Pass 15 (chat-only adversary dispatch per F-PASS12-O1; mandatory enumeration discipline per F-PASS14-C1 applies to architect back-fill bursts).**
+> Snapshot updated: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — 15 passes complete (all FAIL), 32+ fix-bursts committed, streak 0/3. Pass 15 closed; ready for Pass 16 (chat-only adversary dispatch per F-PASS12-O1; enumeration discipline per F-PASS14-C1; cell-count specificity per F-PASS15-I1; initial-creation discipline per F-PASS15-I2).**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md §9 for resume procedure summary.
 
@@ -8,7 +8,7 @@
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #115 | NEXT-ACTION | Pass 15 adversary dispatch per BC-5.39.001 cascade protocol — MUST use chat-only output protocol (no Write/Commit instructions to adversary per F-PASS12-O1); mandatory enumeration discipline per F-PASS14-C1 applies to any architect back-fill bursts |
+| 1 | #116 | NEXT-ACTION | Pass 16 adversary dispatch per BC-5.39.001 cascade protocol — MUST use chat-only output protocol per F-PASS12-O1; enumeration discipline per F-PASS14-C1; cell-count specificity per F-PASS15-I1; initial-creation discipline per F-PASS15-I2; CRITICAL plateau at 1 for 2 passes — escalate cascade-health observation to human if Pass 16 shows same pattern |
 
 ## Task Status
 
@@ -70,7 +70,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.1 at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | PASS — cascade officially CLOSED on v0.4.15 |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.1 across 5 commits (b7679ee through d89ea4b) |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 14 passes complete (all FAIL), 30+ fix-bursts committed. Pass 14 fully closed. Next: Pass 15 adversary dispatch (chat-only per F-PASS12-O1; F-PASS14-C1 enumeration discipline applies). |
+| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 15 passes complete (all FAIL), 32+ fix-bursts committed. Pass 15 fully closed. Next: Pass 16 adversary dispatch (chat-only per F-PASS12-O1; F-PASS14-C1/F-PASS15-I1/F-PASS15-I2 disciplines apply). |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | Commit 23e3a91 |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Commit 7935faa |
@@ -130,8 +130,11 @@
 | 113a | COMPLETED | Phase 1d Pass 13 state-manager FINAL | Pass 12 back-fill (0781716) + Pass 13 row with self-SHA-free FINAL-marker format + discipline catalog items 14-16 (F-PASS13-I1 closure). 8-sub-check FINAL discipline applied. Commit d3016a3. |
 | 114 | COMPLETED | Phase 1d adversary pass 14 | FAIL: 1C+2I+2O. Persist commit ace7b4b. Report at adversary-pass-14.md. CRITICAL count decreased 2 → 1 first time in 5 passes. |
 | 114a | COMPLETED | Phase 1d Pass 14 architect burst | ARCH-INDEX v0.1.15 → v0.1.16. F-PASS14-C1 Changelog enumeration corrections (5 files: VP-014, VP-021, ADR-009, ADR-004, VP-026) + F-PASS14-I1 bash sweep dead OR clause removed + F-PASS14-I2 Timestamp Policy 62-vs-64 scope reconciliation. Commit 07466a4. |
-| 114b | COMPLETED | Phase 1d Pass 14 state-manager FINAL | Pass 14 row in self-SHA-free format + discipline #17 (Changelog enumeration) + ARCH-INDEX v0.1.16 re-pin + CRITICAL trajectory 2→1 noted. 8-sub-check FINAL discipline applied. This commit. |
-| 115 | NEXT-ACTION | Phase 1d adversary pass 15 | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. Mandatory enumeration discipline per F-PASS14-C1 applies to any architect back-fill bursts. Continue cascade toward streak 3/3. |
+| 114b | COMPLETED | Phase 1d Pass 14 state-manager FINAL | Pass 14 row in self-SHA-free format + discipline #17 (Changelog enumeration) + ARCH-INDEX v0.1.16 re-pin + CRITICAL trajectory 2→1 noted. 8-sub-check FINAL discipline applied. Commit 2bf91af. |
+| 115 | COMPLETED | Phase 1d adversary pass 15 | FAIL: 1C+2I+1O. Persist commit 65633ef. Report at adversary-pass-15.md. CRITICAL held at 1 — 2nd consecutive pass at 1. |
+| 115a | COMPLETED | Phase 1d Pass 15 architect burst | ARCH-INDEX v0.1.16 → v0.1.17. F-PASS15-C1 version bumps (6 files v1.1 → v1.2) + F-PASS15-I1 derived-cell-count corrections + F-PASS15-I2 VP-014 initial-creation Note removed + F-PASS15-O1 bash sweep timestamp-invariant check added. Commit 7af2546. |
+| 115b | COMPLETED | Phase 1d Pass 15 state-manager FINAL | Pass 15 row in self-SHA-free format + disciplines #18-21 codified + ARCH-INDEX v0.1.17 re-pin + CRITICAL plateau at 1 for 2nd pass noted. 8-sub-check FINAL discipline applied. This commit. |
+| 116 | NEXT-ACTION | Phase 1d adversary pass 16 | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. Enumeration discipline per F-PASS14-C1 + cell-count specificity per F-PASS15-I1 + initial-creation discipline per F-PASS15-I2. CRITICAL plateau at 1 — escalate cascade-health observation to human if pattern persists. |
 
 ## Next steps (in dependency order)
 
@@ -140,12 +143,12 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#114b: Phase 1d Passes 1–14 persists + fix-bursts — COMPLETED (14 passes, 30+ fix-bursts committed).~~
+~~Tasks #71–#115b: Phase 1d Passes 1–15 persists + fix-bursts — COMPLETED (15 passes, 32+ fix-bursts committed).~~
 
-1. **Task #115 — Pass 15 adversary dispatch (top of stack):** dispatch adversary per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1 codification. Mandatory enumeration discipline per F-PASS14-C1 applies to any architect back-fill bursts.
+1. **Task #116 — Pass 16 adversary dispatch (top of stack):** dispatch adversary per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1 codification. Enumeration discipline per F-PASS14-C1 + cell-count specificity per F-PASS15-I1 + initial-creation discipline per F-PASS15-I2 apply to any architect back-fill bursts.
 
 2. Subsequent adversary passes continue until streak 3/3.
 
 3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS (14 passes, streak 0/3).** Resume on fresh context: read `.factory/STATE.md` FIRST.
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS (15 passes, streak 0/3).** Resume on fresh context: read `.factory/STATE.md` FIRST.
