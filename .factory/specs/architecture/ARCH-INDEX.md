@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.10"
+version: "0.1.11"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
@@ -81,7 +81,7 @@ last_updated: 2026-05-16
 | VP-009 | `architecture/verification-properties/VP-009-plugin-manifest-correctness.md` | Plugin manifest schema correctness |
 | VP-010 | `architecture/verification-properties/VP-010-adversarial-cascade-convergence.md` | Adversarial 3-CLEAN convergence |
 | VP-011 | `architecture/verification-properties/VP-011-quarantine-coverage.md` | Quarantine on every WebFetch |
-| VP-012 | `architecture/verification-properties/VP-012-manifest-atomicity.md` | Manifest write atomicity |
+| VP-012 | `architecture/verification-properties/VP-012-manifest-atomicity.md` | Manifest write atomicity and last_ingest field correctness |
 | VP-013 | `architecture/verification-properties/VP-013-hook-performance-budget.md` | Hook p99 latency under 100ms |
 | VP-014 | `architecture/verification-properties/VP-014-brain-init-scaffold.md` | Brain init scaffold completeness |
 | VP-015 | `architecture/verification-properties/VP-015-url-ingest-pipeline.md` | URL ingest pipeline end-to-end |
@@ -372,11 +372,25 @@ Additional Self-Audit items:
 
 ## Changelog
 
+### v0.1.11 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS9-C1 — Document Map VP-012 title mismatch):** Document Map table VP-012 Purpose cell corrected from "Manifest write atomicity" (stale pre-v1.1 short title) to "Manifest write atomicity and last_ingest field correctness" (canonical title matching VP-INDEX Summary and VP-012 file H1). The v0.1.10 F-PASS8-I2 entry updated the VP-INDEX Summary row but left the Document Map cell stale. Corrective NOTE added to the F-PASS8-I2 entry below. VP-012 bumped v1.2 → v1.3. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS9-I1 — writing-technique violation in v0.1.10 F-PASS8-I1 entry):** F-PASS8-I1 changelog entry contained plain-prose line-number references (`lines 36, 38, 45` and token counts `802, 535, 231`). Rewritten: "ADR-004 lines 36, 38, 45" replaced with "three stale absolute line counts in the §Decision sharded-layout code block"; the specific numeric counts removed from the defect-location description (the audit trail of what changed is captured semantically — "three stale absolute line counts replaced with semantic anchors"). Writing-technique principle applies to all spec content including architecture-layer changelog entries regardless of `[audit-trail]` tag. The `[audit-trail]` exemption applies only to the Clause 2 gate scope (five-file gate); the broader writing-technique principle binds architecture artifacts independently. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS9-I2 — SS-18 missing Changelog section):** SS-18 lacked an in-file `## Changelog` section despite being bumped through v1.0 → v1.1 → v1.2 → v1.3. Changelog section reconstructed from ARCH-INDEX history entries and appended to SS-18. SS-18 bumped v1.3 → v1.4. Sibling-sweep of SS-01..SS-17: SS-02 is at v1.1 (F-PASS2-I4 and F-PASS2-I5 changes) and also lacks a Changelog section. SS-02 Changelog section added and SS-02 bumped v1.1 → v1.2. SS-01 and SS-03..SS-17 remain at v1.0 — no Changelog required. [audit-trail]
+
+**STRUCTURAL FIX (Pass 9 writing-technique principle extension — architecture changelog scope):** The writing-technique principle (codified Pass 6/7) applies to ALL spec content — including architecture-layer changelog entries with or without `[audit-trail]` tag. The `[audit-trail]` exemption applies only to the Clause 2 five-file gate; the broader writing-technique principle binds architecture artifacts independently. Never quote plain-prose `line N` literals even in `[audit-trail]`-tagged changelog entries.
+
+**STRUCTURAL FIX (Pass 9 SS-NN Changelog discipline):** Any SS-NN design bumped past v1.0 MUST carry an in-file `## Changelog` section with versioned entries. Audit trail must live in the SS-NN file itself, not only in ARCH-INDEX changelog cross-references.
+
 ### v0.1.10 (2026-05-16)
 
-**STRUCTURAL FIX (F-PASS8-I1 — ADR-004 stale absolute line counts):** ADR-004 lines 36, 38, 45 contained stale absolute line counts (802, 535, 231) that had drifted from actual file sizes. Brief v0.4.6 established the discipline of using semantic anchors instead of absolute line counts (wc-l-vs-Read-tool drift). That discipline was not propagated to architecture artifacts. Replaced with semantic anchors: product-brief.md "(single file; the file is its own index)", index.md "(PRD index — summaries + RTM)", BC-INDEX.md "(canonical sharding index over 95 BCs across 18 subsystems)". Sibling-sweep (`grep -rn "\b[0-9]+ lines\b"`) across all ADRs, SS-NN, and VPs confirms: remaining "[0-9]+ lines" references are code-size estimates (~5 lines in ADR-016 with tilde prefix) or behavioral specs ("first 10 lines" in VP-006 and SS-18 — not document anchors). No further stale line counts found. Line-count-drift discipline now extended to architecture artifacts. [audit-trail]
+**STRUCTURAL FIX (F-PASS8-I1 — ADR-004 stale absolute line counts):** ADR-004 contained three stale absolute line counts in the §Decision sharded-layout code block that had drifted from actual file sizes. Brief v0.4.6 established the discipline of using semantic anchors instead of absolute line counts (wc-l-vs-Read-tool drift). That discipline was not propagated to architecture artifacts. Replaced with semantic anchors: product-brief.md "(single file; the file is its own index)", index.md "(PRD index — summaries + RTM)", BC-INDEX.md "(canonical sharding index over 95 BCs across 18 subsystems)". Sibling-sweep (`grep -rn "\b[0-9]+ lines\b"`) across all ADRs, SS-NN, and VPs confirms: remaining "[0-9]+ lines" references are code-size estimates (~5 lines in ADR-016 with tilde prefix) or behavioral specs ("first 10 lines" in VP-006 and SS-18 — not document anchors). No further stale line counts found. Line-count-drift discipline now extended to architecture artifacts. [audit-trail]
 
 **STRUCTURAL FIX (F-PASS8-I2 — VP-012 verifies_bcs missing NFR-018):** VP-012 frontmatter `verifies_bcs` updated from `[BC-2.03.002, BC-2.06.003]` to `[NFR-018, BC-2.03.002, BC-2.06.003]`. VP-INDEX already enumerated NFR-018 as a target BC for VP-012 (VP-012 row, Target BCs column); VP-012 body Group 1 asserts atomicity (NFR-018 invariant). The missing NFR-018 in frontmatter was a propagation omission. VP-012 bumped v1.1 → v1.2. ARCH-INDEX VP-INDEX Summary VP-012 title updated from "Manifest write atomicity" to "Manifest write atomicity and last_ingest field correctness" (aligning with VP-012 file title, set in v1.1 extension). [audit-trail]
+
+**NOTE (F-PASS9-C1 corrective):** The Document Map VP-012 Purpose cell was NOT updated in this burst — it still read "Manifest write atomicity" (stale pre-v1.1 short title). The VP-INDEX Summary row in this same file was correctly updated to the canonical full title; the Document Map cell was missed. Corrected in v0.1.11 by aligning the Document Map Purpose cell to "Manifest write atomicity and last_ingest field correctness". [audit-trail]
 
 **STRUCTURAL FIX (F-PASS8-I3 — v0.1.8 changelog factual correction):** The v0.1.8 F-PASS7-C2-arch changelog entry contained a factual error: "PRD was bumped to v0.1.7 during the Pass 7 state-manager-persist burst (burst 1)". Fact: PRD was already at v0.1.7 from Pass 6 PO closure burst (commit e0e143c); the Pass 7 state-manager-persist burst (commit 90acdbf) refreshed STATE/HANDOFF/TASK-LIST only. The architect burst (Pass 7 burst 2) saw PRD at v0.1.7 and pinned correctly. The pin decision was correct; only the rationale was wrong. A NOTE has been appended to the v0.1.8 entry correcting the historical record per audit-trail convention (original entry preserved). [audit-trail]
 

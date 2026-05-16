@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-18
 title: "Meta-Lint and Self-Audit"
 level: L3
-version: "1.3"
+version: "1.4"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -109,3 +109,36 @@ Each of the 13 hooks must have ≥ 3 test cases in `tests/hooks.bats`: one posit
 
 - `meta-lint.bats` IS the test surface. It runs in CI (blocking) and as part of the pre-push gate.
 - Adversarial review independently verifies meta-lint passed (the adversary does not trust the implementer's self-attestation).
+
+## Changelog
+
+### v1.4 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS9-I2 — missing Changelog section):** In-file Changelog section
+added. Reconstructed from ARCH-INDEX changelog entries for SS-18. Sibling-sweep of all
+SS-01..SS-17 confirmed SS-02 also at v1.1+ without a Changelog — both addressed in this
+burst. [audit-trail]
+
+### v1.3 (2026-05-16)
+
+**UPDATE (F-PASS8-O2 — audit-range extended):** §9 bats suites version-cite parenthetical
+extended from "v0.4.15..v0.4.18" to "v0.4.15..v0.4.19". Brief v0.4.19 added Clause 2 to
+the five-file gate; §Test architecture content is unchanged through v0.4.19. [audit-trail]
+
+### v1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS7-I1 — version cites converted to version-agnostic shorthand):**
+SS-18 §9 bats suites narrative version cites converted from version-specific to
+version-agnostic form. Audit-trail version history preserved in parenthetical. [audit-trail]
+
+### v1.1 (2026-05-15)
+
+**STRUCTURAL FIX (F-PASS4-C2/I3 — 9-suite roster aligned to brief):** 9 bats suites
+roster updated: `ingest.bats` → `skills.bats`, `wiki.bats` → `skills.bats`. Per-hook bats
+file discipline clarified: all 13 hooks share `tests/hooks.bats`; creating per-hook bats
+files violates NFR-019. [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — meta-lint and self-audit governance, 9-suite roster,
+meta-lint assertion surfaces (SKILL.md, hook scripts, AGENT.md, cross-cutting).

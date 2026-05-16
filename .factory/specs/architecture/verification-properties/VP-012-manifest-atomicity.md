@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-012
 title: "Manifest write atomicity and last_ingest field correctness"
 level: L3
-version: "1.2"
+version: "1.3"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -134,14 +134,22 @@ proposed — pending Phase 3 implementation of manifest-write.sh and ingest-sour
 
 ## Changelog
 
+### v1.3 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS9-I1 — writing-technique violation in v1.2 changelog):** v1.2
+changelog entry referenced a VP-INDEX row by plain-prose positional index rather than by
+semantic anchor. Rewritten to use the semantic anchor: "the VP-012 row in VP-INDEX Summary
+table". The writing-technique principle applies to all spec content including changelog
+entries. [audit-trail]
+
 ### v1.2 (2026-05-16)
 
-**STRUCTURAL FIX (F-PASS8-I2):** Added NFR-018 to `verifies_bcs` frontmatter. VP-INDEX line 37
-already enumerated "NFR-018, BC-2.03.002, BC-2.06.003" as VP-012's target BCs. VP-012 body
-Group 1 asserts atomicity (NFR-018 — manifest write atomicity invariant) alongside BC-2.03.002.
-Per Source-of-Truth Precedence rule 4 (VP file supersedes VP-INDEX for the property it covers),
-the frontmatter is authoritative; the missing NFR-018 was an omission. Now frontmatter matches
-VP-INDEX enumeration. [audit-trail]
+**STRUCTURAL FIX (F-PASS8-I2):** Added NFR-018 to `verifies_bcs` frontmatter. The VP-012
+row in VP-INDEX Summary table already enumerated "NFR-018, BC-2.03.002, BC-2.06.003" as
+VP-012's target BCs. VP-012 body Group 1 asserts atomicity (NFR-018 — manifest write
+atomicity invariant) alongside BC-2.03.002. Per Source-of-Truth Precedence rule 4 (VP file
+supersedes VP-INDEX for the property it covers), the frontmatter is authoritative; the missing
+NFR-018 was an omission. Now frontmatter matches VP-INDEX enumeration. [audit-trail]
 
 ### v1.1 (2026-05-16)
 

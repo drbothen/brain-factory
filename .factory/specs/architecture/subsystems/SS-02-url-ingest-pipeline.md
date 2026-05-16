@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-02
 title: "URL Ingest Pipeline"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -66,3 +66,28 @@ The 50K-token threshold check (BC-2.02.005) happens after fetch, before write-so
 
 - `tests/skills.bats` — positive: fresh URL → source + wiki pages written; negative: duplicate URL → E-INGEST-001 (exit 2); edge: 50K+ word source → advisory exit 1
 - Scale test via `workflows/scale-test.yaml` — T(10K) / T(1K) ≤ 20 (NFR-004)
+
+## Changelog
+
+### v1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS9-I2 — missing Changelog section):** In-file Changelog section
+added per Pass 9 SS-NN Changelog discipline: any SS-NN bumped past v1.0 must carry an
+in-file Changelog section. Reconstructed from ARCH-INDEX changelog entries. [audit-trail]
+
+### v1.1 (2026-05-15)
+
+**STRUCTURAL FIX (F-PASS2-I4 — 9-suite roster test path alignment):** Test Surface updated
+from deprecated `ingest.bats` / `wiki.bats` to canonical `skills.bats` per brief §Test
+architecture (Source-of-Truth Precedence + brain-factory-001). Functional coverage unchanged.
+[audit-trail]
+
+**STRUCTURAL FIX (F-PASS2-I5 — E-SOURCE-002 → E-INGEST-001):** BC Inventory rejection
+case, Key Design check-duplicate step, and Test Surface all corrected from `E-SOURCE-002`
+to `E-INGEST-001`. E-SOURCE-002 is "manifest.json unreadable" (SS-06 scope); E-INGEST-001
+is "URL already ingested" (SS-02 scope). [audit-trail]
+
+### v1.0 (2026-05-15)
+
+Original Phase 1c subsystem design — URL ingest pipeline via Defuddle, manifest delta
+entry, wiki page generation, token logging, duplicate rejection.
