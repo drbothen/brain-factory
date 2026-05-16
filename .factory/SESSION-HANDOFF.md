@@ -9,9 +9,9 @@ current_prd_version: 0.1.8
 current_prd_path: .factory/specs/prd/index.md
 current_bc_index_path: .factory/specs/behavioral-contracts/BC-INDEX.md
 current_bc_index_version: 0.1.7
-current_architecture_version: 0.1.11
+current_architecture_version: 0.1.12
 current_arch_index_path: .factory/specs/architecture/ARCH-INDEX.md
-current_vp_index_version: 0.1.4
+current_vp_index_version: 0.1.5
 total_bc_count: 95
 total_adr_count: 17
 total_ss_design_count: 18
@@ -22,10 +22,10 @@ phase_1b_initial_commit: 23e3a91
 phase_1c_completion_commits: [b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b]
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: "0/3 (reset after Pass 7 FAIL)"
-current_pass_number: 9 (FAIL — 1C+2I; burst sequence: 3296100 persist + 8c7dc97 architect + this commit state-manager FINAL)
+current_pass_number: 10 (FAIL — 2C+3I; burst sequence: 5a61476 persist + cc9ba18 architect + this commit state-manager FINAL)
 phase_1b_status: COMPLETED — PRD v0.1.1 landed; consistency audit closed; Phase 1c authorized
 phase_1c_status: COMPLETED — architecture v0.1.1 + SS-NN backfill across BCs/PRD/BC-INDEX; consistency audit closed; five-file gate canonical; 64/64 P0 BC VP coverage
-phase_1d_status: IN-PROGRESS — 9 passes complete; 19 fix-bursts; streak 0/3
+phase_1d_status: IN-PROGRESS — 10 passes complete; 22 fix-bursts; streak 0/3
 session_continuity: clean-context-resume-authorized
 pass_15_verdict: FAIL
 pass_16_verdict: FAIL
@@ -45,13 +45,14 @@ phase_1d_pass_6_verdict: FAIL
 phase_1d_pass_7_verdict: FAIL
 phase_1d_pass_8_verdict: FAIL
 phase_1d_pass_9_verdict: FAIL
+phase_1d_pass_10_verdict: FAIL
 cascade_status: CLOSED — v0.4.15 is the final Phase 1a Stage 5 artifact
 total_passes_completed: 23
 total_fix_bursts: 15
-total_phase_1d_passes_completed: 9
-total_phase_1d_fix_bursts: 19
+total_phase_1d_passes_completed: 10
+total_phase_1d_fix_bursts: 22
 created: 2026-05-15
-last_updated: 2026-05-16
+last_updated: 2026-05-16T12:40:00
 status: phase-1d-cascade-in-progress
 ---
 
@@ -59,7 +60,7 @@ status: phase-1d-cascade-in-progress
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS — cascade running (9 passes, 19 fix-bursts, streak 0/3).**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN PROGRESS — cascade running (10 passes, 22 fix-bursts, streak 0/3).**
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -67,9 +68,9 @@ Phase 1b (PRD) has been completed. PRD v0.1.1 landed at commit 7935faa. The PRD 
 
 Phase 1c (Architecture) has been completed. Architecture v0.1.1 landed via 5 commits (b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b). The architecture package comprises ARCH-INDEX + 17 ADRs + 18 SS-NN designs + 27 VPs (64/64 P0 BC coverage). PRD bumped to v0.1.2; BC-INDEX bumped to v0.1.1. Five-file gate is now canonical. Independent orchestrator verification of all 4 fix-bursts: CLEAN.
 
-Phase 1d (Adversarial spec review) is IN PROGRESS. 9 passes completed (all FAIL), 19 fix-bursts applied. Current spec versions: brief v0.4.19, PRD v0.1.8, BC-INDEX v0.1.7, ARCH-INDEX v0.1.11, VP-INDEX v0.1.4. Streak 0/3. Pass 9 FAIL report persisted and all Pass 9 fix-bursts complete (persist 3296100 + architect 8c7dc97 + state-manager FINAL this commit).
+Phase 1d (Adversarial spec review) is IN PROGRESS. 10 passes completed (all FAIL), 22 fix-bursts applied. Current spec versions: brief v0.4.19, PRD v0.1.8, BC-INDEX v0.1.7, ARCH-INDEX v0.1.12, VP-INDEX v0.1.5. Streak 0/3. Pass 10 FAIL report persisted and all Pass 10 fix-bursts complete (persist 5a61476 + architect cc9ba18 + state-manager FINAL this commit).
 
-**Next action for fresh-context orchestrator:** Dispatch Pass 10. No re-approval needed — Phase 1b/1c/1d sequence pre-authorized 2026-05-15.
+**Next action for fresh-context orchestrator:** Dispatch Pass 11. No re-approval needed — Phase 1b/1c/1d sequence pre-authorized 2026-05-15.
 
 ## 2. Cascade history (full)
 
@@ -110,8 +111,8 @@ Phase 1d (Adversarial spec review) is IN PROGRESS. 9 passes completed (all FAIL)
 - **Brief:** `.factory/specs/product-brief.md` (v0.4.19, commit 1c0251c)
 - **PRD:** `.factory/specs/prd/index.md` (v0.1.8, commit 1c0251c)
 - **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, commit 1c0251c)
-- **ARCH-INDEX:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.11, commit 8c7dc97)
-- **VP-INDEX:** `.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.4, commit 0827566)
+- **ARCH-INDEX:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.12, commit cc9ba18)
+- **VP-INDEX:** `.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.5, commit cc9ba18)
 - **ADRs:** 17 (ADR-001 through ADR-017, all `status: accepted`)
 - **SS-NN designs:** 18 (SS-01 through SS-18)
 - **VPs:** 27 (VP-001 through VP-027; 64/64 P0 BC coverage)
@@ -119,12 +120,13 @@ Phase 1d (Adversarial spec review) is IN PROGRESS. 9 passes completed (all FAIL)
 - **Phase 1a streak:** **3/3 — CASCADE CONVERGED on v0.4.15 (Phase 1a Stage 5 CLOSED)**
 - **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
 - **Phase 1c status:** COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89ea4b)
-- **Phase 1d status:** IN PROGRESS — 9 passes complete; 19 fix-bursts; streak 0/3
+- **Phase 1d status:** IN PROGRESS — 10 passes complete; 22 fix-bursts; streak 0/3
 - **Five-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md)
 - **Pass 23 dispatch status:** COMPLETE — **PASS** (post-convergence verification; 0 findings of any class). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-23.md`. **Phase 1a cascade officially CLOSED on v0.4.15.**
 - **Phase 1d Pass 7 status:** FAIL (2C+3I). Report at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-7.md`. All Pass 7 fix-bursts complete: persist 90acdbf + architect 7e60898 + PO 1c0251c + state-manager FINAL fd033d1.
 - **Phase 1d Pass 8 status:** FAIL (1C+3I). Report at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-8.md`. All Pass 8 fix-bursts complete: persist a6917e4 + architect bf34582 + state-manager FINAL 35fd7c2.
-- **Phase 1d Pass 9 status:** FAIL (1C+2I). Report at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-9.md`. All Pass 9 fix-bursts complete: persist 3296100 + architect 8c7dc97 + state-manager FINAL this commit.
+- **Phase 1d Pass 9 status:** FAIL (1C+2I). Report at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-9.md`. All Pass 9 fix-bursts complete: persist 3296100 + architect 8c7dc97 + state-manager FINAL 47824c4.
+- **Phase 1d Pass 10 status:** FAIL (2C+3I). Report at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-10.md`. All Pass 10 fix-bursts complete: persist 5a61476 + architect cc9ba18 + state-manager FINAL this commit.
 
 ## 4. Locked decisions (canonical sources)
 
@@ -195,23 +197,26 @@ After Phase 1d convergence: Phase 2 (Story Decomposition) requires a separate hu
 | `.factory/specs/product-brief.md` | v0.4.19 | — |
 | `.factory/specs/prd/index.md` | v0.1.8 | — |
 | `.factory/specs/behavioral-contracts/BC-INDEX.md` | v0.1.7 | — |
-| `.factory/specs/architecture/ARCH-INDEX.md` | v0.1.11 | — |
+| `.factory/specs/architecture/ARCH-INDEX.md` | v0.1.12 | — |
 | `.factory/specs/architecture/adr/ADR-001-*.md` through `ADR-017-*.md` | accepted | 17 files |
 | `.factory/specs/architecture/subsystems/SS-01-*.md` through `SS-18-*.md` | v0.1.1+ | 18 files |
-| `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.4 | — |
+| `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.5 | — |
 | `.factory/specs/architecture/verification-properties/VP-001-*.md` through `VP-027-*.md` | — | 27 files |
 | `.factory/planning/elicitation-notes.md` | — | 610 |
 | `.factory/planning/stage-3-locks.md` | — | 171 |
 | `.factory/planning/brief-research.md` | — | 495 |
 | `.factory/planning/reference-repos.md` | — | 448 |
 | `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-1.md` through `adversary-pass-23.md` | Pass 1–23 | 23 files |
-| `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-1.md` through `adversary-pass-9.md` | Pass 1–9 | 9 files |
+| `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-1.md` through `adversary-pass-10.md` | Pass 1–10 | 10 files |
 
 ## 8. Recent commits (most recent first)
 
 | SHA | Message |
 |-----|---------|
-| (this commit) | factory(state): Phase 1d Pass 9 FINAL — STATE refresh + extended FINAL discipline (6 sub-checks including in-document title-cell sibling-sweep) |
+| (this commit) | factory(state): Phase 1d Pass 10 FINAL — STATE refresh + extended FINAL discipline (7 sub-checks: add dual-scope verification) |
+| cc9ba18 | factory(spec): architecture v0.1.11 → v0.1.12 + VP-INDEX v0.1.4 → v0.1.5 — Phase 1d Pass 10 architect canonical-baseline sweep (27-VP title alignment + F-PASS10-C2/I2/I3 + dual-scope discipline codification) |
+| 5a61476 | factory(adversary): persist Phase 1d Pass 10 FAIL — 2 CRITICAL + 3 IMPORTANT (27-VP title drift inventory + writing-tech 5th recursion at arch changelog + incremental-vs-canonical-baseline scope insight) |
+| 47824c4 | factory(state): Phase 1d Pass 9 FINAL — STATE refresh + extended FINAL discipline (6 sub-checks including in-document title-cell sibling-sweep) |
 | 8c7dc97 | factory(spec): architecture v0.1.10 → v0.1.11 + VP-012 v1.2 → v1.3 + SS-18 v1.3 → v1.4 — Phase 1d Pass 9 architect fixes (F-PASS9-C1/I1/I2) |
 | 3296100 | factory(adversary): persist Phase 1d Pass 9 FAIL — 1 CRITICAL + 2 IMPORTANT (Document Map sibling-sweep gap + writing-tech migration to arch changelogs + SS-NN template gap) |
 | 35fd7c2 | factory(state): Phase 1d Pass 8 FINAL — F-PASS8-C1 path correction + STATE refresh + extended FINAL discipline (path-currency + factual-accuracy) |
@@ -220,9 +225,6 @@ After Phase 1d convergence: Phase 2 (Story Decomposition) requires a separate hu
 | fd033d1 | factory(state): Phase 1d Pass 7 FINAL — state refresh + ARCH-INDEX inherits_from re-pin (Option B final-reconciliation discipline) |
 | 1c0251c | factory(spec): brief v0.4.18 → v0.4.19 + PRD v0.1.7 → v0.1.8 + BC-INDEX v0.1.6 → v0.1.7 — Phase 1d Pass 7 PO fixes (F-PASS7-C1/C2-PO/I3-PO) |
 | 7e60898 | factory(spec): architecture v0.1.7 → v0.1.8 — Phase 1d Pass 7 architect fixes (F-PASS7-C2-arch/I1/I3-arch + Option B parallel-burst hazard amendment) |
-| 90acdbf | factory(adversary): persist Phase 1d Pass 7 FAIL — 2 CRITICAL + 3 IMPORTANT (Option B parallel-burst hazard + plain-prose gate self-violation + 14-dim drift) |
-| e0e143c | factory(spec): brief v0.4.17 → v0.4.18 + PRD v0.1.6 → v0.1.7 + BC-INDEX v0.1.5 → v0.1.6 — Phase 1d Pass 6 PO fixes (F-PASS6-I1 + O1-PO + gate extension) |
-| 0827566 | factory(spec): architecture v0.1.6 → v0.1.7 + VP-INDEX v0.1.3 → v0.1.4 — Phase 1d Pass 6 architect fixes (F-PASS6-C1/C2/I2/O1-arch + inherits_from policy adjudication) |
 
 ## 9. Resume procedure
 
@@ -232,8 +234,8 @@ After Phase 1d convergence: Phase 2 (Story Decomposition) requires a separate hu
 
 In summary:
 1. Run `vsdd-factory:devops-engineer` factory-worktree-health (BLOCKING preflight; expect intentional non-canonical layout per §10)
-2. Read CLAUDE.md, STATE.md, THIS FILE, TASK-LIST.md, brief v0.4.19, prd/index.md v0.1.8, BC-INDEX.md v0.1.7, ARCH-INDEX.md v0.1.11
-3. Dispatch Pass 10. Pass report for Pass 9 already persisted at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-9.md`. All Pass 9 fix-bursts complete (persist 3296100 + architect 8c7dc97 + state-manager FINAL this commit).
+2. Read CLAUDE.md, STATE.md, THIS FILE, TASK-LIST.md, brief v0.4.19, prd/index.md v0.1.8, BC-INDEX.md v0.1.7, ARCH-INDEX.md v0.1.12
+3. Dispatch Pass 11. Pass report for Pass 10 already persisted at `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-10.md`. All Pass 10 fix-bursts complete (persist 5a61476 + architect cc9ba18 + state-manager FINAL this commit).
 4. Repeat cascade until streak 3/3.
 5. After Phase 1d convergence: Phase 2 (Story Decomposition) requires a separate human gate or pre-authorization.
 
@@ -274,7 +276,7 @@ Carry forward to Phase 1d: writing-technique principle (including plain-prose `l
 
 ## 13. Phase 1d Adversarial Cascade — IN PROGRESS
 
-Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 9 passes to date have returned FAIL. 19 fix-bursts applied across architect, product-owner, and state-manager specialists.
+Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 10 passes to date have returned FAIL. 22 fix-bursts applied across architect, product-owner, and state-manager specialists.
 
 | Pass | Verdict | Findings | Fix-burst SHAs | Streak after |
 |------|---------|----------|----------------|--------------|
@@ -286,9 +288,10 @@ Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 9 passes to 
 | 6 | FAIL | 2C+3I | 533d7db (state-manager persist) + 0827566 (architect) + e0e143c (PO) | 0/3 |
 | 7 | FAIL | 2C+3I | 90acdbf (persist) + 7e60898 (architect) + 1c0251c (PO) + fd033d1 (state-manager FINAL) | 0/3 |
 | 8 | FAIL | 1C+3I | a6917e4 (persist) + bf34582 (architect) + 35fd7c2 (state-manager FINAL) | 0/3 |
-| 9 | FAIL | 1C+2I | 3296100 (persist) + 8c7dc97 (architect) + this commit (state-manager FINAL) | 0/3 |
+| 9 | FAIL | 1C+2I | 3296100 (persist) + 8c7dc97 (architect) + 47824c4 (state-manager FINAL) | 0/3 |
+| 10 | FAIL | 2C+3I | 5a61476 (persist) + cc9ba18 (architect) + this commit (state-manager FINAL) | 0/3 |
 
-**Trajectory:** 7C+12I → 4C+8I → 2C+4I → 3C+3I → 2C+3I → 2C+3I → 2C+3I → 1C+3I → 1C+2I. Continuing count reduction at Pass 9; novel-class findings continue replacing closed ones.
+**Trajectory:** 7C+12I → 4C+8I → 2C+4I → 3C+3I → 2C+3I → 2C+3I → 2C+3I → 1C+3I → 1C+2I → 2C+3I. Regression at Pass 10 (2C vs prior 1C); novel-class findings (27-VP canonical-baseline drift inventory, incremental-scope-only codification pattern) driving uplift. Dual-scope discipline codified to prevent recurrence.
 
 **New structural-fix disciplines added during Phase 1d cascade:**
 - Pass 4: sweep-by-canonical-pattern (not sweep-by-changed-token)
@@ -297,8 +300,9 @@ Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 9 passes to 
 - Pass 7: pass-closure burst sequencing (state-manager FINAL is LAST); Option B parallel-burst hazard mitigation (state-manager FINAL re-pins all inherits_from to post-all-bursts parent versions); writing-technique principle extended to plain-prose `line N` literals even in backticks; Clause 2 gate sibling-sweep to brief + ARCH-INDEX Self-Audit Checklists; narrative version cites converted to version-agnostic shorthand
 - Pass 8: path-currency check on operational state docs (F-PASS8-C1 — VP-INDEX path corrected to .factory/specs/architecture/verification-properties/VP-INDEX.md); architecture-artifact line-count drift discipline extended to all spec artifacts; VP ↔ VP-INDEX consistency verification; changelog factual-accuracy corrective-NOTE pattern; state-manager FINAL discipline EXTENDED (5 sub-checks)
 - Pass 9: in-document title-cell sibling-sweep (F-PASS9-C1 — Document Map VP-012 Purpose cell corrected to match VP-INDEX Summary title; ARCH-INDEX v0.1.10 → v0.1.11); writing-technique principle extended to architecture-layer changelog entries regardless of [audit-trail] tag (F-PASS9-I1); SS-NN template Changelog section required for all SS-NN files bumped past v1.0 (F-PASS9-I2 — SS-18 v1.3 → v1.4); state-manager FINAL discipline EXTENDED to 6 sub-checks (adds (f) in-document title-cell sibling-sweep)
+- Pass 10: canonical-baseline scope discipline codified (F-PASS10-O1 — every discipline must declare incremental scope AND canonical-baseline scope; incremental-only allows inherited inventory to survive); 27-VP one-time canonical-baseline title sweep (F-PASS10-C1/I1 — VP-INDEX Title + ARCH-INDEX Document Map Purpose + ARCH-INDEX VP-INDEX Summary Title aligned to VP file H1 for all 27 VPs; ARCH-INDEX v0.1.11 → v0.1.12, VP-INDEX v0.1.4 → v0.1.5); writing-technique self-audit sub-rule (F-PASS10-C2 — when describing a writing-tech violation in a changelog entry, description must not quote the violating token); SS-NN Changelog discipline enforcement via Self-Audit bash sweep (F-PASS10-I2); timestamp tri-partite semantic formalized (F-PASS10-I3 — created/timestamp/last_updated distinction); state-manager FINAL discipline EXTENDED to 7 sub-checks (adds (g) dual-scope discipline verification)
 
-**Pass reports:** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..9}.md`
+**Pass reports:** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..10}.md`
 
 ## 12. Phase 1c Architecture Entry — COMPLETED
 
