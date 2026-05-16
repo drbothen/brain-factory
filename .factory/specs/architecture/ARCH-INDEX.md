@@ -7,7 +7,7 @@ producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.8
+inherits_from: prd@v0.1.9
 deployment_topology: single-service
 created: 2026-05-15
 last_updated: 2026-05-16
@@ -272,7 +272,7 @@ graph TD
 
 **Propagation note (PO action required):** Under Option B, PRD's `inherits_from` should reference `product-brief.md@v0.4.17` (the brief's post-burst version) rather than `v0.4.16`. This is PO scope — the architect surfaces it to the orchestrator for the parallel PO burst.
 
-**Application to ARCH-INDEX:** `inherits_from: prd@v0.1.8` (Pass 7 final-reconciliation per §Parallel-burst hazard mitigation; pinned to post-all-bursts PRD version). Updated from prd@v0.1.7 (architect burst 2 pin) to prd@v0.1.8 (PO burst 3 final PRD version) by state-manager FINAL re-pin.
+**Application to ARCH-INDEX:** `inherits_from: prd@v0.1.9` (Pass 12 state-mgr FINAL re-pin; PRD advanced from v0.1.8 to v0.1.9 in PO burst ecbe056 — F-PASS12-C2 canonical-baseline timestamp sweep). Prior history: Pass 7 re-pinned from prd@v0.1.7 to prd@v0.1.8. [audit-trail]
 
 ### Parallel-burst hazard mitigation (post-Pass-7 amendment)
 

@@ -8,14 +8,14 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: IN-PROGRESS — 11 passes complete (all FAIL); 23 fix-bursts committed (architect a3a83b1 + state-mgr FINAL e37f1e3); streak 0/3; ready for Pass 12 dispatch
-session_continuity: ACTIVE — Pass 11 fully closed at state-mgr FINAL e37f1e3
+phase_1d_status: IN-PROGRESS — 12 passes complete (all FAIL); 25+ fix-bursts complete; streak 0/3; Pass 12 closed with content-defect fixes (SS-NN classify + PRD/BC canonical-baseline sweep) and process-gap codification (adversary read-only routing)
+session_continuity: ACTIVE — Pass 12 fully closed at state-mgr FINAL [this burst]
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
-canonical_prd: .factory/specs/prd/index.md (v0.1.8, commit 1c0251c)
-canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.7, commit 1c0251c)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.13, commit a3a83b1) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.6 + 27 VPs
+canonical_prd: .factory/specs/prd/index.md (v0.1.9, commit ecbe056)
+canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.8, commit ecbe056)
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.14, commit 71c51b3) + 17 ADRs + 18 SS-NN designs + VP-INDEX v0.1.6 + 27 VPs
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
 ---
 
@@ -27,7 +27,7 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ## Pass 11 Recovery Note (historical)
 
-Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered via Option A pre-authorized commit at SHA a3a83b1; cascade resumed without re-running architect work. Pass 11 state-mgr FINAL now closed this burst.
+Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered via Option A pre-authorized commit at SHA a3a83b1; cascade resumed without re-running architect work. Pass 11 state-mgr FINAL closed this burst. Pass 11 also produced two corrective bursts within the architect role (343c378, c35de6f) — see TD-VSDD-053-spirit advisory section below.
 
 ---
 
@@ -37,7 +37,7 @@ Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered vi
 
 **Phase:** 1d Adversarial spec review — IN-PROGRESS.
 
-**Top-of-stack action:** Dispatch Pass 12 adversary per BC-5.39.001 cascade protocol.
+**Top-of-stack action:** Dispatch Pass 13 adversary per BC-5.39.001 cascade protocol. Pass 13 dispatch MUST use chat-only output protocol (no Write/Commit instructions to adversary) per F-PASS12-O1 codification.
 
 ## Phase 1a Stage 5 — CLOSED
 
@@ -68,15 +68,16 @@ Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX +
 | 8 | FAIL | 1C+3I | a6917e4 | architect bf34582 + state-mgr FINAL 35fd7c2 | 0/3 |
 | 9 | FAIL | 1C+2I | 3296100 | architect 8c7dc97 + state-mgr FINAL 47824c4 | 0/3 |
 | 10 | FAIL | 2C+3I | 5a61476 | architect cc9ba18 + state-mgr FINAL c468276 | 0/3 |
-| 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + state-mgr FINAL e37f1e3 | 0/3 |
+| 11 | FAIL | 2C+3I | 63cf130 | architect a3a83b1 + 343c378 (header correction) + c35de6f (inventory correction) + state-mgr FINAL e37f1e3 + 7ea3f71 (back-fill) | 0/3 |
+| 12 | FAIL | 2C+3I+2O | a58de7e | architect 71c51b3 + PO ecbe056 + state-mgr FINAL [this burst] | 0/3 |
 
-**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2.
+**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2.
 
 ## 21+ Structural-Fix Disciplines Codified During Phase 1d
 
 Inherited from Phase 1a (13 disciplines — see brief v0.4.19 Changelog or SESSION-HANDOFF §5).
 
-Phase 1d additions (11 confirmed committed disciplines):
+Phase 1d additions (13 confirmed committed disciplines):
 1. (Pass 4) Sweep-by-canonical-pattern — for canonical-target patterns (tests/X.bats), sweep both positive (present) and negative (deprecated absent)
 2. (Pass 5) last_updated freshness check — last_updated >= max(changelog date)
 3. (Pass 6) inherits_from chain integrity — child references parent's current version per Option B (pin-at-burst-end)
@@ -88,6 +89,17 @@ Phase 1d additions (11 confirmed committed disciplines):
 9. (Pass 11) Timestamp tri-partite semantic (created / timestamp / last_updated) + canonical-baseline sweep (F-PASS11-C1/I3)
 10. (Pass 11) Retroactive dual-scope audit on codification of any new meta-rule (F-PASS11-C2)
 11. (Pass 11) Adversary pre-flight grep verification before flagging writing-tech recursion findings (F-PASS11-O1)
+12. (Pass 12) SS-NN Changelog discipline tightened to trigger on ANY content edit, not just version > 1.0 (F-PASS12-I2)
+13. (Pass 12) Adversary dispatch chat-only protocol — read-only adversary cannot Write or Commit; orchestrator must dispatch with chat-output only instructions and route persistence via state-manager (F-PASS12-O1)
+
+## TD-VSDD-053-spirit Advisories (corrective-burst-within-pass pattern)
+
+Phase 1d has produced "corrective burst within same logical pass" sequences that survive the single-commit-chain hook detector (no banned theme word) but violate TD-VSDD-053 in spirit. Documented audit trail (not retroactively rebased):
+
+- Pass 11: architect a3a83b1 → 343c378 (missing changelog header correction) → c35de6f (hallucinated inventory correction); state-mgr e37f1e3 → 7ea3f71 (back-fill self-SHA). 5 commits in one logical Pass 11 cycle.
+- Pass 12: clean (1 architect + 1 PO + 1 state-mgr FINAL = 3 commits, one per agent role).
+
+Going-forward orchestrator discipline: dispatch agents with explicit single-commit-per-burst instructions; verify draft outputs before commit to avoid corrective bursts.
 
 ## state-manager FINAL discipline (8 sub-checks)
 
@@ -116,11 +128,11 @@ Expected: .factory/ regular directory on main per §10 (intentional pre-v0.1).
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
-5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-11.md` (latest pass report)
+5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-12.md` (latest pass report)
 
 ### Step 2 — Continue cascade
 
-Dispatch Pass 12 adversary per BC-5.39.001 cascade protocol. Target: streak 3/3 for convergence. CRITICAL trajectory shows 1-2 per recent pass — convergence approaching.
+Dispatch Pass 13 adversary per BC-5.39.001 cascade protocol. IMPORTANT: Pass 13 dispatch MUST use chat-only output protocol (adversary produces findings as chat text; orchestrator routes to state-manager for persistence; adversary must NOT be instructed to Write or Commit files). Target: streak 3/3 for convergence.
 
 ## Open questions for human
 
@@ -128,16 +140,16 @@ Dispatch Pass 12 adversary per BC-5.39.001 cascade protocol. Target: streak 3/3 
 
 2. **Pass 19 escalation** — add a real `.factory/hooks/validate-changelog-anchors.sh`? DEFER-TO-PHASE-1D.
 
-3. **Phase 1d convergence threshold** — cascade has run 11 passes finding meta-rule application failures (not content defects). At what point does the user accept "convergence by stable discipline catalog" vs strict 3/3 zero-finding? Cascade could continue indefinitely refining process-gaps.
+3. **Phase 1d convergence threshold** — cascade has run 12 passes finding mix of meta-rule application failures and genuine content defects. At what point does the user accept "convergence by stable discipline catalog" vs strict 3/3 zero-finding? Pass 12 surfaced real content defects (SS-NN classify + PRD/BC canonical-baseline sweep), supporting continued cascade.
 
 ## Where to find the rest
 
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md`
-- **Task ledger:** `.factory/TASK-LIST.md` (Task #34 / Task #57 are top of stack)
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..11}.md` (Passes 1–11 written)
+- **Task ledger:** `.factory/TASK-LIST.md`
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..12}.md` (Passes 1–12 written)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - **Product brief:** `.factory/specs/product-brief.md` (v0.4.19)
-- **PRD:** `.factory/specs/prd/index.md` (v0.1.8) + supplements
-- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.7, 95 BCs)
-- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.13, commit a3a83b1) + 17 ADRs + 18 SS-NN + VP-INDEX v0.1.6 + 27 VPs
+- **PRD:** `.factory/specs/prd/index.md` (v0.1.9) + supplements
+- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.8, 95 BCs)
+- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.14, commit 71c51b3) + 17 ADRs + 18 SS-NN + VP-INDEX v0.1.6 + 27 VPs
 - **Project conventions:** `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
