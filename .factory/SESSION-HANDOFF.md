@@ -1,15 +1,22 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-1a-spec-crystallization
-session_stage: stage-5-adversarial-review-cascade
+session_phase: phase-1c-architecture-entry
+session_stage: phase-1b-completed
 current_brief_version: 0.4.15
 current_brief_line_count: 802
 current_brief_path: .factory/specs/product-brief.md
+current_prd_version: 0.1.1
+current_prd_path: .factory/specs/prd/index.md
+current_bc_index_path: .factory/specs/behavioral-contracts/BC-INDEX.md
+total_bc_count: 95
+phase_1b_completion_commit: 7935faa
+phase_1b_initial_commit: 23e3a91
 adversary_protocol: BC-5.39.001 3-CLEAN
 current_streak: "3/3 at v0.4.15 (CONVERGED — preserved through post-convergence cleanup)"
-current_pass_number: 23 (PASS — post-convergence verification; cascade remains CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED); Phase 1b APPROVED by user 2026-05-15 — next-session orchestrator dispatches product-owner directly
-phase_1b_status: APPROVED-READY-FOR-DISPATCH
+current_pass_number: 23 (PASS — post-convergence verification; cascade remains CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED); Phase 1b/1c/1d sequence pre-authorized by user 2026-05-15 — next-session orchestrator dispatches architect directly
+phase_1b_status: COMPLETED — PRD v0.1.1 landed; consistency audit closed; Phase 1c authorized
+phase_1c_status: APPROVED-READY-FOR-DISPATCH
 session_continuity: clean-context-resume-authorized
 pass_15_verdict: FAIL
 pass_16_verdict: FAIL
@@ -24,42 +31,20 @@ cascade_status: CLOSED — v0.4.15 is the final Phase 1a Stage 5 artifact
 total_passes_completed: 23
 total_fix_bursts: 15
 created: 2026-05-15
-status: phase-1a-stage-5-closed
+status: phase-1b-completed
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 1a
+# SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b
 
 ## 1. Where we are
 
-We are mid-cascade in BC-5.39.001 3-CLEAN convergence on the brain-factory product brief
-(greenfield Phase 1a). The brief at v0.4.14 (786 lines,
-`.factory/specs/product-brief.md`) is structurally sound on substantive content.
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c APPROVED-READY-FOR-DISPATCH.**
 
-Pass 19 returned FAIL with the FIRST CRITICAL finding of the cascade
-(F-PASS19-C1, [process-gap]): the v0.4.13 Self-Audit Checklist enforcement gate
-FAILED its own self-test. The gate command (a grep for literal line-number anchors
-in the brief, excluding "WSL2") was supposed to return zero matches, but returned
-two matches in the v0.4.13 changelog entry that introduced the gate. The recursion
-of the narrow-fix-with-broad-announcement pattern reached fourth-level
-(Pass 16 → Pass 17 → Pass 18 → Pass 19). Cultural-checklist enforcement
-(read at delivery time by humans) is empirically proven structurally insufficient
-to break this recursion class.
+The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
-v0.4.14 fix-burst applied at commit 7035315 (786 lines): F-PASS19-C1 LOCAL closure
-(rewrote the v0.4.13 changelog entry using a writing-technique principle —
-describe literal-line-number defects in semantic terms, never quote the literal
-token). F-PASS19-S1 gate hardening (added self-reference exclusion to the gate
-command). The hardened gate now PASSES its own self-test cleanly (zero output).
+Phase 1b (PRD) has been completed. PRD v0.1.1 landed at commit 7935faa. The PRD package comprises 95 BCs across 18 subsystems, 1 BC-INDEX, 4 supplements, and 1 PRD index. Two fresh-context consistency audits passed (one per commit). Independent orchestrator verification of the final fix-burst claims: CLEAN. The four-file gate is now canonical.
 
-**Pass 20 returned PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION, 1 OBSERVATION). **Streak: 1/3** — first clean pass since Pass 12 (eight passes ago). The fourth-level recursion of the narrow-fix-with-broad-announcement pattern is structurally closed via the v0.4.14 writing-technique principle and gate hardening. The hardened Self-Audit Checklist enforcement command returns zero output cleanly. F-PASS20-S1 (extend gate to cover handoff) and F-PASS20-O1 (soften historical claim wording) are non-blocking SUGGESTION/OBSERVATION-grade and will bundle into the next applicable fix-burst rather than triggering a v0.4.15 burst on their own.
-
-**Pass 21 returned PASS** (0 CRITICAL, 0 IMPORTANT, 1 SUGGESTION [F-PASS21-S1: gate exclusion-list commentary improvement], 1 OBSERVATION [F-PASS21-O1: SL-1 handoff paraphrase drift corrected in the Pass 21 commit]). **Streak: 2/3** — second consecutive clean pass.
-
-**Pass 22 returned PASS with 0 findings of any class** (0 CRITICAL, 0 IMPORTANT, 0 SUGGESTION, 0 OBSERVATION) — first truly clean pass in the entire cascade. **CASCADE CONVERGED. Streak 3/3.** The brain-factory product brief at v0.4.14 (786 lines, commit 7035315) is the final Phase 1a Stage 5 artifact. The fourth-level recursion of the narrow-fix-with-broad-announcement pattern remained structurally closed across three consecutive fresh-context passes (Pass 20, 21, 22). 10 structural-fix disciplines hold. 26 prior-pass fixes preserved with zero regressions. The cascade has converged on every defect dimension tested across 22 passes and 14 fix-bursts.
-
-Following user direction (Path A), v0.4.15 post-convergence cleanup burst applied at commit 9ff0504 (802 lines): bundles three deferred non-blocking findings. F-PASS20-S1 closed (Self-Audit Checklist enforcement gate extended from single-file to two-file `for`-loop covering both product-brief and SESSION-HANDOFF). F-PASS21-S1 closed (exclusion-list-extension protocol NOTE added inside the gate item). F-PASS20-O1 closed (three historical structural-fix entries at v0.4.7, v0.4.10, v0.4.11 had absolute-immutability wording softened to scoped equivalents — 'scope-eliminating within this version's coverage / fix-burst's scope (re-verify in subsequent passes)' — audit-trail facts preserved). The two-file gate self-test runs clean on both files.
-
-**Pass 23 returned PASS** (0 findings of any class) — post-convergence verification confirmed v0.4.15 cleanup did NOT regress convergence. The two-file gate self-test runs clean on both brief and handoff. The cascade is **officially CLOSED on brief v0.4.15** (802 lines, commit 9ff0504). Phase 1a Stage 5 (Adversarial Review Cascade) is **COMPLETE** after 23 passes and 15 fix-bursts spanning v0.2.0 (Pass 1, 312 lines) to v0.4.15 (Pass 23, 802 lines). Phase 1a Stage 6 (Finalize brief) is **READY**. **Phase 1b (PRD) is BLOCKED-ON-HUMAN-APPROVAL** per CLAUDE.md Pipeline Authority — orchestrator does NOT auto-advance phases.
+**Next action for fresh-context orchestrator:** Dispatch `vsdd-factory:architect` with `/vsdd-factory:create-architecture` skill — Phase 1c Architecture entry is pre-authorized (Phase 1b/1c/1d sequence authorized by user 2026-05-15; no re-ask needed between sub-phases).
 
 ## 2. Cascade history (full)
 
@@ -97,9 +82,14 @@ Following user direction (Path A), v0.4.15 post-convergence cleanup burst applie
 
 ## 3. Key state
 
-- **Brief:** `.factory/specs/product-brief.md` (v0.4.15, 802 lines)
-- **Streak:** **Streak: 3/3 — CASCADE CONVERGED on v0.4.15 (Phase 1a Stage 5 CLOSED)**
-- **v0.4.15 post-convergence cleanup status:** COMPLETE at commit 9ff0504. Pass 23 verification COMPLETE — PASS.
+- **Brief:** `.factory/specs/product-brief.md` (v0.4.15, 802 lines, commit 9ff0504)
+- **PRD:** `.factory/specs/prd/index.md` (v0.1.1, 535 lines, commit 7935faa)
+- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.0, 231 lines, commit 7935faa)
+- **Total BCs:** 95 across 18 subsystems (all with `subsystem: SS-TBD` — architect assigns canonical IDs in Phase 1c)
+- **Phase 1a streak:** **3/3 — CASCADE CONVERGED on v0.4.15 (Phase 1a Stage 5 CLOSED)**
+- **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
+- **Phase 1c status:** APPROVED-READY-FOR-DISPATCH
+- **Four-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md); extend to five-file when ARCH-INDEX.md lands
 - **Pass 23 dispatch status:** COMPLETE — **PASS** (post-convergence verification; 0 findings of any class). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-23.md`. **Cascade officially CLOSED on v0.4.15.**
 - **Pass 22 dispatch status:** COMPLETE — **PASS** (0 findings of any class). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-22.md`. **CASCADE CONVERGED** — brief v0.4.14 is the final Phase 1a Stage 5 artifact.
 - **Pass 21 dispatch status:** COMPLETE — **PASS** (0 CRITICAL + 0 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-21.md`. Recursion depth: 0 (structurally closed across two consecutive passes).
@@ -110,7 +100,7 @@ Following user direction (Path A), v0.4.15 post-convergence cleanup burst applie
 - **Pass 16 dispatch status:** COMPLETE — FAIL (3 IMPORTANT + 1 SUGGESTION + 1 OBSERVATION). Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-16.md` (408 lines).
 - **Pass 15 dispatch status:** COMPLETE — FAIL (1 IMPORTANT + 2 SUGGESTION + 2 OBSERVATION).
   Report at `.factory/cycles/v0.1-phase-1a-brief/adversary-pass-15.md` (375 lines).
-- **Fix bursts applied:** 15 total (v0.2.0 → v0.3.0, v0.3.0 → v0.4.0, v0.4.0 → v0.4.1,
+- **Phase 1a fix bursts applied:** 15 total (v0.2.0 → v0.3.0, v0.3.0 → v0.4.0, v0.4.0 → v0.4.1,
   v0.4.1 → v0.4.2-final, v0.4.2-final → v0.4.3, v0.4.3 → v0.4.4, v0.4.4 → v0.4.5/v0.4.6,
   v0.4.6 → v0.4.7, v0.4.7 → v0.4.8/v0.4.9, v0.4.9 → v0.4.10, v0.4.10 → v0.4.11, v0.4.11 → v0.4.12, v0.4.12 → v0.4.13, v0.4.13 → v0.4.14, v0.4.14 → v0.4.15)
 
@@ -242,7 +232,10 @@ history are enumerated in §8.
 
 | SHA | Message |
 |-----|---------|
-| (this commit) | factory(state): create durable STATE.md + mark Phase 1b APPROVED — clean-context resume authorized |
+| (this commit) | factory(state): Phase 1b → 1c transition — PRD v0.1.1 landed (95 BCs + BC-INDEX), consistency audit closed, architect dispatch authorized |
+| 7935faa | factory(spec): PRD v0.1.0 → v0.1.1 fix-burst — close 4 of 5 consistency findings (BC-INDEX + traces_to + Edge Cases + PRD §5 scopes + supplement gates) |
+| 23e3a91 | factory(spec): PRD v0.1.0 initial creation — 95 BCs across 18 subsystems, 4 supplements, BC format BC-2.NN.NNN |
+| a32cc45 | factory(state): create durable STATE.md + mark Phase 1b APPROVED — clean-context resume authorized |
 | 8228adc | factory(adversary): persist Pass 23 PASS — post-convergence verification; cascade CONVERGED on v0.4.15; Phase 1a Stage 5 CLOSED |
 | a0783df | factory(handoff): refresh state for v0.4.15 post-convergence cleanup completion — Pass 23 verification pending |
 | 9ff0504 | factory(spec): bump brief to v0.4.15 — post-convergence cleanup (F-PASS20-S1/O1 + F-PASS21-S1; gate extension + audit-trail wording calibration) |
@@ -287,17 +280,17 @@ commits — the brief on disk at v0.4.15 is the authoritative artifact.
 
 ## 9. Resume procedure
 
-**PHASE 1a STAGE 5 CLOSED. PHASE 1b APPROVED. Cascade CONVERGED on v0.4.15.**
+**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c APPROVED-READY-FOR-DISPATCH.**
 
-**For a fresh-context orchestrator session:** Read `.factory/STATE.md` FIRST — it is the canonical entry point per CLAUDE.md Project References. STATE.md contains the complete clean-context resume procedure for Phase 1b.
+**For a fresh-context orchestrator session:** Read `.factory/STATE.md` FIRST — it is the canonical entry point per CLAUDE.md Project References. STATE.md contains the complete clean-context resume procedure for Phase 1c.
 
 In summary:
 1. Run `vsdd-factory:devops-engineer` factory-worktree-health (BLOCKING preflight; expect intentional non-canonical layout per §10)
-2. Read CLAUDE.md, STATE.md, THIS FILE, TASK-LIST.md, brief v0.4.15, adversary-pass-23.md
-3. Dispatch `vsdd-factory:product-owner` with `/vsdd-factory:create-prd` skill — Phase 1b PRD entry is USER-APPROVED, no further approval needed
-4. Then Phase 1c (architecture) and Phase 1d (adversarial spec review)
+2. Read CLAUDE.md, STATE.md, THIS FILE, TASK-LIST.md, brief v0.4.15, prd/index.md v0.1.1, BC-INDEX.md
+3. Dispatch `vsdd-factory:architect` with `/vsdd-factory:create-architecture` skill — Phase 1c Architecture entry is pre-authorized (Phase 1b/1c/1d sequence authorized by user 2026-05-15; no re-ask between sub-phases)
+4. Then Phase 1d: fresh BC-5.39.001 3-CLEAN cascade against PRD v0.1.1 + architecture together
 
-Carry forward to Phase 1b: writing-technique principle, two-file gate (extend to cover new PRD), exclusion-list-extension protocol, no blanket-coverage wording, single-commit-per-burst, NO AI attribution. Full discipline catalog in STATE.md.
+Carry forward to Phase 1c: writing-technique principle, four-file gate (extend to five-file when ARCH-INDEX.md lands), exclusion-list-extension protocol, no blanket-coverage wording, single-commit-per-burst, NO AI attribution. Architect assigns SS-NN canonical IDs to all 95 BCs. Full discipline catalog in STATE.md.
 
 ## 10. Standing user directives (carry forward)
 
@@ -312,3 +305,34 @@ Carry forward to Phase 1b: writing-technique principle, two-file gate (extend to
 - All artifacts committed to main as de-facto factory-artifacts (proper worktree NOT
   established; factory-artifacts branch does NOT exist; commits go to main until
   worktree setup is done)
+- **Phase 1b/1c/1d sequence pre-authorized by user 2026-05-15.** Orchestrator does NOT re-ask between sub-phases; only re-asks at major phase boundaries (Phase 1 → Phase 2, Phase 2 → Phase 3, etc.).
+
+## 11. Phase 1b PRD Entry — COMPLETED
+
+**Commit 23e3a91** — `vsdd-factory:product-owner` PRD v0.1.0 initial creation via `/vsdd-factory:create-prd` skill. Sharded layout: `.factory/specs/prd/index.md` (526 lines), 4 supplements (`error-taxonomy.md`, `nfr-catalog.md`, `interface-definitions.md`, `test-vectors.md`), 95 BC files under `.factory/specs/behavioral-contracts/ss-{01..18}/BC-2.NN.NNN.md`.
+
+**Fresh-context consistency-validator pass** — returned CONDITIONAL-GO with 5 findings:
+- F-1b-CV-01 IMPORTANT: 95 BCs missing `traces_to` frontmatter field
+- F-1b-CV-02 IMPORTANT: 14 BCs missing `## Edge Cases` section
+- F-1b-CV-03 IMPORTANT: PRD §5 error scope list stale (phantom SCALE; missing SOURCE, SCHEMA, NAMING, ATTR, FLUSH, HEALTH, ADVERSARY, RENAME, UPGRADE, RATE, WRITE, VOICE, PERF)
+- F-1b-CV-04 SUGGESTION: all 4 supplement self-audit gates missing VSDD-level exclusion clause
+- F-1b-CV-05 OBSERVATION: PRD does not enumerate 7 reference repos — accepted (brief is authoritative per CLAUDE.md Source-of-Truth Precedence)
+
+**Commit 7935faa** — `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst. All 4 actionable findings closed:
+- Created `.factory/specs/behavioral-contracts/BC-INDEX.md` (231 lines) as canonical sharding index over all 95 BCs
+- Added `traces_to: ../BC-INDEX.md` to all 95 BC frontmatter blocks
+- Added `## Edge Cases` sections (3 entries each) to 14 BCs: BC-2.13.002, BC-2.13.004, BC-2.15.001, BC-2.15.003, BC-2.16.001, BC-2.16.003 through BC-2.16.006, BC-2.17.002 through BC-2.17.003, BC-2.18.002 through BC-2.18.004
+- Updated PRD §5 to enumerate 21 actual error scopes (removed phantom SCALE; added 13 missing scopes)
+- Added VSDD level-designator exclusion clause to all 4 supplement self-audit gates
+- PRD index version bump: 0.1.0 → 0.1.1; added STRUCTURAL FIX changelog entry
+- Single commit (TD-VSDD-053 ✓), no AI attribution ✓
+
+**Independent orchestrator verification** — all 4 fix-burst claims verified on disk: BC-INDEX.md exists (231 lines), 95 BCs have `traces_to`, all 14 target BCs have `## Edge Cases`, PRD §5 has 21 scopes, all 4 supplement gates have VSDD exclusion. CLEAN.
+
+**Final PRD package inventory (101 files):**
+- 1 PRD index: `.factory/specs/prd/index.md` (v0.1.1, 535 lines)
+- 4 supplements: error-taxonomy.md, nfr-catalog.md, interface-definitions.md, test-vectors.md
+- 95 BC files across 18 subsystems (ss-01:6, ss-02:7, ss-03:4, ss-04:17, ss-05:6, ss-06:4, ss-07:4, ss-08:4, ss-09:6, ss-10:3, ss-11:3, ss-12:4, ss-13:4, ss-14:5, ss-15:3, ss-16:6, ss-17:4, ss-18:5)
+- 1 BC-INDEX: `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.0, 231 lines)
+
+**The four-file gate is now canonical** — Self-Audit Checklist `grep \bL[0-9]+\b ...` runs clean on brief + handoff + prd/index.md + BC-INDEX.md. Architect extends to five-file when ARCH-INDEX.md lands.
