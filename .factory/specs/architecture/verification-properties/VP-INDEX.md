@@ -1,7 +1,7 @@
 ---
 document_type: vp-index
 level: L3
-version: "0.1.5"
+version: "0.1.6"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
@@ -108,9 +108,15 @@ it but the body and index table did not reflect it; VP-012 extended with Group 2
 - [x] VP-013 verifies_bcs field updated: now [BC-2.04.015, NFR-001] — BC-2.02.007 moved to VP-027
 - [x] VP-027 Phase P1 (slow lane — requires gen-test-corpus.sh infrastructure); VP-022 (lobster headless) Phase P0
 - [x] VP-012 extended to cover BC-2.06.003 (last_ingest field); SS-06 row in P0 Coverage Matrix updated; Coverage summary accurate 64/64 (F-PASS2-C3)
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS6-O1-arch — mirrors ARCH-INDEX freshness discipline established in F-PASS5.)
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS6-O1-arch — mirrors ARCH-INDEX freshness discipline established in F-PASS5.) Incremental scope: check VP-INDEX on every burst. Canonical-baseline scope: one-time audit at Pass 6 codification time — VP-INDEX confirmed clean at that point. (Dual-scope declaration added F-PASS11-C2.)
 
 ## Changelog
+
+### v0.1.6 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS11-C2 — retroactive dual-scope declaration for last_updated freshness check):** The `last_updated freshness check` Self-Audit item (added F-PASS6-O1-arch) lacked explicit dual-scope declarations as required by the F-PASS10-O1 dual-scope discipline. Incremental scope and canonical-baseline scope declarations added. Canonical-baseline confirmed clean at Pass 6 codification. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS11-C1/I3 — timestamp canonical-baseline sweep reflected):** VP-INDEX documents that the Pass 11 architect burst swept all 27 VP files for timestamp correctness. Files bumped to 2026-05-16T00:00:00: VP-004, VP-012, VP-014, VP-021, VP-026, VP-027. Files retaining 2026-05-15T00:00:00 (no content edit after initial backfill): VP-001..VP-003, VP-005..VP-011, VP-013, VP-015..VP-020, VP-022..VP-025. [audit-trail]
 
 ### v0.1.5 (2026-05-16)
 

@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.12"
+version: "0.1.13"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
@@ -27,6 +27,29 @@ last_updated: 2026-05-16
 > tarball, one tech stack (bash + Node 20+ utilities), one deployment target
 > (Claude Code plugin registry). No independent services, no separate release
 > cycles across components.
+
+---
+
+## Timestamp Field Convention Policy
+
+**Codified F-PASS11-C1/I3 — applies to ALL L3 spec artifacts.**
+
+The `timestamp:` field tracks the most recent meaningful content edit (distinct from `last_updated`, which tracks most recent commit touch and may reflect metadata-only changes). The tri-partite semantic: `created` = artifact creation date; `timestamp` = most recent content edit; `last_updated` = most recent commit touch.
+
+**In scope for `timestamp:` field** (must carry the field):
+- Architecture artifacts: ARCH-INDEX, all 17 ADRs, all 18 SS-NN designs, VP-INDEX, all 27 VPs.
+- PRD index and all PRD supplements.
+- BC-INDEX and all 95 BC files.
+
+**Exempt artifacts** (do NOT carry `timestamp:` — `created` + `last_updated` sufficient):
+- `product-brief.md` — Phase 1a converged artifact; uses `created` only per historical convention.
+- `.factory/STATE.md` — operational state document; uses `last_updated` only.
+- `.factory/SESSION-HANDOFF.md` — operational resume document; uses `last_updated` only.
+- `.factory/TASK-LIST.md` — operational task ledger; no datetime fields.
+
+**Canonical-baseline sweep (F-PASS11 architect burst):** All 62 architecture artifacts (excluding ARCH-INDEX and VP-INDEX already at 2026-05-16T00:00:00 from Pass 10) were audited. Files with content edits after the initial 2026-05-15 timestamp backfill (v0.1.1 burst, 7e8f96f) received `timestamp: 2026-05-16T00:00:00`. Files with no content edits after that burst retain `timestamp: 2026-05-15T00:00:00`. See Pass 11 Changelog entry for the full bumped-vs-unchanged inventory.
+
+**PRD and BC-INDEX sweep:** PO follow-up burst required for PRD index, PRD supplements, BC-INDEX, and 95 BC files. Surface to orchestrator.
 
 ---
 
@@ -366,8 +389,8 @@ Additional Self-Audit items:
 - [x] All HIGH-impact risks addressed (see subsystem design docs)
 - [x] deployment_topology field present in frontmatter
 - [x] Document Map complete with all section files listed
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS5 — prevents stale last_updated drift.)
-- [x] **timestamp freshness check (F-PASS10-I3):** `timestamp` field tracks the most recent meaningful content edit (distinct from `last_updated`, which tracks most recent commit touch and may reflect metadata-only changes). Freshness convention: `created` = artifact creation date; `timestamp` = most recent content edit; `last_updated` = most recent commit touch. On any burst that modifies artifact content, bump `timestamp` to the burst date. Verify `timestamp >= created`. (Added Pass 10 — formalizes timestamp semantic tri-partite: created/timestamp/last_updated.)
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS5 — prevents stale last_updated drift.) Incremental scope: check ARCH-INDEX and VP-INDEX on every burst. Canonical-baseline scope: one-time audit over all five-file-gate files at codification time — all five files confirmed clean at Pass 5 codification. (Dual-scope declaration added F-PASS11-C2.)
+- [x] **timestamp freshness check (F-PASS10-I3):** `timestamp` field tracks the most recent meaningful content edit (distinct from `last_updated`, which tracks most recent commit touch and may reflect metadata-only changes). Freshness convention: `created` = artifact creation date; `timestamp` = most recent content edit; `last_updated` = most recent commit touch. On any burst that modifies artifact content, bump `timestamp` to the burst date. Verify `timestamp >= created`. (Added Pass 10 — formalizes timestamp semantic tri-partite: created/timestamp/last_updated.) Incremental scope: on every burst, bump `timestamp` for all modified files. Canonical-baseline scope: Pass 11 architect burst swept all 64 architecture artifacts; 26 ADRs/SS/VPs bumped to 2026-05-16T00:00:00; remaining 36 retain 2026-05-15T00:00:00 (no content edits after initial backfill); PO sweeps PRD+BC-INDEX in follow-up burst. (Dual-scope declaration added F-PASS11-C2/I3.)
 - [x] **SS-NN Changelog discipline (F-PASS10-I2):** For every `subsystems/SS-*.md` file with version > "1.0" in frontmatter, verify the file body contains a `## Changelog` section with a versioned entry for the current version. Bash sweep:
 
   ```bash
@@ -379,8 +402,11 @@ Additional Self-Audit items:
   done
   ```
 
-- [x] **VP title canonical-baseline sweep (F-PASS10-C1/I1):** For every VP file, three derived cells must match the VP file H1 exactly: (a) VP-INDEX.md Title cell, (b) ARCH-INDEX.md Document Map Purpose cell, (c) ARCH-INDEX.md VP-INDEX Summary Title cell. Incremental scope: check all VPs whose H1 was modified in the current burst. Canonical-baseline scope: run full sweep over all VP files at codification time. Mismatch in any derived cell is a blocking defect — derived cells are never authoritative.
-- [x] **Dual-scope discipline (F-PASS10-O1):** Every codified discipline must declare two scopes: (a) incremental scope — checked on every burst; (b) canonical-baseline scope — one-time sweep over entire spec inventory at codification time. Incremental-only disciplines allow pre-existing defect inventory to survive indefinitely.
+  Incremental scope: on every burst that bumps an SS-NN file version, verify Changelog section added before commit. Canonical-baseline scope: Pass 9 F-PASS9-I2 swept SS-01..SS-18 — SS-02 and SS-18 brought into conformance; remaining 16 at v1.0 (no Changelog required). (Dual-scope declaration added F-PASS11-C2/I2.)
+
+- [x] **VP title canonical-baseline sweep (F-PASS10-C1/I1):** For every VP file, three derived cells must match the VP file H1 exactly: (a) VP-INDEX.md Title cell, (b) ARCH-INDEX.md Document Map Purpose cell, (c) ARCH-INDEX.md VP-INDEX Summary Title cell. Mismatch in any derived cell is a blocking defect — derived cells are never authoritative. Incremental scope: on every burst that modifies a VP H1, sweep all three derived cells for that VP before commit. Canonical-baseline scope: Pass 10 F-PASS10-C1 swept all 27 VPs — drift found and resolved in VP-001, VP-014..VP-020, VP-021..VP-027; clean VPs confirmed for VP-002..VP-013. (Dual-scope declaration confirmed per F-PASS11-C2; canonical-baseline explicitly stated alongside incremental.)
+- [x] **Dual-scope discipline (F-PASS10-O1):** Every codified discipline must declare two scopes: (a) incremental scope — checked on every burst; (b) canonical-baseline scope — one-time sweep over entire spec inventory at codification time. Incremental-only disciplines allow pre-existing defect inventory to survive indefinitely. Incremental scope: when adding a new Self-Audit item, both scopes must be declared before the burst commits. Canonical-baseline scope: Pass 11 F-PASS11-C2 retroactively audited all six prior Self-Audit items added in Passes 5–10 — dual-scope declarations added to each item in this burst. The dual-scope discipline applies to itself: declaring it without applying it retroactively would be an incremental-only discipline. (Self-application confirmed F-PASS11-C2.)
+- [x] **Adversary pre-flight grep verification (F-PASS11-O1):** For any writing-technique recursion finding, the adversary MUST first run the five-file gate Clauses 1+2 against the alleged offending text. If zero matches, the meta-narration about prior violations is NOT itself a violation — demote the finding from CRITICAL/IMPORTANT to OBSERVATION-only, or strike the finding entirely. This prevents the adversary-misdiagnosis class observed in Pass 10 F-PASS10-C2 (false-positive: the v0.1.11 F-PASS9-I1 entry was already semantic-only when Pass 10 flagged it). Incremental scope: adversary applies this pre-flight before filing any writing-technique recursion finding. Canonical-baseline scope: one-time codification in this Pass 11 burst; no retroactive audit required since prior finding classification is historical. (Added F-PASS11-O1.)
 
 ---
 
@@ -391,6 +417,8 @@ Additional Self-Audit items:
 **STRUCTURAL FIX (F-PASS10-C1/I1 — 27-VP canonical-baseline title sweep):** All three derived VP-title cells (VP-INDEX Title, ARCH-INDEX Document Map Purpose, ARCH-INDEX VP-INDEX Summary Title) aligned to canonical VP file H1 for all 27 VPs. Drift found in VP-001 Document Map Purpose cell and all three derived cells for VP-014, VP-015, VP-016, VP-017, VP-018, VP-019, VP-021, VP-023, VP-024, VP-025; VP-020 Document Map Purpose and VP-INDEX Summary Title cells; VP-022 Document Map Purpose and VP-INDEX Summary Title cells; VP-026 Document Map Purpose and VP-INDEX Summary Title cells; VP-027 Document Map Purpose and VP-INDEX Summary Title cells. VPs already aligned (no change): VP-002, VP-003, VP-004, VP-005, VP-006, VP-007, VP-008, VP-009, VP-010, VP-011, VP-012, VP-013. VP file H1 headings are canonical per Source-of-Truth Precedence rule 4; derived cells in VP-INDEX and ARCH-INDEX are downstream summaries. CODIFICATION: canonical-baseline scope — one-time sweep over all 27 VPs at codification time; incremental scope — on every burst that modifies a VP H1, sweep all three derived cells for that VP before commit. [audit-trail]
 
 **STRUCTURAL FIX (F-PASS10-C2 — rewrite of v0.1.11 F-PASS9-I1 entry without quoting violating tokens):** The F-PASS9-I1 changelog entry in v0.1.11 described a writing-technique violation by quoting the violating backtick-wrapped tokens while doing so, thus recursively exemplifying the violation class it was closing. Rewritten using semantic anchors only: the entry now states "three stale absolute line counts in the §Decision sharded-layout code block of ADR-004" without quoting position references or quantity tokens. Self-audit sub-rule added: when describing a writing-technique violation in a changelog entry, the description itself must not quote the violating token — describe in semantic terms only. [audit-trail]
+
+**NOTE (post-Pass-11 amendment per F-PASS11-I1):** Independent verification in Pass 11 found that the v0.1.11 F-PASS9-I1 entry was already semantic-only when Pass 10 flagged it. Phrases like "position references" and "absolute-quantity tokens" are themselves semantic anchors describing violation classes, not violations. The five-file gate Clauses 1+2 return zero matches on the v0.1.11 entry. F-PASS10-C2 was therefore a false-positive adversary finding; the rewrite claim in this entry was a no-op change. The codified writing-tech self-audit sub-rule (no self-quotation of violating tokens in changelog narratives) is reasonable and stands — it just did not require a v0.1.11 rewrite to land. The Pass 11 F-PASS11-O1 process-gap (adversary pre-flight grep verification) addresses the misdiagnosis class going forward. [audit-trail]
 
 **STRUCTURAL FIX (F-PASS10-I2 — SS-NN Changelog discipline Self-Audit item):** Self-Audit Checklist updated with a new item enforcing the Pass 9 SS-NN Changelog discipline: for every subsystems/SS-*.md file with version past the initial release in frontmatter, the file body must contain a Changelog section with a versioned entry for the current version. Bash sweep command included. Prevents silent regression of the Pass 9 SS-02 and SS-18 Changelog-section gap. [audit-trail]
 

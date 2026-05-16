@@ -5,7 +5,7 @@ title: "URL Ingest Pipeline"
 level: L3
 version: "1.2"
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-16T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 capability_anchor: CAP-002
