@@ -59,8 +59,8 @@ To prevent accidental ingestion of system files or credential files, `/brain:ing
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Out-of-vault path blocked | bats skills.bats |
-| VP-TBD | System directories always blocked | bats skills.bats |
+| VP-016 | Out-of-vault path blocked | bats skills.bats |
+| VP-016 | System directories always blocked | bats skills.bats |
 
 ## Traceability
 

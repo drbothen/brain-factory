@@ -48,8 +48,8 @@ Any GH Action template that calls an external API (LinkedIn, Readwise, Raindrop)
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | 429 → retry with backoff | bats upgrade.bats (mock API) |
-| VP-TBD | 3 failures → E-RATE-001 | bats upgrade.bats |
+| (no VP — P1) | 429 → retry with backoff | bats upgrade.bats (mock API) |
+| (no VP — P1) | 3 failures → E-RATE-001 | bats upgrade.bats |
 
 ## Traceability
 

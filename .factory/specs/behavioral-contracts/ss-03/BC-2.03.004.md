@@ -57,8 +57,8 @@ When wiki page generation produces a mix of successes and failures (e.g., 8 of 1
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Partial failure reported accurately | bats skills.bats |
-| VP-TBD | No silent swallow on failed pages | bats skills.bats (inject hook failure for one page) |
+| VP-016 | Partial failure reported accurately | bats skills.bats |
+| VP-016 | No silent swallow on failed pages | bats skills.bats (inject hook failure for one page) |
 
 ## Traceability
 

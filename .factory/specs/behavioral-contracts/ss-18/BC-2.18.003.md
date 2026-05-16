@@ -55,7 +55,7 @@ For agent files, `meta-lint.bats` validates: frontmatter present with `name`, `s
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 14 agents pass meta-lint | bats meta-lint.bats |
+| VP-006 | All 14 agents pass meta-lint | bats meta-lint.bats |
 
 ## Traceability
 

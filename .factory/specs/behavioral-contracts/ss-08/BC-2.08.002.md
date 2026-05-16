@@ -57,8 +57,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Draft written to drafts/{platform}/ | bats skills.bats |
-| VP-TBD | Voice hook fires after write | bats skills.bats |
+| VP-019 | Draft written to drafts/{platform}/ | bats skills.bats |
+| VP-019 | Voice hook fires after write | bats skills.bats |
 
 ## Traceability
 

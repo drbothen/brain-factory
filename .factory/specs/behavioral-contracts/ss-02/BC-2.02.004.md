@@ -57,8 +57,8 @@ At 10K sources, a full corpus re-read on each ingest would cost millions of toke
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | No sources/ directory scan during ingest | bats integration.bats (strace or file-access log) |
-| VP-TBD | Manifest append atomic | bats integration.bats |
+| VP-015 | No sources/ directory scan during ingest | bats integration.bats (strace or file-access log) |
+| VP-015 | Manifest append atomic | bats integration.bats |
 
 ## Traceability
 

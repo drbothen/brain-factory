@@ -65,8 +65,8 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 13 hook latency assertions pass in CI | bats hooks.bats (latency test cases) |
-| VP-TBD | Node startup overhead for quarantine hook < 100ms | bats hooks.bats timing assertion |
+| VP-001, VP-013 | All 13 hook latency assertions pass in CI | bats hooks.bats (latency test cases) |
+| VP-001, VP-013 | Node startup overhead for quarantine hook < 100ms | bats hooks.bats timing assertion |
 
 ## Traceability
 
@@ -93,4 +93,5 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 
 ## VP Anchors
 
-- [VP-TBD]
+- VP-001 — Hook exit-code semantics coverage (bats hooks.bats)
+- VP-013 — Hook p99 latency under 100ms (bats perf assertion hooks.bats)

@@ -54,7 +54,7 @@ The ingest pipeline must remain performant as the wiki grows. At 10K pages, an O
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Latency ratio ≤ 20 at 10K vs 1K pages | bats integration.bats (scale measurement) |
+| VP-027 | Latency ratio ≤ 20 at 10K vs 1K pages | bats integration.bats (scale measurement) |
 
 ## Traceability
 

@@ -57,8 +57,8 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | stdout is always valid single JSON | bats hooks.bats (capture stdout; jq empty) |
-| VP-TBD | stderr contains JSONL (not verdict) | bats hooks.bats (capture stderr; validate format) |
+| VP-026 | stdout is always valid single JSON | bats hooks.bats (capture stdout; jq empty) |
+| VP-026 | stderr contains JSONL (not verdict) | bats hooks.bats (capture stderr; validate format) |
 
 ## Traceability
 

@@ -74,11 +74,11 @@ This BC defines the universal hook I/O contract that applies to all 13 bash hook
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 13 hooks exit 0/1/2 only — no other exit codes | bats hooks.bats assertion + shellcheck |
-| VP-TBD | No bare `exit` statement in any hook | shellcheck + grep assertion |
-| VP-TBD | No `eval` in any hook | grep assertion + meta-lint.bats |
-| VP-TBD | Empty stdin → exit 2 for all hooks | bats hooks.bats assertion (parameterized) |
-| VP-TBD | stdout is valid JSON for all exit codes | bats assertion (`jq empty` on stdout capture) |
+| VP-001 | All 13 hooks exit 0/1/2 only — no other exit codes | bats hooks.bats assertion + shellcheck |
+| VP-001 | No bare `exit` statement in any hook | shellcheck + grep assertion |
+| VP-001 | No `eval` in any hook | grep assertion + meta-lint.bats |
+| VP-001 | Empty stdin → exit 2 for all hooks | bats hooks.bats assertion (parameterized) |
+| VP-001 | stdout is valid JSON for all exit codes | bats assertion (`jq empty` on stdout capture) |
 
 ## Traceability
 
@@ -107,4 +107,4 @@ This BC defines the universal hook I/O contract that applies to all 13 bash hook
 
 ## VP Anchors
 
-- [VP-TBD]
+- VP-001 — Hook exit-code semantics coverage (bats hooks.bats)

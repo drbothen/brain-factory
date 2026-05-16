@@ -54,7 +54,7 @@ A source file, once written to `sources/{topic}/{slug}.md`, is immutable. It can
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Existing source overwrite → hook exit 2 | bats hooks.bats |
+| VP-003 | Existing source overwrite → hook exit 2 | bats hooks.bats |
 
 ## Traceability
 

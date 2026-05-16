@@ -52,7 +52,7 @@ The engine/target split is a fundamental architectural constraint: the plugin fi
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | No writes to plugin dir during ingest | bats integration.bats (file-watcher on plugin dir) |
+| VP-024 | No writes to plugin dir during ingest | bats integration.bats (file-watcher on plugin dir) |
 
 ## Traceability
 

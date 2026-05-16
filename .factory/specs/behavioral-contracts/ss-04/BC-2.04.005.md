@@ -64,9 +64,9 @@ Beyond `embedding_status` (BC-2.04.004), wiki pages have additional mandatory fr
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 5 mandatory fields enforced | bats hooks.bats (one test case per field) |
-| VP-TBD | All 6 valid type values pass | bats hooks.bats (parameterized) |
-| VP-TBD | Invalid type → exit 2 | bats hooks.bats |
+| VP-002, VP-005 | All 5 mandatory fields enforced | bats hooks.bats (one test case per field) |
+| VP-002, VP-005 | All 6 valid type values pass | bats hooks.bats (parameterized) |
+| VP-002, VP-005 | Invalid type → exit 2 | bats hooks.bats |
 
 ## Traceability
 

@@ -64,9 +64,9 @@ The `embedding_status` frontmatter field is mandatory in all wiki pages from v0.
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 6 wiki type templates contain `embedding_status: pending` | bats unit assertion (templates.bats) |
-| VP-TBD | `manifest.json` contains `embeddings_model` and `chunks` fields | bats unit assertion |
-| VP-TBD | validate-frontmatter-schema.sh exits 0 on init output | bats hooks.bats assertion |
+| VP-014 | All 6 wiki type templates contain `embedding_status: pending` | bats unit assertion (templates.bats) |
+| VP-014 | `manifest.json` contains `embeddings_model` and `chunks` fields | bats unit assertion |
+| VP-014 | validate-frontmatter-schema.sh exits 0 on init output | bats hooks.bats assertion |
 
 ## Traceability
 
@@ -94,4 +94,4 @@ The `embedding_status` frontmatter field is mandatory in all wiki pages from v0.
 
 ## VP Anchors
 
-- [VP-TBD]
+- VP-014 — Brain init scaffold completeness (bats integration.bats)

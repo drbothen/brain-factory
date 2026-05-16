@@ -62,8 +62,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Known injection patterns blocked | bats quarantine.bats |
-| VP-TBD | Clean content passes | bats quarantine.bats |
+| VP-021 | Known injection patterns blocked | bats quarantine.bats |
+| VP-021 | Clean content passes | bats quarantine.bats |
 
 ## Traceability
 

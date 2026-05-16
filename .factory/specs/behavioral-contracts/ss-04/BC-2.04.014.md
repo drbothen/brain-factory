@@ -63,9 +63,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | GREEN brain → exit 0 | bats hooks.bats |
-| VP-TBD | RED dimension → exit 1 (never 2) | bats hooks.bats |
-| VP-TBD | Non-brain directory → exit 0 silently | bats hooks.bats |
+| (no VP — P1) | GREEN brain → exit 0 | bats hooks.bats |
+| (no VP — P1) | RED dimension → exit 1 (never 2) | bats hooks.bats |
+| (no VP — P1) | Non-brain directory → exit 0 silently | bats hooks.bats |
 
 ## Traceability
 

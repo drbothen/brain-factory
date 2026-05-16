@@ -61,8 +61,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Valid local file ingested successfully | bats skills.bats |
-| VP-TBD | Out-of-vault path blocked | bats skills.bats |
+| VP-016 | Valid local file ingested successfully | bats skills.bats |
+| VP-016 | Out-of-vault path blocked | bats skills.bats |
 
 ## Traceability
 

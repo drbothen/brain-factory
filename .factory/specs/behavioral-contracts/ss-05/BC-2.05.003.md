@@ -62,8 +62,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All backlinks updated | bats skills.bats (inject known backlinks) |
-| VP-TBD | Rename atomic (no partial state) | bats skills.bats (inject failure mid-rename) |
+| VP-018 | All backlinks updated | bats skills.bats (inject known backlinks) |
+| VP-018 | Rename atomic (no partial state) | bats skills.bats (inject failure mid-rename) |
 
 ## Traceability
 

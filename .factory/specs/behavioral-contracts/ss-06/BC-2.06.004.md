@@ -52,7 +52,7 @@ The `sources/` directory uses topic-based subdirectories to prevent a flat singl
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 7 default categories present after init | bats integration.bats |
+| (no VP — P1) | All 7 default categories present after init | bats integration.bats |
 
 ## Traceability
 

@@ -62,9 +62,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | File moved to published/ on success | bats skills.bats (mock API) |
-| VP-TBD | 429 triggers retry-with-backoff | bats skills.bats (mock API) |
-| VP-TBD | Frontmatter updated with published_at | bats skills.bats |
+| VP-020 | File moved to published/ on success | bats skills.bats (mock API) |
+| VP-020 | 429 triggers retry-with-backoff | bats skills.bats (mock API) |
+| VP-020 | Frontmatter updated with published_at | bats skills.bats |
 
 ## Traceability
 

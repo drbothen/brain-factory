@@ -54,7 +54,7 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Upgrade migration runs without error | bats upgrade.bats |
+| (no VP — P1) | Upgrade migration runs without error | bats upgrade.bats |
 
 ## Traceability
 

@@ -60,9 +60,9 @@ For hook scripts, `meta-lint.bats` validates: first line is `#!/usr/bin/env bash
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 13 hooks pass meta-lint | bats meta-lint.bats |
-| VP-TBD | No bare exit | grep + meta-lint |
-| VP-TBD | No eval | grep + meta-lint |
+| VP-006 | All 13 hooks pass meta-lint | bats meta-lint.bats |
+| VP-006 | No bare exit | grep + meta-lint |
+| VP-006 | No eval | grep + meta-lint |
 
 ## Traceability
 

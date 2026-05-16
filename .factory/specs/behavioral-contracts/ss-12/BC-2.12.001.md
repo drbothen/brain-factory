@@ -59,9 +59,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Steps execute in dependency order | bats integration.bats |
-| VP-TBD | Circular dependency detected | bats integration.bats |
-| VP-TBD | Step failure stops pipeline | bats integration.bats |
+| VP-007 | Steps execute in dependency order | bats integration.bats |
+| VP-007 | Circular dependency detected | bats integration.bats |
+| VP-007 | Step failure stops pipeline | bats integration.bats |
 
 ## Traceability
 

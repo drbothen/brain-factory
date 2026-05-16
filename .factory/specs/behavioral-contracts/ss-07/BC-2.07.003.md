@@ -56,8 +56,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Revision loop bounded by max_iterations | bats adversary.bats |
-| VP-TBD | Each pass re-runs all 4 agents | bats adversary.bats |
+| VP-010 | Revision loop bounded by max_iterations | bats adversary.bats |
+| VP-010 | Each pass re-runs all 4 agents | bats adversary.bats |
 
 ## Traceability
 

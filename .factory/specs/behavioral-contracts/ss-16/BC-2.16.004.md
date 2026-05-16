@@ -56,7 +56,7 @@ At 10K-source scale, memory usage during operations (especially `/brain:lint-wik
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Peak memory < 2GB on lint-wiki at 10K pages | bats integration.bats (time -v wrapper) |
+| (no VP — P1) | Peak memory < 2GB on lint-wiki at 10K pages | bats integration.bats (time -v wrapper) |
 
 ## Traceability
 

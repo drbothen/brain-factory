@@ -1,7 +1,7 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.1"
+version: "0.1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -247,6 +247,12 @@ The gate must return zero output on all five files. ARCH-INDEX.md is the fifth f
 ---
 
 ## Changelog
+
+### v0.1.2 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-I10 — VP-TBD backfill):** All 95 BC files updated: VP-TBD placeholders replaced with actual VP IDs from VP-INDEX v0.1.1 P0 Coverage Matrix. BCs with VP coverage cite the VP-NNN directly in Verification Properties table and VP Anchors section. BCs with no VP coverage (P1/P2) replaced VP-TBD with `(no VP — P1/P2; deferred per VP-INDEX coverage policy)`. One P0 VP gap noted: BC-2.06.003 has no direct VP in VP-INDEX v0.1.1; gap noted pending VP-INDEX v0.1.2 (architect scope).
+
+**STRUCTURAL FIX (F-PASS1-C1 + F-PASS1-C2 + F-PASS1-C3 + F-PASS1-I2 + F-PASS1-I4 — BC body fixes):** BC-2.13.001 template names corrected to ADR-013 canonical set; BC-2.16.006 CLI updated to ADR-012 interface; BC-2.04.017 helper path corrected to `hooks/lib/`; BC-2.04.001 event_type updated to past-tense (`quarantine.blocked`/`quarantine.allowed`); BC-2.01.001 hard-fail behavior made explicit for already-initialized brain. See PRD v0.1.3 changelog for details.
 
 ### v0.1.1 (2026-05-15)
 

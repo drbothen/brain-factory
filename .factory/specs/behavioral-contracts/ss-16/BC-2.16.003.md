@@ -58,7 +58,7 @@ The v0.9 scale gate requires that the GH Action templates process 100 sources pe
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | 100 sources/day without data loss | bats upgrade.bats (scale simulation) |
+| (no VP — P1) | 100 sources/day without data loss | bats upgrade.bats (scale simulation) |
 
 ## Traceability
 

@@ -58,8 +58,8 @@ When the Defuddle-extracted content of a URL exceeds the 50K-token per-chunk thr
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Threshold breach → advisory warning | bats skills.bats |
-| VP-TBD | Ingest still completes on threshold breach | bats skills.bats |
+| (no VP — P1) | Threshold breach → advisory warning | bats skills.bats |
+| (no VP — P1) | Ingest still completes on threshold breach | bats skills.bats |
 
 ## Traceability
 

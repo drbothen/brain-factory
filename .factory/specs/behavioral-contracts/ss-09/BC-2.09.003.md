@@ -55,8 +55,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | scheduled_for written to frontmatter | bats skills.bats |
-| VP-TBD | Invalid date format → exit 2 | bats skills.bats |
+| (no VP — P1) | scheduled_for written to frontmatter | bats skills.bats |
+| (no VP — P1) | Invalid date format → exit 2 | bats skills.bats |
 
 ## Traceability
 

@@ -51,7 +51,7 @@ Wikilink resolution in `/brain:lint-wiki` must be implemented using index-first 
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Index loaded once; O(n*L) total work | bats performance assertion; code review |
+| VP-004 | Index loaded once; O(n*L) total work | bats performance assertion; code review |
 
 ## Traceability
 

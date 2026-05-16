@@ -52,7 +52,7 @@ The quarantine hook registration in `hooks.json.template` uses `matcher: WebFetc
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | hooks.json.template registers quarantine on WebFetch | bats integration.bats (hook registration check) |
+| VP-011 | hooks.json.template registers quarantine on WebFetch | bats integration.bats (hook registration check) |
 
 ## Traceability
 

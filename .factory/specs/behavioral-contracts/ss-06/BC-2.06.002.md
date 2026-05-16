@@ -51,7 +51,7 @@ Every manifest entry includes a `chunks` array from v0.1, even though the chunki
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | chunks and embeddings_model present in every new entry | bats integration.bats |
+| (no VP — P1) | chunks and embeddings_model present in every new entry | bats integration.bats |
 
 ## Traceability
 

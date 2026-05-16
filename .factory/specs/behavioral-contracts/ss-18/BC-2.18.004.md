@@ -58,8 +58,8 @@ For all tracked repo files, `meta-lint.bats` validates: no file contains `Co-Aut
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | No AI attribution in repo | meta-lint.bats (grep) |
-| VP-TBD | All CLAUDE_PLUGIN_ROOT refs resolve | meta-lint.bats (path check) |
+| VP-006 | No AI attribution in repo | meta-lint.bats (grep) |
+| VP-006 | All CLAUDE_PLUGIN_ROOT refs resolve | meta-lint.bats (path check) |
 
 ## Traceability
 

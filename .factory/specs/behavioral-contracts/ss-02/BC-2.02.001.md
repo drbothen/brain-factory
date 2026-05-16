@@ -70,10 +70,10 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Source file created on success | bats integration.bats |
-| VP-TBD | Manifest updated atomically | bats integration.bats |
-| VP-TBD | Duplicate URL rejected | bats skills.bats |
-| VP-TBD | Token JSONL record written on every invocation | bats integration.bats |
+| VP-015 | Source file created on success | bats integration.bats |
+| VP-015 | Manifest updated atomically | bats integration.bats |
+| VP-015 | Duplicate URL rejected | bats skills.bats |
+| VP-015 | Token JSONL record written on every invocation | bats integration.bats |
 
 ## Traceability
 

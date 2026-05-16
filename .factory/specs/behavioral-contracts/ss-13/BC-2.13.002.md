@@ -57,7 +57,7 @@ The v0.5 tarball adds 9 more author-committed templates: `rss-inbox.yml`, `issue
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Matrix strategy present in rss/readwise/raindrop templates | bats upgrade.bats |
+| (no VP — P1) | Matrix strategy present in rss/readwise/raindrop templates | bats upgrade.bats |
 
 ## Traceability
 

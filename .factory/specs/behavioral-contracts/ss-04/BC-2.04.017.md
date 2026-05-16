@@ -24,7 +24,7 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 ## Preconditions
 
 1. Hook is executing (any of the 13 hooks, any event type).
-2. The `hook-event:emit` helper function is sourced from `${CLAUDE_PLUGIN_ROOT}/scripts/hook-event-emit.sh`.
+2. The `hook-event:emit` helper function is sourced from `${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh`.
 
 ## Postconditions
 
@@ -39,13 +39,13 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 1. `ts` is always a valid ISO 8601 timestamp.
 2. `hook_name` is always the basename of the hook script (e.g., `quarantine-fetch.sh`).
 3. `trace` is always a UUID (v4 preferred) consistent within a single hook invocation.
-4. Event types are lowercase dot-separated strings: `quarantine.block`, `source.immutability.violation`, `wiki.wikilink.broken`, etc.
+4. Event types are lowercase dot-separated strings using past-tense verbs per SS-17 §Event-type naming convention: `quarantine.blocked`, `source.immutability.violated`, `wiki.wikilink.broken`, etc. (pattern: `<domain>.<past-tense-verb>`). Imperative or noun forms are meta-lint violations.
 
 ## Edge Cases
 
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
-| EC-001 | `hook-event-emit.sh` helper is missing | Hook emits a best-effort JSONL directly to stderr and exits 2 with E-HOOK-002: "Event emission helper missing." |
+| EC-001 | `hooks/lib/hook-event-emit.sh` helper is missing | Hook emits a best-effort JSONL directly to stderr and exits 2 with E-HOOK-002: "Event emission helper missing at ${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh." |
 | EC-002 | Hook invoked in a context where stderr is not writable | Hook logs to a fallback location (`.brain/logs/hooks-emergency.jsonl`) if stderr is unavailable. |
 
 ## Canonical Test Vectors
@@ -53,16 +53,16 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 | Input | Expected Output | Category |
 |-------|----------------|----------|
 | Any hook invocation | At least one valid JSONL line on stderr | happy-path |
-| Hook blocking a write | Event on stderr with `event_type` ending in `.block` or `.violation` | happy-path |
-| Hook allowing a write | Event on stderr with `event_type` ending in `.allow` or `.new` | happy-path |
+| Hook blocking a write | Event on stderr with `event_type` using past-tense verb (e.g., `quarantine.blocked`, `source.immutability.violated`) | happy-path |
+| Hook allowing a write | Event on stderr with `event_type` using past-tense verb (e.g., `quarantine.allowed`, `wikilink.validated`) | happy-path |
 
 ## Verification Properties
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 13 hooks emit at least one JSONL line per invocation | bats hooks.bats (stderr capture assertion) |
-| VP-TBD | JSONL schema valid for all emitted events | bats assertion (`jq empty` on stderr capture) |
-| VP-TBD | No secrets in emitted events | grep assertion on stderr capture |
+| VP-017 | All 13 hooks emit at least one JSONL line per invocation | bats hooks.bats (stderr capture assertion) |
+| VP-017 | JSONL schema valid for all emitted events | bats assertion (`jq empty` on stderr capture) |
+| VP-017 | No secrets in emitted events | grep assertion on stderr capture |
 
 ## Traceability
 

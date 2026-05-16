@@ -68,9 +68,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Missing embedding_status → exit 2 | bats hooks.bats (positive + negative cases required at v0.1 gate) |
-| VP-TBD | Valid embedding_status → exit 0 | bats hooks.bats |
-| VP-TBD | Invalid value → exit 2 | bats hooks.bats |
+| VP-002, VP-005 | Missing embedding_status → exit 2 | bats hooks.bats (positive + negative cases required at v0.1 gate) |
+| VP-002, VP-005 | Valid embedding_status → exit 0 | bats hooks.bats |
+| VP-002, VP-005 | Invalid value → exit 2 | bats hooks.bats |
 
 ## Traceability
 

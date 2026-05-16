@@ -56,8 +56,8 @@ LinkedIn articles (long-form, > 3000 chars) must be published manually via the L
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | --finalize + --url moves file and updates frontmatter | bats skills.bats |
-| VP-TBD | --finalize without --url → exit 2 | bats skills.bats |
+| (no VP — P1) | --finalize + --url moves file and updates frontmatter | bats skills.bats |
+| (no VP — P1) | --finalize without --url → exit 2 | bats skills.bats |
 
 ## Traceability
 

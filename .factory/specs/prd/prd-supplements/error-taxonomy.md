@@ -53,7 +53,7 @@ Message format uses `<placeholder>` for dynamic values.
 | Code | Severity | Exit | Raised By | Message Format |
 |------|----------|------|-----------|---------------|
 | E-HOOK-001 | broken | 2 | Any hook | `Failed to parse stdin as JSON.` |
-| E-HOOK-002 | broken | 2 | Any hook | `Event emission helper missing at ${CLAUDE_PLUGIN_ROOT}/scripts/hook-event-emit.sh.` |
+| E-HOOK-002 | broken | 2 | Any hook | `Event emission helper missing at ${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh.` |
 
 **Recovery:** E-HOOK-001 indicates a Claude Code harness issue or a malformed payload. E-HOOK-002 indicates a corrupt plugin installation — reinstall.
 

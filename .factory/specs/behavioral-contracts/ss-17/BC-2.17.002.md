@@ -55,8 +55,8 @@ Each row in the structured event catalog has a defined schema. The catalog is a 
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All rows have required fields | bats integration.bats (markdown table parse) |
-| VP-TBD | All example payloads are valid JSON | bats hooks.bats |
+| VP-008 | All rows have required fields | bats integration.bats (markdown table parse) |
+| VP-008 | All example payloads are valid JSON | bats hooks.bats |
 
 ## Traceability
 

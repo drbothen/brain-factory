@@ -68,8 +68,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Auto-commit on Stop with pending changes | bats hooks.bats |
-| VP-TBD | Never exits 2 (never blocks Stop) | bats hooks.bats |
+| (no VP — P1) | Auto-commit on Stop with pending changes | bats hooks.bats |
+| (no VP — P1) | Never exits 2 (never blocks Stop) | bats hooks.bats |
 
 ## Traceability
 

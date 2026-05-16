@@ -57,8 +57,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 4 agents dispatched and return results | bats adversary.bats |
-| VP-TBD | Any agent FAIL → overall FAIL | bats adversary.bats |
+| VP-010 | All 4 agents dispatched and return results | bats adversary.bats |
+| VP-010 | Any agent FAIL → overall FAIL | bats adversary.bats |
 
 ## Traceability
 

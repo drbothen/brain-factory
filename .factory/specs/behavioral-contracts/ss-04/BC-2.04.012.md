@@ -60,8 +60,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 3 forbidden patterns blocked | bats hooks.bats |
-| VP-TBD | Clean commands pass | bats hooks.bats |
+| VP-017 | All 3 forbidden patterns blocked | bats hooks.bats |
+| VP-017 | Clean commands pass | bats hooks.bats |
 
 ## Traceability
 

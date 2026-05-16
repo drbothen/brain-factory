@@ -64,8 +64,8 @@ The 5-minute init SLA is a tested contract, not an aspiration. The v0.1 ship gat
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | `assert_under_5_minutes` test case passes in CI | bats integration (local-dev-test.sh) |
-| VP-TBD | SLA holds on GitHub Actions ubuntu-latest runner | CI pipeline measurement |
+| VP-014 | `assert_under_5_minutes` test case passes in CI | bats integration (local-dev-test.sh) |
+| VP-014 | SLA holds on GitHub Actions ubuntu-latest runner | CI pipeline measurement |
 
 ## Traceability
 
@@ -92,4 +92,4 @@ The 5-minute init SLA is a tested contract, not an aspiration. The v0.1 ship gat
 
 ## VP Anchors
 
-- [VP-TBD] — [filled by architect/formal-verifier — Phase 1c]
+- VP-014 — Brain init scaffold completeness (bats integration.bats)

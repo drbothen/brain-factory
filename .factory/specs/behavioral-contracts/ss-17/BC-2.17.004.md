@@ -51,8 +51,8 @@ Security constraint: hook scripts must never echo tokens, API keys, credential v
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | No credential values in hook stdout | bats hooks.bats (grep for known-test-key pattern) |
-| VP-TBD | No credential values in hook stderr | bats hooks.bats |
+| VP-026 | No credential values in hook stdout | bats hooks.bats (grep for known-test-key pattern) |
+| VP-026 | No credential values in hook stderr | bats hooks.bats |
 
 ## Traceability
 

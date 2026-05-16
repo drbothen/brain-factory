@@ -56,8 +56,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 26 skills pass meta-lint | bats meta-lint.bats |
-| VP-TBD | No `.claude/templates/` paths in any SKILL.md | grep assertion + meta-lint |
+| VP-006 | All 26 skills pass meta-lint | bats meta-lint.bats |
+| VP-006 | No `.claude/templates/` paths in any SKILL.md | grep assertion + meta-lint |
 
 ## Traceability
 

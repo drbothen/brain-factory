@@ -217,7 +217,7 @@ policies:
 | Flag combination | Behavior |
 |-----------------|----------|
 | (no flags) | Generate main article only |
-| `--companion-posts` | Generate main article + 3–5 companion posts |
+| `--companion-posts` | Generate main article + 3 companion posts |
 | `--hero-prompt` | Generate main article + hero image prompt |
 | `--companion-posts --hero-prompt` | Generate main article + companions + hero prompt |
 

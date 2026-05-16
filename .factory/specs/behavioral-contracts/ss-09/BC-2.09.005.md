@@ -52,7 +52,7 @@ The brain's content lifecycle directory structure uses platform-specific subdire
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | LinkedIn directories present after init | bats integration.bats |
+| VP-020 | LinkedIn directories present after init | bats integration.bats |
 
 ## Traceability
 

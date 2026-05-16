@@ -25,12 +25,12 @@ removal_reason: null
 
 ## Description
 
-`/brain:init` is the first skill an operator runs to create a new brain. It scaffolds the complete target-brain folder structure — `sources/`, `wiki/`, `inbox/`, `briefs/`, `.brain/`, `.github/workflows/`, CLAUDE.md — in the working directory. It must work from a directory that is a git repository (already initialized with `git init -b main` or equivalent) but has no brain structure yet. This BC defines the complete structural contract: exactly what directories and files exist after a successful run.
+`/brain:init` is the first skill an operator runs to create a new brain. It scaffolds the complete target-brain folder structure — `sources/`, `wiki/`, `inbox/`, `briefs/`, `.brain/`, `.github/workflows/`, CLAUDE.md — in the working directory. It must work from a directory that is a git repository (already initialized with `git init -b main` or equivalent) but has no brain structure yet. **If `.brain/` already exists, `/brain:init` HARD-FAILS with E-INIT-002 (exit 2). It does NOT idempotently re-scaffold — that is by design to protect existing brain state.** The operator must run `/brain:upgrade-brain` to modify an existing brain (per SS-01 §Architectural Decisions). This BC defines the complete structural contract: exactly what directories and files exist after a successful run in a fresh directory.
 
 ## Preconditions
 
 1. The working directory is a git repository (`git rev-parse --git-dir` exits 0).
-2. The working directory does NOT already contain a `.brain/` directory (fresh brain only — re-init is a separate flow, not defined here).
+2. The working directory does NOT already contain a `.brain/` directory. If `.brain/` IS present, the precondition fails and the skill HARD-FAILS with E-INIT-002 before any writes (not idempotent re-scaffold — see EC-002 and SS-01 §Architectural Decisions §Already-initialized brain: hard-fail E-INIT-002).
 3. `${CLAUDE_PLUGIN_ROOT}` resolves to the brain-factory plugin installation directory.
 4. Node 20+ is available in PATH (required for Defuddle and `scripts/run-skill.mjs`).
 5. `bash`, `jq`, `yq`, `awk` are available in PATH.
@@ -65,7 +65,7 @@ removal_reason: null
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
 | EC-001 | Working directory is not a git repo | Exit with E-INIT-001; display "brain:init requires a git repository — run `git init -b main` first" |
-| EC-002 | `.brain/` directory already exists | Exit with E-INIT-002; display "brain already initialized at <path>. Use `/brain:upgrade-brain` to migrate." |
+| EC-002 | `.brain/` directory already exists | HARD-FAIL: exit 2 with E-INIT-002. Message: "brain already initialized at <path>. Use `/brain:upgrade-brain` to modify an existing brain." No files are created or overwritten. This is intentional — `/brain:init` is NOT idempotent (per SS-01 §Architectural Decisions §Already-initialized brain: hard-fail E-INIT-002). |
 | EC-003 | Node 20+ not in PATH | Exit with E-INIT-003; display "Node 20+ is required. Install from nodejs.org or via nvm." |
 | EC-004 | `${CLAUDE_PLUGIN_ROOT}` does not resolve | Exit with E-INIT-004; display "Plugin root not found — reinstall brain-factory." |
 | EC-005 | Working directory has conflicting files (e.g., a `wiki/` directory that is not a brain wiki) | Exit with E-INIT-005; display "Conflict: <path> already exists. Remove it or init in a clean directory." |
@@ -85,10 +85,10 @@ removal_reason: null
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All postcondition directories exist after successful run | bats integration assertion |
-| VP-TBD | Error cases produce correct E-INIT-NNN codes with non-zero exit | bats unit assertion |
-| VP-TBD | No engine files modified during init | bats file-integrity assertion |
-| VP-TBD | `${CLAUDE_PLUGIN_ROOT}` reference present at all template callsites | shellcheck + grep |
+| VP-014 | All postcondition directories exist after successful run | bats (integration.bats) |
+| VP-014 | Error cases produce correct E-INIT-NNN codes with non-zero exit | bats (integration.bats) |
+| VP-014 | No engine files modified during init | bats (integration.bats) file-integrity assertion |
+| VP-014 | `${CLAUDE_PLUGIN_ROOT}` reference present at all template callsites | shellcheck + grep |
 
 ## Traceability
 
@@ -117,4 +117,4 @@ removal_reason: null
 
 ## VP Anchors
 
-- [VP-TBD] — [filled by architect/formal-verifier — Phase 1c/Phase 6]
+- VP-014 — Brain init scaffold completeness (bats integration.bats)

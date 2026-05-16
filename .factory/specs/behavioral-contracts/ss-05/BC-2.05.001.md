@@ -59,9 +59,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 7 checks run and report | bats skills.bats |
-| VP-TBD | 10-minute SLA on 10K-page wiki | bats integration.bats (scale) |
-| VP-TBD | O(n) wikilink resolution (not O(n²)) | bats performance assertion |
+| VP-018 | All 7 checks run and report | bats skills.bats |
+| VP-018 | 10-minute SLA on 10K-page wiki | bats integration.bats (scale) |
+| VP-018 | O(n) wikilink resolution (not O(n²)) | bats performance assertion |
 
 ## Traceability
 

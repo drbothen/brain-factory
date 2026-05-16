@@ -54,8 +54,8 @@ The quarantine pattern corpus is stored in `scripts/quarantine.mjs` at the plugi
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | quarantine.mjs exports valid pattern list | bats quarantine.bats |
-| VP-TBD | Hook and skill use same module | code review |
+| VP-021 | quarantine.mjs exports valid pattern list | bats quarantine.bats |
+| VP-021 | Hook and skill use same module | code review |
 
 ## Traceability
 

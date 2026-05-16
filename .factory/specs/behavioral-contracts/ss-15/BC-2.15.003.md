@@ -54,8 +54,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 10 baseline policies validate | bats policies.bats |
-| VP-TBD | Malformed policy detected | bats policies.bats |
+| (no VP — P1) | All 10 baseline policies validate | bats policies.bats |
+| (no VP — P1) | Malformed policy detected | bats policies.bats |
 
 ## Traceability
 

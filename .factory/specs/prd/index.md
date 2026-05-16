@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.2"
+version: "0.1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -389,103 +389,103 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 
 ## 7. Requirements Traceability Matrix
 
-| BC ID | Source (CAP) | Module(s) | Priority | Test Type |
-|-------|-------------|-----------|----------|-----------|
-| BC-2.01.001 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | integration/bats |
-| BC-2.01.002 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | integration/bats (assert_under_5_minutes) |
-| BC-2.01.003 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | unit/bats |
-| BC-2.01.004 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | unit/bats |
-| BC-2.01.005 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | unit/bats |
-| BC-2.01.006 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | integration/bats |
-| BC-2.02.001 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | integration/bats |
-| BC-2.02.002 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | integration/bats |
-| BC-2.02.003 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | unit/bats |
-| BC-2.02.004 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | unit/bats |
-| BC-2.02.005 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | unit/bats |
-| BC-2.02.006 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | unit/bats |
-| BC-2.02.007 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | integration/bats (scale) |
-| BC-2.03.001 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | integration/bats |
-| BC-2.03.002 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | unit/bats |
-| BC-2.03.003 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | unit/bats |
-| BC-2.03.004 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | integration/bats |
-| BC-2.04.001 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (quarantine.bats) |
-| BC-2.04.002 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.003 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.004 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.005 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.006 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.007 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.008 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | unit/bats (hooks.bats) |
-| BC-2.04.009 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.010 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.011 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.012 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.04.013 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | unit/bats (hooks.bats) |
-| BC-2.04.014 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | unit/bats (hooks.bats) |
-| BC-2.04.015 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | perf/bats (hooks.bats latency assert) |
-| BC-2.04.016 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats contract) |
-| BC-2.04.017 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | unit/bats (hooks.bats) |
-| BC-2.05.001 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | integration/bats (scale) |
-| BC-2.05.002 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | property/bats |
-| BC-2.05.003 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | integration/bats |
-| BC-2.05.004 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | unit/bats |
-| BC-2.05.005 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | unit/bats |
-| BC-2.05.006 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | unit/bats (hooks.bats) |
-| BC-2.06.001 | CAP-006 | SS-06: Source Layer and Immutability | P0 | unit/bats (hooks.bats) |
-| BC-2.06.002 | CAP-006 | SS-06: Source Layer and Immutability | P1 | unit/bats |
-| BC-2.06.003 | CAP-006 | SS-06: Source Layer and Immutability | P0 | unit/bats |
-| BC-2.06.004 | CAP-006 | SS-06: Source Layer and Immutability | P1 | integration/bats |
-| BC-2.07.001 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | integration/adversary.bats |
-| BC-2.07.002 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | integration/adversary.bats |
-| BC-2.07.003 | CAP-007 | SS-07: Adversarial Review and Writescore | P1 | integration/adversary.bats |
-| BC-2.07.004 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | unit/adversary.bats |
-| BC-2.08.001 | CAP-008 | SS-08: Content Brief and Writing | P0 | integration/skills.bats |
-| BC-2.08.002 | CAP-008 | SS-08: Content Brief and Writing | P0 | integration/skills.bats |
-| BC-2.08.003 | CAP-008 | SS-08: Content Brief and Writing | P1 | unit/skills.bats |
-| BC-2.08.004 | CAP-008 | SS-08: Content Brief and Writing | P1 | unit/hooks.bats |
-| BC-2.09.001 | CAP-009 | SS-09: Publishing Pipeline | P0 | integration/skills.bats |
-| BC-2.09.002 | CAP-009 | SS-09: Publishing Pipeline | P1 | integration/skills.bats |
-| BC-2.09.003 | CAP-009 | SS-09: Publishing Pipeline | P1 | unit/skills.bats |
-| BC-2.09.004 | CAP-009 | SS-09: Publishing Pipeline | P0 | unit/hooks.bats |
-| BC-2.09.005 | CAP-009 | SS-09: Publishing Pipeline | P0 | unit/skills.bats |
-| BC-2.09.006 | CAP-009 | SS-09: Publishing Pipeline | P1 | integration/skills.bats |
-| BC-2.10.001 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | integration/quarantine.bats |
-| BC-2.10.002 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | unit/quarantine.bats |
-| BC-2.10.003 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | unit/quarantine.bats |
-| BC-2.11.001 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | integration/skills.bats |
-| BC-2.11.002 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | integration/skills.bats |
-| BC-2.11.003 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | integration/skills.bats |
-| BC-2.12.001 | CAP-012 | SS-12: Lobster Runtime | P0 | unit/integration.bats |
-| BC-2.12.002 | CAP-012 | SS-12: Lobster Runtime | P0 | unit/integration.bats |
-| BC-2.12.003 | CAP-012 | SS-12: Lobster Runtime | P1 | unit/integration.bats |
-| BC-2.12.004 | CAP-012 | SS-12: Lobster Runtime | P0 | integration/integration.bats |
-| BC-2.13.001 | CAP-013 | SS-13: GitHub Action Templates | P0 | integration/upgrade.bats |
-| BC-2.13.002 | CAP-013 | SS-13: GitHub Action Templates | P1 | integration/upgrade.bats |
-| BC-2.13.003 | CAP-013 | SS-13: GitHub Action Templates | P1 | unit/upgrade.bats |
-| BC-2.13.004 | CAP-013 | SS-13: GitHub Action Templates | P2 | documentation |
-| BC-2.14.001 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | integration/upgrade.bats |
-| BC-2.14.002 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P1 | integration/upgrade.bats |
-| BC-2.14.003 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | unit/integration.bats |
-| BC-2.14.004 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | unit/integration.bats |
-| BC-2.14.005 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | unit/integration.bats |
-| BC-2.15.001 | CAP-015 | SS-15: Governance and Policies | P1 | unit/policies.bats |
-| BC-2.15.002 | CAP-015 | SS-15: Governance and Policies | P1 | unit/policies.bats |
-| BC-2.15.003 | CAP-015 | SS-15: Governance and Policies | P1 | unit/policies.bats |
-| BC-2.16.001 | CAP-016 | SS-16: Scale-Aware Architecture | P0 | unit/integration.bats |
-| BC-2.16.002 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | integration/integration.bats |
-| BC-2.16.003 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | integration/upgrade.bats (scale) |
-| BC-2.16.004 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | perf/integration.bats |
-| BC-2.16.005 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | perf/integration.bats (scale) |
-| BC-2.16.006 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | unit/integration.bats |
-| BC-2.17.001 | CAP-017 | SS-17: Structured Event Catalog | P0 | unit/hooks.bats |
-| BC-2.17.002 | CAP-017 | SS-17: Structured Event Catalog | P0 | documentation |
-| BC-2.17.003 | CAP-017 | SS-17: Structured Event Catalog | P0 | unit/hooks.bats |
-| BC-2.17.004 | CAP-017 | SS-17: Structured Event Catalog | P0 | unit/hooks.bats + security |
-| BC-2.18.001 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
-| BC-2.18.002 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
-| BC-2.18.003 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
-| BC-2.18.004 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
-| BC-2.18.005 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | meta-lint.bats |
+| BC ID | Source (CAP) | Module(s) | Priority | Test Suite (SS-18 canonical 9-suite roster) |
+|-------|-------------|-----------|----------|---------------------------------------------|
+| BC-2.01.001 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | tests/integration.bats |
+| BC-2.01.002 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | tests/integration.bats (assert_under_5_minutes) |
+| BC-2.01.003 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | tests/integration.bats |
+| BC-2.01.004 | CAP-001 | SS-01: Brain Initialization and Scaffold | P0 | tests/integration.bats |
+| BC-2.01.005 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | tests/integration.bats |
+| BC-2.01.006 | CAP-001 | SS-01: Brain Initialization and Scaffold | P1 | tests/integration.bats |
+| BC-2.02.001 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.02.002 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.02.003 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.02.004 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.02.005 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | tests/ingest.bats |
+| BC-2.02.006 | CAP-002 | SS-02: URL Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.02.007 | CAP-002 | SS-02: URL Ingest Pipeline | P1 | tests/integration.bats (scale — slow lane) |
+| BC-2.03.001 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.03.002 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.03.003 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.03.004 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/ingest.bats |
+| BC-2.04.001 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/quarantine.bats |
+| BC-2.04.002 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.003 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.004 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.005 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.006 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.007 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.008 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/hooks.bats |
+| BC-2.04.009 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.010 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.011 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.012 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.013 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/hooks.bats |
+| BC-2.04.014 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/hooks.bats |
+| BC-2.04.015 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats (perf assertion — p99 latency) |
+| BC-2.04.016 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.017 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.05.001 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats (scale path) |
+| BC-2.05.002 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats (property-based) |
+| BC-2.05.003 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats |
+| BC-2.05.004 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats |
+| BC-2.05.005 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/wiki.bats |
+| BC-2.05.006 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/hooks.bats |
+| BC-2.06.001 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/hooks.bats |
+| BC-2.06.002 | CAP-006 | SS-06: Source Layer and Immutability | P1 | tests/ingest.bats |
+| BC-2.06.003 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/ingest.bats |
+| BC-2.06.004 | CAP-006 | SS-06: Source Layer and Immutability | P1 | tests/integration.bats |
+| BC-2.07.001 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | tests/adversary.bats |
+| BC-2.07.002 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | tests/adversary.bats |
+| BC-2.07.003 | CAP-007 | SS-07: Adversarial Review and Writescore | P1 | tests/adversary.bats |
+| BC-2.07.004 | CAP-007 | SS-07: Adversarial Review and Writescore | P0 | tests/adversary.bats |
+| BC-2.08.001 | CAP-008 | SS-08: Content Brief and Writing | P0 | tests/integration.bats |
+| BC-2.08.002 | CAP-008 | SS-08: Content Brief and Writing | P0 | tests/integration.bats |
+| BC-2.08.003 | CAP-008 | SS-08: Content Brief and Writing | P1 | tests/integration.bats |
+| BC-2.08.004 | CAP-008 | SS-08: Content Brief and Writing | P1 | tests/hooks.bats |
+| BC-2.09.001 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/integration.bats |
+| BC-2.09.002 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
+| BC-2.09.003 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
+| BC-2.09.004 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/hooks.bats |
+| BC-2.09.005 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/integration.bats |
+| BC-2.09.006 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
+| BC-2.10.001 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | tests/quarantine.bats |
+| BC-2.10.002 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | tests/quarantine.bats |
+| BC-2.10.003 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | tests/quarantine.bats |
+| BC-2.11.001 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | tests/integration.bats |
+| BC-2.11.002 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | tests/integration.bats |
+| BC-2.11.003 | CAP-011 | SS-11: Knowledge Synthesis and Connection | P1 | tests/integration.bats |
+| BC-2.12.001 | CAP-012 | SS-12: Lobster Runtime | P0 | tests/integration.bats |
+| BC-2.12.002 | CAP-012 | SS-12: Lobster Runtime | P0 | tests/integration.bats |
+| BC-2.12.003 | CAP-012 | SS-12: Lobster Runtime | P1 | tests/integration.bats |
+| BC-2.12.004 | CAP-012 | SS-12: Lobster Runtime | P0 | tests/integration.bats |
+| BC-2.13.001 | CAP-013 | SS-13: GitHub Action Templates | P0 | tests/upgrade.bats |
+| BC-2.13.002 | CAP-013 | SS-13: GitHub Action Templates | P1 | tests/upgrade.bats |
+| BC-2.13.003 | CAP-013 | SS-13: GitHub Action Templates | P1 | tests/upgrade.bats |
+| BC-2.13.004 | CAP-013 | SS-13: GitHub Action Templates | P2 | tests/meta-lint.bats (doc assertions) |
+| BC-2.14.001 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | tests/upgrade.bats |
+| BC-2.14.002 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P1 | tests/upgrade.bats |
+| BC-2.14.003 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | tests/integration.bats |
+| BC-2.14.004 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | tests/upgrade.bats |
+| BC-2.14.005 | CAP-014 | SS-14: Plugin Lifecycle and Upgrade | P0 | tests/upgrade.bats |
+| BC-2.15.001 | CAP-015 | SS-15: Governance and Policies | P1 | tests/policies.bats |
+| BC-2.15.002 | CAP-015 | SS-15: Governance and Policies | P1 | tests/policies.bats |
+| BC-2.15.003 | CAP-015 | SS-15: Governance and Policies | P1 | tests/policies.bats |
+| BC-2.16.001 | CAP-016 | SS-16: Scale-Aware Architecture | P0 | tests/integration.bats |
+| BC-2.16.002 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/integration.bats |
+| BC-2.16.003 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/upgrade.bats (scale) |
+| BC-2.16.004 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/integration.bats (perf assertion) |
+| BC-2.16.005 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/integration.bats (perf assertion — scale) |
+| BC-2.16.006 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/integration.bats |
+| BC-2.17.001 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hooks.bats |
+| BC-2.17.002 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/meta-lint.bats (catalog completeness) |
+| BC-2.17.003 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hooks.bats |
+| BC-2.17.004 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hooks.bats (security grep assertion) |
+| BC-2.18.001 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
+| BC-2.18.002 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
+| BC-2.18.003 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
+| BC-2.18.004 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
+| BC-2.18.005 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
 
 ---
 
@@ -501,25 +501,60 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 - [x] Did I paper-fix a finding by renaming, doc-commenting, or asserting-only when the real fix is structural? **No.** Each BC has testable preconditions, postconditions, invariants, edge cases, and canonical test vectors.
 - [x] Did I sibling-sweep all callsites when I changed a hook signature, exit-code semantic, or canonical identifier? **Yes.** Hook names, exit codes, and subsystem IDs are consistent across PRD index, BC files, supplements, and traceability matrix.
 - [x] Did I modify a planning artifact in `docs/planning/` without explicit human direction? **No.** All writes to `.factory/specs/`.
-- [x] **Changelog audit-trail discipline (inherited four-file gate):** Before committing this PRD burst, run:
+- [x] **Changelog audit-trail discipline (inherited five-file gate):** Before committing this PRD burst, run:
 
   ```bash
-  for f in .factory/specs/product-brief.md .factory/SESSION-HANDOFF.md .factory/specs/prd/index.md .factory/specs/behavioral-contracts/BC-INDEX.md; do
-    grep -nE '\bL[0-9]+\b' "$f" | grep -v WSL2 | grep -v 'L\[0-9\]+' | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki' | grep -v 'level: L[0-9]\+\|Level [0-9]\+\|L2\|L3\|L4\|LEVEL'
+  for f in \
+    .factory/specs/product-brief.md \
+    .factory/SESSION-HANDOFF.md \
+    .factory/specs/prd/index.md \
+    .factory/specs/behavioral-contracts/BC-INDEX.md \
+    .factory/specs/architecture/ARCH-INDEX.md; do
+    echo "--- $f ---"
+    grep -nE '\bL[0-9]+\b' "$f" \
+      | grep -v WSL2 \
+      | grep -v 'L\[0-9\]+' \
+      | grep -v 'LinkedIn\|License\|LTS\|Linux\|Lobster\|Lock\|Loom\|Loki' \
+      | grep -v 'level: L[0-9]\+\|Level [0-9]\+\|L2\|L3\|L4\|LEVEL' \
+      | grep -v 'SS-[0-9]\+\|CAP-[0-9]\+\|NFR-[0-9]\+\|ADR-[0-9]\+\|VP-[0-9]\+'
   done
   ```
 
-  and confirm it returns zero output. All four files (brief, handoff, PRD index, BC-INDEX) must be free of literal line-number anchors. The exclusion list (`WSL2`, `L\[0-9\]+`, and the listed legitimate L-prefixed words including `L2`/`L3`/`L4` VSDD level designators) is the authoritative set; new domain tokens must be added to the exclusion list before introduction.
+  and confirm it returns zero output. All five files (brief, handoff, PRD index, BC-INDEX, ARCH-INDEX) must be free of literal line-number anchors. The exclusion list (`WSL2`, `L\[0-9\]+`, and the listed legitimate L-prefixed words including `L2`/`L3`/`L4` VSDD level designators, plus architecture ID tokens `SS-NN|CAP-NNN|NFR-NNN|ADR-NNN|VP-NNN`) is the authoritative set; new domain tokens must be added to the exclusion list before introduction.
 
   **NOTE (exclusion-list-extension protocol — VSDD level designators):** The `L2`, `L3`, `L4` tokens in this PRD's frontmatter (`level: L3`) and in BC files (`level: L3`) are VSDD specification tier designators — not line-number references. Added exclusion `grep -v 'level: L[0-9]+|Level [0-9]+|L2|L3|L4|LEVEL'` per the exclusion-list-extension protocol (a) add exclusion; (b) re-run gate — zero matches; (c) rationale: VSDD spec level designators are domain-standard tokens, not line-number anchors.
 
+  **NOTE (exclusion-list-extension protocol — architecture ID tokens):** This PRD references `SS-NN`, `CAP-NNN`, `NFR-NNN`, `ADR-NNN`, and `VP-NNN` patterns throughout. These are canonical spec identifiers — not line-number anchors. Added `grep -v 'SS-[0-9]+|CAP-[0-9]+|NFR-[0-9]+|ADR-[0-9]+|VP-[0-9]+'` per the exclusion-list-extension protocol. Sibling-swept from BC-INDEX and ARCH-INDEX five-file gate per TD-VSDD-060.
+
   **NOTE (exclusion-list-extension protocol):** To add a new token: (a) add to `grep -v` clause; (b) re-run gate; (c) record rationale in changelog. Do NOT work around the gate by reverting the writing-technique principle.
 
-  **NOTE (four-file gate extension — F-1b-CV-01):** The three-file gate has been extended to a four-file gate by adding `.factory/specs/behavioral-contracts/BC-INDEX.md`. The BC-INDEX was created during the F-1b-CV-01 fix-burst (2026-05-15) as the canonical sharding index over all 95 BC files per DF-020a criterion 22.
+  **NOTE (five-file gate history):** Three-file gate introduced at v0.1.0. Extended to four-file at v0.1.1 by adding BC-INDEX.md (F-1b-CV-01). Extended to five-file at v0.1.3 by adding ARCH-INDEX.md (F-PASS1-C6 closure, 2026-05-16). The architecture ID token exclusion clause was added at the same time via sibling-sweep with the BC-INDEX and ARCH-INDEX canonical gate commands.
 
 ---
 
 ## Changelog
+
+### v0.1.3 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS1-C1):** BC-2.13.001 Description and Postconditions updated to use ADR-013 canonical v0.1 template names (`daily-brief.yml`, `weekly-refresh.yml`, `ingest-rss.yml`, `health-check.yml`, `lint-wiki.yml`, `scale-test.yml`). Removed erroneous names (`weekly-lint.yml`, `weekly-synthesis.yml`, `schema-refresh.yml`, `wikilink-check.yml`, `quarterly-mirror.yml`). `quarterly-mirror.yml` is a v0.5 addition per ADR-013 §Template inventory — it must not appear in the v0.1 list. Canonical test vector updated to enumerate the 6 correct filenames.
+
+**STRUCTURAL FIX (F-PASS1-C2 — BC portion):** BC-2.16.006 CLI invocation corrected to match ADR-012 interface: positional `<output-dir>` argument, `--sources N` flag (not positional count), all six ADR-012 flags enumerated in Description and Preconditions. Canonical test vector corrected from `gen-test-corpus.sh 10000 --seed 42 --dir /tmp/test-brain` (wrong) to `gen-test-corpus.sh --sources 10000 --seed 42 /tmp/test-brain` (correct per ADR-012 §Script interface).
+
+**STRUCTURAL FIX (F-PASS1-C3):** BC-2.04.017 Precondition 2 updated: `${CLAUDE_PLUGIN_ROOT}/scripts/hook-event-emit.sh` → `${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh`. `prd-supplements/error-taxonomy.md` E-HOOK-002 message format corrected to same path. Authoritative source: ADR-016 + ARCH-INDEX + ADR-002 + ADR-014 + SS-04 all agree on `hooks/lib/` location.
+
+**STRUCTURAL FIX (F-PASS1-C6):** Self-Audit Checklist gate extended from four-file to five-file by adding `.factory/specs/architecture/ARCH-INDEX.md` as the fifth file. Gate command updated with: (1) ARCH-INDEX in the `for` loop, (2) architecture ID token exclusion clause (`SS-NN|CAP-NNN|NFR-NNN|ADR-NNN|VP-NNN`) sibling-swept from BC-INDEX canonical gate. Prose updated: "All four files" → "All five files (brief, handoff, PRD index, BC-INDEX, ARCH-INDEX)". Gate label: "(inherited four-file gate)" → "(inherited five-file gate)". Historical note added: four-file at v0.1.1, five-file at v0.1.3.
+
+**STRUCTURAL FIX (F-PASS1-I7):** `prd-supplements/interface-definitions.md` §7 `/brain:write` flag interaction table updated: `3–5 companion posts` → `3 companion posts` to match SS-08 current state. Decision rationale: 3 is the narrower, unambiguous contract; SS-08 alignment confirmed.
+
+**STRUCTURAL FIX (F-PASS1-I10):** VP-TBD placeholders in all 95 BC files replaced with actual VP IDs from VP-INDEX P0 Coverage Matrix. P0 BCs with VP coverage: updated to cite VP-NNN directly. P1/P2 BCs with no VP coverage: placeholder replaced with `(no VP — P1/P2; deferred per VP-INDEX coverage policy)`. One P0 VP gap noted: BC-2.06.003 (last_ingest timestamps) has no direct VP in VP-INDEX v0.1.1; gap noted inline pending VP-INDEX v0.1.2 update (architect scope).
+
+**STRUCTURAL FIX (F-PASS1-I11):** §7 RTM Test Type column header and all values renamed from ambiguous short-form labels (`integration/bats`, `unit/bats (hooks.bats)`, etc.) to explicit canonical 9-suite file names per SS-18 roster: `tests/integration.bats`, `tests/hooks.bats`, `tests/ingest.bats`, `tests/wiki.bats`, `tests/quarantine.bats`, `tests/adversary.bats`, `tests/policies.bats`, `tests/upgrade.bats`, `tests/meta-lint.bats`. Column header renamed from "Test Type" to "Test Suite (SS-18 canonical 9-suite roster)".
+
+**STRUCTURAL FIX (F-PASS1-I1 — architect decision applied):** `/brain:init` public CLI verified as zero-argument in `interface-definitions.md`. Already correct — no change required. Confirmed per SS-01 §Architectural Decisions §Public CLI: zero arguments.
+
+**STRUCTURAL FIX (F-PASS1-I2 — architect decision applied):** BC-2.01.001 Description and Precondition 2 updated to explicitly state hard-fail behavior: "If `.brain/` already exists, `/brain:init` HARD-FAILS with E-INIT-002 (exit 2). It does NOT idempotently re-scaffold." EC-002 updated with explicit "HARD-FAIL" label and rationale per SS-01 §Architectural Decisions.
+
+**STRUCTURAL FIX (F-PASS1-I4 — architect decision applied):** BC-2.04.001 Postconditions updated: `event_type: quarantine.block` → `quarantine.blocked`; `quarantine.allow` → `quarantine.allowed`. BC-2.04.017 Invariant 4 updated: imperative forms enumerated as meta-lint violations; past-tense examples cited per SS-17 §Event-type naming convention. Related BC reference in BC-2.04.001 updated to reflect new event type names.
 
 ### v0.1.2 (2026-05-15)
 

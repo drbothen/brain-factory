@@ -56,8 +56,8 @@ The voice avoid-list is a 30-entry list of words and phrases that degrade the au
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Default avoid-list has exactly 30 entries | bats templates.bats (or meta-lint) |
-| VP-TBD | All 30 entries trigger advisory | bats hooks.bats (parameterized) |
+| (no VP — P1) | Default avoid-list has exactly 30 entries | bats templates.bats (or meta-lint) |
+| (no VP — P1) | All 30 entries trigger advisory | bats hooks.bats (parameterized) |
 
 ## Traceability
 

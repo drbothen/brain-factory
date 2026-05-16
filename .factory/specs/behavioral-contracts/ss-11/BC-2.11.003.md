@@ -56,8 +56,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All inbox notes routed | bats skills.bats |
-| VP-TBD | Inbox cleared after successful run | bats skills.bats |
+| (no VP — P1) | All inbox notes routed | bats skills.bats |
+| (no VP — P1) | Inbox cleared after successful run | bats skills.bats |
 
 ## Traceability
 

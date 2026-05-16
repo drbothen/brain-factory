@@ -53,7 +53,7 @@ The structured event catalog is a machine-readable registry of all event types e
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All hook scripts' emit sites have catalog rows | bats hooks.bats (cross-reference check) |
+| VP-008 | All hook scripts' emit sites have catalog rows | bats hooks.bats (cross-reference check) |
 
 ## Traceability
 

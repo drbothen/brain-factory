@@ -54,8 +54,8 @@ The wiki layer is organized by TYPE, not by topic. The 6 valid wiki type directo
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 6 type directories valid | bats hooks.bats |
-| VP-TBD | Non-type directories blocked | bats hooks.bats |
+| VP-018 | All 6 type directories valid | bats hooks.bats |
+| VP-018 | Non-type directories blocked | bats hooks.bats |
 
 ## Traceability
 

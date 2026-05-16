@@ -60,8 +60,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Coherence violation → exit 2 | bats hooks.bats |
-| VP-TBD | Coherent state → exit 0 | bats hooks.bats |
+| VP-002 | Coherence violation → exit 2 | bats hooks.bats |
+| VP-002 | Coherent state → exit 0 | bats hooks.bats |
 
 ## Traceability
 

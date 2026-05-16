@@ -57,7 +57,7 @@ The primary distribution mechanism for brain-factory is the `drbothen/claude-mp`
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Plugin installs and loads from marketplace | bats upgrade.bats (local install simulation) |
+| VP-024 | Plugin installs and loads from marketplace | bats upgrade.bats (local install simulation) |
 
 ## Traceability
 

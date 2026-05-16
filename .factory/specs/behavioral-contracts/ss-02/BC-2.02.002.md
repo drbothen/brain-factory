@@ -61,9 +61,9 @@ After the source file is written, `/brain:ingest-url` triggers the wiki page gen
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | At least 5 wiki pages created on standard article ingest | bats integration.bats |
-| VP-TBD | All created pages pass schema validation | bats integration.bats |
-| VP-TBD | index.md updated after ingest | bats integration.bats |
+| VP-015 | At least 5 wiki pages created on standard article ingest | bats integration.bats |
+| VP-015 | All created pages pass schema validation | bats integration.bats |
+| VP-015 | index.md updated after ingest | bats integration.bats |
 
 ## Traceability
 

@@ -58,7 +58,7 @@ removal_reason: null
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | `briefs/research/` directory exists after init | bats integration assertion |
+| (no VP — P1 BC; VP-INDEX P0 matrix covers P0 BCs only) | `briefs/research/` directory exists after init | bats integration assertion |
 
 ## Traceability
 
@@ -84,4 +84,4 @@ removal_reason: null
 
 ## VP Anchors
 
-- [VP-TBD]
+- (no VP — P1 priority; deferred per VP-INDEX coverage policy)

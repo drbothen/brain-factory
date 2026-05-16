@@ -63,9 +63,9 @@ removal_reason: null
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | E-INIT-001 emitted on non-git directory | bats unit assertion |
-| VP-TBD | No files created on error exit | bats file-system assertion |
-| VP-TBD | Git check is first operation (no file writes before check) | bats + bash trace |
+| VP-014 | E-INIT-001 emitted on non-git directory | bats unit assertion |
+| VP-014 | No files created on error exit | bats file-system assertion |
+| VP-014 | Git check is first operation (no file writes before check) | bats + bash trace |
 
 ## Traceability
 
@@ -91,4 +91,4 @@ removal_reason: null
 
 ## VP Anchors
 
-- [VP-TBD]
+- VP-014 — Brain init scaffold completeness (bats integration.bats)

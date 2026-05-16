@@ -64,9 +64,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Existing source overwrite → exit 2 | bats hooks.bats |
-| VP-TBD | New source → exit 0 | bats hooks.bats |
-| VP-TBD | Missing manifest → exit 2 (fail-closed) | bats hooks.bats |
+| VP-003 | Existing source overwrite → exit 2 | bats hooks.bats |
+| VP-003 | New source → exit 0 | bats hooks.bats |
+| VP-003 | Missing manifest → exit 2 (fail-closed) | bats hooks.bats |
 
 ## Traceability
 

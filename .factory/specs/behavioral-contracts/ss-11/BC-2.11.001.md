@@ -54,7 +54,7 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Connection brief created with valid wikilinks | bats skills.bats |
+| (no VP — P1) | Connection brief created with valid wikilinks | bats skills.bats |
 
 ## Traceability
 

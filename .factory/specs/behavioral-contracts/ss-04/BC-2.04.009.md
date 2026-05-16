@@ -60,8 +60,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Unresolved source_id → exit 2 | bats hooks.bats |
-| VP-TBD | Empty source_ids → exit 0 | bats hooks.bats |
+| VP-002 | Unresolved source_id → exit 2 | bats hooks.bats |
+| VP-002 | Empty source_ids → exit 0 | bats hooks.bats |
 
 ## Traceability
 

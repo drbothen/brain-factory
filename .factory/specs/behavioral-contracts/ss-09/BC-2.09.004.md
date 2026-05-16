@@ -57,8 +57,8 @@ The publishing workflow follows a strict three-state machine: `draft` (in `draft
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All valid transitions pass | bats hooks.bats |
-| VP-TBD | All invalid transitions blocked | bats hooks.bats |
+| VP-020 | All valid transitions pass | bats hooks.bats |
+| VP-020 | All invalid transitions blocked | bats hooks.bats |
 
 ## Traceability
 

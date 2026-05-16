@@ -65,9 +65,9 @@ removal_reason: null
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | JSON output matches schema on healthy brain | bats integration assertion |
-| VP-TBD | Overall GREEN only when all 6 dimensions GREEN | bats unit assertion (aggregation logic) |
-| VP-TBD | Token budget alert fires at 2x baseline | bats integration assertion |
+| (no VP — P1) | JSON output matches schema on healthy brain | bats integration assertion |
+| (no VP — P1) | Overall GREEN only when all 6 dimensions GREEN | bats unit assertion (aggregation logic) |
+| (no VP — P1) | Token budget alert fires at 2x baseline | bats integration assertion |
 
 ## Traceability
 
@@ -94,4 +94,4 @@ removal_reason: null
 
 ## VP Anchors
 
-- [VP-TBD]
+- (no VP — P1 priority; deferred per VP-INDEX coverage policy)

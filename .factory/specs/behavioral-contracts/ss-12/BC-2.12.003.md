@@ -55,8 +55,8 @@ The six workflows: `ingest-url.lobster`, `daily-ritual.lobster`, `weekly-synthes
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Exactly 6 workflow files present | bats integration.bats |
-| VP-TBD | All 6 parse as valid YAML | bats integration.bats |
+| (no VP — P1) | Exactly 6 workflow files present | bats integration.bats |
+| (no VP — P1) | All 6 parse as valid YAML | bats integration.bats |
 
 ## Traceability
 

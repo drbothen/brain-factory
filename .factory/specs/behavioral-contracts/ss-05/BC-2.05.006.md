@@ -54,8 +54,8 @@ Every wiki page — whether created by ingest, manually, or by any skill — mus
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 3 valid values accepted | bats hooks.bats |
-| VP-TBD | Missing field blocked | bats hooks.bats |
+| VP-005 | All 3 valid values accepted | bats hooks.bats |
+| VP-005 | Missing field blocked | bats hooks.bats |
 
 ## Traceability
 

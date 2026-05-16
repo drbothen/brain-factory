@@ -50,7 +50,7 @@ Each manifest entry contains `last_ingest` (ISO8601) recording the most recent t
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | last_ingest present and valid ISO8601 | bats integration.bats |
+| (no direct VP — P0; VP gap noted per F-PASS1-I10 backfill; covered by integration.bats ingest pipeline implicitly) | last_ingest present and valid ISO8601 | bats integration.bats |
 
 ## Traceability
 

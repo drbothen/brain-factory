@@ -19,13 +19,14 @@ modified: []
 
 ## Description
 
-`scripts/gen-test-corpus.sh` is a Phase 3 deliverable that generates a reproducible synthetic corpus for the v0.9 scale test. It accepts a count N and a random seed, generates N source markdown files with randomized content from the seed, and creates a pre-built `manifest.json` representing the state after N-1 ingests. This allows the scale test to start from an existing-corpus baseline rather than re-ingesting from zero.
+`scripts/gen-test-corpus.sh` is a Phase 3 deliverable that generates a reproducible synthetic corpus for the v0.9 scale test. Per ADR-012, the CLI is `gen-test-corpus.sh [OPTIONS] <output-dir>` with flags `--sources N` (source count), `--seed N` (deterministic seed), `--topics LIST` (comma-separated categories), `--avg-words N` (word count per source), `--wiki-ratio N` (wiki pages per source), and `--format FORMAT` (`brain-vault` or `json-manifest-only`). It generates N source markdown files with randomized content from the seed, and creates a pre-built `manifest.json` representing the state after those ingests. This allows the scale test to start from an existing-corpus baseline rather than re-ingesting from zero.
 
 ## Preconditions
 
 1. `scripts/gen-test-corpus.sh` is executable.
 2. `jq` and `bash` 4+ available.
-3. A target directory is specified.
+3. A target output directory path is provided as the positional argument (required).
+4. Optional flags per ADR-012: `--sources N` (default 100), `--seed N` (default 42), `--topics LIST` (default: 7 brain categories), `--avg-words N` (default 3000), `--wiki-ratio N` (default 5), `--format FORMAT` (default `brain-vault`).
 
 ## Postconditions
 
@@ -51,16 +52,17 @@ modified: []
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| `gen-test-corpus.sh 10000 --seed 42 --dir /tmp/test-brain` | 10K source files; manifest with 9999 entries | happy-path |
-| Same command run twice | Second run detects conflict; exits 1 | edge-case |
-| `gen-test-corpus.sh 0 --seed 42 --dir /tmp/test-brain` | Usage error; exit 1; no files created | error |
+| `gen-test-corpus.sh --sources 10000 --seed 42 /tmp/test-brain` | 10K source files across 7 topic dirs; `manifest.json` pre-populated; wiki pages at `--wiki-ratio 5` default | happy-path |
+| Same command run twice against same output dir | Second run detects conflict (EC-001); exits 1 | edge-case |
+| `gen-test-corpus.sh --sources 0 --seed 42 /tmp/test-brain` | Usage error (N must be ≥ 1); exit 1; no files created | error |
+| `gen-test-corpus.sh --sources 100 --format json-manifest-only /tmp/out` | Writes only `manifest.json`; no source/wiki directories created | happy-path |
 
 ## Verification Properties
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Same seed → same corpus | bats integration.bats (run twice; diff output) |
-| VP-TBD | 10K source files generated | bats integration.bats |
+| (no VP — P1) | Same seed → same corpus | bats integration.bats (run twice; diff output) |
+| (no VP — P1) | 10K source files generated | bats integration.bats |
 
 ## Traceability
 

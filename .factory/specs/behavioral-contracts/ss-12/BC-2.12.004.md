@@ -52,7 +52,7 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | No stdin required for workflow execution | bats integration.bats (redirect stdin to /dev/null) |
+| VP-022 | No stdin required for workflow execution | bats integration.bats (redirect stdin to /dev/null) |
 
 ## Traceability
 

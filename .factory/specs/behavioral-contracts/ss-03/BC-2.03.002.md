@@ -54,7 +54,7 @@ Same manifest-delta contract as BC-2.02.004 applied to local source ingest. The 
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Manifest entry written with path field | bats skills.bats |
+| VP-012 | Manifest entry written with path field | bats skills.bats |
 
 ## Traceability
 

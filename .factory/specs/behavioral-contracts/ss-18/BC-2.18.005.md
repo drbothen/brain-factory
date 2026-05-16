@@ -56,9 +56,9 @@ brain-factory ships 9 bats test suites: 8 functional (`skills.bats`, `hooks.bats
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Exactly 9 bats files | bats meta-lint.bats (count assertion) |
-| VP-TBD | All hooks have ≥ 3 test cases | bats meta-lint.bats (test-case count per hook) |
-| VP-TBD | Full suite run exits 0 | CI pipeline |
+| VP-006 | Exactly 9 bats files | bats meta-lint.bats (count assertion) |
+| VP-006 | All hooks have ≥ 3 test cases | bats meta-lint.bats (test-case count per hook) |
+| VP-006 | Full suite run exits 0 | CI pipeline |
 
 ## Traceability
 

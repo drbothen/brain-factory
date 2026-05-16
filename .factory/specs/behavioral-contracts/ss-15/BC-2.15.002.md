@@ -57,8 +57,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Unique policy appended | bats policies.bats |
-| VP-TBD | Duplicate rejected | bats policies.bats |
+| (no VP — P1) | Unique policy appended | bats policies.bats |
+| (no VP — P1) | Duplicate rejected | bats policies.bats |
 
 ## Traceability
 

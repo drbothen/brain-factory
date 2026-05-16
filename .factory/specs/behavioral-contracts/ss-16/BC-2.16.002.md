@@ -57,8 +57,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | 2x threshold → YELLOW | bats integration.bats |
-| VP-TBD | 3x threshold → RED | bats integration.bats |
+| (no VP — P1) | 2x threshold → YELLOW | bats integration.bats |
+| (no VP — P1) | 3x threshold → RED | bats integration.bats |
 
 ## Traceability
 

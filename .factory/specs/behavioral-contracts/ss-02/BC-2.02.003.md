@@ -57,8 +57,8 @@ Every invocation of `/brain:ingest-url` writes a JSONL record to `.brain/logs/in
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | JSONL record written on every ingest | bats integration.bats |
-| VP-TBD | Record schema valid | bats assertion (`jq empty` on tail of log) |
+| VP-015 | JSONL record written on every ingest | bats integration.bats |
+| VP-015 | Record schema valid | bats assertion (`jq empty` on tail of log) |
 
 ## Traceability
 

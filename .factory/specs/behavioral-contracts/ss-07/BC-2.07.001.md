@@ -56,8 +56,8 @@ Cognitive diversity in adversarial review requires that the `brain:adversary-rev
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Same-model adversary blocked | bats adversary.bats |
-| VP-TBD | Default pairing applied when producer unknown | bats adversary.bats |
+| VP-010 | Same-model adversary blocked | bats adversary.bats |
+| VP-010 | Default pairing applied when producer unknown | bats adversary.bats |
 
 ## Traceability
 

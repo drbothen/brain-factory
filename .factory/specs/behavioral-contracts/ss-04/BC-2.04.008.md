@@ -61,8 +61,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Avoid-list match → exit 1 (not 2) | bats hooks.bats |
-| VP-TBD | All 30 avoid-list terms trigger advisory | bats hooks.bats (parameterized) |
+| (no VP — P1) | Avoid-list match → exit 1 (not 2) | bats hooks.bats |
+| (no VP — P1) | All 30 avoid-list terms trigger advisory | bats hooks.bats (parameterized) |
 
 ## Traceability
 

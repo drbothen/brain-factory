@@ -59,7 +59,7 @@ Source immutability applies not just at the file-system level (via the hook) but
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Duplicate URL blocked before fetch | bats skills.bats |
+| VP-015 | Duplicate URL blocked before fetch | bats skills.bats |
 
 ## Traceability
 

@@ -57,8 +57,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | plugin.json valid JSON | bats integration.bats |
-| VP-TBD | 26 skills and 14 agents registered | bats integration.bats |
+| VP-009 | plugin.json valid JSON | bats integration.bats |
+| VP-009 | 26 skills and 14 agents registered | bats integration.bats |
 
 ## Traceability
 

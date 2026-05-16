@@ -51,7 +51,7 @@ See BC-2.02.003 for test vectors.
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Token record written on every ingest | bats integration.bats |
+| VP-025 | Token record written on every ingest | bats integration.bats |
 
 ## Traceability
 

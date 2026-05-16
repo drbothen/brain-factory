@@ -65,9 +65,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Non-kebab-case names blocked | bats hooks.bats |
-| VP-TBD | Valid kebab-case names pass | bats hooks.bats |
-| VP-TBD | Exception list covers known uppercase files | bats hooks.bats |
+| VP-017 | Non-kebab-case names blocked | bats hooks.bats |
+| VP-017 | Valid kebab-case names pass | bats hooks.bats |
+| VP-017 | Exception list covers known uppercase files | bats hooks.bats |
 
 ## Traceability
 

@@ -57,7 +57,7 @@ At 10K-source corpus size, the per-ingest token cost may be higher than at 1K sc
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Average cost within 3x baseline | bats integration.bats (scale) |
+| (no VP — P1) | Average cost within 3x baseline | bats integration.bats (scale) |
 
 ## Traceability
 

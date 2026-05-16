@@ -48,7 +48,7 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Exit codes match expected semantics | bats integration.bats |
+| VP-007 | Exit codes match expected semantics | bats integration.bats |
 
 ## Traceability
 

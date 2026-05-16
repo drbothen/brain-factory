@@ -56,8 +56,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | monthly-perf log written on invocation | bats skills.bats (mock API) |
-| VP-TBD | Token budget alert surfaced when > 2x baseline | bats skills.bats |
+| (no VP — P1) | monthly-perf log written on invocation | bats skills.bats (mock API) |
+| (no VP — P1) | Token budget alert surfaced when > 2x baseline | bats skills.bats |
 
 ## Traceability
 

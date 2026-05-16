@@ -59,8 +59,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | --companion-posts creates 3–5 files | bats skills.bats |
-| VP-TBD | --hero-prompt creates prompt file | bats skills.bats |
+| (no VP — P1) | --companion-posts creates 3–5 files | bats skills.bats |
+| (no VP — P1) | --hero-prompt creates prompt file | bats skills.bats |
 
 ## Traceability
 

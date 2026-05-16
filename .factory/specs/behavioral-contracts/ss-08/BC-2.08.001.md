@@ -55,8 +55,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Brief contains all 3 mandatory sections | bats skills.bats |
-| VP-TBD | PROOF cites real wiki slugs | bats skills.bats (verify slug resolution) |
+| VP-019 | Brief contains all 3 mandatory sections | bats skills.bats |
+| VP-019 | PROOF cites real wiki slugs | bats skills.bats (verify slug resolution) |
 
 ## Traceability
 

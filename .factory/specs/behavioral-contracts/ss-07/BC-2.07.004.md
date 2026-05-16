@@ -53,8 +53,8 @@ Every invocation of `/brain:adversary-review` returns a machine-readable structu
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Verdict JSON schema valid | bats adversary.bats |
-| VP-TBD | Exit codes match verdict | bats adversary.bats |
+| VP-010 | Verdict JSON schema valid | bats adversary.bats |
+| VP-010 | Exit codes match verdict | bats adversary.bats |
 
 ## Traceability
 

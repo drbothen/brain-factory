@@ -55,8 +55,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | 13 hooks registered in template | bats integration.bats |
-| VP-TBD | No hardcoded absolute paths | grep assertion |
+| VP-009 | 13 hooks registered in template | bats integration.bats |
+| VP-009 | No hardcoded absolute paths | grep assertion |
 
 ## Traceability
 

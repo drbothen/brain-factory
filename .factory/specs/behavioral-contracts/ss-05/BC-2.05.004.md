@@ -51,7 +51,7 @@ This BC defines the error-case branch of BC-2.05.003: the rename-page skill perf
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Non-existent old slug → exit 2 before any changes | bats skills.bats |
+| VP-018 | Non-existent old slug → exit 2 before any changes | bats skills.bats |
 
 ## Traceability
 

@@ -52,7 +52,7 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Synthesis file created with thesis and citations | bats skills.bats |
+| (no VP — P1) | Synthesis file created with thesis and citations | bats skills.bats |
 
 ## Traceability
 

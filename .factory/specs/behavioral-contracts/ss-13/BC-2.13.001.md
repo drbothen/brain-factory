@@ -19,7 +19,7 @@ modified: []
 
 ## Description
 
-The v0.1 plugin tarball includes 6 GitHub Action YAML templates: `daily-brief.yml`, `weekly-lint.yml`, `weekly-synthesis.yml`, `schema-refresh.yml`, `wikilink-check.yml`, `quarterly-mirror.yml`. These 6 templates are author-committed (full support, bats coverage, CHANGELOG accountability). They must run green on a sample push in the v0.1 ship gate.
+The v0.1 plugin tarball includes 6 GitHub Action YAML templates: `daily-brief.yml`, `weekly-refresh.yml`, `ingest-rss.yml`, `health-check.yml`, `lint-wiki.yml`, `scale-test.yml`. These 6 templates are author-committed (full support, bats coverage, CHANGELOG accountability). They must run green on a sample push in the v0.1 ship gate. Template names are canonical per ADR-013 §Template inventory; `quarterly-mirror.yml` is a v0.5 addition (not v0.1).
 
 ## Preconditions
 
@@ -29,7 +29,7 @@ The v0.1 plugin tarball includes 6 GitHub Action YAML templates: `daily-brief.ym
 
 ## Postconditions
 
-1. All 6 workflows run green on a sample push.
+1. All 6 workflows (`daily-brief.yml`, `weekly-refresh.yml`, `ingest-rss.yml`, `health-check.yml`, `lint-wiki.yml`, `scale-test.yml`) run green on a sample push.
 2. Each workflow uses `scripts/run-skill.mjs` for skill invocation (Node 20+ required).
 3. Each workflow includes explicit rate-limit handling if it calls external APIs.
 
@@ -48,14 +48,15 @@ The v0.1 plugin tarball includes 6 GitHub Action YAML templates: `daily-brief.ym
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| Sample push to brain repo | All 6 workflows run; exit 0 in CI | happy-path |
+| Sample push to brain repo | All 6 workflows (`daily-brief.yml`, `weekly-refresh.yml`, `ingest-rss.yml`, `health-check.yml`, `lint-wiki.yml`, `scale-test.yml`) run; exit 0 in CI | happy-path |
+| Template list in tarball | Exactly 6 files matching ADR-013 §v0.1 core set — `quarterly-mirror.yml` is absent | happy-path |
 
 ## Verification Properties
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 6 v0.1 templates run green | bats upgrade.bats (CI simulation) |
-| VP-TBD | Exactly 6 templates in v0.1 tarball | bats upgrade.bats |
+| VP-023 | All 6 v0.1 templates run green | bats upgrade.bats (CI simulation) |
+| VP-023 | Exactly 6 templates in v0.1 tarball | bats upgrade.bats |
 
 ## Traceability
 

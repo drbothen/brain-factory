@@ -62,9 +62,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All 6 valid types pass | bats hooks.bats (parameterized) |
-| VP-TBD | Invalid type → exit 2 | bats hooks.bats |
-| VP-TBD | index.md and log.md exempt | bats hooks.bats |
+| VP-002 | All 6 valid types pass | bats hooks.bats (parameterized) |
+| VP-002 | Invalid type → exit 2 | bats hooks.bats |
+| VP-002 | index.md and log.md exempt | bats hooks.bats |
 
 ## Traceability
 

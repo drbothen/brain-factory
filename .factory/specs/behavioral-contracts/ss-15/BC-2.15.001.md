@@ -57,7 +57,7 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | 10 baseline policies present after init | bats policies.bats |
+| (no VP — P1) | 10 baseline policies present after init | bats policies.bats |
 
 ## Traceability
 

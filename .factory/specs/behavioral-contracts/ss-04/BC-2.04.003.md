@@ -68,9 +68,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Broken wikilink → exit 2 | bats hooks.bats |
-| VP-TBD | Valid wikilinks → exit 0 | bats hooks.bats |
-| VP-TBD | O(n) resolution (index-first, not filesystem scan) | bats performance assertion |
+| VP-002, VP-004 | Broken wikilink → exit 2 | bats hooks.bats |
+| VP-002, VP-004 | Valid wikilinks → exit 0 | bats hooks.bats |
+| VP-002, VP-004 | O(n) resolution (index-first, not filesystem scan) | bats performance assertion |
 
 ## Traceability
 

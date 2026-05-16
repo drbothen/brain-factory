@@ -39,14 +39,14 @@ removal_reason: null
 **On detection (injection pattern found):**
 1. Hook exits 2.
 2. Hook writes to stdout: `{"verdict": "block", "code": "E-QUARANTINE-001", "pattern_matched": "<pattern-name>", "message": "Prompt-injection pattern detected in fetched content from <url>. Content quarantined.", "trace": "<uuid>"}`.
-3. Hook emits a JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "quarantine.block", "hook_name": "quarantine-fetch.sh", "url": "<url>", "pattern_matched": "<pattern-name>"}`.
+3. Hook emits a JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "quarantine.blocked", "hook_name": "quarantine-fetch.sh", "url": "<url>", "pattern_matched": "<pattern-name>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 4. The WebFetch tool call is aborted by the Claude Code harness (content does not reach the agent session).
 5. No content from the quarantined URL is persisted to the brain.
 
 **On clean content (no injection pattern found):**
 1. Hook exits 0.
 2. Hook writes to stdout: `{"verdict": "allow", "message": "Content clean.", "trace": "<uuid>"}`.
-3. Hook emits a JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "quarantine.allow", "hook_name": "quarantine-fetch.sh", "url": "<url>"}`.
+3. Hook emits a JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "quarantine.allowed", "hook_name": "quarantine-fetch.sh", "url": "<url>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
 
@@ -79,11 +79,11 @@ removal_reason: null
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | Known injection patterns blocked; exit 2 | bats quarantine.bats assertion |
-| VP-TBD | Clean content allowed; exit 0 | bats quarantine.bats assertion |
-| VP-TBD | Missing quarantine corpus → exit 2 (fail-closed) | bats quarantine.bats assertion |
-| VP-TBD | Hook never exits 0 on crash | bats assertion (simulate script error) |
-| VP-TBD | No secrets in stdout/stderr | grep assertion in bats |
+| VP-011 | Known injection patterns blocked; exit 2 | bats quarantine.bats assertion |
+| VP-011 | Clean content allowed; exit 0 | bats quarantine.bats assertion |
+| VP-011 | Missing quarantine corpus → exit 2 (fail-closed) | bats quarantine.bats assertion |
+| VP-011 | Hook never exits 0 on crash | bats assertion (simulate script error) |
+| VP-011 | No secrets in stdout/stderr | grep assertion in bats |
 
 ## Traceability
 
@@ -99,7 +99,7 @@ removal_reason: null
 
 - BC-2.04.016 — composes with (hook I/O contract applies here)
 - BC-2.04.015 — related to (100ms performance budget)
-- BC-2.04.017 — composes with (event emission: quarantine.block, quarantine.allow)
+- BC-2.04.017 — composes with (event emission: quarantine.blocked, quarantine.allowed — past-tense per SS-17)
 - BC-2.10.001 — related to (`/brain:quarantine-check` skill calls this hook's logic)
 - BC-2.10.002 — related to (fires on EVERY WebFetch)
 
@@ -113,4 +113,4 @@ removal_reason: null
 
 ## VP Anchors
 
-- [VP-TBD]
+- VP-011 — Quarantine on every WebFetch (bats quarantine.bats)

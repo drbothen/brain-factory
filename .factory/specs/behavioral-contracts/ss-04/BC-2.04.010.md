@@ -65,8 +65,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-TBD | All valid transitions pass | bats hooks.bats |
-| VP-TBD | All invalid transitions blocked | bats hooks.bats |
+| VP-002 | All valid transitions pass | bats hooks.bats |
+| VP-002 | All invalid transitions blocked | bats hooks.bats |
 
 ## Traceability
 
