@@ -46,7 +46,7 @@ modified: []
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| `bin/lobster-run workflow.lobster < /dev/null` | Runs to completion without hanging | happy-path |
+| `bin/lobster-run workflow.yaml < /dev/null` | Runs to completion without hanging | happy-path |
 
 ## Verification Properties
 

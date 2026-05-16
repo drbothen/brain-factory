@@ -42,7 +42,7 @@ At 10K-source corpus size, the per-ingest token cost may be higher than at 1K sc
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
 | EC-001 | A single ingest in the 10-run sample exceeds 500K tokens (pathological outlier) | That ingest is flagged as an outlier in the token log; the bats scale test fails with a specific message identifying the outlier ingest URL and its token count; the implementer must investigate the chunking path for that content type |
-| EC-002 | The 10K-source corpus is loaded but `manifest.json` is not pre-built (no existing-corpus baseline) | The test must still run using `gen-test-corpus.sh --seed 42 --count 10000` to pre-build the corpus before measurement; the measurement protocol is documented in the bats scale test setup |
+| EC-002 | The 10K-source corpus is loaded but `manifest.json` is not pre-built (no existing-corpus baseline) | The test must still run using `gen-test-corpus.sh --sources 10000 --seed 42 /tmp/test-brain` to pre-build the corpus before measurement; the measurement protocol is documented in the bats scale test setup |
 | EC-003 | An ingest runs on an unusually dense source (100K-word academic paper requiring 10 chunks) | Chunked ingests are measured as the total input tokens across all chunks for that source; if that total exceeds 150K, it contributes to the average; if the average breaches 150K, the scale gate fails and the chunking strategy must be revisited |
 
 ## Canonical Test Vectors

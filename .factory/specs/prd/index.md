@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.4"
+version: "0.1.5"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -533,6 +533,16 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 ---
 
 ## Changelog
+
+### v0.1.5 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS3-C1 — sibling-sweep BC-2.12.001 + BC-2.12.004 `.lobster` extension):** BC-2.12.001 Canonical Test Vector updated: `bin/lobster-run workflows/ingest-url.lobster` → `bin/lobster-run workflows/ingest-url.yaml`. BC-2.12.004 Canonical Test Vector updated: `bin/lobster-run workflow.lobster < /dev/null` → `bin/lobster-run workflow.yaml < /dev/null`. These two were missed in the Pass 2 sibling-sweep of BC-2.12.003 (Decision 1).
+
+**STRUCTURAL FIX (F-PASS3-C2 — BC-2.17.001 + BC-2.17.002 stale catalog location):** BC-2.17.001 Postcondition 1 updated: `plugins/brain-factory/docs/event-catalog.md` → `${CLAUDE_PLUGIN_ROOT}/scripts/event-catalog.json`; Postcondition 2 field list updated from markdown-table format to JSON schema fields (`event_type`, `hook_name`, `severity`, `fields`, `example`). BC-2.17.002 EC-001 updated: `event-catalog.md` → `event-catalog.json`; EC-002 updated: `example_payload` → `example`; VP-008 Proof Method updated: `(markdown table parse)` → `(JSON parse)`. Completes the F-PASS2-C4 sibling-sweep that updated BC-2.17.002 body but left BC-2.17.001 Postconditions stale.
+
+**STRUCTURAL FIX (F-PASS3-I3 — BC-2.16.005 non-canonical `--count` flag):** BC-2.16.005 EC-002 updated: `gen-test-corpus.sh --seed 42 --count 10000` → `gen-test-corpus.sh --sources 10000 --seed 42 /tmp/test-brain` per ADR-012 §Script interface and BC-2.16.006 canonical CLI.
+
+**STRUCTURAL FIX (F-PASS3-I4 — BC-2.06.003 VP-012 anchor label):** BC-2.06.003 VP Anchors section updated: `VP-012 — Manifest schema integrity (Group 2: last_ingest field correctness)` → `VP-012 — Manifest write atomicity and last_ingest field correctness (Group 2: last_ingest field correctness)` per VP-012 canonical H1 title in `verification-properties/VP-012-manifest-atomicity.md`.
 
 ### v0.1.4 (2026-05-16)
 

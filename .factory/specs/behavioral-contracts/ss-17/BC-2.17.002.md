@@ -39,8 +39,8 @@ Each entry in the structured event catalog has a defined schema. The catalog is 
 
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
-| EC-001 | A hook is modified to emit a new `event_type` that is NOT registered in `event-catalog.md` | `meta-lint.bats` cross-reference check (BC-2.18.004 and NFR-025) detects the unregistered emission site; CI blocks the PR; the implementer must add a catalog row before the merge |
-| EC-002 | An `example_payload` in the catalog contains a malformed JSON string (e.g., unescaped quote) | `jq empty` on that row's `example_payload` exits non-zero; the bats test reports the specific row that failed; the catalog row must be corrected before the PR merges |
+| EC-001 | A hook is modified to emit a new `event_type` that is NOT registered in `event-catalog.json` | `meta-lint.bats` cross-reference check (BC-2.18.004 and NFR-025) detects the unregistered emission site; CI blocks the PR; the implementer must add a catalog entry before the merge |
+| EC-002 | An `example` field in the catalog contains a malformed JSON string (e.g., unescaped quote) | `jq empty` on that entry's `example` field exits non-zero; the bats test reports the specific entry that failed; the catalog entry must be corrected before the PR merges |
 | EC-003 | A hook is removed from the codebase but its catalog row is not deleted | The cross-reference check detects a catalog row with no corresponding emission site; this is flagged as a stale row; the adversary reports it; the row must be removed or the hook reinstated |
 
 ## Canonical Test Vectors
@@ -56,7 +56,7 @@ Each entry in the structured event catalog has a defined schema. The catalog is 
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-008 | All rows have required fields | bats integration.bats (markdown table parse) |
+| VP-008 | All entries have required fields | bats integration.bats (JSON parse) |
 | VP-008 | All example payloads are valid JSON | bats hooks.bats |
 
 ## Traceability

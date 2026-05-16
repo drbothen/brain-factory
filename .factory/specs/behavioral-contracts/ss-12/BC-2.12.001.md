@@ -51,7 +51,7 @@ modified: []
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| `bin/lobster-run workflows/ingest-url.lobster` | All steps execute in order; exit 0 | happy-path |
+| `bin/lobster-run workflows/ingest-url.yaml` | All steps execute in order; exit 0 | happy-path |
 | Workflow with circular dependency | E-LOBSTER-001; exit 2 | error |
 | Workflow with missing skill | E-LOBSTER-002; exit 2 | error |
 

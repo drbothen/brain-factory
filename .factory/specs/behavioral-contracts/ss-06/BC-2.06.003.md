@@ -63,7 +63,7 @@ Each manifest entry contains `last_ingest` (ISO8601) recording the most recent t
 
 ## VP Anchors
 
-- VP-012 — Manifest schema integrity (Group 2: last_ingest field correctness)
+- VP-012 — Manifest write atomicity and last_ingest field correctness (Group 2: last_ingest field correctness)
 
 ## Related BCs
 

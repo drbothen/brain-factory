@@ -1,7 +1,7 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.3"
+version: "0.1.4"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -247,6 +247,16 @@ The gate must return zero output on all five files. ARCH-INDEX.md is the fifth f
 ---
 
 ## Changelog
+
+### v0.1.4 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS3-C1 — sibling-sweep BC-2.12.001 + BC-2.12.004 `.lobster` extension):** BC-2.12.001 Canonical Test Vector: `workflows/ingest-url.lobster` → `workflows/ingest-url.yaml`. BC-2.12.004 Canonical Test Vector: `workflow.lobster` → `workflow.yaml`. Both were missed in the Pass 2 Decision 1 sibling-sweep of BC-2.12.003.
+
+**STRUCTURAL FIX (F-PASS3-C2 — BC-2.17.001 + BC-2.17.002 catalog location):** BC-2.17.001 Postconditions 1–2 updated to cite `${CLAUDE_PLUGIN_ROOT}/scripts/event-catalog.json` (JSON format). BC-2.17.002 EC-001 updated: `event-catalog.md` → `event-catalog.json`; EC-002: `example_payload` → `example`; VP-008 Proof Method: `(markdown table parse)` → `(JSON parse)`.
+
+**STRUCTURAL FIX (F-PASS3-I3 — BC-2.16.005 non-canonical `--count` flag):** BC-2.16.005 EC-002: `gen-test-corpus.sh --seed 42 --count 10000` → `gen-test-corpus.sh --sources 10000 --seed 42 /tmp/test-brain` per ADR-012.
+
+**STRUCTURAL FIX (F-PASS3-I4 — BC-2.06.003 VP-012 anchor label):** BC-2.06.003 VP Anchors: `Manifest schema integrity` → `Manifest write atomicity and last_ingest field correctness` per VP-012 canonical H1 title.
 
 ### v0.1.3 (2026-05-16)
 

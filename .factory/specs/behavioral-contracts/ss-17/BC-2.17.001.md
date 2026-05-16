@@ -27,8 +27,8 @@ The structured event catalog is a machine-readable registry of all event types e
 
 ## Postconditions
 
-1. The structured event catalog (at `plugins/brain-factory/docs/event-catalog.md` or equivalent) has a new row for the new event type.
-2. The row includes: event_type, hook_name, description, fields (name, type, description for each), example payload.
+1. The structured event catalog (at `${CLAUDE_PLUGIN_ROOT}/scripts/event-catalog.json`) has a new entry for the new event type.
+2. The entry includes: `event_type`, `hook_name`, `severity`, `fields` (array), and `example` (valid JSON object).
 3. The PR cannot merge until the catalog row is present and reviewed.
 
 ## Invariants
