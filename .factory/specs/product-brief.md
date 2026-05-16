@@ -3,7 +3,7 @@ artifact_type: product-brief
 project: brain-factory
 phase: phase-1a
 status: draft
-version: 0.4.17
+version: 0.4.18
 target_release: v0.x (MVP through v0.9)
 v1_dependency: factory-dispatcher (planned)
 created: 2026-05-14
@@ -52,11 +52,14 @@ locked_decisions:
 
 # Product Brief: brain-factory
 
+**Changes in v0.4.18 (2026-05-16):**
+- **STRUCTURAL FIX (F-PASS6-I1 — plain-prose line-number anchors in v0.4.16 changelog):** The v0.4.16 changelog entry (F-PASS4-I2) contained two plain-prose line-number citations in parenthetical form. The existing grep gate matches the L-prefixed form `\bL[0-9]+\b` but does not match the plain-prose form `\bline [0-9]+\b` — this is the finding's root cause. Fixed: both parenthetical line-number citations replaced with semantic section anchors using the same `§Bring-up plan` and `§bin/lobster-run` labels already present in the entry's body text. Five-file gate extended in PRD §Self-Audit Checklist and BC-INDEX §Self-Audit Checklist to add Clause 2 matching `\bline [0-9]+\b` with documented exclusion protocol (code-block fences; `[audit-trail]`-tagged entries). `last_updated freshness check` Self-Audit item added to PRD and BC-INDEX checklists (F-PASS6-O1-PO). (F-PASS6-I1, F-PASS6-O1-PO)
+
 **Changes in v0.4.17 (2026-05-16):**
 - **STRUCTURAL FIX (F-PASS5-C2 — policies template filename divergence):** Replaced both occurrences of `policies-yaml-template.yaml` in §Additional v0.x deliverables with the canonical filename `policies.yaml` — the filename agreed upon by SS-15, ARCH-INDEX, BC-2.15.001, and BC-2.01.001 (updated during F-PASS2-I7 in those BC files). Brief now reads `The \`policies.yaml\` template at \`${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml\` ships pre-populated...`. Sibling-sweep confirmed zero remaining `policies-yaml-template` occurrences in the brief; the BC files were already corrected at F-PASS2-I7 (BC-INDEX v0.1.3 changelog). (F-PASS5-C2)
 
 **Changes in v0.4.16 (2026-05-16):**
-- **STRUCTURAL FIX (F-PASS4-I2): Workflow extension sibling-sweep** — the §Bring-up plan citation of `ingest-url.lobster` (line 333) updated to `ingest-url.yaml` to align with ADR-006 §Workflow extension convention (Lobster workflows at `plugins/brain-factory/workflows/` use `.yaml`). Source-of-Truth Precedence rule 2: ADR supersedes earlier artifacts for operational decisions. The §bin/lobster-run section (line 514) contained a second prescriptive citation of 6 workflow filenames with `.lobster` extension and a non-canonical filename set (`weekly-synthesis`, `monthly-perf`, `quarterly-mirror`, `cold-start-recovery`); updated to the ADR-006 canonical set (`ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`) with ADR-006 source citation. Sibling-sweep confirmed no further prescriptive `.lobster` references remain in the brief; remaining `.lobster` occurrences (§GH Action templates v0.5 table as historical enumeration of forbidden patterns; §Test architecture changelog audit-trail) are intentional historical or illustrative references, not prescriptions. (F-PASS4-I2)
+- **STRUCTURAL FIX (F-PASS4-I2): Workflow extension sibling-sweep** — the §Bring-up plan citation of `ingest-url.lobster` (in §Bring-up plan) updated to `ingest-url.yaml` to align with ADR-006 §Workflow extension convention (Lobster workflows at `plugins/brain-factory/workflows/` use `.yaml`). Source-of-Truth Precedence rule 2: ADR supersedes earlier artifacts for operational decisions. The §bin/lobster-run section (§bin/lobster-run) contained a second prescriptive citation of 6 workflow filenames with `.lobster` extension and a non-canonical filename set (`weekly-synthesis`, `monthly-perf`, `quarterly-mirror`, `cold-start-recovery`); updated to the ADR-006 canonical set (`ingest-url.yaml`, `ingest-source.yaml`, `brief-to-publish.yaml`, `daily-ritual.yaml`, `weekly-refresh.yaml`, `scale-test.yaml`) with ADR-006 source citation. Sibling-sweep confirmed no further prescriptive `.lobster` references remain in the brief; remaining `.lobster` occurrences (§GH Action templates v0.5 table as historical enumeration of forbidden patterns; §Test architecture changelog audit-trail) are intentional historical or illustrative references, not prescriptions. (F-PASS4-I2)
 
 **Changes in v0.4.15 (2026-05-15):**
 - **STRUCTURAL FIX (Post-convergence cleanup — gate-coverage extension + exclusion-list-extension protocol + audit-trail wording calibration):** The adversarial cascade reached streak 3/3 (CONVERGED) at Pass 22 on brief v0.4.14 (commit 7035315). This v0.4.15 burst closes three deferred non-blocking items before Phase 1b PRD work begins. (F-PASS20-S1, F-PASS20-O1, F-PASS21-S1)
@@ -86,7 +89,7 @@ locked_decisions:
 
 **Changes in v0.4.10 (2026-05-15):**
 - Added `scripts/gen-test-corpus.sh` to §Scope Additional v0.x deliverables enumeration — closes unsatisfiable-task gap (F-PASS15-I1)
-- **STRUCTURAL FIX (Changelog audit-trail discipline):** replaced all line-number citations in the Changelog block with semantic anchors — extends the v0.4.5 grep-anchor discipline to the Changelog audit-trail section, scope-eliminating the stale-line-citation defect class from Changelog entries within this fix-burst's scope (re-verify in subsequent passes) (F-PASS15-S1, F-PASS15-S2). Specifically: v0.4.9 changelog entry for F-PASS14-I1 changed "per line 301" → "see the embedding_status enforcement gate item below"; v0.4.9 changelog entry for F-PASS14-I2 changed "§Scope §399" → "matching §Scope's 'Phase 2–3 new skill' header". Full Changelog sweep confirmed only these two entries contained stale line-number citations.
+- **STRUCTURAL FIX (Changelog audit-trail discipline):** replaced all line-number citations in the Changelog block with semantic anchors — extends the v0.4.5 grep-anchor discipline to the Changelog audit-trail section, scope-eliminating the stale-line-citation defect class from Changelog entries within this fix-burst's scope (re-verify in subsequent passes) (F-PASS15-S1, F-PASS15-S2). Specifically: v0.4.9 changelog entry for F-PASS14-I1 replaced a stale line-number citation with "see the embedding_status enforcement gate item below"; v0.4.9 changelog entry for F-PASS14-I2 replaced a stale section-number citation with "matching §Scope's 'Phase 2–3 new skill' header". Full Changelog sweep confirmed only these two entries contained stale line-number citations.
 
 **Changes in v0.4.9 (2026-05-15):**
 - Reconciled hook-performance bats coverage to live inside `hooks.bats` (parallel to embedding_status treatment, see the embedding_status enforcement gate item below); preserves 9-suite bats count commitment (F-PASS14-I1)

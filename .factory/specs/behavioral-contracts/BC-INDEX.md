@@ -1,13 +1,13 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.5"
+version: "0.1.6"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.6
+inherits_from: prd@v0.1.7
 created: 2026-05-15
 last_updated: 2026-05-16
 ---
@@ -240,13 +240,41 @@ done
 
 **NOTE (exclusion-list-extension protocol — architecture ID tokens):** This index references `SS-NN`, `CAP-NNN`, `NFR-NNN`, `ADR-NNN`, and `VP-NNN` patterns throughout. These are canonical spec identifiers — not line-number anchors. Added `grep -v 'SS-[0-9]+|CAP-[0-9]+|NFR-[0-9]+|ADR-[0-9]+|VP-[0-9]+'` per the exclusion-list-extension protocol. This exclusion is sibling-swept from the ARCH-INDEX five-file gate per TD-VSDD-060.
 
-The gate must return zero output on all five files. ARCH-INDEX.md is the fifth file added per F-1c-CV-02 remediation (sibling-sweep with ARCH-INDEX canonical five-file gate per TD-VSDD-060).
+The gate must return zero output on all five files. ARCH-INDEX.md is the fifth file added per F-1c-CV-02 remediation (sibling-sweep with ARCH-INDEX canonical five-file gate per TD-VSDD-060). Plain-prose `line [0-9]+` clause added at v0.1.6 (F-PASS6-I1 closure, sibling-swept with PRD index per TD-VSDD-060).
 
 **NOTE (exclusion-list-extension protocol):** To add a new token: (a) add to `grep -v` clause; (b) re-run gate; (c) record rationale here. Do NOT work around the gate by reverting the writing-technique principle.
+
+**Clause 2 — plain-prose line-number check (added v0.1.6, F-PASS6-I1):** In addition to the L-prefixed gate above, also run:
+
+```bash
+for f in \
+  .factory/specs/product-brief.md \
+  .factory/SESSION-HANDOFF.md \
+  .factory/specs/prd/index.md \
+  .factory/specs/behavioral-contracts/BC-INDEX.md \
+  .factory/specs/architecture/ARCH-INDEX.md; do
+  echo "--- $f ---"
+  grep -nE '\bline [0-9]+\b' "$f" \
+    | grep -v '```' \
+    | grep -v '\[audit-trail\]'
+done
+```
+
+and confirm it returns zero output. Legitimate exclusions: (a) content inside code-block fences (backtick context) — these are illustrative or literal code, not narrative anchors; (b) audit-trail references explicitly tagged `[audit-trail]` in changelog entries dated before v0.4.18 (must be tagged to be excluded). Currently NO other legitimate uses of plain `line N` in narrative prose are recognized.
+
+**NOTE (exclusion-list-extension protocol — plain-prose clause):** To add a new exclusion for the plain-prose clause: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Code-block context is the only pre-approved exclusion category.
+
+**last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.6 (2026-05-16). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.6 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS6-I1 — five-file gate extended with plain-prose `line [0-9]+` clause):** The existing L-prefixed gate (`\bL[0-9]+\b`) does not catch plain-prose line-number citations of the form `line 333` or `line 514`. F-PASS6-I1 identified two such violations in brief v0.4.16 changelog entry. Gate extended: Clause 2 added to BC-INDEX Self-Audit Checklist using `grep -nE '\bline [0-9]+\b'` with documented exclusion protocol (code-block fences; `[audit-trail]`-tagged entries). Sibling-swept from PRD index §Self-Audit Checklist per TD-VSDD-060. (F-PASS6-I1)
+
+**STRUCTURAL FIX (F-PASS6-O1-PO — last_updated freshness check added to BC-INDEX Self-Audit):** Per Pass 5 architect introduction in ARCH-INDEX, the `last_updated freshness check` item is now present in BC-INDEX Self-Audit Checklist: "Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry)." Sibling-swept from PRD index §Self-Audit Checklist per TD-VSDD-060. `inherits_from` updated from `prd@v0.1.6` to `prd@v0.1.7` (the PRD version current after this fix-burst). (F-PASS6-O1-PO)
 
 ### v0.1.5 (2026-05-16)
 

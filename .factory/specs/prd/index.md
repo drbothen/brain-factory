@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.6"
+version: "0.1.7"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-15T00:00:00
@@ -524,11 +524,39 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   **NOTE (exclusion-list-extension protocol):** To add a new token: (a) add to `grep -v` clause; (b) re-run gate; (c) record rationale in changelog. Do NOT work around the gate by reverting the writing-technique principle.
 
-  **NOTE (five-file gate history):** Three-file gate introduced at v0.1.0. Extended to four-file at v0.1.1 by adding BC-INDEX.md (F-1b-CV-01). Extended to five-file at v0.1.3 by adding ARCH-INDEX.md (F-PASS1-C6 closure, 2026-05-16). The architecture ID token exclusion clause was added at the same time via sibling-sweep with the BC-INDEX and ARCH-INDEX canonical gate commands.
+  **NOTE (five-file gate history):** Three-file gate introduced at v0.1.0. Extended to four-file at v0.1.1 by adding BC-INDEX.md (F-1b-CV-01). Extended to five-file at v0.1.3 by adding ARCH-INDEX.md (F-PASS1-C6 closure, 2026-05-16). The architecture ID token exclusion clause was added at the same time via sibling-sweep with the BC-INDEX and ARCH-INDEX canonical gate commands. Plain-prose `line [0-9]+` clause added at v0.1.7 (F-PASS6-I1 closure, sibling-swept with BC-INDEX).
+
+  **Clause 2 — plain-prose line-number check (added v0.1.7, F-PASS6-I1):** In addition to the L-prefixed gate above, also run:
+
+  ```bash
+  for f in \
+    .factory/specs/product-brief.md \
+    .factory/SESSION-HANDOFF.md \
+    .factory/specs/prd/index.md \
+    .factory/specs/behavioral-contracts/BC-INDEX.md \
+    .factory/specs/architecture/ARCH-INDEX.md; do
+    echo "--- $f ---"
+    grep -nE '\bline [0-9]+\b' "$f" \
+      | grep -v '```' \
+      | grep -v '\[audit-trail\]'
+  done
+  ```
+
+  and confirm it returns zero output. Legitimate exclusions: (a) content inside code-block fences (backtick context) — these are illustrative or literal code, not narrative anchors; (b) audit-trail references explicitly tagged `[audit-trail]` in changelog entries dated before v0.4.18 (must be tagged to be excluded). Currently NO other legitimate uses of plain `line N` in narrative prose are recognized.
+
+  **NOTE (exclusion-list-extension protocol — plain-prose clause):** To add a new exclusion for the plain-prose clause: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Code-block context is the only pre-approved exclusion category.
+
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.7 (2026-05-16). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.7 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS6-I1 — five-file gate extended with plain-prose `line [0-9]+` clause):** The existing L-prefixed gate (`\bL[0-9]+\b`) does not catch plain-prose line-number citations of the form `line 333` or `line 514`. F-PASS6-I1 identified two such violations in brief v0.4.16 changelog entry. Gate extended: Clause 2 added to PRD Self-Audit Checklist using `grep -nE '\bline [0-9]+\b'` with documented exclusion protocol (code-block fences; `[audit-trail]`-tagged entries). Sibling-swept to BC-INDEX §Self-Audit Checklist per TD-VSDD-060. (F-PASS6-I1)
+
+**STRUCTURAL FIX (F-PASS6-O1-PO — last_updated freshness check added to PRD Self-Audit):** Per Pass 5 architect introduction in ARCH-INDEX, the `last_updated freshness check` item is now present in PRD Self-Audit Checklist: "Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry)." Sibling-swept to BC-INDEX §Self-Audit Checklist per TD-VSDD-060. (F-PASS6-O1-PO)
 
 ### v0.1.6 (2026-05-16)
 
