@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 17 CLOSED (architect b70fc7d + PO 2f247fc + state-mgr FINAL this commit); 40 fix-bursts committed, streak 0/3. Pass 18 adversary dispatch is next-action. User selected Option C (UD-002): continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3.**
+> Snapshot updated: 2026-05-17. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 18 CLOSED (adversary 1d56d20 + architect a73b64a + state-mgr FINAL this commit); 42 fix-bursts committed, streak 0/3. Pass 19 adversary dispatch is next-action. UD-003 reaffirms Option C: continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3.**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -10,14 +10,15 @@
 |------|----|----------|----------|
 | 2026-05-16 | UD-001 | Pass 11 architect work disposition (interrupted commit recovery) | Option A pre-authorized — commit architect's work as-is at a3a83b1 |
 | 2026-05-16 | UD-002 | Convergence threshold per F-PASS12-O2 STRONG-ESCALATE (Pass 16 adversary recommendation) | **Option C** — continue cascade without discipline catalog freeze. NO convergence-by-stable-discipline-catalog. NO move to Phase 2 until BC-5.39.001 literal streak 3/3 achieved. Meta-rule self-violation class accepted as recurring pattern. |
+| 2026-05-17 | UD-003 | F-PASS12-O2 3rd STRONG-ESCALATE (Pass 18 adversary recommendation): CRITICAL plateau at 5 passes + meta-rule self-violation at 8 recurrences both thresholds tripped; 3 options presented (a) continue, (b) carve-out exemption, (c) declare-converged-by-fiat | **Option (a) continue cascade** — same as UD-002; meta-rule self-violation class explicitly acknowledged as predictable recurring pattern; no pivot to carve-out or declare-converged-by-fiat |
 
-## TOP OF STACK (RESUME ENTRY POINT — Pass 17 CLOSED; Pass 18 next-action)
+## TOP OF STACK (RESUME ENTRY POINT — Pass 18 CLOSED; Pass 19 next-action)
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #121 | NEXT-ACTION | Pass 18 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002 / Option C) |
-| 2 | #122 | PENDING #121 | Pass 18 fix-bursts (scope TBD after adversary) |
-| 3 | #123 | PENDING | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
+| 1 | #122 | NEXT-ACTION | Pass 19 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003 / Option C) |
+| 2 | #123 | PENDING #122 | Pass 19 fix-bursts (scope TBD after adversary) |
+| 3 | #124 | PENDING | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
 
 ## Task Status
 
@@ -79,7 +80,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.1 at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | PASS — cascade officially CLOSED on v0.4.15 |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.1 across 5 commits (b7679ee through d89ea4b) |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 17 passes complete (all FAIL), 40 fix-bursts committed. Pass 17 CLOSED (architect b70fc7d + PO 2f247fc + state-mgr FINAL this commit). Pass 18 next-action. Option C (UD-002): no catalog freeze; require literal streak 3/3. 2nd STRONG-ESCALATE persisted in adversary-pass-17.md. |
+| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 18 passes complete (all FAIL), 42 fix-bursts committed. Pass 18 CLOSED (adversary 1d56d20 + architect a73b64a + state-mgr FINAL this commit). Pass 19 next-action. UD-003 reaffirms Option C: no catalog freeze; require literal streak 3/3. 3rd STRONG-ESCALATE resolved via UD-003. |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | Commit 23e3a91 |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Commit 7935faa |
@@ -152,11 +153,15 @@
 | 119 | COMPLETED | Phase 1d adversary pass 17 | FAIL: 1C+3I+1S+2O. Persist commit 87ebf2d. 2nd STRONG-ESCALATE per F-PASS12-O2. |
 | 119a | COMPLETED | Phase 1d Pass 17 architect fix-burst | ARCH-INDEX v0.1.18 → v0.1.19. Commit b70fc7d. F-PASS17-C1 + F-PASS17-S1 + F-PASS17-I3(a) + discipline #23 codified. |
 | 119b | COMPLETED | Phase 1d Pass 17 PO fix-burst | PRD v0.1.9 → v0.1.10 + BC-INDEX v0.1.8 → v0.1.9. Commit 2f247fc. F-PASS17-I3(b) sibling-sweep of disciplines #22 + #23. |
-| 119c | COMPLETED | Phase 1d Pass 17 state-manager FINAL | 8 sub-checks + Pass 17 cascade row + discipline #23 catalog entry + SESSION-HANDOFF §6 reconciliation (19→23 rows per Option A) + 40 fix-bursts re-derivation + ARCH-INDEX inherits_from re-pin prd@v0.1.9→prd@v0.1.10. This commit. |
+| 119c | COMPLETED | Phase 1d Pass 17 state-manager FINAL | 8 sub-checks + Pass 17 cascade row + discipline #23 catalog entry + SESSION-HANDOFF §6 reconciliation (19→23 rows per Option A) + 40 fix-bursts re-derivation + ARCH-INDEX inherits_from re-pin prd@v0.1.9→prd@v0.1.10. Commit 6ed900d. |
 | 120 | COMPLETED | Continue cascade per Option C (Pass 17 closure) | Pass 17 fully closed. Cascade continues to Pass 18. |
-| 121 | NEXT-ACTION | Phase 1d adversary pass 18 | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002 / Option C. Aware of 2nd STRONG-ESCALATE recommendation in adversary-pass-17.md. |
-| 122 | PENDING #121 | Pass 18 architect + PO + state-mgr FINAL bursts | Scope TBD after adversary pass 18 report. |
-| 123 | PENDING | Continue cascade per Option C | Repeat passes until BC-5.39.001 literal streak 3/3 achieved. |
+| 121 | COMPLETED | Phase 1d adversary pass 18 | FAIL: 1C+2I+1S+2O. Persist commit 1d56d20. 3rd STRONG-ESCALATE per F-PASS12-O2 (both thresholds tripped). |
+| 121a | COMPLETED | Phase 1d Pass 18 architect fix-burst | ARCH-INDEX v0.1.19 → v0.1.20. Commit a73b64a. F-PASS18-I1 complete per-file enumeration + F-PASS18-S1 F-PASS11-O1 extended + F-PASS18-O1 discipline #10 extended. |
+| 121b | COMPLETED | Phase 1d Pass 18 state-manager FINAL | 8 sub-checks + Pass 18 cascade row + F-PASS18-C1 §8 header reconciled to 28 + F-PASS18-I2 discipline #23 canonical-baseline sweep + UD-003 logged. This commit. |
+| 121c | COMPLETED | User decision checkpoint UD-003 | Human selected Option (a): continue cascade. 3rd STRONG-ESCALATE resolved. Recorded in STATE.md + SESSION-HANDOFF + TASK-LIST User Decisions Log. |
+| 122 | NEXT-ACTION | Phase 1d adversary pass 19 | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002/UD-003 / Option C. |
+| 123 | PENDING #122 | Pass 19 architect + state-mgr FINAL bursts | Scope TBD after adversary pass 19 report. |
+| 124 | PENDING | Continue cascade per Option C | Repeat passes until BC-5.39.001 literal streak 3/3 achieved. |
 
 ## Next steps (in dependency order)
 
@@ -165,12 +170,12 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#119c: Phase 1d Passes 1–17 persists + fix-bursts + state snapshot + Pass 17 architect + Pass 17 PO + Pass 17 state-mgr FINAL — COMPLETED (17 passes, 40 fix-bursts committed; UD-002 recorded; Pass 17 fully closed).~~
+~~Tasks #71–#121c: Phase 1d Passes 1–18 persists + fix-bursts + state snapshots + Pass 18 architect + Pass 18 state-mgr FINAL — COMPLETED (18 passes, 42 fix-bursts committed; UD-002 + UD-003 recorded; Pass 18 fully closed).~~
 
-1. **Task #121 — Pass 18 adversary dispatch (TOP OF STACK):** dispatch adversary per BC-5.39.001 cascade protocol; chat-only per F-PASS12-O1; no catalog freeze per UD-002. Aware of 2nd STRONG-ESCALATE in adversary-pass-17.md.
+1. **Task #122 — Pass 19 adversary dispatch (TOP OF STACK):** dispatch adversary per BC-5.39.001 cascade protocol; chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003.
 
-2. **Tasks #122-#123+ — Continue cascade per Option C:** subsequent fix-bursts then adversary passes until streak 3/3.
+2. **Tasks #123-#124+ — Continue cascade per Option C:** subsequent fix-bursts then adversary passes until streak 3/3.
 
-5. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
+3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 17 CLOSED; 40 fix-bursts; streak 0/3; Pass 18 next-action; UD-002 Option C; 2nd STRONG-ESCALATE in adversary-pass-17.md.** Resume on fresh context: read `.factory/STATE.md` FIRST.
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 18 CLOSED; 42 fix-bursts; streak 0/3; Pass 19 next-action; UD-003 reaffirms Option C.** Resume on fresh context: read `.factory/STATE.md` FIRST.
