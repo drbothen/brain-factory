@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-17. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 22 CLOSED (adversary 1b02a98 + state-mgr FINAL 926d5cc-followup); 48 fix-bursts committed, streak 0/3. CRITICAL plateau-broken state holds 2 consecutive passes. Pass 23 adversary dispatch is next-action — 2nd 1/3-streak candidate. UD-003 reaffirms Option C: continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3.**
+> Snapshot updated: 2026-05-17. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 23 CLOSED (adversary 2463acb + state-mgr FINAL Pass 23 burst); 49 fix-bursts committed, streak 0/3. CRITICAL plateau-broken state holds 3 consecutive passes. Pass 24 adversary dispatch is next-action — 3rd 1/3-streak candidate. UD-003 reaffirms Option C: continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3.**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -12,12 +12,12 @@
 | 2026-05-16 | UD-002 | Convergence threshold per F-PASS12-O2 STRONG-ESCALATE (Pass 16 adversary recommendation) | **Option C** — continue cascade without discipline catalog freeze. NO convergence-by-stable-discipline-catalog. NO move to Phase 2 until BC-5.39.001 literal streak 3/3 achieved. Meta-rule self-violation class accepted as recurring pattern. |
 | 2026-05-17 | UD-003 | F-PASS12-O2 3rd STRONG-ESCALATE (Pass 18 adversary recommendation): CRITICAL plateau at 5 passes + meta-rule self-violation at 8 recurrences both thresholds tripped; 3 options presented (a) continue, (b) carve-out exemption, (c) declare-converged-by-fiat | **Option (a) continue cascade** — same as UD-002; meta-rule self-violation class explicitly acknowledged as predictable recurring pattern; no pivot to carve-out or declare-converged-by-fiat |
 
-## TOP OF STACK (RESUME ENTRY POINT — Pass 22 CLOSED; Pass 23 next-action)
+## TOP OF STACK (RESUME ENTRY POINT — Pass 23 CLOSED; Pass 24 next-action)
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #126 | NEXT-ACTION | Pass 23 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003 / Option C; 2nd 1/3-streak candidate) |
-| 2 | #127 | PENDING #126 | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
+| 1 | #127 | NEXT-ACTION | Pass 24 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003 / Option C; 3rd 1/3-streak candidate) |
+| 2 | #128 | PENDING #127 | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
 
 ## Task Status
 
@@ -79,7 +79,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.1 at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | PASS — cascade officially CLOSED on v0.4.15 |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.1 across 5 commits (b7679ee through d89ea4b) |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 22 passes complete (all FAIL), 48 fix-bursts committed. Pass 22 CLOSED (adversary 1b02a98 + state-mgr FINAL 926d5cc-followup). Pass 23 next-action — 2nd 1/3-streak candidate. UD-003 reaffirms Option C: no catalog freeze; require literal streak 3/3. |
+| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 23 passes complete (all FAIL), 49 fix-bursts committed. Pass 23 CLOSED (adversary 2463acb + state-mgr FINAL Pass 23 burst). Pass 24 next-action — 3rd 1/3-streak candidate. UD-003 reaffirms Option C: no catalog freeze; require literal streak 3/3. |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | Commit 23e3a91 |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Commit 7935faa |
@@ -168,8 +168,10 @@
 | 124a | COMPLETED | Phase 1d Pass 21 state-manager FINAL | F-PASS21-I1 3 stale markers replaced + F-PASS21-S1 §5 drift class symmetric + discipline #24 codified + sub-check (j) + 10 sub-checks. Commit 926d5cc. |
 | 125 | COMPLETED | Phase 1d adversary pass 22 | Dispatch per BC-5.39.001 cascade protocol. FAIL — 0C+2I+1S+2O. 2nd consecutive zero-CRITICAL — plateau-broken state holds. Persist commit 1b02a98. |
 | 125a | COMPLETED | Phase 1d Pass 22 state-manager FINAL | F-PASS22-I1 discipline #24 broadened + 9 deictic markers swept/replaced + §8 scope codified + F-PASS22-I2 §13 prose "All 22 passes" + F-PASS22-S1 per-marker enumeration + sub-check (i) extended + 10 sub-checks. Commit 926d5cc-followup. |
-| 126 | NEXT-ACTION | Pass 23 adversary dispatch | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002/UD-003 / Option C. Pass 23 is the 2nd 1/3-streak candidate since cascade began — if 0C+0I, streak advances 0/3 → 1/3. |
-| 127 | PENDING | Continue cascade per Option C | Repeat passes until BC-5.39.001 literal streak 3/3 achieved. |
+| 126 | COMPLETED | Pass 23 adversary dispatch | FAIL: 0C+2I+1S+2O. Persist commit 2463acb. 3rd consecutive zero-CRITICAL — plateau-broken state holds. |
+| 126a | COMPLETED | Pass 23 state-mgr FINAL | F-PASS23-I1 §8 row 317 back-filled to 926d5cc + exemption (b) clarified + sub-check (k) codified + F-PASS23-I2 §13 brace-glob corrected + discipline #23 sweep extended + F-PASS23-S1 regex canonicalized + F-PASS23-O1 adjudicated + 11 sub-checks. SHA to be back-filled by Pass 24 state-mgr FINAL per discipline #24 exemption (b). |
+| 127 | NEXT-ACTION | Pass 24 adversary dispatch | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002/UD-003 / Option C. Pass 24 is the 3rd 1/3-streak candidate — if 0C+0I, streak advances 0/3 → 1/3. |
+| 128 | PENDING | Continue cascade per Option C | Repeat passes until BC-5.39.001 literal streak 3/3 achieved. |
 
 ## Next steps (in dependency order)
 
@@ -178,12 +180,12 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#124a: Phase 1d Passes 1–21 persists + fix-bursts + state snapshots — COMPLETED (21 passes, 47 fix-bursts committed; UD-002 + UD-003 recorded; Pass 21 fully closed; CRITICAL plateau broken at Pass 21).~~
+~~Tasks #71–#126a: Phase 1d Passes 1–23 persists + fix-bursts + state snapshots — COMPLETED (23 passes, 49 fix-bursts committed; UD-002 + UD-003 recorded; Pass 23 fully closed; CRITICAL plateau broken at Pass 21; holds 3 consecutive passes).~~
 
-1. **Task #125 — Pass 22 adversary dispatch (TOP OF STACK):** dispatch adversary per BC-5.39.001 cascade protocol; chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003. FIRST 1/3-streak candidate.
+1. **Task #127 — Pass 24 adversary dispatch (TOP OF STACK):** dispatch adversary per BC-5.39.001 cascade protocol; chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003. 3rd 1/3-streak candidate.
 
-2. **Tasks #126+ — Continue cascade per Option C:** subsequent fix-bursts then adversary passes until streak 3/3.
+2. **Tasks #128+ — Continue cascade per Option C:** subsequent fix-bursts then adversary passes until streak 3/3.
 
 3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 21 CLOSED; 47 fix-bursts; streak 0/3; plateau broken; Pass 22 next-action; UD-003 reaffirms Option C.** Resume on fresh context: read `.factory/STATE.md` FIRST.
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 23 CLOSED; 49 fix-bursts; streak 0/3; plateau broken 3 passes; Pass 24 next-action; UD-003 reaffirms Option C.** Resume on fresh context: read `.factory/STATE.md` FIRST.
