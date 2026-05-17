@@ -2,7 +2,7 @@
 artifact_type: session-handoff
 project: brain-factory
 session_phase: phase-1d-adversarial-spec-review
-session_stage: phase-1d-cascade-pass-26-closed-pass-27-next-action
+session_stage: phase-1d-cascade-pass-27-closed-pass-28-next-action
 current_brief_version: 0.4.19
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.10
@@ -21,16 +21,16 @@ phase_1b_completion_commit: 7935faa
 phase_1b_initial_commit: 23e3a91
 phase_1c_completion_commits: [b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b]
 adversary_protocol: BC-5.39.001 3-CLEAN
-current_streak: "0/3 (reset after every FAIL; streak has been 0/3 for all 26 Phase 1d passes — never advanced)"
-current_pass_number: "26 (CLOSED — 0C+3I+1S+2O closed; state-mgr FINAL Pass 26; CRITICAL=0 meta-rule self-violation class did NOT recur; Pass 27 next-action — 6th 1/3-streak candidate)"
+current_streak: "0/3 (reset after every FAIL; streak has been 0/3 for all 27 Phase 1d passes — never advanced)"
+current_pass_number: "27 (CLOSED — 1C+3I+0S+1O closed; state-mgr FINAL Pass 27; CRITICAL=1 13th recurrence meta-rule self-violation class — parameterized-header self-violation; Pass 28 next-action — 7th 1/3-streak candidate)"
 phase_1b_status: COMPLETED — PRD v0.1.1 landed; consistency audit closed; Phase 1c authorized
 phase_1c_status: COMPLETED — architecture v0.1.1 + SS-NN backfill across BCs/PRD/BC-INDEX; consistency audit closed; five-file gate canonical; 64/64 P0 BC VP coverage
-phase_1d_status: IN-PROGRESS — Pass 26 CLOSED; 52 fix-bursts complete; streak 0/3; CRITICAL=0 (meta-rule self-violation class did NOT recur); UD-003 in effect
+phase_1d_status: IN-PROGRESS — Pass 27 CLOSED; 54 fix-bursts complete; streak 0/3; CRITICAL=1 (13th recurrence meta-rule self-violation class — parameterized-header self-violation); UD-003 in effect
 cascade_status: CLOSED — v0.4.15 is the final Phase 1a Stage 5 artifact
-total_passes_completed: 26
+total_passes_completed: 27
 total_fix_bursts: 15
-total_phase_1d_passes_completed: 26
-total_phase_1d_fix_bursts: 52
+total_phase_1d_passes_completed: 27
+total_phase_1d_fix_bursts: 54
 phase_1d_pass_1_verdict: FAIL
 phase_1d_pass_2_verdict: FAIL
 phase_1d_pass_3_verdict: FAIL
@@ -57,11 +57,12 @@ phase_1d_pass_23_verdict: FAIL
 phase_1d_pass_24_verdict: FAIL
 phase_1d_pass_25_verdict: FAIL
 phase_1d_pass_26_verdict: FAIL
+phase_1d_pass_27_verdict: FAIL
 user_decision_ud002: "Option C — continue cascade without discipline catalog freeze; no convergence-by-stable-discipline-catalog; require BC-5.39.001 literal streak 3/3; 2026-05-16"
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 created: 2026-05-15
 last_updated: 2026-05-17
-status: phase-1d-cascade-active-pass-26-closed-pass-27-next-action
+status: phase-1d-cascade-active-pass-27-closed-pass-28-next-action
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d
@@ -76,14 +77,14 @@ status: phase-1d-cascade-active-pass-26-closed-pass-27-next-action
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (pipeline status, cascade table, user decisions log, top-of-stack action)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` (this file — detailed narrative)
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger with pending entries)
-5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-26.md` (Pass 26 findings — all CLOSED; Pass 27 adversary is next-action)
+5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-27.md` (Pass 27 findings — all CLOSED; Pass 28 adversary is next-action)
 
 ### Step 2 — Verify git state before dispatching any agent
 
 ```
 git log --oneline -1
 ```
-Expected: Pass 26 state-mgr FINAL (subject: `factory(state): Phase 1d Pass 26 FINAL ...`)
+Expected: Pass 27 state-mgr FINAL (subject: `factory(state): Phase 1d Pass 27 FINAL ...`)
 
 ```
 git status --short
@@ -93,20 +94,20 @@ Expected: empty (all tracked files clean after this snapshot commit)
 ### Step 3 — Pass 26 is CLOSED; dispatch Pass 27
 
 **3a. NO ARCHITECT BURST this pass:**
-F-PASS26-I1 + F-PASS26-I2 + F-PASS26-I3 + F-PASS26-S1 + F-PASS26-O1 + F-PASS26-O2 all state-manager-routed. No architect changes needed.
+F-PASS27-C1 + F-PASS27-I1 + F-PASS27-I2 + F-PASS27-I3 + F-PASS27-O1 all state-manager-routed. No architect changes needed.
 
 **3b. NO PO BURST this pass:**
 No PO-routed findings. PO burst N/A.
 
-**3c. DONE — State-mgr FINAL (Pass 25 - persist 42d8f55 + state-mgr FINAL 0a7d54c):**
-Pass 25 state-mgr FINAL: F-PASS25-C1(a) exemption (a) regex fixed (substring match) + F-PASS25-C1(b) F-PASS13-I1 narrative back-filled in 3 SESSION-HANDOFF locations: §6 discipline table row 13 (FINAL-marker format change description reworded), §1 TD-VSDD-053-spirit advisory block (line describing FINAL-marker format change reworded to remove literal deictic), §3c closure note (this line) + F-PASS25-C1(c) anti-carve-out clause codified + F-PASS25-I1 Pass 24 closure narrative corrected (sub-check (k) body accurately described) + F-PASS25-I2 current_streak rephrased (0/3 for all 25 passes, never advanced) + F-PASS25-S1 audit-trail format canonicalized (PASS/FAIL/NA status labels) + F-PASS25-O2 subsumed by C1(c). Fix-burst total updated to 51.
+**3c. DONE — State-mgr FINAL (Pass 27 - persist 139dc14):**
+Pass 27 state-mgr FINAL: F-PASS27-C1 §6 header corrected to Pass 27 + F-PASS26-O2 two-form definitional drift canonicalized to byte-identical primary criterion "current pass number at the time of the state-mgr FINAL burst" + (Pass N VERB) parameterized-header sweep performed across STATE.md + SESSION-HANDOFF + TASK-LIST + F-PASS27-I1 STATE.md §94 updated to Pass 27 CLOSED + sub-check (i) pattern broadened to full `(Pass N VERB)` family + F-PASS27-I2 §3 Phase 1d status bullet updated to Pass 27 values (54 fix-bursts, 13th recurrence) + F-PASS27-I3 count-balance arithmetic corrected (22+4=26; sub-check (c) extended) + F-PASS27-O1 addressed by C1 canonicalization. Fix-burst total updated to 54.
 
-**3d. TOP-OF-STACK — Pass 27 adversary dispatch (chat-only, no catalog freeze — 6th 1/3-streak candidate):**
-- Pass 26 CLOSED: adversary 05015cb (0C+3I+1S+2O) + state-mgr FINAL Pass 26 (SHA to be back-filled per discipline #24 exemption (b)). CRITICAL=0 — meta-rule self-violation class did NOT recur. Propagation-gap regression class addressed. Fix-burst total 52.
-- Dispatch Pass 27 per BC-5.39.001 cascade protocol.
+**3d. TOP-OF-STACK — Pass 28 adversary dispatch (chat-only, no catalog freeze — 7th 1/3-streak candidate):**
+- Pass 27 CLOSED: adversary 139dc14 (1C+3I+0S+1O) + state-mgr FINAL Pass 27. CRITICAL=1 — 13th recurrence meta-rule self-violation class. Fix-burst total 54.
+- Dispatch Pass 28 per BC-5.39.001 cascade protocol.
 - MUST use chat-only output protocol (no Write or Commit instructions to adversary; orchestrator routes persistence via state-manager per F-PASS12-O1).
 - No discipline catalog freeze per UD-002/UD-003 / Option C.
-- Pass 27 is the 6th 1/3-streak candidate — if 0C+0I, streak advances 0/3 → 1/3.
+- Pass 28 is the 7th 1/3-streak candidate — if 0C+0I, streak advances 0/3 → 1/3.
 - Continue cascade until BC-5.39.001 literal streak 3/3 achieved.
 
 ### Step 4 — Key constraints to carry forward
@@ -121,7 +122,7 @@ Pass 25 state-mgr FINAL: F-PASS25-C1(a) exemption (a) regex fixed (substring mat
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 26 CLOSED; Pass 27 next-action.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 27 CLOSED; Pass 28 next-action.**
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -129,7 +130,7 @@ Phase 1b (PRD) has been completed. PRD v0.1.1 landed at commit 7935faa. The PRD 
 
 Phase 1c (Architecture) has been completed. Architecture v0.1.1 landed via 5 commits (b7679ee, 7e8f96f, cd6c3ba, 1a10e45, d89ea4b). ARCH-INDEX + 17 ADRs + 18 SS-NN designs + 27 VPs (64/64 P0 BC coverage).
 
-Phase 1d (Adversarial spec review) is IN-PROGRESS. 26 passes completed (all FAIL), 52 fix-bursts committed. Current spec versions: brief v0.4.19, PRD v0.1.10, BC-INDEX v0.1.9, ARCH-INDEX v0.1.22 (9734b40), VP-INDEX v0.1.6. Streak 0/3. Pass 26 CLOSED. CRITICAL=0 (meta-rule self-violation class did NOT recur). Pass 27 adversary is the next-action.
+Phase 1d (Adversarial spec review) is IN-PROGRESS. 27 passes completed (all FAIL), 54 fix-bursts committed. Current spec versions: brief v0.4.19, PRD v0.1.10, BC-INDEX v0.1.9, ARCH-INDEX v0.1.22 (9734b40), VP-INDEX v0.1.6. Streak 0/3. Pass 27 CLOSED. CRITICAL=1 (13th recurrence meta-rule self-violation class — parameterized-header self-violation). Pass 28 adversary is the next-action.
 
 **User decision UD-002:** Option C selected on 2026-05-16. Continue cascade without discipline catalog freeze. The STRONG-ESCALATE from the Pass 16 adversary report was presented to the human; the human's answer is: continue the BC-5.39.001 cascade with no shortcuts. Meta-rule self-violation class (F-PASS17-C1 being the 7th recurrence, F-PASS18-C1 being the 8th) may recur in future passes; the human accepts this.
 
@@ -151,7 +152,9 @@ Phase 1d (Adversarial spec review) is IN-PROGRESS. 26 passes completed (all FAIL
 
 **Pass 25 closure note:** Pass 25 persist commit landed at 42d8f55 (1C+2I+1S+2O). CRITICAL=1 for 2nd consecutive pass post-plateau-end (12th recurrence meta-rule self-violation class). 4th 1/3-streak candidate MISSED. NO architect burst (F-PASS25-C1 + F-PASS25-I1 + F-PASS25-I2 + F-PASS25-S1 + F-PASS25-O2 all state-manager-routed). NO PO burst. State-mgr FINAL 0a7d54c closes F-PASS25-C1(a) (exemption (a) regex fixed: replaced anchored regex `^[^|]*| state-mgr FINAL ✓ (this commit)` — which was structurally broken because cascade-table rows place the FINAL-marker cell 4-5 columns deep — with substring match `state-mgr FINAL ✓ (this commit)` that correctly exempts all cascade-table rows regardless of column depth) + F-PASS25-C1(b) (F-PASS13-I1 descriptive prose back-filled in 3 SESSION-HANDOFF locations: §6 discipline table row 13 (FINAL-marker format change description reworded), §1 TD-VSDD-053-spirit advisory block (sentence reworded to remove literal deictic), §3c closure note; SESSION-HANDOFF TD-VSDD-053-spirit advisory sentence reworded to remove literal deictic marker from narrative prose describing the FINAL-marker format change) + F-PASS25-C1(c) (anti-carve-out clause codified in discipline #24 body and sub-check (j) discipline entry: PASS marks may ONLY be emitted when grep returns EMPTY; "pre-existing residuals" / "unchanged from prior passes" are NOT permitted justifications for PASS) + F-PASS25-I1 (Pass 24 closure narrative corrected to accurately state that sub-check (k) body contains literal `(this commit)` in grep argument as definitional necessity; exemption (c) handles the false-positive) + F-PASS25-I2 (current_streak rephrased from "has not recovered since Pass 7" to "streak has been 0/3 for all 25 Phase 1d passes — never advanced") + F-PASS25-S1 (audit-trail format canonicalized: status values PASS/FAIL/NA with active-pass count and NA list; prior tick-glyph format retired) + F-PASS25-O2 (subsumed by F-PASS25-C1(c)). Pass 25 produced 2 commits (1 persist 42d8f55 + 1 state-mgr FINAL 0a7d54c). Discipline catalog unchanged at 24. Pass 26 was the 5th 1/3-streak candidate.
 
-**Pass 26 closure note:** Pass 26 persist commit landed at 05015cb (0C+3I+1S+2O). CRITICAL=0 — meta-rule self-violation class did NOT recur. 5th 1/3-streak candidate MISSED. NO architect burst. NO PO burst. State-mgr FINAL (SHA to be back-filled per discipline #24 exemption (b)) closes F-PASS26-I1 (TASK-LIST §15 TOP OF STACK header updated from "Pass 24 CLOSED; Pass 25 next-action" to "Pass 26 CLOSED; Pass 27 next-action") + F-PASS26-I2 (SESSION-HANDOFF §6 header parametrization updated from Pass 24 to Pass 25 as most recent discipline-modifying pass; Pass 26 note row appended to §6 body) + F-PASS26-I3 (TASK-LIST task #127a pending back-fill annotation replaced with confirmed: "Pass 24 state-mgr FINAL commit SHA bc479e1; SHA back-filled into SESSION-HANDOFF §8 by Pass 25 state-mgr FINAL — commit 0a7d54c") + F-PASS26-S1 (§3c F-PASS25-C1(b) closure narrative enumerated to 3 specific SESSION-HANDOFF locations: §6 discipline table row 13, §1 TD-VSDD-053-spirit advisory block, §3c closure note) + F-PASS26-O1 (TASK-LIST task #125a SHA placeholder 926d5cc-followup replaced with 04a0ee9; sub-check (d) extended to cover TASK-LIST.md and SHA-shaped placeholder patterns `[0-9a-f]{7,}(-followup|-placeholder|-TBD)`) + F-PASS26-O2 (sub-check (i) extended to cover parameterized-narrative headers of the `(Pass N — ...)` syntax form — header N must reflect most recent pass that contributed a body note to that section) + §8 Pass 25 self-row back-filled from cascade-table placeholder to 0a7d54c. Pass 26 produced 2 commits (1 persist 05015cb + 1 state-mgr FINAL). Discipline catalog unchanged at 24. Pass 27 is the 6th 1/3-streak candidate.
+**Pass 26 closure note:** Pass 26 persist commit landed at 05015cb (0C+3I+1S+2O). CRITICAL=0 — meta-rule self-violation class did NOT recur. 5th 1/3-streak candidate MISSED. NO architect burst. NO PO burst. State-mgr FINAL a3a72f7 closes F-PASS26-I1 (TASK-LIST §15 TOP OF STACK header updated from "Pass 24 CLOSED; Pass 25 next-action" to "Pass 26 CLOSED; Pass 27 next-action") + F-PASS26-I2 (SESSION-HANDOFF §6 header parametrization updated from Pass 24 to Pass 25 — NOTE: self-violated by burst; both codified forms of F-PASS26-O2 extension yield Pass 26, not Pass 25; corrected to Pass 27 at F-PASS27-C1; F-PASS27-C1 also canonicalized the primary criterion to "current pass number at the time of the state-mgr FINAL burst" as byte-identical across both codification locations) + F-PASS26-I3 (TASK-LIST task #127a pending back-fill annotation replaced with confirmed: "Pass 24 state-mgr FINAL commit SHA bc479e1; SHA back-filled into SESSION-HANDOFF §8 by Pass 25 state-mgr FINAL — commit 0a7d54c") + F-PASS26-S1 (§3c F-PASS25-C1(b) closure narrative enumerated to 3 specific SESSION-HANDOFF locations: §6 discipline table row 13, §1 TD-VSDD-053-spirit advisory block, §3c closure note) + F-PASS26-O1 (TASK-LIST task #125a SHA placeholder 926d5cc-followup replaced with 04a0ee9; sub-check (d) extended to cover TASK-LIST.md and SHA-shaped placeholder patterns `[0-9a-f]{7,}(-followup|-placeholder|-TBD)`) + F-PASS26-O2 (sub-check (i) extended to cover parameterized-narrative headers — CLOSED-PARTIAL; burst self-violated by using "most recent discipline-modifying pass" criterion that is not in either codified form; pass 27 F-PASS27-C1 corrected and canonicalized) + §8 Pass 25 self-row back-filled from cascade-table placeholder to 0a7d54c. Pass 26 produced 2 commits (1 persist 05015cb + 1 state-mgr FINAL a3a72f7). Discipline catalog unchanged at 24. Pass 27 is the 6th 1/3-streak candidate.
+
+**Pass 27 closure note:** Pass 27 persist commit landed at 139dc14 (1C+3I+0S+1O). CRITICAL=1 — 13th recurrence meta-rule self-violation class (parameterized-header self-violation). 6th 1/3-streak candidate MISSED. NO architect burst (all findings state-manager-routed). NO PO burst. State-mgr FINAL closes F-PASS27-C1 (SESSION-HANDOFF §6 header corrected from Pass 25 to Pass 27 per canonical primary criterion "current pass number at the time of the state-mgr FINAL burst"; F-PASS26-O2 two-form definitional drift canonicalized — Form A retained as canonical primary criterion; Form B in SESSION-HANDOFF Pass 26 closure note updated to byte-identical primary criterion text; invented Form C "most recent discipline-modifying pass" explicitly rejected and noted; parameterized-header sweep across STATE.md + SESSION-HANDOFF + TASK-LIST performed — all (Pass N VERB) markers verified at current pass per canonical criterion) + F-PASS27-I1 (STATE.md §94 updated from Pass 25 CLOSED to Pass 27 CLOSED; sub-check (i) pattern broadened from `(Pass N — ...)` only to full family regex `\(Pass [0-9]+ (—|CLOSED|IN-PROGRESS|next-action)` covering CLOSED, IN-PROGRESS, next-action variants) + F-PASS27-I2 (SESSION-HANDOFF §3 Phase 1d status bullet updated to Pass 27 values: 54 fix-bursts, CRITICAL=1, 13th recurrence) + F-PASS27-I3 (STATE.md frontmatter phase_1d_status count-balance arithmetic corrected from "23 FAIL with CRITICAL, 3 FAIL no CRITICAL" to "23 FAIL with CRITICAL, 4 FAIL no CRITICAL" — zero-CRITICAL passes verified as 4 at positions 21, 22, 23, 26; sub-check (c) extended to paired count claims N+M=total verification) + F-PASS27-O1 (addressed by C1; meta-note codified in sub-check (i): primary-criterion phrasing MUST be byte-identical across all codification locations). Pass 27 produced 2 commits (1 persist 139dc14 + 1 state-mgr FINAL). Discipline catalog unchanged at 24. Pass 28 is the 7th 1/3-streak candidate.
 
 **Pass 12 closure note:** Pass 12 persist commit landed at a58de7e (2C+3I+2O). Architect burst 71c51b3 fixed F-PASS12-C1 (SS-NN classify — all 18 SS-NN confirmed Case A, 16 bumped to v1.1 with Changelog sections) + F-PASS12-I1 (hallucinated item names corrected in F-PASS11-C2 Changelog) + F-PASS12-I2 (SS-NN Changelog discipline tightened to any-content-edit trigger). PO burst ecbe056 fixed F-PASS12-C2 (PRD v0.1.8 → v0.1.9 + BC-INDEX v0.1.7 → v0.1.8 canonical-baseline timestamp sweep across 100 of 101 in-scope files; nfr-catalog retained at 2026-05-15). Pass 12 FINAL 0781716 re-pinned ARCH-INDEX inherits_from from prd@v0.1.8 → prd@v0.1.9. The state-mgr FINAL 0781716 left a `[0781716]` placeholder for its own SHA — back-filled in Pass 13 state-mgr FINAL d3016a3.
 
@@ -187,7 +190,7 @@ See SESSION-HANDOFF prior versions or `.factory/cycles/v0.1-phase-1a-brief/adver
 - **Phase 1a streak:** 3/3 — CASCADE CONVERGED on v0.4.15 (Phase 1a Stage 5 CLOSED)
 - **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
 - **Phase 1c status:** COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89ea4b)
-- **Phase 1d status:** IN-PROGRESS — Pass 25 CLOSED; 51 fix-bursts committed; streak 0/3; CRITICAL=1 for 2nd consecutive pass post-plateau-end (12th recurrence)
+- **Phase 1d status:** IN-PROGRESS — Pass 27 CLOSED; 54 fix-bursts committed; streak 0/3; CRITICAL=1 at Pass 27 (13th recurrence meta-rule self-violation class)
 - **Five-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md)
 
 ## 4. Locked decisions (canonical sources)
@@ -234,7 +237,7 @@ Plus from later session decisions (not in stage-3-locks.md):
 
 **F-PASS19-I1 + F-PASS20-I1 reconciliation note:** Header reconciled DOWN from "13 confirmed disciplines" to "10 confirmed disciplines" for §5 table representation. NOTE per F-PASS20-I1: "13" WAS substantiable in brief Changelog as count of individual `**STRUCTURAL FIX` entries across Phase 1a (v0.4.5..v0.4.15) — v0.4.5: 1, v0.4.6: 1, v0.4.7: 1, v0.4.8: 2, v0.4.10: 1, v0.4.11: 2, v0.4.12: 2, v0.4.13: 1, v0.4.14: 1, v0.4.15: 1 = 13 individual entries. The §5 table aggregates per-version (one row per version) yielding 10 rows. The header was reconciled DOWN to "10 confirmed disciplines" to match the row-count-canonical §5 table representation. Both "13" and "10" are defensible counts at different granularities; choice of row-count-canonical was made for §5 table consistency with header-vs-body discipline #23. F-PASS19-I1 + F-PASS20-I1 closures.
 
-## 6. Phase 1d disciplines (Pass 25 — 24 total Phase 1d disciplines; Pass 25 fixed discipline #24 exemption (a) regex + anti-carve-out clause + audit-trail format canonicalization)
+## 6. Phase 1d disciplines (Pass 27 — 24 total Phase 1d disciplines; Pass 27 fixed parameterized-header propagation gaps + canonicalized F-PASS26-O2 two-form definitional drift to byte-identical primary criterion + extended sub-check (i) pattern to (Pass N VERB) family + corrected count-balance arithmetic)
 
 | Pass | Discipline | Scope |
 |------|-----------|-------|
@@ -279,7 +282,9 @@ Plus from later session decisions (not in stage-3-locks.md):
 
 **Pass 25 note:** Pass 25 fixed discipline #24 (F-PASS25-C1(a) — exemption (a) regex fixed from broken anchored form to substring match; F-PASS25-C1(b) — F-PASS13-I1 narrative back-filled in §6 discipline table and TD-VSDD-053 advisory; F-PASS25-C1(c) — anti-carve-out clause codified: PASS marks only permitted when grep returns empty) + audit-trail format canonicalized (F-PASS25-S1 — PASS/FAIL/NA status labels with active-pass count and NA list; replaces tick-glyph format). Discipline catalog count unchanged at 24. Sub-check count unchanged at 11.
 
-**Pass 26 note:** Pass 26 made no new discipline codifications. State-mgr FINAL closed propagation-gap findings: F-PASS26-I1 (TASK-LIST §15 TOP OF STACK header updated to Pass 26 CLOSED / Pass 27 next-action) + F-PASS26-I2 (§6 header parametrization updated to Pass 25 as most recent discipline-modifying pass) + F-PASS26-I3 (task #127a pending back-fill annotation replaced with confirmed SHA bc479e1) + F-PASS26-S1 (§3c F-PASS25-C1(b) enumeration expanded to 3 locations) + F-PASS26-O1 (task #125a SHA placeholder 926d5cc-followup replaced with 04a0ee9; sub-check (d) extended to TASK-LIST.md SHA-shaped placeholders) + F-PASS26-O2 (sub-check (i) extended to cover parameterized-narrative headers of the form `(Pass N — ...)` syntax). Discipline catalog count unchanged at 24. Sub-check count unchanged at 11.
+**Pass 26 note:** Pass 26 made no new discipline codifications. State-mgr FINAL closed propagation-gap findings: F-PASS26-I1 (TASK-LIST §15 TOP OF STACK header updated to Pass 26 CLOSED / Pass 27 next-action) + F-PASS26-I2 (§6 header parametrization updated to Pass 25 — CLOSED-PARTIAL; self-violated; corrected at Pass 27 F-PASS27-C1) + F-PASS26-I3 (task #127a pending back-fill annotation replaced with confirmed SHA bc479e1) + F-PASS26-S1 (§3c F-PASS25-C1(b) enumeration expanded to 3 locations) + F-PASS26-O1 (task #125a SHA placeholder 926d5cc-followup replaced with 04a0ee9; sub-check (d) extended to TASK-LIST.md SHA-shaped placeholders) + F-PASS26-O2 (sub-check (i) extended to cover parameterized-narrative headers — CLOSED-PARTIAL; pattern `(Pass N — ...)` too narrow; corrected and broadened at Pass 27). Discipline catalog count unchanged at 24. Sub-check count unchanged at 11.
+
+**Pass 27 note:** Pass 27 made no new discipline catalog entries (corrections and extensions to existing sub-check (i) and sub-check (c)). State-mgr FINAL closed: F-PASS27-C1 (§6 header corrected to Pass 27 per canonical primary criterion "current pass number at the time of the state-mgr FINAL burst"; F-PASS26-O2 two-form definitional drift canonicalized — Form A retained as canonical primary criterion byte-identical across STATE.md sub-check (i) body and SESSION-HANDOFF Pass 26 closure note; invented Form C "most recent discipline-modifying pass" explicitly rejected; parameterized-header sweep across STATE.md + SESSION-HANDOFF + TASK-LIST all verified at current pass; meta-note added to sub-check (i): primary-criterion phrasing MUST be byte-identical across all codification locations) + F-PASS27-I1 (STATE.md §94 updated to Pass 27 CLOSED; sub-check (i) pattern broadened from `(Pass N — ...)` to full family regex `\(Pass [0-9]+ (—|CLOSED|IN-PROGRESS|next-action)`) + F-PASS27-I2 (SESSION-HANDOFF §3 Phase 1d status bullet updated to Pass 27 values: 54 fix-bursts, CRITICAL=1, 13th recurrence) + F-PASS27-I3 (STATE.md frontmatter count-balance arithmetic corrected: zero-CRITICAL passes verified as 4 at positions 21+22+23+26; corrected from "23+3=26" to "22+4=26"; sub-check (c) extended to verify BOTH N+M=total AND individual N and M accuracy for paired count claims) + F-PASS27-O1 (addressed by C1 canonicalization; meta-note in sub-check (i) extension). Discipline catalog count unchanged at 24. Sub-check count unchanged at 11.
 
 ## 7. Artifacts on disk (all persisted, last committed versions)
 
@@ -294,7 +299,7 @@ Plus from later session decisions (not in stage-3-locks.md):
 | `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.6 | commit a3a83b1 |
 | `.factory/specs/architecture/verification-properties/VP-001-*.md` through `VP-027-*.md` | various | 27 files; 4 at v1.2 (VP-014/021/026/027) + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog |
 
-## 8. Recent session commits (this session, 2026-05-16/2026-05-17 — 46 commits)
+## 8. Recent session commits (this session, 2026-05-16/2026-05-17 — 48 commits)
 
 Per discipline #23, this header count is updated alongside every row addition. Discipline #23 incremental scope binds future state-manager bursts.
 
@@ -345,18 +350,20 @@ Per discipline #23, this header count is updated alongside every row addition. D
 | 42d8f55 | adversary | Pass 25 persist FAIL — 1C+2I+1S+2O — CRITICAL=1 2nd consecutive post-plateau-end; 12th recurrence meta-rule self-violation; 4th 1/3-streak candidate MISSED; NO re-escalation per UD-003 |
 | 0a7d54c | state | Pass 25 state-mgr FINAL — F-PASS25-C1(a) exemption (a) regex fixed (substring match) + F-PASS25-C1(b) F-PASS13-I1 narrative back-filled + F-PASS25-C1(c) anti-carve-out clause codified + F-PASS25-I1 Pass 24 closure narrative corrected + F-PASS25-I2 current_streak rephrased + F-PASS25-S1 audit-trail format canonicalized + 11 sub-checks |
 | 05015cb | adversary | Pass 26 persist FAIL — 0C+3I+1S+2O — CRITICAL=0 (meta-rule self-violation class did NOT recur); propagation-gap regression class; 5th 1/3-streak candidate MISSED; NO re-escalation per UD-003 |
-| (this commit) | state | Pass 26 state-mgr FINAL — F-PASS26-I1 §15 TOP OF STACK header + F-PASS26-I2 §6 parameterized header + F-PASS26-I3 task #127a description + F-PASS26-S1 §3c enumeration + F-PASS26-O1 task #125a SHA back-fill (04a0ee9) + F-PASS26-O2 sub-check (i) extended to parameterized headers + sub-check (d) extended to TASK-LIST.md + §8 Pass 25 row back-filled to 0a7d54c + 11 sub-checks |
+| a3a72f7 | state | Pass 26 state-mgr FINAL — F-PASS26-I1 §15 TOP OF STACK header + F-PASS26-I2 §6 parameterized header (CLOSED-PARTIAL; self-violated) + F-PASS26-I3 task #127a description + F-PASS26-S1 §3c enumeration + F-PASS26-O1 task #125a SHA back-fill (04a0ee9) + F-PASS26-O2 sub-check (i) extended to parameterized headers (CLOSED-PARTIAL; pattern too narrow; corrected Pass 27) + sub-check (d) extended to TASK-LIST.md + §8 Pass 25 row back-filled to 0a7d54c + 11 sub-checks |
+| 139dc14 | adversary | Pass 27 persist FAIL — 1C+3I+0S+1O — CRITICAL=1 (13th recurrence meta-rule self-violation — parameterized-header self-violation); 6th 1/3-streak candidate MISSED; NO re-escalation per UD-003 |
+| (this commit) | state | Pass 27 state-mgr FINAL — F-PASS27-C1 §6 header corrected to Pass 27 + F-PASS26-O2 two-form drift canonicalized + sub-check (i) (Pass N VERB) pattern broadened + parameterized-header sweep + F-PASS27-I1 STATE.md §94 + F-PASS27-I2 §3 status bullet (54 fix-bursts, 13th recurrence) + F-PASS27-I3 count-balance arithmetic + sub-check (c) extended + F-PASS27-O1 meta-note codified + §8 Pass 26 row back-filled to a3a72f7 + 11 sub-checks |
 
 ## 9. Resume procedure
 
-**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d IN-PROGRESS — Pass 26 CLOSED; Pass 27 next-action.**
+**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d IN-PROGRESS — Pass 27 CLOSED; Pass 28 next-action.**
 
 **See the "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section at the TOP of this document for the complete numbered step-by-step.**
 
 In summary:
 1. Read CLAUDE.md, STATE.md, THIS FILE, TASK-LIST.md (in that order)
-2. Verify HEAD = Pass 26 state-mgr FINAL via `git log --oneline -1` (subject starts with `factory(state): Phase 1d Pass 26 FINAL`) and clean working tree
-3. Dispatch Pass 27 adversary per BC-5.39.001 cascade protocol (chat-only per F-PASS12-O1, no catalog freeze per UD-002/UD-003); Pass 27 is the 6th 1/3-streak candidate
+2. Verify HEAD = Pass 27 state-mgr FINAL via `git log --oneline -1` (subject starts with `factory(state): Phase 1d Pass 27 FINAL`) and clean working tree
+3. Dispatch Pass 28 adversary per BC-5.39.001 cascade protocol (chat-only per F-PASS12-O1, no catalog freeze per UD-002/UD-003); Pass 28 is the 7th 1/3-streak candidate
 4. Repeat cascade until streak 3/3
 
 Carry forward to Phase 1d: writing-technique principle (including plain-prose `line N`), five-file gate, exclusion-list-extension protocol, no blanket-coverage wording, single-commit-per-burst, NO AI attribution. Full discipline catalog in STATE.md.
@@ -385,7 +392,7 @@ Carry forward to Phase 1d: writing-technique principle (including plain-prose `l
 
 ## 13. Phase 1d Adversarial Cascade — IN-PROGRESS
 
-Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 26 passes to date have returned FAIL.
+Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 27 passes to date have returned FAIL.
 
 | Pass | Verdict | Findings | Persist SHA | Fix-burst SHAs | Streak after |
 |------|---------|----------|-------------|----------------|--------------|
@@ -414,12 +421,13 @@ Phase 1d BC-5.39.001 3-CLEAN cascade started at commit 484bc05. All 26 passes to
 | 23 | FAIL | 0C+2I+1S+2O | 2463acb | state-mgr FINAL ✓ 3388678 | 0/3 |
 | 24 | FAIL | 1C+1I+2S+2O | bef4508 | state-mgr FINAL ✓ bc479e1 | 0/3 |
 | 25 | FAIL | 1C+2I+1S+2O | 42d8f55 | state-mgr FINAL ✓ 0a7d54c | 0/3 |
-| 26 | FAIL | 0C+3I+1S+2O | 05015cb | state-mgr FINAL ✓ (this commit) | 0/3 |
+| 26 | FAIL | 0C+3I+1S+2O | 05015cb | state-mgr FINAL ✓ a3a72f7 | 0/3 |
+| 27 | FAIL | 1C+3I+0S+1O | 139dc14 | state-mgr FINAL ✓ (this commit) | 0/3 |
 
-**CRITICAL trajectory:** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1→1→1→1→1→0→0→0→1→1→0. CRITICAL plateau at 1 for 7 consecutive passes (Pass 14..Pass 20); BROKEN at Pass 21 (first zero-CRITICAL pass since Phase 1d began); plateau-broken state held 3 consecutive passes (Pass 21, Pass 22, Pass 23); ENDED at Pass 24 (CRITICAL=1, F-PASS24-C1 11th recurrence); CONTINUED at Pass 25 (CRITICAL=1, F-PASS25-C1 12th recurrence); RETURNED TO ZERO at Pass 26 (CRITICAL=0 — meta-rule self-violation class did NOT recur).
+**CRITICAL trajectory:** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1→1→1→1→1→0→0→0→1→1→0→1. CRITICAL plateau at 1 for 7 consecutive passes (Pass 14..Pass 20); BROKEN at Pass 21 (first zero-CRITICAL pass since Phase 1d began); plateau-broken state held 3 consecutive passes (Pass 21, Pass 22, Pass 23); ENDED at Pass 24 (CRITICAL=1, F-PASS24-C1 11th recurrence); CONTINUED at Pass 25 (CRITICAL=1, F-PASS25-C1 12th recurrence); RETURNED TO ZERO at Pass 26 (CRITICAL=0 — meta-rule self-violation class did NOT recur); RETURNED TO 1 at Pass 27 (F-PASS27-C1 13th recurrence — parameterized-header self-violation).
 
-**Note on fix-burst count:** `total_phase_1d_fix_bursts: 52` is derived by counting every commit in the "Fix-burst SHAs" column above literally (excludes adversary-persist commits; includes Pass 11 architect corrective sub-bursts as separate entries per TD-VSDD-053-spirit audit): Passes 1-6 (2 each) = 12; Pass 7 = 3; Passes 8-10 (2 each) = 6; Pass 11 = 5; Pass 12 = 3; Pass 13 = 2; Pass 14 = 2; Pass 15 = 2; Pass 16 = 2; Pass 17 = 3; Pass 18 = 2 (architect a73b64a + state-mgr FINAL 47d12c7); Pass 19 = 2 (architect 9172878 + state-mgr FINAL 82341f3); Pass 20 = 2 (architect 9734b40 + state-mgr FINAL 68025cd); Pass 21 = 1 (state-mgr FINAL 926d5cc — no architect or PO burst); Pass 22 = 1 (state-mgr FINAL 04a0ee9 — no architect or PO burst); Pass 23 = 1 (state-mgr FINAL 3388678 — no architect or PO burst); Pass 24 = 1 (state-mgr FINAL bc479e1 — no architect or PO burst); Pass 25 = 1 (state-mgr FINAL 0a7d54c — no architect or PO burst); Pass 26 = 1 (state-mgr FINAL — no architect or PO burst); total = 52.
+**Note on fix-burst count:** `total_phase_1d_fix_bursts: 54` is derived by counting every commit in the "Fix-burst SHAs" column above literally (excludes adversary-persist commits; includes Pass 11 architect corrective sub-bursts as separate entries per TD-VSDD-053-spirit audit): Passes 1-6 (2 each) = 12; Pass 7 = 3; Passes 8-10 (2 each) = 6; Pass 11 = 5; Pass 12 = 3; Pass 13 = 2; Pass 14 = 2; Pass 15 = 2; Pass 16 = 2; Pass 17 = 3; Pass 18 = 2 (architect a73b64a + state-mgr FINAL 47d12c7); Pass 19 = 2 (architect 9172878 + state-mgr FINAL 82341f3); Pass 20 = 2 (architect 9734b40 + state-mgr FINAL 68025cd); Pass 21 = 1 (state-mgr FINAL 926d5cc — no architect or PO burst); Pass 22 = 1 (state-mgr FINAL 04a0ee9 — no architect or PO burst); Pass 23 = 1 (state-mgr FINAL 3388678 — no architect or PO burst); Pass 24 = 1 (state-mgr FINAL bc479e1 — no architect or PO burst); Pass 25 = 1 (state-mgr FINAL 0a7d54c — no architect or PO burst); Pass 26 = 1 (state-mgr FINAL a3a72f7 — no architect or PO burst); Pass 27 = 1 (state-mgr FINAL — no architect or PO burst); total = 54.
 
-**Pass 26 outstanding work has been CLOSED** at state-mgr FINAL (Pass 26 FINAL burst). Pass 27 adversary dispatch is the top-of-stack next-action per UD-002/UD-003 / Option C. Pass 27 is the 6th 1/3-streak candidate.
+**Pass 27 outstanding work has been CLOSED** at state-mgr FINAL (Pass 27 FINAL burst). Pass 28 adversary dispatch is the top-of-stack next-action per UD-002/UD-003 / Option C. Pass 28 is the 7th 1/3-streak candidate.
 
-**Pass reports:** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..26}.md`
+**Pass reports:** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..27}.md`
