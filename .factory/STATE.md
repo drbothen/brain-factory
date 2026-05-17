@@ -8,8 +8,8 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: IN-PROGRESS — Pass 21 CLOSED; 21 passes complete (20 FAIL with CRITICAL, 1 FAIL no CRITICAL); 47 fix-bursts complete; streak 0/3; plateau broken at Pass 21; UD-003 in effect; no re-escalation
-session_continuity: ACTIVE-CASCADE — Pass 21 closed; resume by dispatching Pass 22 adversary; if Pass 22 finds 0C+0I, streak advances to 1/3 — first time since cascade began
+phase_1d_status: IN-PROGRESS — Pass 22 CLOSED; 22 passes complete (20 FAIL with CRITICAL, 2 FAIL no CRITICAL); 48 fix-bursts complete; streak 0/3; plateau-broken state holds 2 consecutive passes; UD-003 in effect
+session_continuity: ACTIVE-CASCADE — Pass 22 closed; resume by dispatching Pass 23 adversary — 2nd 1/3-streak candidate (Pass 21 was 1st, missed)
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
@@ -25,17 +25,19 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## Pass 21 CLOSED — Pass 22 next-action
+## Pass 22 CLOSED — Pass 23 next-action
 
 **Pass 20 closure summary:** Pass 20 adversary persisted at commit f3e7ca2 (FAIL — 1 CRITICAL + 2 IMPORTANT + 2 SUGGESTIONS + 2 OBSERVATIONS). Architect burst 9734b40 closed F-PASS20-C1 (replaced F-PASS19-O1 canonical-baseline scope clause with actual 15-prior-burst sweep enumeration; sweep result: 2 same-commit-sibling-violations found post-F-PASS18-O1 codification — Pass 18 a73b64a and Pass 19 9172878, both closed) + F-PASS20-I2 (removed circular self-validation carve-out from F-PASS19-O1 inline self-check). ARCH-INDEX bumped to v0.1.22. NO PO burst (F-PASS11-O1 + discipline #10 still not mirrored to PRD/BC-INDEX). State-mgr FINAL 68025cd closed F-PASS20-I1 (§5 reconciliation rationale corrected — "13" WAS substantiable as individual STRUCTURAL FIX entry count in brief Changelog; row-count-canonical choice documented) + F-PASS20-S1 (§5 v0.4.8 and v0.4.12 rows extended to mention omitted structural fixes). CRITICAL count held at 1 for 7th consecutive pass — F-PASS20-O2 observation; NO re-escalation per UD-003.
 
-**Pass 21 closure summary:** Pass 21 adversary persisted at commit e60e185 (FAIL — 0 CRITICAL + 1 IMPORTANT + 1 SUGGESTION + 2 OBSERVATIONS). CRITICAL PLATEAU BROKEN at 7 passes — first zero-CRITICAL pass since Phase 1d cascade began. NO architect burst (F-PASS21-I1 + F-PASS21-S1 both state-manager-routed). NO PO burst (F-PASS21-O2 accepted as OBSERVATION — meta-rules not mirrored to PRD/BC-INDEX confirmed out-of-scope). State-mgr FINAL (this burst) closed F-PASS21-I1 (3 stale `(this commit)` markers in narrative prose replaced with actual SHAs across STATE.md + SESSION-HANDOFF + TASK-LIST; §9 resume verification rephrased to push reader to authoritative source) + F-PASS21-S1 (§5 v0.4.8 + v0.4.12 drift class columns extended to symmetric two-class format) + codified NEW discipline #24 (Stale-temporal-marker grep sub-check; both scopes declared) + added sub-check (j) to state-mgr FINAL discipline list (now 10 sub-checks).
+**Pass 21 closure summary:** Pass 21 adversary persisted at commit e60e185 (FAIL — 0 CRITICAL + 1 IMPORTANT + 1 SUGGESTION + 2 OBSERVATIONS). CRITICAL PLATEAU BROKEN at 7 passes — first zero-CRITICAL pass since Phase 1d cascade began. NO architect burst (F-PASS21-I1 + F-PASS21-S1 both state-manager-routed). NO PO burst (F-PASS21-O2 accepted as OBSERVATION — meta-rules not mirrored to PRD/BC-INDEX confirmed out-of-scope). State-mgr FINAL 926d5cc closed F-PASS21-I1 (3 stale `(this commit)` markers in narrative prose replaced with actual SHAs across STATE.md + SESSION-HANDOFF + TASK-LIST; §9 resume verification rephrased to push reader to authoritative source) + F-PASS21-S1 (§5 v0.4.8 + v0.4.12 drift class columns extended to symmetric two-class format) + codified NEW discipline #24 (Stale-temporal-marker grep sub-check; both scopes declared) + added sub-check (j) to state-mgr FINAL discipline list (now 10 sub-checks).
+
+**Pass 22 closure summary:** Pass 22 adversary persisted at commit 1b02a98 (FAIL — 0 CRITICAL + 2 IMPORTANT + 1 SUGGESTION + 2 OBSERVATIONS). 2nd consecutive zero-CRITICAL pass — plateau-broken state holds. NO architect burst (F-PASS22-I1 + F-PASS22-I2 + F-PASS22-S1 + F-PASS22-O1 all state-manager-routed). NO PO burst. State-mgr FINAL closed F-PASS22-I1 (broadened discipline #24 regex from narrow `\(this commit\)|HEAD = this commit` to full deictic-class `\(this commit\)|\(this burst\)|this commit|this burst`; codified explicit exemptions for cascade-table rows + §8 commit-row-ledger + definitional self-references; per-marker enumeration of 9 stale deictics replaced with actual SHAs) + F-PASS22-I2 (§13 prose updated from "All 20 passes" to "All 22 passes" after Pass 22 row added; discipline #23 sweep methodology extended to prose-paragraph count claims) + F-PASS22-S1 (discipline #24 canonical-baseline scope now per-marker enumeration per discipline #19) + F-PASS22-O1 (§8 commit-row-ledger scope codified explicitly in discipline #24 exemptions) + extended sub-check (i) to bind derived enumeration claims.
 
 **User decision (UD-002):** OPTION C in effect — continue cascade without discipline catalog freeze. No convergence-by-stable-discipline-catalog interpretation. No move to Phase 2 until BC-5.39.001 literal streak 3/3 achieved. User accepts that meta-rule self-violation class may recur in future passes.
 
 **User decision (UD-003):** OPTION (a) reaffirmed on 2026-05-17 — continue cascade per UD-002; same Option C policy; 5-pass plateau and 8-recurrence evidence does not change the human directive. 3rd STRONG-ESCALATE resolved; F-PASS12-O2 escalation clock reset.
 
-**Top-of-stack action:** Dispatch Pass 22 adversary (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003). Pass 22 is the FIRST 1/3-streak candidate since cascade began — if Pass 22 finds 0C+0I, streak advances to 1/3. Continue cascade until BC-5.39.001 literal streak 3/3.
+**Top-of-stack action:** Dispatch Pass 23 adversary (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003). Pass 23 is the 2nd 1/3-streak candidate — if Pass 23 finds 0C+0I, streak advances to 1/3. Continue cascade until BC-5.39.001 literal streak 3/3.
 
 ---
 
@@ -47,15 +49,15 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
-5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-21.md` (most recent findings — Pass 21 CLOSED; Pass 22 adversary is next-action)
+5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-22.md` (most recent findings — Pass 22 CLOSED; Pass 23 adversary is next-action)
 
 **Pre-dispatch verification:**
-- Confirm HEAD = Pass 21 state-mgr FINAL via `git log --oneline -1` (expected subject: `factory(state): Phase 1d Pass 21 FINAL ...`)
+- Confirm HEAD = Pass 22 state-mgr FINAL via `git log --oneline -1` (expected subject: `factory(state): Phase 1d Pass 22 FINAL ...`)
 - Confirm no uncommitted changes via `git status --short`
 
 **Resume steps (in order):**
 
-1. Dispatch Pass 22 adversary per BC-5.39.001 cascade protocol (chat-only per F-PASS12-O1; no catalog freeze per Option C / UD-002/UD-003). Pass 22 is the FIRST 1/3-streak candidate since cascade began.
+1. Dispatch Pass 23 adversary per BC-5.39.001 cascade protocol (chat-only per F-PASS12-O1; no catalog freeze per Option C / UD-002/UD-003). Pass 23 is the 2nd 1/3-streak candidate.
 2. Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved.
 
 ---
@@ -105,9 +107,10 @@ Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX +
 | 18 | FAIL | 1C+2I+1S+2O | 1d56d20 | architect a73b64a + state-mgr FINAL 47d12c7 | 0/3 |
 | 19 | FAIL | 1C+2I+1S+2O | dbac4cf | architect 9172878 + state-mgr FINAL 82341f3 | 0/3 |
 | 20 | FAIL | 1C+2I+2S+2O | f3e7ca2 | architect 9734b40 + state-mgr FINAL 68025cd | 0/3 |
-| 21 | FAIL | 0C+1I+1S+2O | e60e185 | state-mgr FINAL ✓ (this commit) | 0/3 |
+| 21 | FAIL | 0C+1I+1S+2O | e60e185 | state-mgr FINAL 926d5cc | 0/3 |
+| 22 | FAIL | 0C+2I+1S+2O | 1b02a98 | state-mgr FINAL ✓ (this commit) | 0/3 |
 
-**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1→1→1→1→1→0. CRITICAL plateau at 1 for 7 consecutive passes (Pass 14..Pass 20); BROKEN at Pass 21 (zero CRITICAL — first since Phase 1d began).
+**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1→1→1→1→1→0→0. CRITICAL plateau at 1 for 7 consecutive passes (Pass 14..Pass 20); BROKEN at Pass 21 (zero CRITICAL); holds 2nd consecutive pass at Pass 22.
 
 ## 24 Structural-Fix Disciplines Codified During Phase 1d
 
@@ -137,7 +140,7 @@ Phase 1d additions (24 confirmed committed disciplines):
 21. (Pass 15) Bash sweep timestamp-invariant check — `timestamp >= created` enforcement (F-PASS15-O1)
 22. (Pass 16) Changelog version-monotonicity check — Changelog entries MUST appear in strict descending semver order; bash sweep `grep -nE '^### v' "$f" | awk '{print $2}' | sort -rV -c` exits 0 if descending; applies to ARCH-INDEX, VP-INDEX, all SS-NN/ADR/VP files with Changelog sections, AND PRD/supplements/BC-INDEX/95 BC files (F-PASS16-I1 closure; bash sweep extended to PRD/BC scope by F-PASS17-I3(a/b) in ARCH-INDEX v0.1.19 commit b70fc7d + PRD v0.1.10 + BC-INDEX v0.1.9 via PO commit 2f247fc)
 23. (Pass 17) Header-vs-body count check — for any section header containing a count claim, verify the count matches body row/item count (F-PASS17-I1 closure; codified in ARCH-INDEX v0.1.19 commit b70fc7d; mirrored into PRD v0.1.10 + BC-INDEX v0.1.9 via PO commit 2f247fc). Canonical-baseline sweep across STATE.md + SESSION-HANDOFF + TASK-LIST completed Pass 18 FINAL — 5 count-bearing headers checked, 1 drift instance fixed (§8 "19 commits" → "28 commits"), 1 pre-existing gap noted (§5 "13 confirmed disciplines" header over 10-row table, root cause: Phase 1a disciplines prior to v0.4.5 missing from table body), all other headers clean post-burst.
-24. (Pass 21) Stale-temporal-marker grep state-mgr FINAL sub-check — narrative prose in operational state docs (STATE.md, SESSION-HANDOFF, TASK-LIST) MUST NOT contain `(this commit)` or `this commit` deictic markers; cascade-table rows are exempted (per discipline #16 scope). Incremental scope: applied before every state-manager commit; sweep via `grep -nE '\(this commit\)|HEAD = this commit' STATE.md SESSION-HANDOFF.md TASK-LIST.md | grep -v '| state-mgr FINAL'` (pipe-delimited cascade-table rows excluded); any hits in narrative prose must be replaced with actual SHAs. Canonical-baseline scope: Pass 21 codification triggered by F-PASS21-I1 — 3 stale markers detected across STATE.md + SESSION-HANDOFF + TASK-LIST; 3 markers replaced with actual SHAs (6ed900d, 47d12c7, 68025cd); §9 + resume verification prose rephrased to push reader to authoritative source (git log command) rather than inline SHA pinning; F-PASS21-I1 closure. Sub-check (j) added to state-mgr FINAL discipline list; total now 10 sub-checks.
+24. (Pass 21, broadened Pass 22 F-PASS22-I1) Stale-temporal-marker grep state-mgr FINAL sub-check — narrative prose in operational state docs (STATE.md, SESSION-HANDOFF, TASK-LIST) MUST NOT contain any deictic temporal marker: `(this commit)`, `(this burst)`, `this commit`, `this burst`, `in this commit`, `in this burst`, or any variant. Use actual SHAs only. EXEMPTIONS (codified Pass 22 F-PASS22-O1 + F-PASS22-I1): (a) cascade-table rows per discipline #16 scope (line format `| <pass> | <verdict> | ... | state-mgr FINAL ✓ (this commit) | <streak> |`); (b) §8 commit-row-ledger state-mgr FINAL self-row per F-PASS22-O1 scope extension (line format `| (this commit) | state | ... |`); (c) definitional self-references about the deictic-marker class itself (the body of disciplines #16, #24, and sub-check (j) — i.e., this very sub-rule and its sub-check definition). Incremental scope: applied before every state-manager commit. Sub-check (j) grep: `grep -nE '\(this commit\)|\(this burst\)|\bthis commit\b|\bthis burst\b' STATE.md SESSION-HANDOFF.md TASK-LIST.md | grep -v '^[^|]*| state-mgr FINAL ✓ (this commit)' | grep -v '^[^|]*| (this commit) | state ' | grep -vE 'discipline #(16|24)|sub-check \(j\)|MUST NOT contain'` — any remaining hits are stale-marker defects requiring replacement with actual SHAs. Canonical-baseline scope: Pass 22 F-PASS22-I1 broadening triggered by Pass 21 codification using narrow regex that missed 8 class-variant deictics in same commit (926d5cc). Per-marker enumeration of Pass 22 fix-burst replacements: (1) STATE.md Pass 21 closure summary line containing `(this burst)` → replaced with `926d5cc`; (2) SESSION-HANDOFF.md §13 closing paragraph line containing `in this commit (state-mgr FINAL)` → replaced with `926d5cc`; (3) SESSION-HANDOFF.md §8 row 312 → adjudicated per F-PASS22-O1 Option (a): §8-commit-row-ledger exemption codified; row text left as `| (this commit) | state | ... |` (textual marker per exemption clause (b)); (4) SESSION-HANDOFF.md Pass 21 closure note line containing `(this burst)` → replaced with `926d5cc`; (5) SESSION-HANDOFF.md fix-burst count note line containing `this commit` (no parens) → replaced with `926d5cc`; (6) SESSION-HANDOFF.md frontmatter current_pass_number line containing `this commit` → replaced with fixed descriptor; (7) SESSION-HANDOFF.md §3c heading line containing `(Pass 21 this burst)` → replaced with `(Pass 21 - commit 926d5cc)`; (8) TASK-LIST.md header line containing `this commit` → replaced with `926d5cc`; (9) TASK-LIST.md task #57 cell containing `this commit` → replaced with `926d5cc`. Total: 9 deictic markers swept; §8-row scope extension codified; definitional self-reference exemption codified. Sub-check (j) added at Pass 21; total sub-checks now 10.
 
 ## TD-VSDD-053-spirit Advisories (corrective-burst-within-pass pattern)
 
@@ -164,8 +167,8 @@ Before committing, state-manager FINAL MUST run:
 - (f) in-document title-cell sibling-sweep — ARCH-INDEX Document Map vs VP-INDEX Summary
 - (g) dual-scope discipline verification — every newly codified discipline declares both scopes
 - (h) adversary pre-flight verification — confirm the adversary pre-flight discipline is correctly stated (incremental + canonical-baseline scopes declared) in ARCH-INDEX Self-Audit Checklist (F-PASS11-O1)
-- (i) F-PASS19-O1 same-commit-sibling-check self-applied — every count claim written in this burst matches body INCLUDING this commit's additions (discipline #23 header-vs-body)
-- (j) stale-temporal-marker grep — `grep -nE '\(this commit\)|HEAD = this commit' .factory/STATE.md .factory/SESSION-HANDOFF.md .factory/TASK-LIST.md | grep -v '| state-mgr FINAL'` — must return empty in narrative prose; any hits are stale-marker defects requiring replacement with actual SHAs (discipline #24)
+- (i) F-PASS19-O1 same-commit-sibling-check self-applied — every count claim AND every derived enumeration claim written in this burst satisfies discipline #19 (cite SPECIFIC items not aggregates) AND discipline #23 (header matches body count including this burst's additions); discipline #24 scope clause uses per-marker enumeration (not aggregate count) for each replaced temporal-deictic instance; §13 prose paragraph pass-count claim matches table row count (F-PASS22-I2 extension)
+- (j) stale-temporal-marker grep (broadened F-PASS22-I1) — `grep -nE '\(this commit\)|\(this burst\)|\bthis commit\b|\bthis burst\b' .factory/STATE.md .factory/SESSION-HANDOFF.md .factory/TASK-LIST.md | grep -v '^[^|]*| state-mgr FINAL ✓ (this commit)' | grep -v '^[^|]*| (this commit) | state ' | grep -vE 'discipline #(16|24)|sub-check \(j\)|MUST NOT contain'` — must return empty; any remaining hits are stale-marker defects requiring replacement with actual SHAs (discipline #24)
 
 ## Open questions for human
 
@@ -185,13 +188,13 @@ Before committing, state-manager FINAL MUST run:
 
 ## Pass 11 Recovery Note (historical)
 
-Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered via Option A pre-authorized commit at SHA a3a83b1; cascade resumed without re-running architect work. Pass 11 state-mgr FINAL closed this burst. Pass 11 also produced two corrective bursts within the architect role (343c378, c35de6f) — see TD-VSDD-053-spirit advisory section above.
+Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered via Option A pre-authorized commit at SHA a3a83b1; cascade resumed without re-running architect work. Pass 11 state-mgr FINAL (e37f1e3 + back-fill 7ea3f71) closed the Pass 11 burst. Pass 11 also produced two corrective bursts within the architect role (343c378, c35de6f) — see TD-VSDD-053-spirit advisory section above.
 
 ## Where to find the rest
 
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md`
 - **Task ledger:** `.factory/TASK-LIST.md`
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..21}.md` (Passes 1–21 written)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..22}.md` (Passes 1–22 written)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - **Product brief:** `.factory/specs/product-brief.md` (v0.4.19)
 - **PRD:** `.factory/specs/prd/index.md` (v0.1.10) + supplements
