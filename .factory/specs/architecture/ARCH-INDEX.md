@@ -7,7 +7,7 @@ producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.9
+inherits_from: prd@v0.1.10
 deployment_topology: single-service
 created: 2026-05-15
 last_updated: 2026-05-16

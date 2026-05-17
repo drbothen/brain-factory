@@ -8,14 +8,14 @@ phase: phase-1d-adversarial-spec-review
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: IN-PROGRESS — Pass 16 CLOSED; 16 passes complete (all FAIL); 36 fix-bursts complete (Pass 16 architect 2a1f543 + state-mgr FINAL ✓ (this commit)); streak 0/3; Option C in effect
-session_continuity: ACTIVE-CASCADE — resume by dispatching Pass 17 adversary per BC-5.39.001 chat-only protocol (F-PASS12-O1); no catalog freeze per UD-002
+phase_1d_status: IN-PROGRESS — Pass 17 CLOSED; 17 passes complete (all FAIL); 40 fix-bursts complete; streak 0/3; Option C in effect; 2nd STRONG-ESCALATE recommendation persisted in adversary-pass-17.md awaiting orchestrator handoff to human
+session_continuity: ACTIVE-CASCADE — Pass 17 closed; resume by dispatching Pass 18 adversary per BC-5.39.001 chat-only protocol (F-PASS12-O1); no catalog freeze per UD-002
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
-canonical_prd: .factory/specs/prd/index.md (v0.1.9, commit ecbe056)
-canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.8, commit ecbe056)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.18, commit 2a1f543) + 17 ADRs (6 at v1.1, 2 at v1.2, 9 at v1.0) + 18 SS-NN (16 at v1.1, SS-02 at v1.2, SS-18 at v1.4) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2: VP-014/021/026/027; VP-004 at v1.1; VP-012 at v1.3; 21 at v1.0)
+canonical_prd: .factory/specs/prd/index.md (v0.1.10, commit 2f247fc)
+canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.9, commit 2f247fc)
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.19, commit b70fc7d) + 17 ADRs (6 at v1.1, 2 at v1.2, 9 at v1.0) + 18 SS-NN (16 at v1.1, SS-02 at v1.2, SS-18 at v1.4) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2: VP-014/021/026/027; VP-004 at v1.1; VP-012 at v1.3; 21 at v1.0)
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
 ---
 
@@ -25,13 +25,13 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## Pass 16 CLOSED — Pass 17 next-action
+## Pass 17 CLOSED — Pass 18 next-action
 
-**Pass 16 closure summary:** Pass 16 adversary persisted at commit 8aefca8 (FAIL — 1 CRITICAL + 2 IMPORTANT + 2 OBSERVATIONS). Architect burst 2a1f543 fixed F-PASS16-C1 (dual-scope declarations added to disciplines #18-21 in ARCH-INDEX Self-Audit Checklist) + F-PASS16-I1 (ARCH-INDEX Changelog v0.1.12 entry moved to correct monotonic position; discipline #22 Changelog version-monotonicity check codified with both scopes) + F-PASS16-O1 (F-PASS14-C1 enumeration discipline binds ARCH-INDEX's own Changelog narratives; adjudication rationale documented). F-PASS16-O2 subsumed by discipline #22 codification. No PO burst this pass. Pass 16 is clean (1 adversary persist + 1 architect + 1 state-mgr FINAL = 3 commits). CRITICAL count held at 1 for 3rd consecutive pass.
+**Pass 17 closure summary:** Pass 17 adversary persisted at commit 87ebf2d (FAIL — 1 CRITICAL + 3 IMPORTANT + 1 SUGGESTION + 2 OBSERVATIONS). Architect burst b70fc7d fixed F-PASS17-C1 (replaced v0.1.18 F-PASS16-C1 Changelog summary with four per-sub-rule bullets enumerating Incremental + Canonical-baseline labels for F-PASS15-C1/I1/I2/O1 — closing the 7th recurrence of meta-rule self-violation class) + F-PASS17-S1 (replaced inaccurate "(at most v1.0 and v1.1/v1.2)" parenthetical in discipline #22 canonical-baseline rationale with accurate per-artifact-type ranges) + F-PASS17-I3(a) (extended discipline #22 bash sweep to include PRD index, 4 supplements, BC-INDEX, 95 BC files) + codified discipline #23 Header-vs-body count check (closes F-PASS17-O1 process-gap). ARCH-INDEX bumped to v0.1.19. PO burst 2f247fc mirrored disciplines #22 and #23 into PRD index Self-Audit (PRD bumped to v0.1.10) and BC-INDEX Self-Audit (BC-INDEX bumped to v0.1.9). State-mgr FINAL ✓ (this commit) reconciles SESSION-HANDOFF §6 header/body (19→23 rows), codifies discipline #23 in STATE.md catalog, re-derives total fix-burst count to 40 (literal cascade-table commit count), updates frontmatter across both state docs. CRITICAL count held at 1 for 4th consecutive pass.
 
-**User decision (UD-002):** OPTION C selected — continue cascade without discipline catalog freeze. No convergence-by-stable-discipline-catalog interpretation. No move to Phase 2 until BC-5.39.001 literal streak 3/3 achieved. User accepts that meta-rule self-violation class may recur in future passes.
+**User decision (UD-002):** OPTION C in effect — continue cascade without discipline catalog freeze. No convergence-by-stable-discipline-catalog interpretation. No move to Phase 2 until BC-5.39.001 literal streak 3/3 achieved. User accepts that meta-rule self-violation class may recur in future passes. 2nd STRONG-ESCALATE recommendation persisted in adversary-pass-17.md awaiting orchestrator handoff to human.
 
-**Top-of-stack action:** Dispatch Pass 17 adversary (chat-only per F-PASS12-O1; no catalog freeze per UD-002). Continue cascade until BC-5.39.001 literal streak 3/3.
+**Top-of-stack action:** Dispatch Pass 18 adversary (chat-only per F-PASS12-O1; no catalog freeze per UD-002). Continue cascade until BC-5.39.001 literal streak 3/3.
 
 ---
 
@@ -43,15 +43,15 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
-5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-16.md` (pending findings)
+5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-17.md` (most recent findings — Pass 17 CLOSED; Pass 18 adversary is next-action)
 
 **Pre-dispatch verification:**
-- Confirm HEAD = 8aefca8 via `git log --oneline -1`
+- Confirm HEAD = this commit (Pass 17 state-mgr FINAL) via `git log --oneline -1`
 - Confirm no uncommitted changes via `git status --short`
 
 **Resume steps (in order):**
 
-1. Dispatch Pass 17 adversary per BC-5.39.001 cascade protocol (chat-only per F-PASS12-O1; no catalog freeze per Option C / UD-002).
+1. Dispatch Pass 18 adversary per BC-5.39.001 cascade protocol (chat-only per F-PASS12-O1; no catalog freeze per Option C / UD-002).
 2. Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved.
 
 ---
@@ -96,15 +96,16 @@ Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX +
 | 13 | FAIL | 2C+3I+2O | a2fab66 | architect 52b7f19 + state-mgr FINAL d3016a3 | 0/3 |
 | 14 | FAIL | 1C+2I+2O | ace7b4b | architect 07466a4 + state-mgr FINAL 2bf91af | 0/3 |
 | 15 | FAIL | 1C+2I+1O | 65633ef | architect 7af2546 + state-mgr FINAL a603c03 | 0/3 |
-| 16 | FAIL | 1C+2I+2O | 8aefca8 | architect 2a1f543 + state-mgr FINAL ✓ (this commit) | 0/3 |
+| 16 | FAIL | 1C+2I+2O | 8aefca8 | architect 2a1f543 + state-mgr FINAL 24e229d | 0/3 |
+| 17 | FAIL | 1C+3I+1S+2O | 87ebf2d | architect b70fc7d + PO 2f247fc + state-mgr FINAL ✓ (this commit) | 0/3 |
 
-**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1. CRITICAL plateau at 1 for 3 consecutive passes (Pass 14, Pass 15, Pass 16).
+**CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1→1. CRITICAL plateau at 1 for 4 consecutive passes (Pass 14, Pass 15, Pass 16, Pass 17).
 
-## 22 Structural-Fix Disciplines Codified During Phase 1d
+## 23 Structural-Fix Disciplines Codified During Phase 1d
 
 Inherited from Phase 1a (13 disciplines — see brief v0.4.19 Changelog or SESSION-HANDOFF §5).
 
-Phase 1d additions (22 confirmed committed disciplines):
+Phase 1d additions (23 confirmed committed disciplines):
 1. (Pass 4) Sweep-by-canonical-pattern — for canonical-target patterns (tests/X.bats), sweep both positive (present) and negative (deprecated absent)
 2. (Pass 5) last_updated freshness check — last_updated >= max(changelog date)
 3. (Pass 6) inherits_from chain integrity — child references parent's current version per Option B (pin-at-burst-end)
@@ -126,7 +127,8 @@ Phase 1d additions (22 confirmed committed disciplines):
 19. (Pass 15) Derived-cell-count enumeration discipline — cite SPECIFIC cells from ARCH-INDEX entries, not "all three" claims (F-PASS15-I1)
 20. (Pass 15) Initial-creation content discipline — F-PASS14-C1 enumeration targets POST-CREATION modifications only; initial-creation content reflecting parent-document decisions does NOT require attribution (F-PASS15-I2)
 21. (Pass 15) Bash sweep timestamp-invariant check — `timestamp >= created` enforcement (F-PASS15-O1)
-22. (Pass 16) Changelog version-monotonicity check — Changelog entries MUST appear in strict descending semver order; bash sweep `grep -nE '^### v' "$f" | awk '{print $2}' | sort -rV -c` exits 0 if descending; applies to ARCH-INDEX, VP-INDEX, all SS-NN/ADR/VP files with Changelog sections (F-PASS16-I1 closure)
+22. (Pass 16) Changelog version-monotonicity check — Changelog entries MUST appear in strict descending semver order; bash sweep `grep -nE '^### v' "$f" | awk '{print $2}' | sort -rV -c` exits 0 if descending; applies to ARCH-INDEX, VP-INDEX, all SS-NN/ADR/VP files with Changelog sections, AND PRD/supplements/BC-INDEX/95 BC files (F-PASS16-I1 closure; bash sweep extended to PRD/BC scope by F-PASS17-I3(a/b) in ARCH-INDEX v0.1.19 commit b70fc7d + PRD v0.1.10 + BC-INDEX v0.1.9 via PO commit 2f247fc)
+23. (Pass 17) Header-vs-body count check — for any section header containing a count claim, verify the count matches body row/item count (F-PASS17-I1 closure; codified in ARCH-INDEX v0.1.19 commit b70fc7d; mirrored into PRD v0.1.10 + BC-INDEX v0.1.9 via PO commit 2f247fc)
 
 ## TD-VSDD-053-spirit Advisories (corrective-burst-within-pass pattern)
 
@@ -137,7 +139,8 @@ Phase 1d has produced "corrective burst within same logical pass" sequences that
 - Pass 13: clean (1 architect + 1 state-mgr FINAL = 2 commits, one per agent role).
 - Pass 14: clean (1 adversary persist + 1 architect + 1 state-mgr FINAL = 3 commits).
 - Pass 15: clean (1 adversary persist + 1 architect + 1 state-mgr FINAL = 3 commits).
-- Pass 16: adversary persist 8aefca8 is the only commit so far. Fix-bursts pending on resume.
+- Pass 16: clean (1 adversary persist 8aefca8 + 1 architect 2a1f543 + 1 state-mgr FINAL 24e229d = 3 commits, one per agent role).
+- Pass 17: clean (1 adversary persist 87ebf2d + 1 architect b70fc7d + 1 PO 2f247fc + 1 state-mgr FINAL ✓ (this commit) = 4 commits, one per agent role).
 
 Going-forward orchestrator discipline: dispatch agents with explicit single-commit-per-burst instructions; verify draft outputs before commit to avoid corrective bursts.
 
@@ -176,10 +179,10 @@ Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered vi
 
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md`
 - **Task ledger:** `.factory/TASK-LIST.md`
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..16}.md` (Passes 1–16 written)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..17}.md` (Passes 1–17 written)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - **Product brief:** `.factory/specs/product-brief.md` (v0.4.19)
-- **PRD:** `.factory/specs/prd/index.md` (v0.1.9) + supplements
-- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.8, 95 BCs)
-- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.18, commit 2a1f543) + 17 ADRs (6 at v1.1 + 2 at v1.2 = 8 with Changelog) + 18 SS-NN (all at v1.1+) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2 + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog)
+- **PRD:** `.factory/specs/prd/index.md` (v0.1.10) + supplements
+- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.9, 95 BCs)
+- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.19, commit b70fc7d) + 17 ADRs (6 at v1.1 + 2 at v1.2 = 8 with Changelog) + 18 SS-NN (all at v1.1+) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2 + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog)
 - **Project conventions:** `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
