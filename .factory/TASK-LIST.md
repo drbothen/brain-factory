@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-17. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 24 CLOSED (adversary bef4508 + state-mgr FINAL Pass 24 burst); 50 fix-bursts committed, streak 0/3. Plateau-broken state ENDED (CRITICAL=1 at Pass 24, 11th recurrence). Pass 25 adversary dispatch is next-action — 4th 1/3-streak candidate. UD-003 reaffirms Option C: continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3.**
+> Snapshot updated: 2026-05-17. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 25 CLOSED (adversary 42d8f55 + state-mgr FINAL Pass 25 burst); 51 fix-bursts committed, streak 0/3. CRITICAL=1 for 2nd consecutive pass post-plateau-end (12th recurrence). Pass 26 adversary dispatch is next-action — 5th 1/3-streak candidate. UD-003 reaffirms Option C: continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3.**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -16,8 +16,8 @@
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #128 | NEXT-ACTION | Pass 25 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003 / Option C; 4th 1/3-streak candidate) |
-| 2 | #129 | PENDING #128 | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
+| 1 | #130 | NEXT-ACTION | Pass 26 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003 / Option C; 5th 1/3-streak candidate) |
+| 2 | #129 | PENDING #130 | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
 
 ## Task Status
 
@@ -79,7 +79,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.1 at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | PASS — cascade officially CLOSED on v0.4.15 |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.1 across 5 commits (b7679ee through d89ea4b) |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 24 passes complete (all FAIL), 50 fix-bursts committed. Pass 24 CLOSED (adversary bef4508 + state-mgr FINAL Pass 24 burst). Pass 25 next-action — 4th 1/3-streak candidate. UD-003 reaffirms Option C: no catalog freeze; require literal streak 3/3. |
+| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 25 passes complete (all FAIL), 51 fix-bursts committed. Pass 25 CLOSED (adversary 42d8f55 + state-mgr FINAL Pass 25 burst). Pass 26 next-action — 5th 1/3-streak candidate. UD-003 reaffirms Option C: no catalog freeze; require literal streak 3/3. |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | Commit 23e3a91 |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Commit 7935faa |
@@ -172,8 +172,10 @@
 | 126a | COMPLETED | Pass 23 state-mgr FINAL | F-PASS23-I1 §8 Pass 21 state-mgr FINAL self-row back-filled to 926d5cc + exemption (b) clarified + sub-check (k) codified + F-PASS23-I2 §13 'Pass reports' brace-glob corrected + discipline #23 sweep extended + F-PASS23-S1 regex canonicalized + F-PASS23-O1 adjudicated + 11 sub-checks. Commit 3388678. |
 | 127 | COMPLETED | Pass 24 adversary dispatch | FAIL — 1C+1I+2S+2O. Persist commit bef4508. Plateau-broken state ENDED — CRITICAL=1 (11th recurrence meta-rule self-violation). 3rd 1/3-streak candidate MISSED. |
 | 127a | COMPLETED | Pass 24 state-mgr FINAL | F-PASS24-C1 exemption (c) extended + sub-check (k) rewritten + future-sub-check extension rule codified + F-PASS24-I1 semantic anchors replace line-number citations + F-PASS24-S1 byte-identical clarification + F-PASS24-S2 sub-check (k) body rewritten + F-PASS24-O2 audit-trail requirement + §8 row back-fill to 3388678 + 11 sub-checks. SHA to be back-filled by Pass 25 state-mgr FINAL per discipline #24 exemption (b). |
-| 128 | NEXT-ACTION | Pass 25 adversary dispatch | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002/UD-003 / Option C. Pass 25 is the 4th 1/3-streak candidate — if 0C+0I, streak advances 0/3 → 1/3. |
+| 128 | COMPLETED | Pass 25 adversary dispatch | FAIL: 1C+2I+1S+2O. Persist commit 42d8f55. CRITICAL=1 2nd consecutive post-plateau-end; 12th recurrence meta-rule self-violation class. 4th 1/3-streak candidate MISSED. |
+| 128a | COMPLETED | Pass 25 state-mgr FINAL | F-PASS25-C1(a) exemption (a) regex fixed (substring match) + F-PASS25-C1(b) F-PASS13-I1 narrative back-filled + F-PASS25-C1(c) anti-carve-out clause codified + F-PASS25-I1 Pass 24 closure narrative corrected + F-PASS25-I2 current_streak rephrased + F-PASS25-S1 audit-trail format canonicalized + §8 row back-fill bc479e1 + 11 sub-checks. Fix-burst total updated to 51. SHA to be back-filled by Pass 26 state-mgr FINAL per discipline #24 exemption (b). |
 | 129 | PENDING | Continue cascade per Option C | Repeat passes until BC-5.39.001 literal streak 3/3 achieved. |
+| 130 | NEXT-ACTION | Pass 26 adversary dispatch | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002/UD-003 / Option C. Pass 26 is the 5th 1/3-streak candidate — if 0C+0I, streak advances 0/3 → 1/3. |
 
 ## Next steps (in dependency order)
 
@@ -182,12 +184,12 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#127a: Phase 1d Passes 1–24 persists + fix-bursts + state snapshots — COMPLETED (24 passes, 50 fix-bursts committed; UD-002 + UD-003 recorded; Pass 24 fully closed; CRITICAL plateau broken at Pass 21; plateau-broken state held 3 passes then ENDED at Pass 24 — 11th recurrence).~~
+~~Tasks #71–#128a: Phase 1d Passes 1–25 persists + fix-bursts + state snapshots — COMPLETED (25 passes, 51 fix-bursts committed; UD-002 + UD-003 recorded; Pass 25 fully closed; CRITICAL plateau broken at Pass 21; plateau-broken state held 3 passes then ENDED at Pass 24; CRITICAL=1 continued at Pass 25 — 12th recurrence).~~
 
-1. **Task #128 — Pass 25 adversary dispatch (TOP OF STACK):** dispatch adversary per BC-5.39.001 cascade protocol; chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003. 4th 1/3-streak candidate.
+1. **Task #130 — Pass 26 adversary dispatch (TOP OF STACK):** dispatch adversary per BC-5.39.001 cascade protocol; chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003. 5th 1/3-streak candidate.
 
-2. **Tasks #129+ — Continue cascade per Option C:** subsequent fix-bursts then adversary passes until streak 3/3.
+2. **Tasks #129+ — Continue cascade per Option C:** subsequent fix-bursts then adversary passes until streak 3/3. (Task #130 is the active next-action entry.)
 
 3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 24 CLOSED; 50 fix-bursts; streak 0/3; plateau-broken ENDED (CRITICAL=1 Pass 24, 11th recurrence); Pass 25 next-action; UD-003 reaffirms Option C.** Resume on fresh context: read `.factory/STATE.md` FIRST.
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 25 CLOSED; 51 fix-bursts; streak 0/3; CRITICAL=1 for 2nd consecutive pass post-plateau-end (12th recurrence); Pass 26 next-action; UD-003 reaffirms Option C.** Resume on fresh context: read `.factory/STATE.md` FIRST.
