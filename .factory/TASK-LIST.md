@@ -1,14 +1,24 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — 15 passes complete (all FAIL), 32+ fix-bursts committed, streak 0/3. Pass 15 closed; ready for Pass 16 (chat-only adversary dispatch per F-PASS12-O1; enumeration discipline per F-PASS14-C1; cell-count specificity per F-PASS15-I1; initial-creation discipline per F-PASS15-I2).**
+> Snapshot updated: 2026-05-16. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS-PAUSED — 16 passes complete (all FAIL), 34+ fix-bursts committed, streak 0/3. Pass 16 adversary persisted (8aefca8); fix-bursts PENDING. User selected Option C (UD-002): continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3.**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
-> See SESSION-HANDOFF.md §9 for resume procedure summary.
+> See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
-## Top-of-Stack (RESUME ENTRY POINT)
+## User Decisions Log
+
+| Date | ID | Question | Decision |
+|------|----|----------|----------|
+| 2026-05-16 | UD-001 | Pass 11 architect work disposition (interrupted commit recovery) | Option A pre-authorized — commit architect's work as-is at a3a83b1 |
+| 2026-05-16 | UD-002 | Convergence threshold per F-PASS12-O2 STRONG-ESCALATE (Pass 16 adversary recommendation) | **Option C** — continue cascade without discipline catalog freeze. NO convergence-by-stable-discipline-catalog. NO move to Phase 2 until BC-5.39.001 literal streak 3/3 achieved. Meta-rule self-violation class accepted as recurring pattern. |
+
+## TOP OF STACK (RESUME ENTRY POINT — Pass 16 fix-bursts PENDING)
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #116 | NEXT-ACTION | Pass 16 adversary dispatch per BC-5.39.001 cascade protocol — MUST use chat-only output protocol per F-PASS12-O1; enumeration discipline per F-PASS14-C1; cell-count specificity per F-PASS15-I1; initial-creation discipline per F-PASS15-I2; CRITICAL plateau at 1 for 2 passes — escalate cascade-health observation to human if Pass 16 shows same pattern |
+| 1 | #117 | NEXT-ACTION | Pass 16 architect fix-burst — F-PASS16-C1 (dual-scope declarations for disciplines #18-21 in ARCH-INDEX Self-Audit Checklist) + F-PASS16-I1 (move ARCH-INDEX v0.1.12 Changelog entry to correct monotonic position; codify discipline #22) + F-PASS16-O1 (adjudicate whether F-PASS14-C1 binds ARCH-INDEX's own Changelog narratives). Bump ARCH-INDEX v0.1.17 → v0.1.18. Single commit. |
+| 2 | #118 | PENDING #117 | Pass 16 state-mgr FINAL — 8 sub-checks + append Pass 16 row to cascade table with actual architect SHA + codify discipline #22 in STATE.md discipline list + update SESSION-HANDOFF §6 header from "21" to "22" after architect adds #22 + verify F-PASS16-I2 header updates complete |
+| 3 | #119 | PENDING #118 | Pass 17 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002 / Option C) |
+| 4 | #120 | PENDING #119 | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
 
 ## Task Status
 
@@ -47,7 +57,7 @@
 | 31 | COMPLETED | Resolve F-PASS13-I2 Option A/B decision | User chose Option A: add .reference/README.md to bootstrap task |
 | 32 | COMPLETED | Fix-burst v0.4.7 → v0.4.8 | Fixed I1 (skill count 12→13), I2 (bootstrap task updated) |
 | 33 | COMPLETED | Pass 14 adversary dispatch | FAIL: 2 IMPORTANT |
-| 34 | COMPLETED | Pass 11 architect disposition — Option A executed | Architect work committed at a3a83b1 (recovered from API-error mid-commit via Option A pre-authorized commit) |
+| 34 | COMPLETED | Pass 11 architect disposition — Option A executed | Architect work committed at a3a83b1 (recovered from API-error mid-commit via Option A pre-authorized commit; UD-001) |
 | 35 | COMPLETED | Fix-burst v0.4.8 → v0.4.9 | Fixed I1 (bats count) + I2 (/brain:research label) |
 | 36 | COMPLETED | Commit Pass 14 FAIL report | SHA: 7f8572c |
 | 37 | COMPLETED | Amend CLAUDE.md with Node 20+ constraint | Updated at Stage 3 |
@@ -70,7 +80,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.1 at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | PASS — cascade officially CLOSED on v0.4.15 |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.1 across 5 commits (b7679ee through d89ea4b) |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 15 passes complete (all FAIL), 32+ fix-bursts committed. Pass 15 fully closed. Next: Pass 16 adversary dispatch (chat-only per F-PASS12-O1; F-PASS14-C1/F-PASS15-I1/F-PASS15-I2 disciplines apply). |
+| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS-PAUSED. 16 passes complete (all FAIL), 34+ fix-bursts committed. Pass 16 adversary persisted (8aefca8); fix-bursts pending. Option C (UD-002): no catalog freeze; require literal streak 3/3. |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | Commit 23e3a91 |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Commit 7935faa |
@@ -120,21 +130,28 @@
 | 104 | COMPLETED | Phase 1d Pass 10 architect fix-burst | architecture v0.1.11 → v0.1.12 + VP-INDEX v0.1.4 → v0.1.5. Commit cc9ba18 |
 | 105 | COMPLETED | Phase 1d Pass 10 state-manager FINAL | Extended FINAL discipline (7 sub-checks). Commit c468276 |
 | 106 | COMPLETED | Phase 1d adversary pass 11 | FAIL: 2C+3I. Persist commit 63cf130. Report at adversary-pass-11.md |
-| 107 | COMPLETED | Phase 1d Pass 11 architect burst | ARCH-INDEX v0.1.13 + VP-INDEX v0.1.6 + timestamp canonical-baseline sweep + dual-scope retroactive audit + adversary pre-flight codification. Recovered via Option A; committed at a3a83b1. |
-| 108 | COMPLETED | Phase 1d Pass 11 state-manager FINAL | 8-sub-check FINAL discipline applied. All 5 findings addressed. State docs updated. Commit e37f1e3. |
+| 107 | COMPLETED | Phase 1d Pass 11 architect burst | ARCH-INDEX v0.1.13 + VP-INDEX v0.1.6 + timestamp canonical-baseline sweep + dual-scope retroactive audit + adversary pre-flight codification. Recovered via UD-001 Option A; committed at a3a83b1 + corrective bursts 343c378 + c35de6f [TD-VSDD-053-spirit]. |
+| 108 | COMPLETED | Phase 1d Pass 11 state-manager FINAL | 8-sub-check FINAL discipline applied. All 5 findings addressed. State docs updated. Commits e37f1e3 + 7ea3f71 (back-fill) [TD-VSDD-053-spirit]. |
 | 109 | COMPLETED | Phase 1d adversary pass 12 | FAIL: 2C+3I+2O. Persist commit a58de7e. Report at adversary-pass-12.md. |
 | 110 | COMPLETED | Phase 1d Pass 12 architect burst | ARCH-INDEX v0.1.13 → v0.1.14. F-PASS12-C1 SS-NN classify + F-PASS12-I1 narrative reconciliation + F-PASS12-I2 Changelog discipline tightened. Commit 71c51b3. |
 | 111 | COMPLETED | Phase 1d Pass 12 PO burst | PRD v0.1.8 → v0.1.9 + BC-INDEX v0.1.7 → v0.1.8. F-PASS12-C2 canonical-baseline timestamp sweep (100 of 101 in-scope files to 2026-05-16; nfr-catalog retained). Commit ecbe056. |
-| 112 | COMPLETED | Phase 1d adversary pass 13 | FAIL: 2C+3I+2O. Persist commit a2fab66. Report at adversary-pass-13.md. |
-| 113 | COMPLETED | Phase 1d Pass 13 architect burst | ARCH-INDEX v0.1.14 → v0.1.15. F-PASS13-C1 count-balance correction + F-PASS13-C2 architecture artifact Changelog discipline extended to ADR/VP scope (8 ADRs + 5 VPs back-filled to v1.1) + F-PASS13-I2 stale instruction closure + F-PASS13-I3 credit-drift reconciliation. Commit 52b7f19. |
-| 113a | COMPLETED | Phase 1d Pass 13 state-manager FINAL | Pass 12 back-fill (0781716) + Pass 13 row with self-SHA-free FINAL-marker format + discipline catalog items 14-16 (F-PASS13-I1 closure). 8-sub-check FINAL discipline applied. Commit d3016a3. |
+| 112 | COMPLETED | Phase 1d Pass 12 state-manager FINAL | Pass 12 cascade table row + ARCH-INDEX inherits_from re-pin. Commit 0781716. |
+| 113 | COMPLETED | Phase 1d adversary pass 13 | FAIL: 2C+3I+2O. Persist commit a2fab66. Report at adversary-pass-13.md. |
+| 113a | COMPLETED | Phase 1d Pass 13 architect burst | ARCH-INDEX v0.1.14 → v0.1.15. F-PASS13-C1 count-balance correction + F-PASS13-C2 architecture artifact Changelog discipline extended to ADR/VP scope (8 ADRs + 5 VPs back-filled to v1.1) + F-PASS13-I2 stale instruction closure + F-PASS13-I3 credit-drift reconciliation. Commit 52b7f19. |
+| 113b | COMPLETED | Phase 1d Pass 13 state-manager FINAL | Pass 12 back-fill (0781716) + Pass 13 row with self-SHA-free FINAL-marker format + discipline catalog items 14-16 (F-PASS13-I1 closure). 8-sub-check FINAL discipline applied. Commit d3016a3. |
 | 114 | COMPLETED | Phase 1d adversary pass 14 | FAIL: 1C+2I+2O. Persist commit ace7b4b. Report at adversary-pass-14.md. CRITICAL count decreased 2 → 1 first time in 5 passes. |
 | 114a | COMPLETED | Phase 1d Pass 14 architect burst | ARCH-INDEX v0.1.15 → v0.1.16. F-PASS14-C1 Changelog enumeration corrections (5 files: VP-014, VP-021, ADR-009, ADR-004, VP-026) + F-PASS14-I1 bash sweep dead OR clause removed + F-PASS14-I2 Timestamp Policy 62-vs-64 scope reconciliation. Commit 07466a4. |
 | 114b | COMPLETED | Phase 1d Pass 14 state-manager FINAL | Pass 14 row in self-SHA-free format + discipline #17 (Changelog enumeration) + ARCH-INDEX v0.1.16 re-pin + CRITICAL trajectory 2→1 noted. 8-sub-check FINAL discipline applied. Commit 2bf91af. |
 | 115 | COMPLETED | Phase 1d adversary pass 15 | FAIL: 1C+2I+1O. Persist commit 65633ef. Report at adversary-pass-15.md. CRITICAL held at 1 — 2nd consecutive pass at 1. |
 | 115a | COMPLETED | Phase 1d Pass 15 architect burst | ARCH-INDEX v0.1.16 → v0.1.17. F-PASS15-C1 version bumps (6 files v1.1 → v1.2) + F-PASS15-I1 derived-cell-count corrections + F-PASS15-I2 VP-014 initial-creation Note removed + F-PASS15-O1 bash sweep timestamp-invariant check added. Commit 7af2546. |
-| 115b | COMPLETED | Phase 1d Pass 15 state-manager FINAL | Pass 15 row in self-SHA-free format + disciplines #18-21 codified + ARCH-INDEX v0.1.17 re-pin + CRITICAL plateau at 1 for 2nd pass noted. 8-sub-check FINAL discipline applied. This commit. |
-| 116 | NEXT-ACTION | Phase 1d adversary pass 16 | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. Enumeration discipline per F-PASS14-C1 + cell-count specificity per F-PASS15-I1 + initial-creation discipline per F-PASS15-I2. CRITICAL plateau at 1 — escalate cascade-health observation to human if pattern persists. |
+| 115b | COMPLETED | Phase 1d Pass 15 state-manager FINAL | Pass 15 row in self-SHA-free format + disciplines #18-21 codified + ARCH-INDEX v0.1.17 re-pin + CRITICAL plateau at 1 for 2nd pass noted. 8-sub-check FINAL discipline applied. Commit a603c03. |
+| 116 | COMPLETED | Phase 1d adversary pass 16 | FAIL: 1C+2I+2O. Persist commit 8aefca8. Report at adversary-pass-16.md. CRITICAL held at 1 — 3rd consecutive pass at 1. STRONG-ESCALATE to human per F-PASS12-O2. |
+| 116a | COMPLETED | User decision checkpoint UD-002 | Human selected Option C: continue cascade without catalog freeze; require BC-5.39.001 literal streak 3/3. Recorded in STATE.md User Decisions Log and SESSION-HANDOFF frontmatter. |
+| 116b | COMPLETED | State-manager durable snapshot burst | This commit — STATE.md + SESSION-HANDOFF.md + TASK-LIST.md comprehensive refresh for fresh-context resume. F-PASS16-I2 header updates applied (STATE.md "21 confirmed committed disciplines"; SESSION-HANDOFF §6 header "Pass 15 added — 21 total Phase 1d disciplines"). |
+| 117 | NEXT-ACTION | Phase 1d Pass 16 architect fix-burst | F-PASS16-C1 (dual-scope declarations for disciplines #18-21) + F-PASS16-I1 (Changelog v0.1.12 monotonic repositioning + discipline #22 codification) + F-PASS16-O1 (F-PASS14-C1 binding-scope adjudication). ARCH-INDEX v0.1.17 → v0.1.18. Single commit. |
+| 118 | PENDING #117 | Phase 1d Pass 16 state-manager FINAL | 8 sub-checks + Pass 16 cascade table row with actual architect SHA + discipline #22 in STATE.md + SESSION-HANDOFF §6 header update to 22 |
+| 119 | PENDING #118 | Phase 1d adversary pass 17 | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002 / Option C. |
+| 120 | PENDING | Continue cascade per Option C | Repeat passes until BC-5.39.001 literal streak 3/3 achieved. |
 
 ## Next steps (in dependency order)
 
@@ -143,12 +160,16 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#115b: Phase 1d Passes 1–15 persists + fix-bursts — COMPLETED (15 passes, 32+ fix-bursts committed).~~
+~~Tasks #71–#116b: Phase 1d Passes 1–16 persists + fix-bursts + state snapshot — COMPLETED (16 passes, 34+ fix-bursts committed; UD-002 recorded; durable snapshot committed).~~
 
-1. **Task #116 — Pass 16 adversary dispatch (top of stack):** dispatch adversary per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1 codification. Enumeration discipline per F-PASS14-C1 + cell-count specificity per F-PASS15-I1 + initial-creation discipline per F-PASS15-I2 apply to any architect back-fill bursts.
+1. **Task #117 — Pass 16 architect fix-burst (TOP OF STACK):** dispatch architect per scope in task table above.
 
-2. Subsequent adversary passes continue until streak 3/3.
+2. **Task #118 — Pass 16 state-mgr FINAL:** after architect commits.
 
-3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
+3. **Task #119 — Pass 17 adversary dispatch:** after state-mgr FINAL.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS (15 passes, streak 0/3).** Resume on fresh context: read `.factory/STATE.md` FIRST.
+4. **Tasks #120+ — Continue cascade per Option C:** subsequent adversary passes until streak 3/3.
+
+5. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
+
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS-PAUSED (16 passes, streak 0/3; UD-002 Option C selected).** Resume on fresh context: read `.factory/STATE.md` FIRST.
