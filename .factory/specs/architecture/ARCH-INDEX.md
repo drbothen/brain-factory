@@ -1,7 +1,7 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.18"
+version: "0.1.19"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
@@ -440,7 +440,11 @@ Additional Self-Audit items:
     .factory/specs/architecture/verification-properties/VP-INDEX.md \
     .factory/specs/architecture/subsystems/SS-*.md \
     .factory/specs/architecture/adr/ADR-*.md \
-    .factory/specs/architecture/verification-properties/VP-*.md; do
+    .factory/specs/architecture/verification-properties/VP-*.md \
+    .factory/specs/prd/index.md \
+    .factory/specs/prd/prd-supplements/*.md \
+    .factory/specs/behavioral-contracts/BC-INDEX.md \
+    $(find .factory/specs/behavioral-contracts -name "BC-*.md" | grep -v BC-INDEX); do
     if grep -q "^### v" "$f"; then
       if ! grep -nE '^### v' "$f" | awk '{print $2}' | sort -rV -c 2>/dev/null; then
         echo "MONOTONICITY-FAIL: $f Changelog entries are not in strict descending version order."
@@ -449,15 +453,36 @@ Additional Self-Audit items:
   done
   ```
 
-  Incremental scope: when adding a new Changelog entry to any architecture artifact, insert it at the TOP of the Changelog section (after `## Changelog`) — always newer version before older. Verify by running the bash sweep above before commit. Canonical-baseline scope: Pass 16 F-PASS16-I1 burst corrected ARCH-INDEX.md — the v0.1.12 entry had survived 15+ passes in the wrong position (between v0.1.15 and v0.1.14); moved to correct position between v0.1.13 and v0.1.11. All other architecture artifact Changelog sections verified monotone at codification time (SS-NN/ADR/VP files each have at most v1.0 and v1.1/v1.2 entries; no out-of-order violations found). (Codified F-PASS16-I1; dual-scope declared in this burst.) [audit-trail]
+  Incremental scope: when adding a new Changelog entry to any architecture artifact, PRD, supplement, or BC file, insert it at the TOP of the Changelog section (after `## Changelog`) — always newer version before older. Verify by running the bash sweep above before commit. Canonical-baseline scope: Pass 16 F-PASS16-I1 burst corrected ARCH-INDEX.md — the v0.1.12 entry had survived 15+ passes in the wrong position (between v0.1.15 and v0.1.14); moved to correct position between v0.1.13 and v0.1.11. All other architecture artifact Changelog sections verified monotone at codification time (verified per-file via the bash sweep above; SS-NN files range v1.0 through v1.4 (SS-18 at v1.4); ADR files range v1.0 through v1.2 (ADR-004 + ADR-009 at v1.2); VP files range v1.0 through v1.3 (VP-012 at v1.3); no out-of-order violations found in any file). Pass 17 canonical-baseline sweep extended discipline scope to PRD/supplements/BC-INDEX/95 BCs; confirmed all currently monotone (PRD: 10 entries v0.1.0..v0.1.9; BC-INDEX: 9 entries v0.1.0..v0.1.8; VP-INDEX: 6 entries v0.1.0..v0.1.6; PRD supplements and 95 BC files have no Changelog sections and are safely skipped by the `grep -q "^### v"` gate). (Codified F-PASS16-I1; dual-scope declared in that burst; bash sweep extended to PRD/supplements/BC-INDEX/BCs and canonical-baseline rationale corrected F-PASS17-S1 + F-PASS17-I3(a).) [audit-trail]
+
+- [x] **Header-vs-body count check (F-PASS17-I1 closure, F-PASS17-O1 process-gap):** For any section header that contains a count claim (e.g., "(N total items)", "(M confirmed disciplines)", "N fix-bursts complete"), verify the count matches the visible body item / row / list-entry count. Headers MUST accurately describe the body they introduce. Paper-fixing a header by updating the count claim without reconciling the body is a TD-VSDD-059 violation.
+
+  Incremental scope: applied before any state-manager or architect burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit.
+
+  Canonical-baseline scope: Pass 17 canonical-baseline sweep identified F-PASS16-I2 paper-fix in SESSION-HANDOFF §6 ("22 total" header over 19-row body); state-manager recommended to reconcile in Pass 17 FINAL burst. Also identified "36 fix-bursts" claim in STATE.md / SESSION-HANDOFF frontmatter that is not derivable from cascade-table body (F-PASS17-I2); state-manager recommended to re-derive from cascade table in Pass 17 FINAL burst. (Codified F-PASS17-O1 + F-PASS17-I1 cross-agent closure; discipline #23.) [audit-trail]
 
 ---
 
 ## Changelog
 
+### v0.1.19 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS17-C1 — v0.1.18 F-PASS16-C1 Changelog entry replaced with per-sub-rule enumeration):** The v0.1.18 Changelog entry for F-PASS16-C1 paraphrased "the four sub-rules" without enumerating each sub-rule's Incremental and Canonical-baseline scope text — violating the F-PASS16-O1 binding-scope adjudication codified in the same burst (per-item enumeration mandatory when ARCH-INDEX is the source of record). Replaced summary paragraph in v0.1.18 F-PASS16-C1 entry with four per-sub-rule bullets enumerating Incremental and Canonical-baseline scope text added to F-PASS15-C1, F-PASS15-I1, F-PASS15-I2, and F-PASS15-O1 sub-rules. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS17-S1 — discipline #22 canonical-baseline rationale corrected):** Replaced inaccurate parenthetical "(SS-NN/ADR/VP files each have at most v1.0 and v1.1/v1.2 entries; no out-of-order violations found)" with accurate per-artifact-type ranges: SS-NN files range v1.0 through v1.4 (SS-18 at v1.4); ADR files range v1.0 through v1.2 (ADR-004 + ADR-009 at v1.2); VP files range v1.0 through v1.3 (VP-012 at v1.3); no out-of-order violations found in any file. The conclusion was correct; the enumeration of per-file entry counts was factually understated. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS17-I3(a) — discipline #22 bash sweep extended to PRD/supplements/BC-INDEX/BC files):** Discipline #22 bash sweep previously covered only architecture artifacts. Extended to include `.factory/specs/prd/index.md`, `.factory/specs/prd/prd-supplements/*.md`, `.factory/specs/behavioral-contracts/BC-INDEX.md`, and all 95 BC files (via `find ... -name "BC-*.md" | grep -v BC-INDEX`). The `grep -q "^### v"` gate safely skips files with no Changelog section (PRD supplements and all 95 BC files have no Changelog sections and are skipped). Canonical-baseline sweep at codification time confirmed: PRD (10 entries v0.1.0..v0.1.9), BC-INDEX (9 entries v0.1.0..v0.1.8), and VP-INDEX (6 entries v0.1.0..v0.1.6) are all currently monotone. [audit-trail]
+
+**NEW DISCIPLINE (discipline #23 — Header-vs-body count check, F-PASS17-O1 + F-PASS17-I1 cross-agent closure):** New Self-Audit sub-rule #23 (Header-vs-body count check) codified with both Incremental and Canonical-baseline scope. Addresses the paper-fix risk identified in F-PASS17-I1 (Pass 16 partial closure of F-PASS16-I2: SESSION-HANDOFF §6 header was changed to claim "22 total" without reconciling the 19-row body). Also addresses the dropped-discipline-codification class from F-PASS17-O1 (Pass 16 adversary recommended discipline #23 via state-manager closure step; fell between agents because state-manager scope does not include ARCH-INDEX Self-Audit codification). [audit-trail]
+
 ### v0.1.18 (2026-05-16)
 
-**STRUCTURAL FIX (F-PASS16-C1 — dual-scope declarations added to Self-Audit sub-rules for disciplines #18-21):** The four sub-rules codified in Pass 15 (F-PASS15-C1, F-PASS15-I1, F-PASS15-I2, F-PASS15-O1) did not carry explicit `Incremental scope:` / `Canonical-baseline scope:` labels, violating the F-PASS10-O1 dual-scope discipline (6th recurrence). Explicit scope labels added to each of the four sub-rules following the F-PASS14-C1 pattern. Canonical-baseline scope for each records the one-time sweep performed at Pass 15 codification time. [audit-trail]
+**STRUCTURAL FIX (F-PASS16-C1 — dual-scope declarations added to Self-Audit sub-rules for disciplines #18-21):** The four sub-rules codified in Pass 15 (F-PASS15-C1, F-PASS15-I1, F-PASS15-I2, F-PASS15-O1) did not carry explicit `Incremental scope:` / `Canonical-baseline scope:` labels, violating the F-PASS10-O1 dual-scope discipline (6th recurrence). Per-sub-rule enumeration of scope labels added (per F-PASS16-O1 binding-scope adjudication — ARCH-INDEX is the source of record for these sub-rules; per-item enumeration is mandatory):
+- F-PASS15-C1 sub-rule (Changelog amendments count as body modifications): Incremental scope added: "before any architect burst that modifies a Changelog section body in any SS-NN, ADR, or VP file, treat it as a body modification — bump the version and add a new Changelog entry before commit." Canonical-baseline scope added: "Pass 15 F-PASS15-C1 burst applied this clarification retroactively — 6 files (VP-014, VP-021, VP-026, VP-027, ADR-004, ADR-009) were bumped from v1.1 to v1.2 for Pass 14 Changelog amendments that had not been version-bumped."
+- F-PASS15-I1 sub-rule (derived-cell-count enumeration discipline): Incremental scope added: "applied when writing any Changelog bullet that cites a sibling-sweep discipline affecting multiple derived cells — enumerate specific cells, not 'all three.'" Canonical-baseline scope added: "Pass 15 F-PASS15-I1 burst corrected 4 VP Changelog bullets (VP-014, VP-021, VP-026, VP-027) — overclaiming narratives reframed to enumerate specific affected cells and correct directionality."
+- F-PASS15-I2 sub-rule (initial-creation content discipline): Incremental scope added: "when applying F-PASS14-C1 enumeration to any architecture artifact Changelog, first confirm that a post-creation body modification actually occurred before attributing; do not misapply F-PASS14-C1 to initial-creation content." Canonical-baseline scope added: "Pass 15 F-PASS15-I2 burst corrected VP-014 v1.1 Changelog — the F-PASS14-C1 Note attributing initial-creation content as 'modification observed but ARCH-INDEX history insufficient to attribute' was removed; VP-014 initial-creation content (zero-argument CLI, E-INIT-002) was authored at VP creation and does not require post-creation attribution."
+- F-PASS15-O1 sub-rule (bash sweep timestamp-invariant check): Incremental scope added: "the bash sweep already runs before every architect burst touching SS-NN/ADR/VP files; the INVARIANT-FAIL check runs automatically as part of that sweep." Canonical-baseline scope added: "Pass 15 F-PASS15-O1 burst added the INVARIANT-FAIL check to the bash sweep; no files were found with `timestamp < created` at codification time (all 64 architecture artifacts verified clean)."
+[audit-trail]
 
 **STRUCTURAL FIX (F-PASS16-I1 — Changelog v0.1.12 entry moved to correct monotonic position):** The v0.1.12 Changelog entry had been inserted between v0.1.15 and v0.1.14 (surviving 15+ adversarial passes undetected), breaking strict descending semver order. Moved to correct position: between v0.1.13 and v0.1.11. Correct order now: v0.1.18, v0.1.17, v0.1.16, v0.1.15, v0.1.14, v0.1.13, v0.1.12, v0.1.11, v0.1.10, ... [audit-trail]
 
