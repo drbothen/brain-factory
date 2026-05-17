@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.9"
+version: "0.1.10"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-16T00:00:00
@@ -546,11 +546,29 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   **NOTE (exclusion-list-extension protocol — plain-prose clause):** To add a new exclusion for the plain-prose clause: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Triple-backtick fences and single-backtick inline spans are the two pre-approved exclusion categories (sibling-swept from ARCH-INDEX v0.1.8 improved Clause 2).
 
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.9 (2026-05-16). **PASS.**
+- [x] **Changelog version-monotonicity check (F-PASS16-I1, mirrored F-PASS17-I3(b)):** Changelog entries MUST appear in strict descending semver order — each `### vX.Y.Z` entry must be followed by `### vX.Y.(Z-1)` (or the next-lower version). No version may appear out of sequence. Bash sweep:
+
+  ```bash
+  grep -nE '^### v' .factory/specs/prd/index.md | awk '{print $2}' | sort -rV -c
+  ```
+
+  exits 0 if entries are strictly descending. Incremental scope: when adding a new Changelog entry to this PRD, insert it at the TOP of the Changelog section (after `## Changelog`) — always newer version before older. Verify by running the bash sweep above before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19 (commit b70fc7d). Canonical-baseline sweep at codification: PRD Changelog (10 entries v0.1.0..v0.1.9) verified monotone via `grep -nE '^### v' index.md | awk '{print $2}' | sort -rV -c` exit 0. (Mirrored from ARCH-INDEX discipline #22 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
+
+- [x] **Header-vs-body count check (F-PASS17-I1 closure, mirrored F-PASS17-I3(b)):** For any section header that contains a count claim (e.g., "(N total items)", "(M confirmed disciplines)", "N fix-bursts complete"), verify the count matches the visible body item / row / list-entry count. Headers MUST accurately describe the body they introduce. Paper-fixing a header by updating the count claim without reconciling the body is a TD-VSDD-059 violation.
+
+  Incremental scope: applied before any PRD burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: PRD section headers carrying number claims include "21 total" scopes in §5 Error Taxonomy and counts embedded in body prose; no PRD section headers carry a standalone count-claim `(N total ...)` format in the heading text itself that would require body reconciliation. PRD is clean at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
+
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.10 (2026-05-16). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.10 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS17-I3(b) sibling-sweep — Discipline #22 Changelog version-monotonicity check mirrored into PRD Self-Audit Checklist from ARCH-INDEX v0.1.19 (commit b70fc7d)):** Per F-PASS17-I3 finding, discipline #22's bash sweep was architecture-only and did not cover PRD Changelogs. Both scopes declared: Incremental scope — insert new PRD Changelog entries at TOP, run `grep -nE '^### v' index.md | awk '{print $2}' | sort -rV -c` before commit; Canonical-baseline scope — PRD Changelog (10 entries v0.1.0..v0.1.9) verified monotone via bash sweep exit 0 at codification time. Mirrored per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS17-I3(b) sibling-sweep — Discipline #23 Header-vs-body count check mirrored into PRD Self-Audit Checklist from ARCH-INDEX v0.1.19):** Per F-PASS17-I3 finding, discipline #23 (Header-vs-body count check, codified by architect in Pass 17 burst) must be mirrored into PRD Self-Audit Checklist per the sibling-sweep precedent. Both scopes declared: Incremental scope — before any PRD burst updating a section header with a count claim, reconcile the header text with body count before commit; Canonical-baseline scope — PRD section headers scanned at codification: no PRD headers carry a standalone count-claim `(N total ...)` format in the heading text itself; count claims in PRD appear in body prose only (not in heading text). PRD is clean at codification. [audit-trail]
 
 ### v0.1.9 (2026-05-16)
 

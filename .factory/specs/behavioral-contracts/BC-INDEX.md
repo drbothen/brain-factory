@@ -1,13 +1,13 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.8"
+version: "0.1.9"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.9
+inherits_from: prd@v0.1.10
 created: 2026-05-15
 last_updated: 2026-05-16
 ---
@@ -264,11 +264,29 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 
 **NOTE (exclusion-list-extension protocol — plain-prose clause):** To add a new exclusion for the plain-prose clause: (a) add to `grep -v` clause; (b) re-run gate — zero matches; (c) record rationale in changelog with dated entry. Triple-backtick fences and single-backtick inline spans are the two pre-approved exclusion categories (sibling-swept from ARCH-INDEX v0.1.8 improved Clause 2).
 
-**last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.8 (2026-05-16). **PASS.**
+**Changelog version-monotonicity check (F-PASS16-I1, mirrored F-PASS17-I3(b)):** Changelog entries MUST appear in strict descending semver order — each `### vX.Y.Z` entry must be followed by `### vX.Y.(Z-1)` (or the next-lower version). No version may appear out of sequence. Bash sweep:
+
+  ```bash
+  grep -nE '^### v' .factory/specs/behavioral-contracts/BC-INDEX.md | awk '{print $2}' | sort -rV -c
+  ```
+
+  exits 0 if entries are strictly descending. Incremental scope: when adding a new Changelog entry to BC-INDEX, insert it at the TOP of the Changelog section (after `## Changelog`) — always newer version before older. Verify by running the bash sweep above before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19 (commit b70fc7d). Canonical-baseline sweep at codification: BC-INDEX Changelog (9 entries v0.1.0..v0.1.8) verified monotone via `grep -nE '^### v' BC-INDEX.md | awk '{print $2}' | sort -rV -c` exit 0. Individual BC files (95 files) scanned via `for f in $(find .factory/specs/behavioral-contracts -name "BC-*.md" | grep -v BC-INDEX); do ... done` — 0 violations found (BC files have no Changelog sections; safely skipped by `grep -q "^### v"` gate). (Mirrored from ARCH-INDEX discipline #22 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
+
+**Header-vs-body count check (F-PASS17-I1 closure, mirrored F-PASS17-I3(b)):** For any section header that contains a count claim (e.g., "(N total items)", "(M confirmed disciplines)", "N fix-bursts complete"), verify the count matches the visible body item / row / list-entry count. Headers MUST accurately describe the body they introduce. Paper-fixing a header by updating the count claim without reconciling the body is a TD-VSDD-059 violation.
+
+  Incremental scope: applied before any BC-INDEX burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: BC-INDEX section headers scanned for count claims. The H1 preamble blockquote cites "all 95 behavioral contract files" and "18 subsystems" (ARCH-INDEX Subsystem Registry has exactly 18 SS-NN rows each with a BC count that sums to 95). BC-INDEX body contains 18 `## ss-NN:` section headers (one per subsystem), each followed by a table of BC rows. Spot-check: ss-01 has 6 BCs (table rows 1-6 match Subsystem Registry BC-2.01.001..BC-2.01.006 count=6). Total BC count in all tables = 95 (verified by Subsystem Registry arithmetic). No count-claim header drift found at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
+
+**last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.9 (2026-05-16). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.9 (2026-05-16)
+
+**STRUCTURAL FIX (F-PASS17-I3(b) sibling-sweep — Discipline #22 Changelog version-monotonicity check mirrored into BC-INDEX Self-Audit Checklist from ARCH-INDEX v0.1.19 (commit b70fc7d)):** Per F-PASS17-I3 finding, discipline #22's bash sweep was architecture-only and did not cover BC-INDEX Changelogs. Both scopes declared: Incremental scope — insert new BC-INDEX Changelog entries at TOP, run `grep -nE '^### v' BC-INDEX.md | awk '{print $2}' | sort -rV -c` before commit; Canonical-baseline scope — BC-INDEX Changelog (9 entries v0.1.0..v0.1.8) verified monotone via bash sweep exit 0; all 95 BC files scanned and found to have no Changelog sections (0 violations). `inherits_from` updated from `prd@v0.1.9` to `prd@v0.1.10` (the PRD version current after this burst). Mirrored per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent. [audit-trail]
+
+**STRUCTURAL FIX (F-PASS17-I3(b) sibling-sweep — Discipline #23 Header-vs-body count check mirrored into BC-INDEX Self-Audit Checklist from ARCH-INDEX v0.1.19):** Per F-PASS17-I3 finding, discipline #23 (Header-vs-body count check, codified by architect in Pass 17 burst) must be mirrored into BC-INDEX Self-Audit Checklist per the sibling-sweep precedent. Both scopes declared: Incremental scope — before any BC-INDEX burst updating a section header with a count claim, reconcile the header text with body count before commit; Canonical-baseline scope — BC-INDEX section headers scanned at codification: body has 18 `## ss-NN:` headers; H1 blockquote cites "all 95 behavioral contract files" and "18 subsystems"; total BC rows in tables = 95 confirmed via Subsystem Registry. No count-claim header drift at codification. [audit-trail]
 
 ### v0.1.8 (2026-05-16)
 
