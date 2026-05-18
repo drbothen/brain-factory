@@ -32,14 +32,14 @@ capture → content production → knowledge synthesis → publishing → operat
 | Epic | BCs | Running Total |
 |------|-----|---------------|
 | EPIC-01: Plugin Foundation and Scaffold | 13 | 13 |
-| EPIC-02: Hook Enforcement Chain | 20 | 33 |
-| EPIC-03: Content Capture (URL + Source Ingest) | 11 | 44 |
-| EPIC-04: Wiki Layer and Content Production | 10 | 54 |
-| EPIC-05: Knowledge Synthesis | 3 | 57 |
-| EPIC-06: Content Brief, Writing, and Publishing | 10 | 67 |
-| EPIC-07: Lobster Runtime and GitHub Action Templates | 8 | 75 |
-| EPIC-08: Scale-Aware Architecture and Observability | 10 | 85 |
-| EPIC-09: Plugin Packaging and Governance | 10 | 95 |
+| EPIC-02: Hook Enforcement Chain | 24 | 37 |
+| EPIC-03: Content Capture (URL + Source Ingest) | 11 | 48 |
+| EPIC-04: Wiki Layer and Meta-Lint | 11 | 59 |
+| EPIC-05: Knowledge Synthesis | 3 | 62 |
+| EPIC-06: Content Brief, Writing, and Publishing | 10 | 72 |
+| EPIC-07: Lobster Runtime and GitHub Action Templates | 8 | 80 |
+| EPIC-08: Scale-Aware Architecture and Observability | 8 | 88 |
+| EPIC-09: Plugin Packaging and Governance | 7 | 95 |
 | **TOTAL** | **95** | **95** |
 
 Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
