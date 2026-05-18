@@ -4,12 +4,12 @@ project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-18
 mode: greenfield
-phase: phase-2-story-decomposition-authorized-not-started
+phase: phase-2-story-decomposition-step-a-complete-step-b-next-action
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
 phase_1d_status: "**CONVERGED** — BC-5.39.001 3-CLEAN literal streak 3/3 achieved at Pass 42 (Pass 40 PASS + Pass 41 PASS + Pass 42 PASS); 42 passes complete (39 FAIL + 3 PASS consecutively at end); 68 fix-bursts complete; 24 disciplines codified; 13 sub-checks codified; Phase 1d adversarial spec review cascade CLOSED at commit 44cda58"
-phase_2_status: AUTHORIZED-NOT-STARTED — UD-005 (2026-05-18) human authorization granted; first action is dispatch story-writer agent for epic + story decomposition; specs ready per canonical_prd / canonical_bc_index / canonical_architecture frontmatter pointers
+phase_2_status: STEP-A-COMPLETE — epics.md @ v0.1.0 (commit a9e6a04 primary + 80a814a footer-fix) — 9 epics covering 95 BCs (100% coverage verified) — Step B (create-stories) next-action
 session_continuity: FRESH-CONTEXT-READY — Phase 1d CONVERGED at commit 44cda58; Phase 2 AUTHORIZED per UD-005; next session resumes by reading the Resume procedure in this STATE.md §"Resume procedure for FRESH-CONTEXT ORCHESTRATOR" and dispatching the Phase 2 sub-workflow (workflows/phases/phase-2-story-decomposition.lobster) starting with story-writer agent
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -26,24 +26,17 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 2 (Story Decomposition) AUTHORIZED — RESUME ENTRY POINT FOR FRESH SESSION
+## TOP OF STACK — Phase 2 Step B (create-stories) NEXT-ACTION — RESUME ENTRY POINT FOR FRESH SESSION
 
-**Status:** Phase 1d CONVERGED at commit `44cda58` (2026-05-18). Phase 2 (Story Decomposition) is AUTHORIZED per **UD-005** (2026-05-18 human directive).
+**Status:** Phase 2 Step A (Define Epics) COMPLETED (2026-05-18). epics.md v0.1.0 at commits a9e6a04 + 80a814a. 9 epics, 95/95 BC coverage verified. Step B (create-stories) is the next-action.
 
 **Next action for fresh-context orchestrator:**
 
-1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md` → `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-42.md` (last cascade report, for context only).
-2. Verify HEAD via `git -C /Users/jmagady/Dev/brain-factory log --oneline -1` shows subject starting with `factory(state): Phase 1d Pass 42 FINAL — CONVERGENCE`. Verify clean tree via `git status --short` (only untracked planning notes / logs expected).
-3. Confirm spec package inputs exist (read-only sanity check):
-   - PRD: `/Users/jmagady/Dev/brain-factory/.factory/specs/prd/index.md` (v0.1.10) + 4 supplements
-   - BC-INDEX: `/Users/jmagady/Dev/brain-factory/.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.9, 95 BCs)
-   - Architecture: `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/ARCH-INDEX.md` (v0.1.22) + 17 ADRs + 18 SS-NN designs
-   - VP-INDEX: `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.6, 27 VPs covering 64/64 P0 BCs)
-   - Brief: `/Users/jmagady/Dev/brain-factory/.factory/specs/product-brief.md` (v0.4.19)
-4. Dispatch the Phase 2 sub-workflow. Two options:
-   - **Option A (recommended):** Use the bundled skill `/vsdd-factory:phase-2-story-decomposition` (orchestrator-level entry point). It reads `workflows/phases/phase-2-story-decomposition.lobster` and spawns sub-agents in dependency order.
-   - **Option B (manual):** Dispatch `vsdd-factory:story-writer` directly with task "Decompose PRD + architecture + 95 BCs into epics, stories, dependency graph, wave schedule, and Phase 4 holdout scenarios. Write outputs under `/Users/jmagady/Dev/brain-factory/.factory/stories/` (sprint-state.yaml + per-story files + STORY-INDEX.md + epics.md + waves.md). Per CLAUDE.md Production-Grade Default: include all 95 BCs in coverage; no MVP rationalizations."
-5. After story-writer produces draft output, the Phase 2 cascade includes consistency-validator + adversarial spec-reviewer 3-CLEAN cascade per BC-5.39.001 (analogous to Phase 1d cascade just closed). Use chat-only adversary protocol per F-PASS12-O1. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply to Phase 2 state-mgr FINAL bursts.
+1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md` → `.factory/stories/epics.md` (Phase 2 Step A output — read for epic definitions).
+2. Verify HEAD via `git -C /Users/jmagady/Dev/brain-factory log --oneline -1` shows story-writer commits (a9e6a04 primary, 80a814a footer-fix) or state-manager Phase 2 Step A FINAL commit. Verify clean tree via `git status --short`.
+3. Confirm epics.md exists at `.factory/stories/epics.md` (v0.1.0, 9 epics covering 95/95 BCs, commits a9e6a04 + 80a814a).
+4. Dispatch story-writer for Phase 2 Step B (create-stories). Inputs = epics.md + PRD + BC-INDEX + ARCH-INDEX + SS-NN designs + VPs + supplements. Outputs = `.factory/stories/STORY-NNN.md` (one per story). Per Phase 2 lobster workflow `create-stories` step.
+5. After story-writer produces story files, dispatch consistency-validator + adversarial spec-reviewer 3-CLEAN cascade per BC-5.39.001. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply to Phase 2 state-mgr FINAL bursts.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
 
@@ -194,11 +187,36 @@ Phase 2 cascade (after story-writer produces drafts):
 
 ---
 
+## Phase 2 Step A — COMPLETED
+
+**Artifact:** `.factory/stories/epics.md` v0.1.0. **Commits:** a9e6a04 (primary: "factory(story-writer): Phase 2 Step A — define-epics 9 epics covering 95 BCs") + 80a814a (correction: "factory(story-writer): fix coverage footer table — EPIC-02 count 20 → 24, correct running totals"). **Date:** 2026-05-18.
+
+**9 epics defined (ordered):**
+1. EPIC-01 — Knowledge Ingestion Foundation (SS-01, SS-03, SS-06 partial)
+2. EPIC-02 — Semantic Processing and Indexing (SS-02, SS-04, SS-05, SS-06 partial, SS-10)
+3. EPIC-03 — Wiki Knowledge Base Management (SS-07 partial, SS-08)
+4. EPIC-04 — Research and Synthesis Skills (SS-09, SS-12)
+5. EPIC-05 — Content Publishing Pipeline (SS-13, SS-14)
+6. EPIC-06 — Ritual Automation and Scheduling (SS-15, SS-16, SS-07 partial)
+7. EPIC-07 — Vault Governance and Integrity (SS-11, SS-17)
+8. EPIC-08 — Plugin Infrastructure and Toolchain (SS-06 partial, SS-18 partial)
+9. EPIC-09 — Brain Factory Self-VSDD and Release (SS-07 partial, SS-15 partial, SS-18 partial)
+
+**BC Coverage:** 95/95 unique BCs assigned, zero missing, zero hallucinated. Verified by orchestrator.
+
+**Notable decisions surfaced by story-writer:**
+- **EPIC-02 INCLUDES SS-10** (semantic search/indexing): SS-10 BCs were grouped with processing (EPIC-02) rather than split across ingestion/wiki, reflecting the semantic dependency on SS-02/SS-04.
+- **SS-06 split across EPIC-01/EPIC-08**: hook dispatch infrastructure (SS-06) spans both the ingestion foundation (hook-event:emit) and plugin infrastructure (dispatcher runtime). Story-writer split BCs accordingly.
+- **EPIC-09 grouping of SS-07+SS-15**: Brain-factory self-VSDD BCs from SS-07 (wiki management) and SS-15 (ritual scheduling) that apply to the factory's own operation were grouped into EPIC-09 rather than duplicated in EPIC-03/EPIC-06.
+
+**TD-VSDD-053-spirit advisory:** story-writer produced 2 commits for one logical burst (a9e6a04 primary + 80a814a correction of a footer-table typo). Neither commit contains `backfill`/`Stage 1`/`Stage 2` keywords so MULTI_COMMIT_CHAIN_NOT_ALLOWED detector did NOT fire. Advisory logged: all Phase 2 story-writer dispatches should include explicit instruction "if you spot a typo, amend your single commit rather than create a correction commit."
+state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS c:NA:Phase2-step-count-NA d:PASS e:NA f:NA g:NA h:NA i:PASS:hits=assessed-all-historical j:PASS k:PASS l:PASS m:PASS:N=63 — 7/7 active passed (6 NA: a,c,e,f,g,h)
+
 ## Current pipeline position
 
 **Mode:** GREENFIELD (no existing implementation; planning artifacts in `docs/planning/` serve as Phase 0 equivalent).
 
-**Phase:** Phase 2 Story Decomposition — **AUTHORIZED** (Phase 1d cascade CLOSED at commit 44cda58; Phase 2 authorized per UD-005; not yet started).
+**Phase:** Phase 2 Story Decomposition — STEP-A-COMPLETE (epics.md @ v0.1.0 committed at a9e6a04+80a814a; 9 epics, 95/95 BC coverage). Step B (create-stories) next-action.
 
 ## Phase 1a Stage 5 — CLOSED
 
