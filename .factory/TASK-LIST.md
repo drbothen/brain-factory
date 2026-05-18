@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-17. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 41 CLOSED (adversary e6765c5 PASS + state-mgr FINAL Pass 41 burst); 67 fix-bursts committed, streak 2/3 (20th 1/3-streak candidate ACHIEVED — 2nd consecutive PASS verdict). CRITICAL=0. UD-004 reaffirms Option C: continue cascade without discipline catalog freeze; require BC-5.39.001 literal streak 3/3. Pass 42 adversary dispatch is next-action — 21st 1/3-streak candidate AND FINAL convergence candidate. STREAK 2/3 — 1 more PASS verdict required.**
+> Snapshot updated: 2026-05-18. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED (adversary 25f89cb PASS + state-mgr FINAL Pass 42 burst — CONVERGENCE); 68 fix-bursts committed, streak 3/3 (21st 1/3-streak candidate ACHIEVED — 3rd consecutive PASS verdict — BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED). CRITICAL=0. Phase 1d cascade CLOSED. Phase 2 (Story Decomposition) awaits human gate per CLAUDE.md Pipeline Authority.**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -13,12 +13,20 @@
 | 2026-05-17 | UD-003 | F-PASS12-O2 3rd STRONG-ESCALATE (Pass 18 adversary recommendation): CRITICAL plateau at 5 passes + meta-rule self-violation at 8 recurrences both thresholds tripped; 3 options presented (a) continue, (b) carve-out exemption, (c) declare-converged-by-fiat | **Option (a) continue cascade** — same as UD-002; meta-rule self-violation class explicitly acknowledged as predictable recurring pattern; no pivot to carve-out or declare-converged-by-fiat |
 | 2026-05-17 | UD-004 | F-PASS12-O2 4th escalation surfaced after 16-pass post-UD-003 evidence (Passes 16–31, ~48 commits, 20+ recurrences, CRITICAL=2 plateau extending to CRITICAL=3 at Pass 32, never advanced past streak 0/3) | **Option (a) continue** — user reaffirmed Option C strict protocol; cascade continues indefinitely until BC-5.39.001 literal streak 3/3; meta-rule self-violation class continues to be acknowledged as predictable recurring pattern; structural-resolution acceptable timeline open-ended |
 
-## TOP OF STACK (RESUME ENTRY POINT — Pass 41 CLOSED; Pass 42 next-action)
+## Phase 1d CLOSED (CONVERGED at Pass 42)
+
+BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 41 PASS (40e7c1e) + Pass 42 PASS. 42 passes total (39 FAIL + 3 PASS). 68 fix-bursts. 24 disciplines codified. 13 sub-checks codified. CRITICAL trajectory ...→3→1→3→0→0→0. Phase 1d adversarial spec review cascade CLOSED.
+
+Inherited process-gaps pending UD-005 (NOT blocking convergence): F-PASS40-O2 (F-PASS39-I3 hit-by-hit enumeration vs F-PASS37-O2 mirror tension), F-PASS40-O3 (historical Pass 35-37 closure-summary ordering inconsistency), F-PASS41-O2 (inherited F-PASS40-O2/O3), F-PASS42-O2 (inherited same).
+
+Per CLAUDE.md Pipeline Authority, transition to Phase 2 (Story Decomposition) requires separate human gate. Do NOT auto-advance.
+
+## TOP OF STACK (RESUME ENTRY POINT — Phase 1d CONVERGED at Pass 42; Phase 2 awaits human gate)
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #153 | NEXT-ACTION | Pass 42 adversary dispatch (chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003/UD-004 / Option C; 21st 1/3-streak candidate AND FINAL convergence candidate; STREAK 2/3 — 1 more PASS verdict closes cascade) |
-| 2 | #129 | PENDING #152 | Continue cascade per Option C until BC-5.39.001 literal streak 3/3 achieved |
+| 1 | #155 | NEXT-ACTION | Await human gate for Phase 2 (Story Decomposition) — per CLAUDE.md Pipeline Authority (major phase boundary) |
+| 2 | #154 | COMPLETED | Pass 42 state-mgr FINAL CONVERGENCE closure |
 
 ## Task Status
 
@@ -80,7 +88,7 @@
 | 54 | COMPLETED | Phase 1b PRD phase entry | PRD v0.1.1 at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements |
 | 55 | COMPLETED | Pass 23 post-convergence verification pass | PASS — cascade officially CLOSED on v0.4.15 |
 | 56 | COMPLETED | Phase 1c (Architecture) entry | Architecture v0.1.1 across 5 commits (b7679ee through d89ea4b) |
-| 57 | IN-PROGRESS | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade IN-PROGRESS. 41 passes complete (39 FAIL + 2 PASS — Pass 40 + Pass 41 consecutive PASS verdicts), 67 fix-bursts committed. Pass 41 CLOSED (adversary e6765c5 + state-mgr FINAL Pass 41 burst). Pass 42 next-action — 21st 1/3-streak candidate AND FINAL convergence candidate. **STREAK 2/3** — 1 more PASS verdict (Pass 42) closes BC-5.39.001 3-CLEAN convergence cascade. CRITICAL trajectory ...→3→1→3→0→0 (Pass 37/38-effective/39/40/41). UD-003/UD-004 reaffirms Option C: no catalog freeze; require literal streak 3/3. |
+| 57 | COMPLETED (CONVERGED) | Phase 1d (Adversarial spec review) entry | BC-5.39.001 3-CLEAN cascade **CONVERGED** at Pass 42. 42 passes complete (39 FAIL + 3 PASS consecutively at end: Pass 40 + Pass 41 + Pass 42 = streak 3/3 literal), 68 fix-bursts committed. Phase 1d adversarial spec review CLOSED. CRITICAL trajectory ...→3→1→3→0→0→0 (Pass 37/38-effective/39/40/41/42). 24 disciplines codified. 13 sub-checks codified. 5 user-decision logs (UD-001 through UD-004 with UD-005 pending). Transition to Phase 2 (Story Decomposition) requires separate human gate per CLAUDE.md Pipeline Authority. Inherited process-gaps F-PASS40-O2/F-PASS40-O3/F-PASS41-O2/F-PASS42-O2 pending UD-005 but NOT blocking convergence. |
 | 58 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 creation | Commit 23e3a91 |
 | 59 | COMPLETED | `vsdd-factory:consistency-validator` fresh-context Phase 1b PRD audit | CONDITIONAL-GO with 5 findings |
 | 60 | COMPLETED | `vsdd-factory:product-owner` PRD v0.1.0 → v0.1.1 fix-burst | Commit 7935faa |
@@ -207,8 +215,10 @@
 | 149 | COMPLETED | Pass 40 adversary dispatch | PASS — 0C+0I+0S+3O. FIRST PASS VERDICT IN 40 PASSES. Persist commit d547508. Streak advances 0/3 → 1/3; 19th 1/3-streak candidate ACHIEVED. F-PASS40-O1 logged (positive 1/3-streak signal). F-PASS40-O2 logged ([process-gap] F-PASS39-I3 hit-by-hit enumeration tension with F-PASS37-O2 mirror; deferred to UD-005). F-PASS40-O3 logged ([process-gap] historical ordering inconsistency; deferred to UD-005). NO re-escalation per UD-003/UD-004. |
 | 150 | COMPLETED | Pass 40 state-mgr FINAL | PASS verdict housekeeping: cascade table Pass 40 PASS row added + Pass 39 row back-filled to 93a433f + CRITICAL trajectory extended →0 + frontmatter 40 passes/66 fix-bursts + §3 sub-items replaced with Pass 40 narrative + §6 header updated + §13 outstanding-work updated to Pass 40/41 + fix-burst walk extended Pass 40 = 1 = 66 total + path-glob {1..40}.md + §8 Pass 39 back-filled to 93a433f + F-PASS40-O1/O2/O3 logged + 13 sub-checks. Fix-burst total 66. Pass 40 state-mgr FINAL SHA: eef8402.
 | 151 | COMPLETED | Pass 41 adversary dispatch | PASS — 0C+0I+0S+2O. Persist commit e6765c5. 2nd consecutive PASS verdict. Streak advances 1/3 → 2/3; 20th 1/3-streak candidate ACHIEVED. F-PASS41-O1 logged (positive 2/3-streak signal). F-PASS41-O2 logged ([process-gap] inherited F-PASS40-O2/O3 process-gaps; deferred to UD-005). NO re-escalation per UD-003/UD-004. |
-| 152 | COMPLETED | Pass 41 state-mgr FINAL | PASS verdict housekeeping: cascade table Pass 41 PASS row added + Pass 40 row back-filled to eef8402 + CRITICAL trajectory extended →0→0 + frontmatter 41 passes/67 fix-bursts + §3 sub-items replaced with Pass 41 narrative + §6 header updated + §13 outstanding-work updated to Pass 41/42 + fix-burst walk extended Pass 41 = 1 = 67 total + path-glob {1..41}.md + §8 Pass 40 back-filled to eef8402 + F-PASS41-O1/O2 logged + 13 sub-checks. Fix-burst total 67. Pass 41 state-mgr FINAL SHA: <commit-SHA-pending-burst>.
-| 153 | NEXT-ACTION | Pass 42 adversary dispatch | Dispatch per BC-5.39.001 cascade protocol. MUST use chat-only output protocol per F-PASS12-O1. No discipline catalog freeze per UD-002/UD-003/UD-004 / Option C. Pass 42 is the 21st 1/3-streak candidate AND FINAL convergence candidate. STREAK 2/3 — 1 more PASS verdict closes cascade. |
+| 152 | COMPLETED | Pass 41 state-mgr FINAL | PASS verdict housekeeping: cascade table Pass 41 PASS row added + Pass 40 row back-filled to eef8402 + CRITICAL trajectory extended →0→0 + frontmatter 41 passes/67 fix-bursts + §3 sub-items replaced with Pass 41 narrative + §6 header updated + §13 outstanding-work updated to Pass 41/42 + fix-burst walk extended Pass 41 = 1 = 67 total + path-glob {1..41}.md + §8 Pass 40 back-filled to eef8402 + F-PASS41-O1/O2 logged + 13 sub-checks. Fix-burst total 67. Pass 41 state-mgr FINAL SHA: 40e7c1e.
+| 153 | COMPLETED | Pass 42 adversary dispatch | Pass 42 adversary persisted at commit 25f89cb. PASS — 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION + 2 OBSERVATIONS. 3rd consecutive PASS verdict — BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED. Phase 1d CONVERGED. |
+| 154 | COMPLETED | Pass 42 state-mgr FINAL — CONVERGENCE closure | CONVERGENCE closure: cascade table Pass 42 PASS row added + Pass 41 row back-filled to 40e7c1e + CRITICAL trajectory extended →0→0→0 + frontmatter 42 passes/68 fix-bursts + phase→converged + phase_1d_status→CONVERGED + §3 sub-items CONVERGENCE narrative + §13 outstanding-work updated to CONVERGED + fix-burst walk extended Pass 42 = 1 = 68 total + path-glob {1..42}.md + §8 Pass 41 back-filled to 40e7c1e + F-PASS42-O1/O2 logged + 13 sub-checks. Fix-burst total 68. Pass 42 state-mgr FINAL SHA: <commit-SHA-pending-burst>.
+| 155 | NEXT-ACTION | Await human gate for Phase 2 (Story Decomposition) | Phase 1d CONVERGED. Per CLAUDE.md Pipeline Authority, transition to Phase 2 is a major phase boundary requiring explicit human authorization. Present convergence summary to human and await gate decision. Do NOT auto-advance. |
 
 ## Next steps (in dependency order)
 
@@ -217,12 +227,8 @@
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#152: Phase 1d Passes 1–41 persists + fix-bursts + state snapshots — COMPLETED (41 passes, 67 fix-bursts committed; UD-002 + UD-003 + UD-004 recorded; Pass 32 fully closed; CRITICAL plateau broken at Pass 21; plateau-broken state held 3 passes then ENDED at Pass 24; CRITICAL=1 at Pass 25 — 12th recurrence; CRITICAL=0 at Pass 26 — meta-rule self-violation class did NOT recur; CRITICAL=1 at Pass 27 — 13th recurrence; CRITICAL=1 at Pass 28 — 14th recurrence; CRITICAL=2 at Pass 29 — 15th+16th recurrence; CRITICAL=2 at Pass 30 — 17th+18th recurrence; CRITICAL=2 at Pass 31 — 19th+20th recurrence; CRITICAL=3 at Pass 32 — 21st+22nd+23rd recurrence FIRST CRITICAL=3 PASS; CRITICAL=1 at Pass 33 — 24th recurrence; CRITICAL=0 at Pass 34 — 2nd consecutive zero-CRITICAL plateau-broken returns; meta-rule self-violation class did NOT recur; CRITICAL=1 at Pass 35 — 25th recurrence; CRITICAL=2 at Pass 36 — 26th+27th recurrence; CRITICAL=3 at Pass 37 — 28th+29th+30th recurrence; trend ACCELERATING; CRITICAL-effective=1 at Pass 38 — 31st recurrence; F-PASS38-C2 REJECTED as adversary error; CRITICAL=3 at Pass 39 — 32nd+33rd+34th recurrence; PASS at Pass 40 — FIRST PASS VERDICT IN 40 PASSES; 19th 1/3-streak candidate ACHIEVED; streak 1/3; PASS at Pass 41 — 2nd consecutive PASS verdict; 20th 1/3-streak candidate ACHIEVED; streak 2/3).~~
+~~Tasks #71–#154: Phase 1d Passes 1–42 persists + fix-bursts + state snapshots — COMPLETED (42 passes, 68 fix-bursts committed; UD-002 + UD-003 + UD-004 recorded; BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED at Pass 42; Phase 1d cascade CONVERGED and CLOSED).~~
 
-1. **Task #153 — Pass 42 adversary dispatch (TOP OF STACK):** dispatch adversary per BC-5.39.001 cascade protocol; chat-only per F-PASS12-O1; no catalog freeze per UD-002/UD-003/UD-004. 21st 1/3-streak candidate AND FINAL convergence candidate. **STREAK 2/3** — 1 more PASS verdict closes cascade.
+1. **Task #155 — Await human gate for Phase 2 (Story Decomposition) (TOP OF STACK):** Phase 1d CONVERGED. Per CLAUDE.md Pipeline Authority, transition to Phase 2 is a major phase boundary requiring explicit human authorization. Present convergence summary and await gate decision. Do NOT auto-advance.
 
-2. **Tasks #129+ — Continue cascade per Option C:** subsequent fix-bursts then adversary passes until streak 3/3. (Task #152 is the most recently completed task.)
-
-3. After Phase 1d convergence: Phase 2 (Story Decomposition) requires separate human gate or pre-authorization per CLAUDE.md Pipeline Authority.
-
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d IN-PROGRESS — Pass 41 CLOSED (PASS); 67 fix-bursts; streak 2/3 (20th 1/3-streak candidate ACHIEVED); CRITICAL=0; Pass 42 next-action (FINAL convergence candidate); UD-003/UD-004 reaffirms Option C.** Resume on fresh context: read `.factory/STATE.md` FIRST.
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED (PASS — BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED); 68 fix-bursts total; Phase 2 (Story Decomposition) awaits human gate.** Resume on fresh context: read `.factory/STATE.md` FIRST.
