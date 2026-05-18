@@ -4,12 +4,13 @@ project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-18
 mode: greenfield
-phase: phase-1d-converged-awaiting-phase-2-gate
+phase: phase-2-story-decomposition-authorized-not-started
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
-phase_1d_status: "**CONVERGED** — BC-5.39.001 3-CLEAN literal streak 3/3 achieved at Pass 42 (Pass 40 PASS + Pass 41 PASS + Pass 42 PASS); 42 passes complete (39 FAIL + 3 PASS consecutively at end); 68 fix-bursts complete; 24 disciplines codified; 13 sub-checks codified; Phase 1d adversarial spec review cascade CLOSED; transition to Phase 2 (Story Decomposition) requires separate human gate per CLAUDE.md Pipeline Authority"
-session_continuity: PHASE-1D-CONVERGED — BC-5.39.001 3-CLEAN literal streak 3/3 achieved; cascade CLOSED at Pass 42 state-mgr FINAL burst; inherited process-gaps F-PASS40-O2/F-PASS40-O3/F-PASS41-O2/F-PASS42-O2 pending UD-005; transition to Phase 2 awaits human gate
+phase_1d_status: "**CONVERGED** — BC-5.39.001 3-CLEAN literal streak 3/3 achieved at Pass 42 (Pass 40 PASS + Pass 41 PASS + Pass 42 PASS); 42 passes complete (39 FAIL + 3 PASS consecutively at end); 68 fix-bursts complete; 24 disciplines codified; 13 sub-checks codified; Phase 1d adversarial spec review cascade CLOSED at commit 44cda58"
+phase_2_status: AUTHORIZED-NOT-STARTED — UD-005 (2026-05-18) human authorization granted; first action is dispatch story-writer agent for epic + story decomposition; specs ready per canonical_prd / canonical_bc_index / canonical_architecture frontmatter pointers
+session_continuity: FRESH-CONTEXT-READY — Phase 1d CONVERGED at commit 44cda58; Phase 2 AUTHORIZED per UD-005; next session resumes by reading the Resume procedure in this STATE.md §"Resume procedure for FRESH-CONTEXT ORCHESTRATOR" and dispatching the Phase 2 sub-workflow (workflows/phases/phase-2-story-decomposition.lobster) starting with story-writer agent
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
@@ -25,7 +26,42 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## Phase 1d CONVERGED at Pass 42 — Phase 2 (Story Decomposition) awaits human gate
+## TOP OF STACK — Phase 2 (Story Decomposition) AUTHORIZED — RESUME ENTRY POINT FOR FRESH SESSION
+
+**Status:** Phase 1d CONVERGED at commit `44cda58` (2026-05-18). Phase 2 (Story Decomposition) is AUTHORIZED per **UD-005** (2026-05-18 human directive).
+
+**Next action for fresh-context orchestrator:**
+
+1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md` → `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-42.md` (last cascade report, for context only).
+2. Verify HEAD via `git -C /Users/jmagady/Dev/brain-factory log --oneline -1` shows subject starting with `factory(state): Phase 1d Pass 42 FINAL — CONVERGENCE`. Verify clean tree via `git status --short` (only untracked planning notes / logs expected).
+3. Confirm spec package inputs exist (read-only sanity check):
+   - PRD: `/Users/jmagady/Dev/brain-factory/.factory/specs/prd/index.md` (v0.1.10) + 4 supplements
+   - BC-INDEX: `/Users/jmagady/Dev/brain-factory/.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.9, 95 BCs)
+   - Architecture: `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/ARCH-INDEX.md` (v0.1.22) + 17 ADRs + 18 SS-NN designs
+   - VP-INDEX: `/Users/jmagady/Dev/brain-factory/.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.6, 27 VPs covering 64/64 P0 BCs)
+   - Brief: `/Users/jmagady/Dev/brain-factory/.factory/specs/product-brief.md` (v0.4.19)
+4. Dispatch the Phase 2 sub-workflow. Two options:
+   - **Option A (recommended):** Use the bundled skill `/vsdd-factory:phase-2-story-decomposition` (orchestrator-level entry point). It reads `workflows/phases/phase-2-story-decomposition.lobster` and spawns sub-agents in dependency order.
+   - **Option B (manual):** Dispatch `vsdd-factory:story-writer` directly with task "Decompose PRD + architecture + 95 BCs into epics, stories, dependency graph, wave schedule, and Phase 4 holdout scenarios. Write outputs under `/Users/jmagady/Dev/brain-factory/.factory/stories/` (sprint-state.yaml + per-story files + STORY-INDEX.md + epics.md + waves.md). Per CLAUDE.md Production-Grade Default: include all 95 BCs in coverage; no MVP rationalizations."
+5. After story-writer produces draft output, the Phase 2 cascade includes consistency-validator + adversarial spec-reviewer 3-CLEAN cascade per BC-5.39.001 (analogous to Phase 1d cascade just closed). Use chat-only adversary protocol per F-PASS12-O1. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply to Phase 2 state-mgr FINAL bursts.
+
+**Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
+
+- **F-PASS40-O2** — F-PASS39-I3 hit-by-hit enumeration tension with F-PASS37-O2 mirror byte-identical requirement (per-hit enumeration in commit body invisible to read-only adversary at STATE.md mirror). DEFER: revisit if Phase 2 adversary cascade encounters the same visibility constraint.
+- **F-PASS40-O3** — Historical Pass 35-37 closure-summary ordering inconsistency at STATE.md (newest-on-top adopted at Pass 38 onward; Pass 35-37 closure summaries remain reverse-chronological at bottom of section). DEFER: cosmetic; do not retroactively reorder unless Phase 2 surfaces a concrete need.
+- **F-PASS41-O2 / F-PASS42-O2** — Inherited references to F-PASS40-O2/O3; same resolution.
+
+**Phase 1d cascade summary (historical, do not edit):**
+
+- 42 passes, 68 fix-bursts, 24 disciplines, 13 sub-checks codified.
+- Convergence trajectory: Pass 40 PASS (eef8402, streak 1/3) → Pass 41 PASS (40e7c1e, streak 2/3) → Pass 42 PASS (44cda58, streak 3/3 CONVERGED).
+- CRITICAL trajectory: `7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1→1→1→1→1→0→0→0→1→1→0→1→1→2→2→2→3→1→0→1→2→3→1→3→0→0→0.`
+- User decisions: UD-001 (Pass 11 commit recovery) / UD-002 (Option C convergence threshold) / UD-003 (continue cascade reaffirmed) / UD-004 (continue cascade reaffirmed after 16 more passes) / UD-005 (Phase 2 authorized, process-gaps deferred).
+- All 95 BCs + 27 VPs + 17 ADRs + 18 SS-NN designs + 4 PRD supplements pass adversarial review at Pass 42.
+
+---
+
+## Phase 1d CONVERGED at Pass 42 — Phase 2 AUTHORIZED per UD-005
 
 **Pass 42 closure summary (CONVERGENCE):** Pass 42 adversary persisted at commit 25f89cb (PASS — 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION + 2 OBSERVATIONS). **3rd consecutive PASS verdict in 42 passes — BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED — Phase 1d CONVERGED.** Pass 40 PASS (eef8402) + Pass 41 PASS (40e7c1e) + Pass 42 PASS (Pass 42 state-mgr FINAL) = streak 3/3 literal. CRITICAL trajectory ...→3→1→3→0→0→0 (Pass 37/38-effective/39/40/41/42) — 3 consecutive zero-CRITICAL passes. NO architect burst. NO PO burst. NO findings to close (PASS verdict). Pass 42 state-mgr FINAL housekeeping: cascade table Pass 42 PASS row added with streak `3/3 — CONVERGED`; CRITICAL trajectory arrow chain extended `...→0→0→0`; Pass 41 row back-filled to `state-mgr FINAL ✓ 40e7c1e`; frontmatter `total_phase_1d_passes_completed: 42` + `total_phase_1d_fix_bursts: 68`; `phase_1d_status` transitioned from IN-PROGRESS to **CONVERGED**; `phase` transitioned to `phase-1d-converged-awaiting-phase-2-gate`; §13 fix-burst-count walk extended Pass 42 = 1 (total 68); SESSION-HANDOFF §3 sub-items replaced with Pass 42 narrative; KNOWN-LIST AUTHORITY at 13 entries unchanged. F-PASS42-O1 logged (CONVERGENCE achieved — 21st 1/3-streak candidate ACHIEVED; 3rd consecutive PASS verdict in 42 passes; streak 2/3 → 3/3 → CONVERGENCE; CRITICAL trajectory ...→3→1→3→0→0→0). F-PASS42-O2 logged ([process-gap] inherited F-PASS40-O2/F-PASS40-O3/F-PASS41-O2 process-gaps pending UD-005 — NOT blocking convergence). **Phase 1d adversarial spec review cascade CLOSED.** Per CLAUDE.md Pipeline Authority, transition to Phase 2 (Story Decomposition) requires separate human gate; Pass 42 state-mgr FINAL burst does NOT auto-advance. Cascade statistics: 42 passes, 67 prior fix-bursts + Pass 42 state-mgr FINAL burst = 68 total; 39 FAIL + 3 PASS; 24 disciplines codified; 13 sub-checks codified; 5 user-decision logs (UD-001 through UD-004 with UD-005 pending); first PASS at Pass 40, second PASS at Pass 41, third PASS at Pass 42 = first 3-CLEAN sequence in Phase 1d history. Fix-burst total 68. Discipline catalog unchanged at 24. Sub-check count unchanged at 13.
 state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS c:PASS:walk=68,lead=68,frontmatter=68 d:PASS e:NA f:NA g:NA h:NA i:PASS:hits=334 file=STATE.md(48=41historical+7current) file=SESSION-HANDOFF.md(156=126historical+15current+15context) file=TASK-LIST.md(130=123historical+7current) j:PASS k:PASS l:PASS m:PASS:N=63 — 8/8 active passed (5 NA: a,e,f,g,h)
@@ -85,28 +121,76 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 
 **User decision (UD-004):** OPTION (a) reaffirmed on 2026-05-17 — user reaffirmed Option C strict protocol after 16-pass post-UD-003 evidence (Passes 16–31, ~48 commits, 20+ recurrences, CRITICAL=2 plateau extending to CRITICAL=3 at Pass 32, never streak 1/3). Cascade continues indefinitely until BC-5.39.001 literal streak 3/3. Structural-resolution acceptable timeline open-ended.
 
-**Top-of-stack action:** **Phase 1d CONVERGED.** BC-5.39.001 3-CLEAN literal streak 3/3 achieved (Pass 40 + Pass 41 + Pass 42 consecutive PASS verdicts). No further adversary dispatch in Phase 1d. Per CLAUDE.md Pipeline Authority, transition to Phase 2 (Story Decomposition) requires separate human gate. Inherited process-gaps F-PASS40-O2/F-PASS40-O3/F-PASS41-O2/F-PASS42-O2 pending UD-005.
+**Top-of-stack action:** **Phase 2 AUTHORIZED per UD-005.** Phase 1d CONVERGED at commit 44cda58. BC-5.39.001 3-CLEAN literal streak 3/3 achieved (Pass 40 + Pass 41 + Pass 42 consecutive PASS verdicts). No further adversary dispatch in Phase 1d. Human directive 2026-05-18 (UD-005) authorized Phase 2 (Story Decomposition). Inherited process-gaps F-PASS40-O2/F-PASS40-O3/F-PASS41-O2/F-PASS42-O2 DEFERRED — not blocking Phase 2.
 
 ---
 
 ## Resume procedure for FRESH-CONTEXT ORCHESTRATOR
 
-**Phase 1d CONVERGED.** No further adversary dispatch in Phase 1d. Read these documents IN ORDER before taking any action:
+**Phase 1d CONVERGED. Phase 2 AUTHORIZED per UD-005.** Read these documents IN ORDER before dispatching any agent:
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
-2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file)
+2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file — canonical state-discovery entry point)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
-5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-42.md` (Pass 42 findings — VERDICT PASS — BC-5.39.001 3-CLEAN literal streak 3/3 achieved — Phase 1d CONVERGED)
+5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-42.md` (Pass 42 findings — VERDICT PASS — BC-5.39.001 3-CLEAN literal streak 3/3 achieved — Phase 1d CONVERGED — read for cascade-closure context; no further adversary dispatch in Phase 1d)
 
-**Pre-action verification:**
-- Confirm HEAD = Pass 42 state-mgr FINAL via `git log --oneline -1` (expected subject: `factory(state): Phase 1d Pass 42 FINAL — CONVERGENCE ...`)
-- Confirm no uncommitted changes via `git status --short`
+**Pre-dispatch verification:**
 
-**Phase 1d CLOSED — Phase 2 transition requires human gate:**
-- BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 41 PASS (40e7c1e) + Pass 42 PASS.
-- Per CLAUDE.md Pipeline Authority, transition to Phase 2 (Story Decomposition) is a MAJOR phase boundary requiring explicit human authorization.
-- Do NOT auto-advance to Phase 2. Present convergence summary to human and await gate decision.
+```bash
+cd /Users/jmagady/Dev/brain-factory
+git log --oneline -1                # expect HEAD subject ~ "factory(state): Phase 1d Pass 42 FINAL" or the state-durability burst subject
+git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
+grep -nE '^phase:' .factory/STATE.md           # expect phase: phase-2-story-decomposition-authorized-not-started
+grep -nE '^phase_2_status:' .factory/STATE.md  # expect phase_2_status: AUTHORIZED-NOT-STARTED ...
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/ 2>/dev/null  # expect "No such file or directory" — Phase 2 has not started yet
+```
+
+**Phase 2 AUTHORIZED — proceed directly:**
+- BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 41 PASS (40e7c1e) + Pass 42 PASS (44cda58).
+- Per UD-005 (2026-05-18 human directive), Phase 2 (Story Decomposition) is AUTHORIZED. No further human gate needed.
+- Dispatch the Phase 2 sub-workflow per TOP OF STACK instructions above.
+
+---
+
+## Phase 2 Prerequisites Checklist (verify before dispatching story-writer)
+
+Phase 2 (Story Decomposition) requires these inputs to be in place. The fresh-context orchestrator should verify each before dispatching story-writer:
+
+| Input | Path | Expected Version | Verification |
+|-------|------|------------------|--------------|
+| Product brief | `.factory/specs/product-brief.md` | v0.4.19 | `grep -nE '^version:' .factory/specs/product-brief.md` returns v0.4.19 |
+| PRD index | `.factory/specs/prd/index.md` | v0.1.10 | `grep -nE '^version:' .factory/specs/prd/index.md` |
+| PRD supplements | `.factory/specs/prd/*-supplement.md` (4 files: interface-definitions, error-taxonomy, nfr-catalog, test-vectors) | varies | `ls .factory/specs/prd/*-supplement.md \| wc -l` returns 4 |
+| BC-INDEX | `.factory/specs/behavioral-contracts/BC-INDEX.md` | v0.1.9 | `grep -nE '^version:' .factory/specs/behavioral-contracts/BC-INDEX.md`; 95 BC files exist |
+| Architecture INDEX | `.factory/specs/architecture/ARCH-INDEX.md` | v0.1.22 | `grep -nE '^version:' .factory/specs/architecture/ARCH-INDEX.md` |
+| ADRs | `.factory/specs/architecture/adr/*.md` | 17 files | `ls .factory/specs/architecture/adr/*.md \| wc -l` returns 17 |
+| Subsystem designs | `.factory/specs/architecture/subsystems/SS-*.md` | 18 files | `ls .factory/specs/architecture/subsystems/SS-*.md \| wc -l` returns 18 |
+| VP-INDEX | `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.6 | `grep -nE '^version:' .factory/specs/architecture/verification-properties/VP-INDEX.md` |
+| VPs | `.factory/specs/architecture/verification-properties/VP-*.md` | 27 files | `ls .factory/specs/architecture/verification-properties/VP-*.md \| wc -l` returns 27 |
+| Phase 1d cascade reports | `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-*.md` | 42 files (pass-1 through pass-42) | `ls .factory/cycles/v0.1-phase-1d-spec/adversary-pass-*.md \| wc -l` returns 42 |
+
+Per CLAUDE.md Source-of-Truth Precedence, these inputs are now the operational source of truth for Phase 2. The `docs/planning/` artifacts (phased build plan, methodology, plugin plan, dispatcher extraction plan) are immutable design source-of-truth and remain unchanged.
+
+## Phase 2 Expected Outputs (story-writer deliverables)
+
+Phase 2 will produce these artifacts under `.factory/stories/`:
+
+| Output | Path | Description |
+|--------|------|-------------|
+| Sprint state | `.factory/stories/sprint-state.yaml` | Per-story state machine (draft → ready → in-progress → review → merged) with dependency graph |
+| Story spec files | `.factory/stories/STORY-NNN.md` (one per story) | Per-story implementation spec with frontmatter (BC traceability), tasks, acceptance criteria, file list, demos |
+| STORY-INDEX | `.factory/stories/STORY-INDEX.md` | Roll-up index with version + traceability matrix |
+| Epics | `.factory/stories/epics.md` | Epic decomposition (grouping of stories around major capability) |
+| Wave schedule | `.factory/stories/waves.md` | Parallel-execution waves derived from dependency graph |
+| Holdout scenarios | `.factory/stories/holdout-scenarios.md` | Hidden Phase 4 acceptance scenarios (visible to holdout-evaluator only, NOT to implementer) |
+| Coverage matrix | `.factory/stories/coverage-matrix.md` | 95 BC × story traceability matrix; every BC must appear in at least one story per CLAUDE.md Production-Grade Default |
+
+Phase 2 cascade (after story-writer produces drafts):
+
+1. **Consistency-validator** dispatch — verify BC traceability, anchor links, count balance, dependency graph acyclicity.
+2. **Adversarial spec-reviewer 3-CLEAN cascade** per BC-5.39.001 — applies same 24 disciplines + 13 sub-checks codified in Phase 1d.
+3. **Human approval gate** before transitioning to Phase 3 (TDD Implementation).
 
 ---
 
@@ -114,7 +198,7 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 
 **Mode:** GREENFIELD (no existing implementation; planning artifacts in `docs/planning/` serve as Phase 0 equivalent).
 
-**Phase:** 1d Adversarial spec review — **CONVERGED** (Phase 1d cascade CLOSED; Phase 2 transition awaits human gate).
+**Phase:** Phase 2 Story Decomposition — **AUTHORIZED** (Phase 1d cascade CLOSED at commit 44cda58; Phase 2 authorized per UD-005; not yet started).
 
 ## Phase 1a Stage 5 — CLOSED
 
@@ -131,7 +215,7 @@ PRD v0.1.1 landed at commit 7935faa. 95 BCs across 18 subsystems, 1 BC-INDEX, 4 
 
 Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX + 17 ADRs + 18 SS-NN designs + 27 VPs (64/64 P0 BC coverage). Five-file gate canonical. Independent orchestrator verification: CLEAN.
 
-## Phase 1d Adversarial Cascade — **CONVERGED** at Pass 42 — STREAK 3/3 — BC-5.39.001 3-CLEAN cascade CLOSED
+## Phase 1d Adversarial Cascade — **CONVERGED** at Pass 42 — STREAK 3/3 — BC-5.39.001 3-CLEAN cascade CLOSED (Phase 2 AUTHORIZED per UD-005)
 
 | Pass | Verdict | Findings | Persist SHA | Fix-burst SHAs | Streak after |
 |------|---------|----------|-------------|----------------|--------------|
@@ -176,7 +260,7 @@ Architecture v0.1.1 landed via 5 commits (b7679ee through d89ea4b). ARCH-INDEX +
 | 39 | FAIL | 3C+3I+0S+2O | 49145aa | state-mgr FINAL ✓ 93a433f | 0/3 |
 | 40 | PASS | 0C+0I+0S+3O | d547508 | state-mgr FINAL ✓ eef8402 | 1/3 |
 | 41 | PASS | 0C+0I+0S+2O | e6765c5 | state-mgr FINAL ✓ 40e7c1e | 2/3 |
-| 42 | PASS | 0C+0I+0S+2O | 25f89cb | state-mgr FINAL ✓ (this commit) | 3/3 — CONVERGED |
+| 42 | PASS | 0C+0I+0S+2O | 25f89cb | state-mgr FINAL ✓ 44cda58 | 3/3 — CONVERGED |
 
 **CRITICAL trajectory (CRITICAL count):** 7→4→2→3→2→2→2→1→1→2→2→2→2→1→1→1→1→1→1→1→0→0→0→1→1→0→1→1→2→2→2→3→1→0→1→2→3→1→3→0→0→0. CRITICAL plateau at 1 for 7 consecutive passes (Pass 14..Pass 20); BROKEN at Pass 21 (zero CRITICAL); plateau-broken state held 3 consecutive passes (Pass 21, Pass 22, Pass 23); ENDED at Pass 24 (CRITICAL=1, F-PASS24-C1 11th recurrence); CONTINUED at Pass 25 (CRITICAL=1, F-PASS25-C1 12th recurrence); RETURNED TO ZERO at Pass 26 (meta-rule self-violation class did NOT recur); RETURNED TO 1 at Pass 27 (F-PASS27-C1 13th recurrence — parameterized-header self-violation); HELD AT 1 at Pass 28 (F-PASS28-C1 14th recurrence — regex-as-definition fallacy in sub-check (i) known-list coverage); JUMPED TO 2 at Pass 29 (F-PASS29-C1 15th recurrence + F-PASS29-C2 16th recurrence — first CRITICAL=2 since Pass 13); HELD AT 2 at Pass 30 (F-PASS30-C1 17th recurrence + F-PASS30-C2 18th recurrence — second consecutive CRITICAL=2); HELD AT 2 at Pass 31 (F-PASS31-C1 19th recurrence + F-PASS31-C2 20th recurrence — third consecutive CRITICAL=2); JUMPED TO 3 at Pass 32 (F-PASS32-C1 21st recurrence + F-PASS32-C2 22nd recurrence + F-PASS32-C3 23rd recurrence — FIRST CRITICAL=3 pass in Phase 1d; all sub-check (m) related); FELL TO 1 at Pass 33 (F-PASS33-C1 24th recurrence — plain-prose 'at line N' in Pass 31 closure summary; GREP-2 blind spot for non-FILE:NNN form); FELL TO 0 at Pass 34 (meta-rule self-violation class did NOT recur; plateau-broken state returned 2nd consecutive zero-CRITICAL — zero-CRITICAL positions now: 21, 22, 23, 26, 34); RETURNED TO 1 at Pass 35 (F-PASS35-C1 25th recurrence — sub-check (c) sibling-sweep extension codified but not applied to sibling fields; regex-as-codification fallacy in new form; 2nd-consecutive-zero-CRITICAL streak broken); ROSE TO 2 at Pass 36 (F-PASS36-C1 26th recurrence — TASK-LIST task #140a plain-prose forward-back-fill self-violation; F-PASS36-C2 27th recurrence — task #57 IN-PROGRESS row body stale at Pass 33 known-list-as-definition fallacy; 2nd-consecutive-zero-CRITICAL streak ended at Pass 35 already, Pass 36 continues CRITICAL≥1 trend at higher count); ROSE TO 3 at Pass 37 (F-PASS37-C1 28th recurrence — SESSION-HANDOFF §3d header introduces UNEXEMPTED `(this commit)` deictic outside §8 ledger format exemption; F-PASS37-C2 29th recurrence — KNOWN-LIST AUTHORITY duplicate blocks at SESSION-HANDOFF §6 sub-check (m) byte-identical FAILED; F-PASS37-C3 30th recurrence — TASK-LIST task #142 row body `(this commit)` deictic F-PASS23-O1 false-negative surface conceals; first structural-process-change adopted per F-PASS37-O2 — state-checks audit-trail mirrored into STATE.md closure summary; trend ACCELERATING); HELD AT 1 EFFECTIVE at Pass 38 (F-PASS38-C1 31st recurrence — SESSION-HANDOFF frontmatter `status:` field stale at `pass-35-closed-pass-36-next-action` form, survived Pass 36 + Pass 37 bursts undetected, known-list-as-definition fallacy; F-PASS38-C2 REJECTED as adversary error per F-PASS11-O1 extended pre-flight verification — STATE.md CRITICAL trajectory arrow chain actually contains 37 values including trailing →3, adversary manually miscounted at 36); ROSE TO 3 at Pass 39 (F-PASS39-C1 32nd recurrence — Pass 38 closure summary unexempted deictic in self-narrative (required deictic-free pass-number form); F-PASS39-C2 33rd recurrence — Pass 38 closure summary cross-pass SHA misattribution citing Pass 37 SHA `a4fa15a` as Pass 38 closing SHA; F-PASS39-C3 34th recurrence — SESSION-HANDOFF §3 sub-item accumulation 9 items 3a-3i instead of canonical 4); FELL TO 0 at Pass 40 (FIRST PASS verdict in 40 passes — Pass 39 closure burst was thorough enough to leave fresh-context adversary unable to find any CRITICAL or IMPORTANT findings; only 3 OBSERVATIONS produced — F-PASS40-O1 positive 1/3-streak signal, F-PASS40-O2 process-gap on F-PASS39-I3 vs F-PASS37-O2 mirror tension, F-PASS40-O3 inherited historical closure-summary ordering inconsistency; zero-CRITICAL positions now: 21, 22, 23, 26, 34, 40; 19th 1/3-streak candidate ACHIEVED); HELD AT 0 at Pass 41 (2nd consecutive PASS verdict; meta-rule self-violation class did NOT recur in Pass 40 closure burst; streak advances 1/3 → 2/3; zero-CRITICAL positions now: 21, 22, 23, 26, 34, 40, 41; Pass 42 is the FINAL convergence candidate); HELD AT 0 at Pass 42 (3rd consecutive PASS verdict — BC-5.39.001 3-CLEAN literal streak 3/3 achieved; meta-rule self-violation class suppressed since Pass 39 closure burst's extensive sub-check (k) extensions + Pass 38/39 structural-process-changes (F-PASS37-O2 state-checks mirroring + F-PASS38-O2 newest-on-top + F-PASS39-C1/C2/C3 current-burst self-application); zero-CRITICAL positions now: 21, 22, 23, 26, 34, 40, 41, 42 = 8 zero-CRITICAL positions over 42 passes; **Phase 1d CONVERGED**).
 
@@ -259,6 +343,7 @@ Before committing, state-manager FINAL MUST run:
 | 2026-05-16 | UD-002 | Convergence threshold per F-PASS12-O2 (Pass 16 adversary STRONG-ESCALATE recommendation) | **Option C** — continue cascade without discipline catalog freeze. NO convergence-by-stable-discipline-catalog. NO move to Phase 2 until BC-5.39.001 literal streak 3/3 achieved. Accept that meta-rule self-violation may recur. |
 | 2026-05-17 | UD-003 | F-PASS12-O2 3rd STRONG-ESCALATE (Pass 18 adversary recommendation): CRITICAL plateau at 5 passes + meta-rule self-violation at 8 recurrences both thresholds tripped; 3 options presented (a) continue, (b) carve-out exemption, (c) declare-converged-by-fiat | **Option (a) continue cascade** — same as UD-002; meta-rule self-violation class explicitly acknowledged as predictable recurring pattern; no pivot to carve-out or declare-converged-by-fiat |
 | 2026-05-17 | UD-004 | F-PASS12-O2 4th escalation surfaced after 16-pass post-UD-003 evidence (Passes 16–31, ~48 commits, 20+ recurrences, CRITICAL=2 plateau extending to CRITICAL=3 at Pass 32, never advanced past streak 0/3) | **Option (a) continue** — user reaffirmed Option C strict protocol; cascade continues indefinitely until BC-5.39.001 literal streak 3/3; meta-rule self-violation class continues to be acknowledged as predictable recurring pattern; structural-resolution acceptable timeline open-ended |
+| 2026-05-18 | UD-005 | Phase 1d CONVERGED at Pass 42 — Phase 2 transition decision; F-PASS40-O2 / F-PASS40-O3 / F-PASS41-O2 / F-PASS42-O2 process-gaps disposition | **Option: Proceed to Phase 2; defer all 4 inherited process-gaps** — human directive 2026-05-18 stated "we will be proceeding to Phase 2"; F-PASS40-O2 (mirror-visibility), F-PASS40-O3 (historical ordering), F-PASS41-O2/F-PASS42-O2 (inherited references) all documented as DEFERRED — NOT blocking Phase 2; may be revisited during Phase 2 if relevant or post-Phase-2; cosmetic historical-ordering inconsistency intentionally preserved as historical artifact |
 
 ## Pass 11 Recovery Note (historical)
 
@@ -268,7 +353,7 @@ Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered vi
 
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md`
 - **Task ledger:** `.factory/TASK-LIST.md`
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..42}.md` (Passes 1–42 written — All 42 passes; cascade CONVERGED)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..42}.md` (Passes 1–42 written — All 42 passes; cascade CONVERGED at 44cda58; Phase 2 authorized per UD-005)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
 - **Product brief:** `.factory/specs/product-brief.md` (v0.4.19)
 - **PRD:** `.factory/specs/prd/index.md` (v0.1.10) + supplements
