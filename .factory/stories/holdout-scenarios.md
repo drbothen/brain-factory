@@ -1,18 +1,18 @@
 ---
 artifact_type: holdout-scenarios
-version: "v0.1.2"
+version: "v0.1.3"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:product-owner
 inputs:
   - product-brief.md@v0.4.20
   - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.13
+  - behavioral-contracts/BC-INDEX.md@v0.1.14
   - architecture/ARCH-INDEX.md@v0.1.23
   - verification-properties/VP-INDEX.md@v0.1.7
   - stories/epics.md@v0.1.1
   - stories/dependency-graph.md@v0.1.0
-  - stories/wave-schedule.md@v0.1.0
+  - stories/wave-schedule.md@v0.1.1
 total_scenarios: 17
 must_pass_count: 10
 nice_to_pass_count: 7
@@ -821,6 +821,10 @@ are exercised in HS-001, HS-006, HS-007 as side effects of the primary acceptanc
 ---
 
 ## §Changelog
+
+### v0.1.3 — 2026-05-19
+
+**INPUT REFRESH (F-PHASE2-DECOMP-GATE-RETRY-INFO-01):** Stale input version references updated: `stories/wave-schedule.md@v0.1.0` → `@v0.1.1` (wave-schedule bumped in Phase 2 Step F story-writer burst); `behavioral-contracts/BC-INDEX.md@v0.1.13` → `@v0.1.14` (BC-INDEX bump in this PO burst for BC-2.04.015 v1.3 + BC-2.04.016 v1.3). No scenario content changed. [audit-trail]
 
 ### v0.1.2 — 2026-05-19
 

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -36,7 +36,7 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 
 ## Postconditions
 
-1. For each hook, the latency assertion in `hooks.bats` passes: wall-clock time from hook invocation to exit is under 100ms.
+1. For each hook, the latency assertion in its per-hook bats file (e.g., `tests/quarantine-fetch.bats` for `quarantine-fetch.sh`) passes: wall-clock time from hook invocation to exit is under 100ms. All 13 per-hook latency assertions pass.
 2. The latency assertions live inside the per-hook bats file for that hook (not a separate performance suite).
 
 ## Invariants
@@ -72,7 +72,7 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 
 | Field | Value |
 |-------|-------|
-| Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Constraints §Technical ("Hook performance budget: <100ms; v0.1 ship gate includes a bats test asserting tail latency under load.") and §Success Criteria §v0.1 ship gate ("Hook performance budget test: v0.1 ship gate adds explicit hook-performance test cases inside `plugins/brain-factory/tests/hooks.bats`"). |
+| Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Constraints §Technical ("Hook performance budget: <100ms; v0.1 ship gate includes a bats test asserting tail latency under load.") and §Success Criteria §v0.1 ship gate ("Hook performance budget test: v0.1 ship gate adds explicit hook-performance test cases in each hook's per-hook bats file (`plugins/brain-factory/tests/<hook-name>.bats`, one file per hook in the per-hook + category test model)"). |
 | L2 Domain Invariants | N/A |
 | Architecture Module | SS-04: Hook Enforcement Chain |
 | Stories | [filled by story-writer] |
@@ -97,6 +97,10 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 - VP-013 — Hook p99 latency under 100ms (bats perf assertion in per-hook bats files)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-RETRY-I01):** Postcondition 1 corrected from stale `hooks.bats` reference to per-hook bats file pattern: "For each hook, the latency assertion in its per-hook bats file (e.g., `tests/quarantine-fetch.bats`) passes." Capability Anchor Justification §v0.1 ship gate quote updated from stale "test cases inside `plugins/brain-factory/tests/hooks.bats`" to current brief language: "test cases in each hook's per-hook bats file (`plugins/brain-factory/tests/<hook-name>.bats`)". Both changes align with brief v0.4.20 per-hook bats model. No semantic change to the 100ms p99 performance contract. [audit-trail]
 
 ### v1.2 (2026-05-18)
 

@@ -1,7 +1,7 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.13"
+version: "0.1.14"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-19T00:00:00
@@ -276,11 +276,15 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 
   Incremental scope: applied before any BC-INDEX burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: BC-INDEX section headers scanned for count claims. The H1 preamble blockquote cites "all 95 behavioral contract files" and "18 subsystems" (ARCH-INDEX Subsystem Registry has exactly 18 SS-NN rows each with a BC count that sums to 95). BC-INDEX body contains 18 `## ss-NN:` section headers (one per subsystem), each followed by a table of BC rows. Spot-check: ss-01 has 6 BCs (table rows 1-6 match Subsystem Registry BC-2.01.001..BC-2.01.006 count=6). Total BC count in all tables = 95 (verified by Subsystem Registry arithmetic). No count-claim header drift found at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
 
-**last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-18`; most recent Changelog entry: v0.1.10 (2026-05-18). **PASS.**
+**last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-19`; most recent Changelog entry: v0.1.14 (2026-05-19). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.14 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-RETRY-I01 + F-PHASE2-DECOMP-GATE-RETRY-S01):** BC-2.04.015 bumped v1.2 → v1.3 (Postcondition 1 and Capability Anchor Justification quote corrected from stale `hooks.bats` to per-hook bats model per brief v0.4.20). BC-2.04.016 bumped v1.2 → v1.3 (`hook-io-contract.bats` replaced with `hook-contracts.bats` throughout, aligned to STORY-015 convention per CLAUDE.md Source-of-Truth Precedence). No semantic change to either contract. `inherits_from` unchanged at `prd@v0.1.11`.
 
 ### v0.1.13 (2026-05-19)
 
