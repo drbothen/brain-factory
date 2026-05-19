@@ -3,16 +3,16 @@ artifact_type: story-index
 version: "0.1.0"
 created: 2026-05-18
 authored_by: vsdd-factory:story-writer
-total_stories: 35
-total_points: 203
+total_stories: 39
+total_points: 237
 phase: phase-2-story-decomposition-step-b
-epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06, EPIC-07]
-epics_pending: [EPIC-08, EPIC-09]
+epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06, EPIC-07, EPIC-08]
+epics_pending: [EPIC-09]
 ---
 
 # brain-factory Story Index
 
-**35 stories across 7 completed epics. 95 BCs total project scope. All stories status: draft.**
+**39 stories across 8 completed epics. 95 BCs total project scope. All stories status: draft.**
 
 ---
 
@@ -100,6 +100,17 @@ epics_pending: [EPIC-08, EPIC-09]
 
 ---
 
+## EPIC-08: Scale-Aware Architecture and Observability (4 stories / 34 points)
+
+| Story ID | Title | Status | Points | Priority | BCs |
+|----------|-------|--------|--------|----------|-----|
+| STORY-036 | Token JSONL instrumentation wired into ingest skills | draft | 5 | P0 | BC-2.16.001 |
+| STORY-037 | Token budget alert in /brain:health, source immutability invariant, and manifest chunks schema | draft | 8 | P1 | BC-2.16.002, BC-2.06.001, BC-2.06.002 |
+| STORY-038 | scripts/gen-test-corpus.sh — reproducible synthetic corpus generator | draft | 8 | P1 | BC-2.16.006 |
+| STORY-039 | Scale validation gate: GH Actions throughput, memory budget, and per-ingest cost at 10K corpus | draft | 13 | P1 | BC-2.16.003, BC-2.16.004, BC-2.16.005 |
+
+---
+
 ## Coverage Verification Footer
 
 | Epic | Stories | Points | Running Story Total | Running Point Total |
@@ -111,6 +122,7 @@ epics_pending: [EPIC-08, EPIC-09]
 | EPIC-05 | 3 | 15 | 26 | 145 |
 | EPIC-06 | 5 | 29 | 31 | 174 |
 | EPIC-07 | 4 | 29 | 35 | 203 |
-| **TOTAL (epics 1–7)** | **35** | **203** | — | — |
+| EPIC-08 | 4 | 34 | 39 | 237 |
+| **TOTAL (epics 1–8)** | **39** | **237** | — | — |
 
-Note: EPIC-08/09 stories are pending their respective Step B bursts.
+Note: EPIC-09 stories are pending the final Step B burst.
