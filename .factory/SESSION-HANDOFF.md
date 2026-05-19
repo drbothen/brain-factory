@@ -1,17 +1,20 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-2-story-decomposition-in-progress
-session_stage: phase-2-step-a-complete-step-b-next-action
-current_brief_version: 0.4.19
+session_phase: phase-2-story-decomposition-step-b-complete
+session_stage: phase-2-step-b-complete-step-c-next-action
+current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
-current_prd_version: 0.1.10
+current_prd_version: 0.1.12
 current_prd_path: .factory/specs/prd/index.md
 current_bc_index_path: .factory/specs/behavioral-contracts/BC-INDEX.md
-current_bc_index_version: 0.1.9
-current_architecture_version: 0.1.22
+current_bc_index_version: 0.1.12
+current_architecture_version: 0.1.23
 current_arch_index_path: .factory/specs/architecture/ARCH-INDEX.md
-current_vp_index_version: 0.1.6
+current_vp_index_version: 0.1.7
+current_story_index_path: .factory/stories/STORY-INDEX.md
+current_story_index_version: "0.3.0"
+total_stories_drafted: 43
 total_bc_count: 95
 total_adr_count: 17
 total_ss_design_count: 18
@@ -72,8 +75,8 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-18
-status: phase-2-step-a-complete-step-b-next-action
+last_updated: 2026-05-19
+status: phase-2-step-b-complete-step-c-next-action
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d
@@ -102,22 +105,22 @@ git status --short
 ```
 Expected: empty (all tracked files clean after this snapshot commit)
 
-### Step 3 — Phase 2 Step A COMPLETED; Step B (create-stories) is next-action — fresh session resumes here
+### Step 3 — Phase 2 Step B COMPLETED (21 bursts; 43 stories); Step C (dependency-graph) is next-action
 
-**3a. DONE — Phase 2 Step A story-writer burst (Step A primary - commit a9e6a04):**
-Story-writer produced epics.md v0.1.0 at commit a9e6a04. 9 epics covering 95/95 BCs. 100% BC coverage verified by orchestrator.
+**3a. DONE — Phase 2 Step B story-writer + product-owner + architect bursts (commits 35c88e9 through 53d7f29):**
+21 bursts produced 43 story specs across 9 epics (STORY-001..043). STORY-INDEX v0.3.0 at commit 53d7f29. 95/95 BC coverage. UD-006 per-hook .bats cascade applied. In-cycle BC/SS fixes: BC-2.04.001 v1.2 (35c88e9 per d22949c), SS-11 v1.2 (8793738), SS-18 v1.5 (d7582d4), BC-2.18.005 v1.2 (39d6fba). Consistency-validator: CRITICAL=0, I04/I05/I06/I07/S01/S02 deferred to Step C.
 
-**3b. DONE — story-writer footer-fix correction (Step A correction - commit 80a814a):**
-Story-writer footer-table typo corrected at commit 80a814a. EPIC-02 count 20 → 24, running totals corrected. TD-VSDD-053-spirit advisory logged (2-commit story-writer burst).
+**3b. NO SEPARATE ARCHITECT BURST — all architect work inline:**
+Architect work was embedded within the overall 21-burst cascade (commits 8793738 and d7582d4). No separate architect pass needed.
 
-**3c. NO PO BURST — Phase 2 Step A:**
-No product-owner burst needed for Step A. BC coverage was verified by orchestrator directly against BC-INDEX.
+**3c. NO SEPARATE PO BURST — all PO work inline:**
+Product-owner work was embedded within the cascade (commits d22949c, f6725b9, 39d6fba, b7f8551). No separate PO pass needed.
 
-**3d. DONE — Phase 2 Step A state-mgr FINAL (Step A - persist a9e6a04+80a814a - commit SHA-pending-next-burst):**
-Phase 2 Step A state-mgr FINAL burst. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Phase advanced to step-b-next-action.
+**3d. DONE — Phase 2 Step B state-mgr FINAL (Step B - 21 bursts - commit SHA-pending-step-c-burst):**
+Phase 2 Step B state-mgr FINAL burst. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md + epics.md updated. Phase advanced to step-c-next-action.
 
-**3e. TOP-OF-STACK — Phase 2 Step B (create-stories):**
-Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → epics.md → dispatches `vsdd-factory:story-writer` for Step B (create-stories). Inputs: epics.md + PRD + BC-INDEX + ARCH-INDEX + SS-NN designs + VPs + supplements. Outputs: `.factory/stories/STORY-NNN.md` (one per story).
+**3e. TOP-OF-STACK — Phase 2 Step C (dependency-graph):**
+Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-INDEX.md (v0.3.0) → dispatches `vsdd-factory:story-writer` for Step C (dependency-graph). Inputs: STORY-INDEX v0.3.0 + 43 story files + epics.md. Carry-forward: F-PHASE2-CONSISTENCY-I04/I05/I06/I07 + S01/S02.
 
 ### Step 4 — Key constraints to carry forward
 
@@ -131,9 +134,9 @@ Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → epics.m
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED (PASS — BC-5.39.001 3-CLEAN literal streak 3/3 achieved); Phase 2 Step A COMPLETED — 9 epics defined covering 95/95 BCs — Step B (Create Stories) is next-action.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step B COMPLETED — 43 stories created (STORY-INDEX v0.3.0) covering 95/95 BCs — Step C (dependency-graph) is next-action.**
 
-Phase 2 Step A (Define Epics) COMPLETED on 2026-05-18. Story-writer produced epics.md v0.1.0 at commits a9e6a04 (primary) + 80a814a (footer-table-typo correction). 9 epics defined covering 95/95 BCs (100% coverage verified by orchestrator). Step B (Create Stories) is next-action. Per the Phase 2 lobster workflow, Step B decomposes each epic into individual story specs under `.factory/stories/STORY-NNN.md`.
+Phase 2 Step B (Create Stories) COMPLETED on 2026-05-18/19. Story-writer (+ product-owner + architect bursts) produced 43 story specs across 9 epics via 21 bursts. STORY-INDEX v0.3.0 at commit 53d7f29. 95/95 BC coverage verified. UD-006 per-hook .bats cascade complete. Step C (dependency-graph) is next-action per Phase 2 lobster workflow.
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -201,20 +204,23 @@ See SESSION-HANDOFF prior versions or `.factory/cycles/v0.1-phase-1a-brief/adver
 
 ## 3. Key state
 
-- **Brief:** `.factory/specs/product-brief.md` (v0.4.19, commit 1c0251c)
-- **PRD:** `.factory/specs/prd/index.md` (v0.1.10, commit 2f247fc)
-- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.9, commit 2f247fc)
-- **ARCH-INDEX:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.22, commit 9734b40; inherits_from prd@v0.1.10)
-- **VP-INDEX:** `.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.6, commit a3a83b1)
-- **ADRs:** 17 (ADR-001 through ADR-017, all `status: accepted`; 6 at v1.1 + 2 at v1.2 = 8 with Changelog sections)
-- **SS-NN designs:** 18 (SS-01 through SS-18; all 18 at v1.1 or higher with Changelog sections)
-- **VPs:** 27 (VP-001 through VP-027; 64/64 P0 BC coverage; 4 at v1.2 + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog sections)
+- **Brief:** `.factory/specs/product-brief.md` (v0.4.20, commit f6725b9)
+- **PRD:** `.factory/specs/prd/index.md` (v0.1.12, commit b7f8551)
+- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.12, commit 39d6fba)
+- **ARCH-INDEX:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.23, commit d7582d4; inherits_from prd@v0.1.12)
+- **VP-INDEX:** `.factory/specs/architecture/verification-properties/VP-INDEX.md` (v0.1.7, commit d7582d4)
+- **nfr-catalog:** `.factory/specs/prd/nfr-catalog.md` (v0.1.1, commit f6725b9)
+- **error-taxonomy:** `.factory/specs/prd/error-taxonomy.md` (v0.1.2, commit 39d6fba)
+- **ADRs:** 17 (ADR-001 through ADR-017, all `status: accepted`)
+- **SS-NN designs:** 18 (SS-01 through SS-18; SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2; rest at v1.1+)
+- **VPs:** 27 (VP-001 through VP-027; 64/64 P0 BC coverage)
 - **Total BCs:** 95 across 18 subsystems (SS-TBD fully eliminated)
+- **STORY-INDEX:** v0.3.0 (43 stories, commit 53d7f29)
 - **Phase 1a streak:** 3/3 — CASCADE CONVERGED on v0.4.15 (Phase 1a Stage 5 CLOSED)
 - **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
 - **Phase 1c status:** COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89ea4b)
-- **Phase 1d status:** CONVERGED — Pass 42 CLOSED (PASS); 68 fix-bursts committed; streak 3/3 ACHIEVED (21st 1/3-streak candidate); CRITICAL=0 at Pass 42 (3rd consecutive PASS verdict; 42 passes, 39 FAIL + 3 PASS: Passes 40/41/42); BC-5.39.001 3-CLEAN cascade CLOSED; Phase 2 authorized per UD-005
-- **Phase 2 status:** STEP-A-COMPLETE (epics.md v0.1.0 @ a9e6a04+80a814a; 9 epics; 95/95 BC coverage; Step B next-action)
+- **Phase 1d status:** CONVERGED — Pass 42 CLOSED (PASS); 68 fix-bursts; streak 3/3; Phase 2 authorized per UD-005
+- **Phase 2 status:** STEP-B-COMPLETE (43 stories @ STORY-INDEX v0.3.0 @ commit 53d7f29; Step C next-action)
 - **Five-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md)
 
 ## 4. Locked decisions (canonical sources)
@@ -441,39 +447,61 @@ Per discipline #23, this header count is updated alongside every row addition. D
 | d4ed853 | state | Phase 2 transition state-durability burst per UD-005 — make state durable for fresh-context resume: STATE.md top-of-stack rewritten for Phase 2 + Phase 2 Prerequisites Checklist + Phase 2 Expected Outputs + Resume procedure updated for Phase 2 dispatch + SESSION-HANDOFF §3/§9/§13 rewritten + §8 Pass 42 back-filled to 44cda58 + UD-005 recorded + TASK-LIST top-of-stack rewritten + task #155 → IN-PROGRESS + task #156 added + 13 sub-checks |
 | a9e6a04 | story-writer | Phase 2 Step A primary — define-epics 9 epics covering 95 BCs — epics.md v0.1.0 produced |
 | 80a814a | story-writer | Phase 2 Step A footer-fix — EPIC-02 count 20 → 24, correct running totals — TD-VSDD-053-spirit advisory: 2-commit story-writer burst |
-| (this commit) | state | Phase 2 Step A state-mgr FINAL — define-epics CLOSED — 9 epics 95/95 BC coverage — STATE.md phase → step-b-next-action + phase_2_status → STEP-A-COMPLETE + Phase 2 Step A COMPLETED section added + SESSION-HANDOFF §3 replaced + §9 resume updated to Step B + §3 Key state Phase 2 status bullet added + task #155 STEP-A-COMPLETE + task #157 added (Step B next-action) + task #158 added (this burst) + §8 d4ed853 row back-filled + 13 sub-checks |
+| 8d33625 | state | Phase 2 Step A state-mgr FINAL — define-epics CLOSED — 9 epics 95/95 BC coverage — STATE.md phase → step-b-next-action + phase_2_status → STEP-A-COMPLETE + Phase 2 Step A COMPLETED section added + SESSION-HANDOFF §3 replaced + §9 resume updated to Step B + §3 Key state Phase 2 status bullet added + task #155 STEP-A-COMPLETE + task #157 added (Step B next-action) + task #158 added + §8 d4ed853 row back-filled + 13 sub-checks |
+| 35c88e9 | story-writer | Phase 2 Step B EPIC-01 — 5 stories STORY-001..005 covering 13 BCs |
+| ab8375d | story-writer | Phase 2 Step B EPIC-02 part 1 — 5 stories STORY-006..010 covering 11 BCs |
+| d22949c | product-owner | Phase 2 in-cycle BC fix — BC-2.04.001 v1.2 + PreToolUse-input-shape sweep — F-PHASE2-STEP-B-EPIC-02-PART-1-I1 |
+| 02dc00f | story-writer | Phase 2 Step B EPIC-02 part 2 — 5 stories STORY-011..015 covering 13 BCs |
+| 098e6d8 | story-writer | Phase 2 in-cycle STORY-006 patch — align with BC-2.04.001 v1.2 |
+| 9c07b60 | story-writer | Phase 2 Step B EPIC-03 — 4 stories STORY-016..019 covering 11 BCs |
+| 08815ba | story-writer | Phase 2 Step B EPIC-04 — 4 stories STORY-020..023 covering 11 BCs |
+| 396264b | story-writer | Phase 2 Step B EPIC-05 — 3 stories STORY-024..026 covering 3 BCs |
+| 456b7f9 | story-writer | Phase 2 Step B EPIC-06 — 5 stories STORY-027..031 covering 10 BCs |
+| 3e4be25 | story-writer | Phase 2 Step B EPIC-07 — 4 stories STORY-032..035 covering 8 BCs |
+| 9553adc | story-writer | Phase 2 Step B EPIC-08 — 4 stories STORY-036..039 covering 8 BCs |
+| ec46e1e | story-writer | Phase 2 Step B EPIC-09 — 4 stories STORY-040..043 covering 7 BCs |
+| 8793738 | architect | Phase 2 in-cycle SS-11 v1.2 briefs path alignment — F-PHASE2-STEP-B-EPIC-05-O1 |
+| f6725b9 | product-owner | Phase 2 in-cycle closeout — brief v0.4.20 + nfr-catalog v0.1.1 + error-taxonomy v0.1.2 + BC-INDEX v0.1.12 — F-PHASE2-STEP-B-CLOSEOUT-O1/O2 |
+| 39d6fba | product-owner | Phase 2 in-cycle closeout cascade — BC-2.18.005/001/015 v1.2 + BC-INDEX v0.1.12 + PRD index v0.1.11 |
+| d7582d4 | architect | Phase 2 in-cycle closeout architecture cascade — SS-18 v1.5 + SS-04/06/17/01 v1.2 + ARCH-INDEX v0.1.23 + 8 VPs + VP-INDEX v0.1.7 |
+| 8d50e4d | story-writer | Phase 2 in-cycle closeout — STORY-022/023/036 per-hook bats + depends_on fix |
+| 76a8cac | story-writer | Phase 2 in-cycle closeout sweep A — STORY-007..011 per-hook bats |
+| d2bbeb6 | story-writer | Phase 2 in-cycle closeout sweep B — STORY-012..015 + STORY-030 + STORY-037 per-hook bats |
+| b7f8551 | product-owner | Phase 2 in-cycle closeout RTM fix — PRD index v0.1.12 BC-2.04.009 + BC-2.09.004 test-method |
+| 53d7f29 | story-writer | Phase 2 consistency closeout — STORY-INDEX v0.3.0 rebuild — F-PHASE2-CONSISTENCY-I01/I02/I03 |
+| (this commit) | state | Phase 2 Step B state-mgr FINAL — create-stories CLOSED — 43 stories 95/95 BC coverage — per-hook .bats cascade complete — phase advanced to step-c-next-action |
 
 ## 9. Resume procedure for FRESH-CONTEXT ORCHESTRATOR (post-Phase-1d CONVERGENCE)
 
-**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d CONVERGED — Phase 2 STEP-A-COMPLETE (epics.md v0.1.0 at a9e6a04+80a814a; 9 epics; 95/95 BC coverage). Step B (create-stories) is next-action.**
+**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d CONVERGED — Phase 2 STEP-B-COMPLETE (STORY-INDEX v0.3.0 at 53d7f29; 43 stories; 95/95 BC coverage). Step C (dependency-graph) is next-action.**
 
 **Read these documents IN ORDER before dispatching any agent:**
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (canonical state-discovery entry point)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` (this file)
-4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger; #155 should be STEP-A-COMPLETE; task #157 is next-action)
-5. `/Users/jmagady/Dev/brain-factory/.factory/stories/epics.md` (Phase 2 Step A output — 9 epics v0.1.0; read before dispatching story-writer for Step B)
+4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger; task #159 is next-action)
+5. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md` (v0.3.0 — 43 stories; read before dispatching story-writer for Step C)
 
 **Pre-dispatch verification:**
 
 ```bash
 cd /Users/jmagady/Dev/brain-factory
-git log --oneline -3                # expect HEAD = state-mgr Phase 2 Step A FINAL, then 80a814a, then a9e6a04
+git log --oneline -1                # expect HEAD = factory(state): Phase 2 Step B state-mgr FINAL
 git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
-grep -nE '^phase:' .factory/STATE.md           # expect phase: phase-2-story-decomposition-step-a-complete-step-b-next-action
-grep -nE '^phase_2_status:' .factory/STATE.md  # expect phase_2_status: STEP-A-COMPLETE ...
-ls /Users/jmagady/Dev/brain-factory/.factory/stories/epics.md  # expect file exists at v0.1.0
+grep -nE '^phase:' .factory/STATE.md           # expect phase: phase-2-story-decomposition-step-b-complete-step-c-next-action
+grep -nE '^phase_2_status:' .factory/STATE.md  # expect phase_2_status: STEP-B-COMPLETE ...
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md  # expect v0.3.0
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/stories/ | wc -l  # expect 43
 ```
 
 **Resume steps:**
 
-1. Confirm epics.md exists at `.factory/stories/epics.md` (v0.1.0, 9 epics, 95/95 BC coverage verified).
-2. Dispatch `vsdd-factory:story-writer` for Phase 2 Step B (create-stories). Inputs = epics.md + PRD v0.1.10 + BC-INDEX v0.1.9 (95 BCs) + ARCH-INDEX v0.1.22 (17 ADRs + 18 SS-NN designs) + VP-INDEX v0.1.6 (27 VPs) + 4 PRD supplements. Outputs = `.factory/stories/STORY-NNN.md` (one per story), updated `.factory/stories/sprint-state.yaml`, `.factory/stories/STORY-INDEX.md`.
-3. After story-writer produces story files, dispatch `vsdd-factory:consistency-validator` to verify BC traceability + count balance + dependency-graph acyclicity.
-4. Dispatch `vsdd-factory:adversary` with chat-only protocol (F-PASS12-O1) to run a Phase 2 adversarial spec-review cascade. Apply BC-5.39.001 3-CLEAN protocol. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply.
-5. Track Phase 2 cascade state with new closure summaries in STATE.md (newest-on-top per F-PASS38-O2) and a new cascade table section.
-6. At Phase 2 convergence (streak 3/3), surface to human for Phase 2 approval gate (per CLAUDE.md Pipeline Authority) before Phase 3 transition.
+1. Confirm STORY-INDEX.md exists at `.factory/stories/STORY-INDEX.md` (v0.3.0, 43 stories, 95/95 BC coverage verified). Confirm `ls .factory/stories/stories/ | wc -l` returns 43.
+2. Dispatch `vsdd-factory:story-writer` for Phase 2 Step C (dependency-graph). Inputs = STORY-INDEX v0.3.0 + 43 story files + epics.md v0.1.1. Output = `.factory/stories/dependency-graph.md` (normalized `block`/`depends_on` relationships). Adjudicate carry-forward: F-PHASE2-CONSISTENCY-I04/I05/I06/I07 + S01/S02.
+3. After story-writer produces dependency-graph.md, dispatch story-writer for Phase 2 Step D (wave-schedule). Inputs = dependency-graph.md + STORY-INDEX v0.3.0. Output = `.factory/stories/waves.md`.
+4. After wave-schedule, dispatch consistency-validator + adversarial spec-reviewer 3-CLEAN cascade per BC-5.39.001. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply.
+5. At Phase 2 convergence (streak 3/3), surface to human for Phase 2 approval gate before Phase 3 transition.
 
 **State-update discipline:**
 

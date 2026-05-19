@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-18. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-A-COMPLETE — epics.md v0.1.0 at commits a9e6a04+80a814a (9 epics, 95/95 BC coverage verified). Step B (create-stories) is next-action (task #157).**
+> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-B-COMPLETE — STORY-INDEX v0.3.0 at commit 53d7f29 (43 stories, 95/95 BC coverage verified). Step C (dependency-graph) is next-action (task #159).**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -13,39 +13,41 @@
 | 2026-05-17 | UD-003 | F-PASS12-O2 3rd STRONG-ESCALATE (Pass 18 adversary recommendation): CRITICAL plateau at 5 passes + meta-rule self-violation at 8 recurrences both thresholds tripped; 3 options presented (a) continue, (b) carve-out exemption, (c) declare-converged-by-fiat | **Option (a) continue cascade** — same as UD-002; meta-rule self-violation class explicitly acknowledged as predictable recurring pattern; no pivot to carve-out or declare-converged-by-fiat |
 | 2026-05-17 | UD-004 | F-PASS12-O2 4th escalation surfaced after 16-pass post-UD-003 evidence (Passes 16–31, ~48 commits, 20+ recurrences, CRITICAL=2 plateau extending to CRITICAL=3 at Pass 32, never advanced past streak 0/3) | **Option (a) continue** — user reaffirmed Option C strict protocol; cascade continues indefinitely until BC-5.39.001 literal streak 3/3; meta-rule self-violation class continues to be acknowledged as predictable recurring pattern; structural-resolution acceptable timeline open-ended |
 | 2026-05-18 | UD-005 | Phase 1d CONVERGED at Pass 42 — Phase 2 transition decision; F-PASS40-O2 / F-PASS40-O3 / F-PASS41-O2 / F-PASS42-O2 process-gaps disposition | **Option: Proceed to Phase 2; defer all 4 inherited process-gaps** — human directive 2026-05-18 stated "we will be proceeding to Phase 2"; all 4 process-gaps documented as DEFERRED — NOT blocking Phase 2 |
+| 2026-05-18 | UD-006 | Phase 2 Step B per-hook .bats convention — CLAUDE.md says one per-hook bats file; SS-18 v1.4 had consolidated hooks.bats | **CLAUDE.md wins** — per-hook bats canonical; cascade applied to brief v0.4.20 (NFR-019), SS-18 v1.5, BC-2.18.005 v1.2, and 11 affected stories |
 
 ## Phase 1d CLOSED (CONVERGED at Pass 42 commit 44cda58 — historical record)
 
-BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 41 PASS (40e7c1e) + Pass 42 PASS (44cda58). 42 passes total (39 FAIL + 3 PASS). 68 fix-bursts. 24 disciplines codified. 13 sub-checks codified. CRITICAL trajectory ...→3→1→3→0→0→0. Phase 1d adversarial spec review cascade CLOSED. Phase 2 (Story Decomposition) AUTHORIZED per UD-005 (2026-05-18).
+BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 41 PASS (40e7c1e) + Pass 42 PASS (44cda58). 42 passes total (39 FAIL + 3 PASS). 68 fix-bursts. 24 disciplines codified. 13 sub-checks codified. CRITICAL trajectory ...→3→1→3→0→0→0. Phase 1d adversarial spec review cascade CLOSED. Phase 2 (Story Decomposition) AUTHORIZED per UD-005 (2026-05-18). Phase 2 Step B COMPLETED per UD-006 cascade (2026-05-18/19).
 
 Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (F-PASS39-I3 hit-by-hit enumeration vs F-PASS37-O2 mirror tension), F-PASS40-O3 (historical Pass 35-37 closure-summary ordering inconsistency), F-PASS41-O2 (inherited F-PASS40-O2/O3), F-PASS42-O2 (inherited same). May be revisited during Phase 2 if relevant or post-Phase-2.
 
-## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-A-COMPLETE; Step B (create-stories) NEXT-ACTION)
+## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-B-COMPLETE; Step C (dependency-graph) NEXT-ACTION)
 
 **State summary:**
 - Phase 1d: CONVERGED at commit `44cda58` (Pass 42 state-mgr FINAL — 2026-05-18); BC-5.39.001 3-CLEAN literal streak 3/3 achieved.
-- Phase 2 Step A: COMPLETED — epics.md v0.1.0 at commits a9e6a04 (primary) + 80a814a (footer-fix). 9 epics. 95/95 BC coverage.
-- Phase 2 Step B: NEXT-ACTION (task #157) — dispatch story-writer to create STORY-NNN.md files from epics.
+- Phase 2 Step A: COMPLETED — epics.md v0.1.0 at a9e6a04+80a814a. 9 epics. 95/95 BC coverage. State-mgr FINAL: 8d33625.
+- Phase 2 Step B: COMPLETED (2026-05-18/19) — 43 story specs across 9 epics. STORY-INDEX v0.3.0 at 53d7f29. 95/95 BC coverage. State-mgr FINAL: Phase 2 Step B state-mgr FINAL commit.
+- Phase 2 Step C: NEXT-ACTION (task #159) — dispatch story-writer for dependency-graph step.
 - Working tree: clean (only untracked planning notes + .factory/logs/ + .claude/).
-- HEAD: Phase 2 Step A state-mgr FINAL commit (subject starts with `factory(state): Phase 2 Step A state-mgr FINAL`).
+- HEAD: Phase 2 Step B state-mgr FINAL commit (subject starts with `factory(state): Phase 2 Step B state-mgr FINAL`).
 
 **Next-action checklist for fresh-context orchestrator:**
 
-1. [ ] Read CLAUDE.md → STATE.md → SESSION-HANDOFF.md → TASK-LIST.md (this file) → .factory/stories/epics.md
-2. [ ] Confirm epics.md exists at v0.1.0 (9 epics, 95/95 BCs)
-3. [ ] Dispatch `vsdd-factory:story-writer` for Step B (create-stories) per Phase 2 lobster workflow
-4. [ ] story-writer produces `.factory/stories/STORY-NNN.md` files + updated sprint-state.yaml + STORY-INDEX.md
-5. [ ] Dispatch consistency-validator on the story draft set
-6. [ ] Dispatch adversary 3-CLEAN cascade per BC-5.39.001 (same discipline as Phase 1d)
-7. [ ] At Phase 2 streak 3/3, surface to human for Phase 2 approval gate before Phase 3 transition
+1. [ ] Read CLAUDE.md → STATE.md → SESSION-HANDOFF.md → TASK-LIST.md (this file) → .factory/stories/STORY-INDEX.md (v0.3.0)
+2. [ ] Confirm 43 story files in `.factory/stories/stories/` and STORY-INDEX v0.3.0
+3. [ ] Dispatch `vsdd-factory:story-writer` for Step C (dependency-graph) per Phase 2 lobster workflow
+4. [ ] story-writer produces `.factory/stories/dependency-graph.md` + adjudicates F-PHASE2-CONSISTENCY-I04/I05/I06/I07 + S01/S02
+5. [ ] Dispatch story-writer for Step D (wave-schedule) after dependency-graph
+6. [ ] Dispatch consistency-validator + adversary 3-CLEAN cascade per BC-5.39.001 after all story decomposition steps complete
+7. [ ] At Phase 2 convergence (streak 3/3), surface to human for Phase 3 gate
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #157 | NEXT-ACTION | Phase 2 Step B — story-writer create-stories burst |
-| 2 | #155 | STEP-A-COMPLETE | Phase 2 (Story Decomposition) — Step A epics complete; Step B in progress |
-| 3 | #158 | COMPLETED | Phase 2 Step A state-manager FINAL backup burst |
-| 4 | #156 | COMPLETED | State-durability burst for Phase 2 transition (state-durability burst) |
-| 5 | #154 | COMPLETED | Pass 42 state-mgr FINAL CONVERGENCE closure |
+| 1 | #159 | NEXT-ACTION | Phase 2 Step C — story-writer dependency-graph burst |
+| 2 | #157 | COMPLETED | Phase 2 Step B — story-writer create-stories (21 bursts, 43 stories, STORY-INDEX v0.3.0) |
+| 3 | #155 | STEP-B-COMPLETE | Phase 2 (Story Decomposition) — Step B complete; Step C next |
+| 4 | #158 | COMPLETED | Phase 2 Step A state-manager FINAL backup burst |
+| 5 | #156 | COMPLETED | State-durability burst for Phase 2 transition |
 
 ## Task Status
 
@@ -237,10 +239,11 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 | 152 | COMPLETED | Pass 41 state-mgr FINAL | PASS verdict housekeeping: cascade table Pass 41 PASS row added + Pass 40 row back-filled to eef8402 + CRITICAL trajectory extended →0→0 + frontmatter 41 passes/67 fix-bursts + §3 sub-items replaced with Pass 41 narrative + §6 header updated + §13 outstanding-work updated to Pass 41/42 + fix-burst walk extended Pass 41 = 1 = 67 total + path-glob {1..41}.md + §8 Pass 40 back-filled to eef8402 + F-PASS41-O1/O2 logged + 13 sub-checks. Fix-burst total 67. Pass 41 state-mgr FINAL SHA: 40e7c1e.
 | 153 | COMPLETED | Pass 42 adversary dispatch | Pass 42 adversary persisted at commit 25f89cb. PASS — 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION + 2 OBSERVATIONS. 3rd consecutive PASS verdict — BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED. Phase 1d CONVERGED. |
 | 154 | COMPLETED | Pass 42 state-mgr FINAL — CONVERGENCE closure | CONVERGENCE closure: cascade table Pass 42 PASS row added + Pass 41 row back-filled to 40e7c1e + CRITICAL trajectory extended →0→0→0 + frontmatter 42 passes/68 fix-bursts + phase→converged + phase_1d_status→CONVERGED + §3 sub-items CONVERGENCE narrative + §13 outstanding-work updated to CONVERGED + fix-burst walk extended Pass 42 = 1 = 68 total + path-glob {1..42}.md + §8 Pass 41 back-filled to 40e7c1e + F-PASS42-O1/O2 logged + 13 sub-checks. Fix-burst total 68. Pass 42 state-mgr FINAL SHA: 44cda58.
-| 155 | STEP-A-COMPLETE | Phase 2 (Story Decomposition) — Step A epics complete; Step B in progress | Step A completed by story-writer at a9e6a04 (primary) + 80a814a (footer-table-typo correction). epics.md v0.1.0 produced — 9 epics, 95/95 BC coverage verified. TD-VSDD-053-spirit advisory: 2-commit story-writer burst (see STATE.md Phase 2 Step A — COMPLETED section). Step B (create-stories) is the next sub-step (task #157). |
+| 155 | STEP-B-COMPLETE | Phase 2 (Story Decomposition) — Step B complete; Step C (dependency-graph) next | Step A completed at commits a9e6a04+80a814a (state-mgr FINAL: 8d33625). Step B completed via 21 bursts (35c88e9 through 53d7f29) — 43 story specs, STORY-INDEX v0.3.0, 95/95 BC coverage, UD-006 cascade applied. Step C (dependency-graph) is the next sub-step (task #159). |
 | 156 | COMPLETED | State-durability burst for Phase 2 transition | UD-005 recorded; STATE.md / SESSION-HANDOFF.md / TASK-LIST.md updated with fresh-context resume procedures; Phase 2 prerequisites checklist added; inherited deferrals documented. Pass 42 cascade-table row back-filled to 44cda58. Pass 42 §8 ledger row back-filled to 44cda58. Commit SHA: d4ed853. |
-| 157 | NEXT-ACTION | Phase 2 Step B — story-writer create-stories burst | Per Phase 2 lobster workflow `create-stories` step. Dispatch `vsdd-factory:story-writer` with inputs: epics.md (v0.1.0, 9 epics) + PRD v0.1.10 + BC-INDEX v0.1.9 (95 BCs) + ARCH-INDEX v0.1.22 (17 ADRs + 18 SS-NN designs) + VP-INDEX v0.1.6 (27 VPs) + 4 PRD supplements. Outputs: `.factory/stories/STORY-NNN.md` (one per story) + updated sprint-state.yaml + STORY-INDEX.md. Instruction to story-writer: "if you spot a typo, amend your single commit rather than create a correction commit" (TD-VSDD-053-spirit discipline). |
-| 158 | COMPLETED | Phase 2 Step A state-manager FINAL backup burst | Phase 2 Step A state-mgr FINAL. STATE.md phase → step-b-next-action + phase_2_status → STEP-A-COMPLETE + Phase 2 Step A COMPLETED section added + SESSION-HANDOFF §3 replaced with Phase 2 Step A narrative + §9 resume updated to Step B + §3 Key state Phase 2 status bullet added + TOP OF STACK updated to Step B + task #155 → STEP-A-COMPLETE + task #157 NEXT-ACTION added + task #158 COMPLETED added + §8 d4ed853 row back-filled + 13 sub-checks. Phase 2 Step A state-mgr FINAL SHA: SHA-pending-next-burst. |
+| 157 | COMPLETED | Phase 2 Step B — story-writer create-stories (21 bursts, 43 stories) | Dispatched `vsdd-factory:story-writer` for 9 epics. 21 bursts total (35c88e9 through 53d7f29). Outputs: 43 `.factory/stories/stories/STORY-NNN.md` files + STORY-INDEX v0.3.0 (commit 53d7f29). UD-006 per-hook .bats cascade + in-cycle BC/SS fixes (BC-2.04.001 v1.2, SS-11 v1.2, SS-18 v1.5, BC-2.18.005 v1.2). Consistency-validator: CRITICAL=0 — I04/I05/I06/I07/S01/S02 deferred to Step C. |
+| 158 | COMPLETED | Phase 2 Step A state-manager FINAL backup burst | Phase 2 Step A state-mgr FINAL. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Phase advanced to step-b-next-action. Phase 2 Step A state-mgr FINAL SHA: 8d33625. |
+| 159 | NEXT-ACTION | Phase 2 Step C — story-writer dependency-graph burst | Per Phase 2 lobster workflow `dependency-graph` step. Dispatch `vsdd-factory:story-writer` with inputs: STORY-INDEX v0.3.0 + 43 story files + epics.md v0.1.1. Output: `.factory/stories/dependency-graph.md`. Must adjudicate carry-forward: F-PHASE2-CONSISTENCY-I04/I05/I06/I07 (dep-graph asymmetries) + S01/S02 (transitive-block suggestions). |
 
 ## Next steps (in dependency order)
 
@@ -249,10 +252,11 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 ~~Tasks #58–#62: Phase 1b support tasks — COMPLETED.~~
 ~~Task #56: Phase 1c Architecture entry — COMPLETED.~~
 ~~Tasks #63–#70: Phase 1c support tasks — COMPLETED.~~
-~~Tasks #71–#154: Phase 1d Passes 1–42 persists + fix-bursts + state snapshots — COMPLETED (42 passes, 68 fix-bursts committed; UD-002 + UD-003 + UD-004 + UD-005 recorded; BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED at Pass 42; Phase 1d cascade CONVERGED and CLOSED at commit 44cda58).~~
+~~Tasks #71–#154: Phase 1d Passes 1–42 persists + fix-bursts + state snapshots — COMPLETED (42 passes, 68 fix-bursts committed; UD-002 through UD-005 recorded; BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED at Pass 42; Phase 1d cascade CONVERGED and CLOSED at commit 44cda58).~~
 ~~Task #156: State-durability burst for Phase 2 transition — COMPLETED.~~
-~~Task #158: Phase 2 Step A state-manager FINAL backup burst — COMPLETED.~~
+~~Task #157: Phase 2 Step B create-stories — COMPLETED (21 bursts, 43 stories, STORY-INDEX v0.3.0 at 53d7f29).~~
+~~Task #158: Phase 2 Step A state-manager FINAL backup burst — COMPLETED (SHA: 8d33625).~~
 
-1. **Task #157 — Phase 2 Step B create-stories (TOP OF STACK — NEXT-ACTION):** Dispatch `vsdd-factory:story-writer` for create-stories step. Inputs: epics.md + PRD + BC-INDEX + ARCH-INDEX + SS-NN + VPs + supplements. See SESSION-HANDOFF §9 resume steps.
+1. **Task #159 — Phase 2 Step C dependency-graph (TOP OF STACK — NEXT-ACTION):** Dispatch `vsdd-factory:story-writer` for dependency-graph step. Inputs: STORY-INDEX v0.3.0 + 43 story files + epics.md. See SESSION-HANDOFF §9 resume steps.
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Phase 2 STEP-A-COMPLETE (epics.md v0.1.0 at a9e6a04+80a814a; 9 epics, 95/95 BC coverage); Step B (create-stories) NEXT-ACTION.** Resume on fresh context: read `.factory/STATE.md` FIRST.
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Phase 2 STEP-B-COMPLETE (STORY-INDEX v0.3.0 at 53d7f29; 43 stories, 95/95 BC coverage); Step C (dependency-graph) NEXT-ACTION.** Resume on fresh context: read `.factory/STATE.md` FIRST.

@@ -1,19 +1,20 @@
 ---
 artifact_type: epics
-version: "0.1.0"
+version: "0.1.1"
 created: 2026-05-18
+last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
 inputs:
-  - product-brief.md@v0.4.19
-  - prd/index.md@v0.1.10
-  - behavioral-contracts/BC-INDEX.md@v0.1.9
-  - architecture/ARCH-INDEX.md@v0.1.22
-  - verification-properties/VP-INDEX.md@v0.1.6
+  - product-brief.md@v0.4.20
+  - prd/index.md@v0.1.12
+  - behavioral-contracts/BC-INDEX.md@v0.1.12
+  - architecture/ARCH-INDEX.md@v0.1.23
+  - verification-properties/VP-INDEX.md@v0.1.7
   - docs/planning/llm-second-brain-phased-build-plan.md (immutable)
 total_epics: 9
 total_bcs_covered: 95
-phase: phase-2-story-decomposition-step-a
-phase_2_status: STEP-A-IN-PROGRESS
+phase: phase-2-story-decomposition-step-c
+phase_2_status: STEP-B-COMPLETE
 ---
 
 # brain-factory Epics
@@ -327,3 +328,15 @@ Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
   shippable user-facing capability. Together they form the "the plugin governs itself
   and produces reviewed content" epic, which is a coherent value statement for operator
   confidence.
+
+---
+
+## Changelog
+
+### v0.1.1 (2026-05-19)
+
+F-PHASE2-CONSISTENCY-I08: inputs frontmatter refreshed to current spec versions post-Step B completion (v0.4.20 / v0.1.12 / v0.1.12 / v0.1.23 / v0.1.7). No epic content amended. phase_2_status updated to STEP-B-COMPLETE.
+
+### v0.1.0 (2026-05-18)
+
+Initial epic decomposition. 9 epics covering 95/95 BCs. Authored by vsdd-factory:story-writer at commits a9e6a04 (primary) + 80a814a (footer-fix).

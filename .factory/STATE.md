@@ -4,20 +4,28 @@ project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-18
 mode: greenfield
-phase: phase-2-story-decomposition-step-a-complete-step-b-next-action
+phase: phase-2-story-decomposition-step-b-complete-step-c-next-action
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
 phase_1d_status: "**CONVERGED** — BC-5.39.001 3-CLEAN literal streak 3/3 achieved at Pass 42 (Pass 40 PASS + Pass 41 PASS + Pass 42 PASS); 42 passes complete (39 FAIL + 3 PASS consecutively at end); 68 fix-bursts complete; 24 disciplines codified; 13 sub-checks codified; Phase 1d adversarial spec review cascade CLOSED at commit 44cda58"
-phase_2_status: STEP-A-COMPLETE — epics.md @ v0.1.0 (commit a9e6a04 primary + 80a814a footer-fix) — 9 epics covering 95 BCs (100% coverage verified) — Step B (create-stories) next-action
-session_continuity: FRESH-CONTEXT-READY — Phase 1d CONVERGED at commit 44cda58; Phase 2 AUTHORIZED per UD-005; next session resumes by reading the Resume procedure in this STATE.md §"Resume procedure for FRESH-CONTEXT ORCHESTRATOR" and dispatching the Phase 2 sub-workflow (workflows/phases/phase-2-story-decomposition.lobster) starting with story-writer agent
+phase_2_status: STEP-B-COMPLETE — 43 story specs created across 9 epics + spec cascade (per-hook .bats convention established; BC-2.04.001 v1.2 corrected; 4 other in-cycle BC/SS fixes) — Step C (dependency-graph) next-action
+session_continuity: FRESH-CONTEXT-READY — Phase 2 Step B COMPLETED at commit 53d7f29 (STORY-INDEX v0.3.0 final); next session resumes by reading the Resume procedure in this STATE.md §"Resume procedure for FRESH-CONTEXT ORCHESTRATOR" and dispatching story-writer for Step C (dependency-graph)
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
-canonical_brief: .factory/specs/product-brief.md (v0.4.19, commit 1c0251c)
-canonical_prd: .factory/specs/prd/index.md (v0.1.10, commit 2f247fc)
-canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.9, commit 2f247fc)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.22, commit 9734b40) + 17 ADRs (6 at v1.1, 2 at v1.2, 9 at v1.0) + 18 SS-NN (16 at v1.1, SS-02 at v1.2, SS-18 at v1.4) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2: VP-014/021/026/027; VP-004 at v1.1; VP-012 at v1.3; 21 at v1.0)
+canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
+canonical_prd: .factory/specs/prd/index.md (v0.1.12, commit b7f8551)
+canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.12, commit 39d6fba)
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.23, commit d7582d4) + 17 ADRs + 18 SS-NN (SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2) + VP-INDEX v0.1.7 + 27 VPs
+canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.1, commit f6725b9)
+canonical_error_taxonomy: .factory/specs/prd/error-taxonomy.md (v0.1.2, commit 39d6fba)
+canonical_story_index: .factory/stories/STORY-INDEX.md (v0.3.0, commit 53d7f29)
+total_stories_drafted: 43
+current_story_index_path: .factory/stories/STORY-INDEX.md
+current_story_index_version: "0.3.0"
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
+last_updated: 2026-05-19
+status: phase-2-step-b-complete-step-c-next-action
 ---
 
 # brain-factory Pipeline STATE
@@ -26,17 +34,17 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 2 Step B (create-stories) NEXT-ACTION — RESUME ENTRY POINT FOR FRESH SESSION
+## TOP OF STACK — Phase 2 Step C (dependency-graph) NEXT-ACTION — RESUME ENTRY POINT FOR FRESH SESSION
 
-**Status:** Phase 2 Step A (Define Epics) COMPLETED (2026-05-18). epics.md v0.1.0 at commits a9e6a04 + 80a814a. 9 epics, 95/95 BC coverage verified. Step B (create-stories) is the next-action.
+**Status:** Phase 2 Step B (create-stories) COMPLETED (2026-05-18/19). 43 story specs created across 9 epics at STORY-INDEX v0.3.0 (commit 53d7f29). 95/95 BC coverage verified. Step C (dependency-graph) is the next-action.
 
 **Next action for fresh-context orchestrator:**
 
-1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md` → `.factory/stories/epics.md` (Phase 2 Step A output — read for epic definitions).
-2. Verify HEAD via `git -C /Users/jmagady/Dev/brain-factory log --oneline -1` shows story-writer commits (a9e6a04 primary, 80a814a footer-fix) or state-manager Phase 2 Step A FINAL commit. Verify clean tree via `git status --short`.
-3. Confirm epics.md exists at `.factory/stories/epics.md` (v0.1.0, 9 epics covering 95/95 BCs, commits a9e6a04 + 80a814a).
-4. Dispatch story-writer for Phase 2 Step B (create-stories). Inputs = epics.md + PRD + BC-INDEX + ARCH-INDEX + SS-NN designs + VPs + supplements. Outputs = `.factory/stories/STORY-NNN.md` (one per story). Per Phase 2 lobster workflow `create-stories` step.
-5. After story-writer produces story files, dispatch consistency-validator + adversarial spec-reviewer 3-CLEAN cascade per BC-5.39.001. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply to Phase 2 state-mgr FINAL bursts.
+1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md` → `.factory/stories/STORY-INDEX.md` (v0.3.0 — 43 stories) → `.factory/stories/epics.md`.
+2. Verify HEAD via `git log --oneline -1` shows `factory(state): Phase 2 Step B state-mgr FINAL`. Verify clean tree via `git status --short`.
+3. Confirm STORY-INDEX.md at `.factory/stories/STORY-INDEX.md` v0.3.0 (43 stories, 95/95 BC reverse map).
+4. Dispatch `vsdd-factory:story-writer` for Phase 2 Step C (dependency-graph). Inputs = STORY-INDEX v0.3.0 + 43 story files + epics.md. Outputs = `.factory/stories/dependency-graph.md` (declared block/depends_on relationships normalized). Per Phase 2 lobster workflow `dependency-graph` step.
+5. Step C must also adjudicate carry-forward findings: F-PHASE2-CONSISTENCY-I04, I05, I06, I07 (dep-graph asymmetries) + S01, S02 (transitive-block suggestions). These are expected inputs to Step C.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
 
@@ -120,50 +128,54 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 
 ## Resume procedure for FRESH-CONTEXT ORCHESTRATOR
 
-**Phase 1d CONVERGED. Phase 2 AUTHORIZED per UD-005.** Read these documents IN ORDER before dispatching any agent:
+**Phase 2 Step B COMPLETED. Step C (dependency-graph) is next-action.** Read these documents IN ORDER before dispatching any agent:
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file — canonical state-discovery entry point)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
-5. `/Users/jmagady/Dev/brain-factory/.factory/cycles/v0.1-phase-1d-spec/adversary-pass-42.md` (Pass 42 findings — VERDICT PASS — BC-5.39.001 3-CLEAN literal streak 3/3 achieved — Phase 1d CONVERGED — read for cascade-closure context; no further adversary dispatch in Phase 1d)
+5. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md` (v0.3.0 — 43 stories; read for dependency-graph inputs)
 
 **Pre-dispatch verification:**
 
 ```bash
 cd /Users/jmagady/Dev/brain-factory
-git log --oneline -1                # expect HEAD subject ~ "factory(state): Phase 1d Pass 42 FINAL" or the state-durability burst subject
+git log --oneline -1                # expect HEAD subject ~ "factory(state): Phase 2 Step B state-mgr FINAL"
 git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
-grep -nE '^phase:' .factory/STATE.md           # expect phase: phase-2-story-decomposition-authorized-not-started
-grep -nE '^phase_2_status:' .factory/STATE.md  # expect phase_2_status: AUTHORIZED-NOT-STARTED ...
-ls /Users/jmagady/Dev/brain-factory/.factory/stories/ 2>/dev/null  # expect "No such file or directory" — Phase 2 has not started yet
+grep -nE '^phase:' .factory/STATE.md           # expect phase: phase-2-story-decomposition-step-b-complete-step-c-next-action
+grep -nE '^phase_2_status:' .factory/STATE.md  # expect phase_2_status: STEP-B-COMPLETE ...
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md  # expect v0.3.0 — 43 stories
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/stories/ | wc -l  # expect 43
 ```
 
-**Phase 2 AUTHORIZED — proceed directly:**
-- BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 41 PASS (40e7c1e) + Pass 42 PASS (44cda58).
-- Per UD-005 (2026-05-18 human directive), Phase 2 (Story Decomposition) is AUTHORIZED. No further human gate needed.
-- Dispatch the Phase 2 sub-workflow per TOP OF STACK instructions above.
+**Step C (dependency-graph) — proceed directly:**
+- Phase 2 Step B: 43 stories, 95/95 BC coverage, STORY-INDEX v0.3.0 at commit 53d7f29.
+- Dispatch `vsdd-factory:story-writer` for Step C per TOP OF STACK instructions above.
+- Carry-forward findings for Step C: F-PHASE2-CONSISTENCY-I04/I05/I06/I07 (dep-graph asymmetries) + S01/S02 (transitive-block suggestions).
 
 ---
 
-## Phase 2 Prerequisites Checklist (verify before dispatching story-writer)
+## Phase 2 Prerequisites Checklist (Step C dependency-graph — verify before dispatching story-writer)
 
-Phase 2 (Story Decomposition) requires these inputs to be in place. The fresh-context orchestrator should verify each before dispatching story-writer:
+Phase 2 Step C (dependency-graph) requires these inputs to be in place:
 
 | Input | Path | Expected Version | Verification |
 |-------|------|------------------|--------------|
-| Product brief | `.factory/specs/product-brief.md` | v0.4.19 | `grep -nE '^version:' .factory/specs/product-brief.md` returns v0.4.19 |
-| PRD index | `.factory/specs/prd/index.md` | v0.1.10 | `grep -nE '^version:' .factory/specs/prd/index.md` |
-| PRD supplements | `.factory/specs/prd/*-supplement.md` (4 files: interface-definitions, error-taxonomy, nfr-catalog, test-vectors) | varies | `ls .factory/specs/prd/*-supplement.md \| wc -l` returns 4 |
-| BC-INDEX | `.factory/specs/behavioral-contracts/BC-INDEX.md` | v0.1.9 | `grep -nE '^version:' .factory/specs/behavioral-contracts/BC-INDEX.md`; 95 BC files exist |
-| Architecture INDEX | `.factory/specs/architecture/ARCH-INDEX.md` | v0.1.22 | `grep -nE '^version:' .factory/specs/architecture/ARCH-INDEX.md` |
-| ADRs | `.factory/specs/architecture/adr/*.md` | 17 files | `ls .factory/specs/architecture/adr/*.md \| wc -l` returns 17 |
-| Subsystem designs | `.factory/specs/architecture/subsystems/SS-*.md` | 18 files | `ls .factory/specs/architecture/subsystems/SS-*.md \| wc -l` returns 18 |
-| VP-INDEX | `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.6 | `grep -nE '^version:' .factory/specs/architecture/verification-properties/VP-INDEX.md` |
-| VPs | `.factory/specs/architecture/verification-properties/VP-*.md` | 27 files | `ls .factory/specs/architecture/verification-properties/VP-*.md \| wc -l` returns 27 |
-| Phase 1d cascade reports | `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-*.md` | 42 files (pass-1 through pass-42) | `ls .factory/cycles/v0.1-phase-1d-spec/adversary-pass-*.md \| wc -l` returns 42 |
+| Product brief | `.factory/specs/product-brief.md` | v0.4.20 | `grep -nE '^version:' .factory/specs/product-brief.md` returns v0.4.20 |
+| PRD index | `.factory/specs/prd/index.md` | v0.1.12 | `grep -nE '^version:' .factory/specs/prd/index.md` |
+| BC-INDEX | `.factory/specs/behavioral-contracts/BC-INDEX.md` | v0.1.12 | `grep -nE '^version:' .factory/specs/behavioral-contracts/BC-INDEX.md`; 95 BC files exist |
+| Architecture INDEX | `.factory/specs/architecture/ARCH-INDEX.md` | v0.1.23 | `grep -nE '^version:' .factory/specs/architecture/ARCH-INDEX.md` |
+| VP-INDEX | `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.7 | `grep -nE '^version:' .factory/specs/architecture/verification-properties/VP-INDEX.md` |
+| STORY-INDEX | `.factory/stories/STORY-INDEX.md` | v0.3.0 | `grep -nE '^version:' .factory/stories/STORY-INDEX.md`; 43 story files |
+| Epics | `.factory/stories/epics.md` | v0.1.1 | `grep -nE '^version:' .factory/stories/epics.md` |
 
-Per CLAUDE.md Source-of-Truth Precedence, these inputs are now the operational source of truth for Phase 2. The `docs/planning/` artifacts (phased build plan, methodology, plugin plan, dispatcher extraction plan) are immutable design source-of-truth and remain unchanged.
+Expected outputs from Step C:
+- `.factory/stories/dependency-graph.md` — normalized declared `block`/`depends_on` relationships across 43 stories
+- Carry-forward findings adjudicated: F-PHASE2-CONSISTENCY-I04/I05/I06/I07 (dep-graph asymmetries) + S01/S02 (transitive-block suggestions)
+
+Dispatch procedure: dispatch `vsdd-factory:story-writer` (per Agent Routing Table — "dependency graph, wave schedule" is story-writer scope). Inputs: STORY-INDEX v0.3.0 + 43 story files + epics.md. Single-commit-per-burst per TD-VSDD-053.
+
+Note: `tests/hook-contracts.bats` is a cross-cutting parameterized suite introduced in STORY-015. SS-18 may want a small clarification covering it, but this is OPTIONAL for Step C and may defer to Step D (wave-schedule) or later if Step C story-writer does not need to modify SS-18.
 
 ## Phase 2 Expected Outputs (story-writer deliverables)
 
@@ -189,7 +201,7 @@ Phase 2 cascade (after story-writer produces drafts):
 
 ## Phase 2 Step A — COMPLETED
 
-**Artifact:** `.factory/stories/epics.md` v0.1.0. **Commits:** a9e6a04 (primary: "factory(story-writer): Phase 2 Step A — define-epics 9 epics covering 95 BCs") + 80a814a (correction: "factory(story-writer): fix coverage footer table — EPIC-02 count 20 → 24, correct running totals"). **Date:** 2026-05-18.
+**Artifact:** `.factory/stories/epics.md` v0.1.0 (inputs refreshed to v0.1.1 at Phase 2 Step B state-mgr FINAL per F-PHASE2-CONSISTENCY-I08). **Commits:** a9e6a04 (primary) + 80a814a (footer-fix). **State-mgr FINAL:** 8d33625. **Date:** 2026-05-18.
 
 **9 epics defined (ordered):**
 1. EPIC-01 — Knowledge Ingestion Foundation (SS-01, SS-03, SS-06 partial)
@@ -212,11 +224,51 @@ Phase 2 cascade (after story-writer produces drafts):
 **TD-VSDD-053-spirit advisory:** story-writer produced 2 commits for one logical burst (a9e6a04 primary + 80a814a correction of a footer-table typo). Neither commit contains `backfill`/`Stage 1`/`Stage 2` keywords so MULTI_COMMIT_CHAIN_NOT_ALLOWED detector did NOT fire. Advisory logged: all Phase 2 story-writer dispatches should include explicit instruction "if you spot a typo, amend your single commit rather than create a correction commit."
 state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS c:NA:Phase2-step-count-NA d:PASS e:NA f:NA g:NA h:NA i:PASS:hits=assessed-all-historical j:PASS k:PASS l:PASS m:PASS:N=63 — 7/7 active passed (6 NA: a,c,e,f,g,h)
 
+## Phase 2 Step B — COMPLETED
+
+**21 bursts. 43 story specs. 95/95 BC coverage. STORY-INDEX v0.3.0 at commit 53d7f29. Date: 2026-05-18/19.**
+
+**Spec versions post-Step B:** brief v0.4.20 · PRD index v0.1.12 · BC-INDEX v0.1.12 (95 BCs) · ARCH-INDEX v0.1.23 (17 ADRs + 18 SS-NN designs) · VP-INDEX v0.1.7 (27 VPs) · nfr-catalog v0.1.1 · error-taxonomy v0.1.2 · STORY-INDEX v0.3.0 (43 stories).
+
+**In-cycle decisions and fixes:**
+- **UD-006 (2026-05-18):** Per-hook .bats convention — CLAUDE.md wins; cascade applied to brief v0.4.20, NFR-019, SS-18 v1.5, BC-2.18.005 v1.2, 11 affected stories.
+- **BC-2.04.001 v1.2:** PreToolUse-WebFetch payload shape corrected (F-PHASE2-STEP-B-EPIC-02-PART-1-I1).
+- **SS-11 v1.2:** Briefs path alignment (F-PHASE2-STEP-B-EPIC-05-O1).
+- **F-PHASE2-STEP-B-CLOSEOUT-O1/O2:** brief v0.4.20 + BC-2.18.005 + BC-2.18.001 + BC-2.04.015 + BC-INDEX v0.1.12 + SS-18 v1.5 + SS-04/SS-06/SS-17/SS-01 v1.2 + 8 VPs + VP-INDEX v0.1.7 + PRD RTM rows.
+
+**Consistency-validator fresh-context audit (pre-FINAL):** CRITICAL=0, IMPORTANT=8, SUGGESTION=2. In-scope IMPORTANT findings I01/I02/I03 (STORY-INDEX divergences) resolved at commit 53d7f29. Findings I04/I05/I06/I07 (dep-graph asymmetries) + S01/S02 (transitive-block suggestions) DEFERRED to Step C — expected inputs to dependency-graph step. Finding I08 (epics.md inputs staleness) RESOLVED at Phase 2 Step B state-mgr FINAL (inputs refreshed to current spec versions, no content amendment).
+
+**Phase 2 Step B Burst Cascade Table:**
+
+| # | SHA | Agent | Subject |
+|---|-----|-------|---------|
+| 1 | 35c88e9 | story-writer | EPIC-01 5 stories STORY-001..005 covering 13 BCs |
+| 2 | ab8375d | story-writer | EPIC-02 part 1 5 stories STORY-006..010 covering 11 BCs |
+| 3 | d22949c | product-owner | BC-2.04.001 v1.2 + PreToolUse-input-shape sweep — F-PHASE2-STEP-B-EPIC-02-PART-1-I1 |
+| 4 | 02dc00f | story-writer | EPIC-02 part 2 5 stories STORY-011..015 covering 13 BCs |
+| 5 | 098e6d8 | story-writer | STORY-006 patch align with BC-2.04.001 v1.2 |
+| 6 | 9c07b60 | story-writer | EPIC-03 4 stories STORY-016..019 covering 11 BCs |
+| 7 | 08815ba | story-writer | EPIC-04 4 stories STORY-020..023 covering 11 BCs |
+| 8 | 396264b | story-writer | EPIC-05 3 stories STORY-024..026 covering 3 BCs |
+| 9 | 456b7f9 | story-writer | EPIC-06 5 stories STORY-027..031 covering 10 BCs |
+| 10 | 3e4be25 | story-writer | EPIC-07 4 stories STORY-032..035 covering 8 BCs |
+| 11 | 9553adc | story-writer | EPIC-08 4 stories STORY-036..039 covering 8 BCs |
+| 12 | ec46e1e | story-writer | EPIC-09 4 stories STORY-040..043 covering 7 BCs |
+| 13 | 8793738 | architect | SS-11 v1.2 briefs path alignment — F-PHASE2-STEP-B-EPIC-05-O1 |
+| 14 | f6725b9 | product-owner | brief v0.4.20 + nfr-catalog v0.1.1 + error-taxonomy v0.1.2 + BC-INDEX v0.1.12 — F-PHASE2-STEP-B-CLOSEOUT-O1/O2 |
+| 15 | 39d6fba | product-owner | BC-2.18.005 v1.2 + BC-2.18.001 v1.2 + BC-2.04.015 v1.2 + BC-INDEX v0.1.12 + PRD index v0.1.11 — F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE |
+| 16 | d7582d4 | architect | SS-18 v1.5 + SS-04/SS-06/SS-17/SS-01 v1.2 + ARCH-INDEX v0.1.23 + 8 VPs + VP-INDEX v0.1.7 — F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE |
+| 17 | 8d50e4d | story-writer | STORY-022/023/036 patches — per-hook bats + depends_on fix |
+| 18 | 76a8cac | story-writer | EPIC-02 sweep A STORY-007..011 per-hook bats |
+| 19 | d2bbeb6 | story-writer | EPIC-02 sweep B STORY-012..015 + STORY-030 + STORY-037 per-hook bats |
+| 20 | b7f8551 | product-owner | PRD index v0.1.12 RTM rows — F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE-RTM |
+| 21 | 53d7f29 | story-writer | STORY-INDEX v0.3.0 rebuild — F-PHASE2-CONSISTENCY-I01/I02/I03 |
+
 ## Current pipeline position
 
 **Mode:** GREENFIELD (no existing implementation; planning artifacts in `docs/planning/` serve as Phase 0 equivalent).
 
-**Phase:** Phase 2 Story Decomposition — STEP-A-COMPLETE (epics.md @ v0.1.0 committed at a9e6a04+80a814a; 9 epics, 95/95 BC coverage). Step B (create-stories) next-action.
+**Phase:** Phase 2 Story Decomposition — STEP-B-COMPLETE (43 stories @ STORY-INDEX v0.3.0 committed at 53d7f29; 95/95 BC coverage). Step C (dependency-graph) next-action.
 
 ## Phase 1a Stage 5 — CLOSED
 
@@ -362,6 +414,7 @@ Before committing, state-manager FINAL MUST run:
 | 2026-05-17 | UD-003 | F-PASS12-O2 3rd STRONG-ESCALATE (Pass 18 adversary recommendation): CRITICAL plateau at 5 passes + meta-rule self-violation at 8 recurrences both thresholds tripped; 3 options presented (a) continue, (b) carve-out exemption, (c) declare-converged-by-fiat | **Option (a) continue cascade** — same as UD-002; meta-rule self-violation class explicitly acknowledged as predictable recurring pattern; no pivot to carve-out or declare-converged-by-fiat |
 | 2026-05-17 | UD-004 | F-PASS12-O2 4th escalation surfaced after 16-pass post-UD-003 evidence (Passes 16–31, ~48 commits, 20+ recurrences, CRITICAL=2 plateau extending to CRITICAL=3 at Pass 32, never advanced past streak 0/3) | **Option (a) continue** — user reaffirmed Option C strict protocol; cascade continues indefinitely until BC-5.39.001 literal streak 3/3; meta-rule self-violation class continues to be acknowledged as predictable recurring pattern; structural-resolution acceptable timeline open-ended |
 | 2026-05-18 | UD-005 | Phase 1d CONVERGED at Pass 42 — Phase 2 transition decision; F-PASS40-O2 / F-PASS40-O3 / F-PASS41-O2 / F-PASS42-O2 process-gaps disposition | **Option: Proceed to Phase 2; defer all 4 inherited process-gaps** — human directive 2026-05-18 stated "we will be proceeding to Phase 2"; F-PASS40-O2 (mirror-visibility), F-PASS40-O3 (historical ordering), F-PASS41-O2/F-PASS42-O2 (inherited references) all documented as DEFERRED — NOT blocking Phase 2; may be revisited during Phase 2 if relevant or post-Phase-2; cosmetic historical-ordering inconsistency intentionally preserved as historical artifact |
+| 2026-05-18 | UD-006 | Phase 2 Step B per-hook .bats convention — CLAUDE.md says "one `tests/<hook-name>.bats` file per hook script" with no consolidated hooks.bats; SS-18 v1.4 had consolidated hooks.bats as test method | **CLAUDE.md wins** — per-hook bats is canonical; cascade applied across brief v0.4.20 (NFR-019 amended), SS-18 v1.5, BC-2.18.005 v1.2, and 11 affected story specs (STORY-022/023/036/007..015/030/037 per-hook bats references updated); no consolidated hooks.bats in any story task or AC |
 
 ## Pass 11 Recovery Note (historical)
 
@@ -371,10 +424,11 @@ Pass 11 architect work was interrupted mid-commit on 2026-05-16 and recovered vi
 
 - **Detailed handoff:** `.factory/SESSION-HANDOFF.md`
 - **Task ledger:** `.factory/TASK-LIST.md`
-- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..42}.md` (Passes 1–42 written — All 42 passes; cascade CONVERGED at 44cda58; Phase 2 authorized per UD-005)
+- **Adversary cascade reports (Phase 1d):** `.factory/cycles/v0.1-phase-1d-spec/adversary-pass-{1..42}.md` (All 42 passes; cascade CONVERGED at 44cda58; Phase 2 authorized per UD-005)
 - **Locked decisions:** `.factory/planning/stage-3-locks.md` (SL-1 through SL-11)
-- **Product brief:** `.factory/specs/product-brief.md` (v0.4.19)
-- **PRD:** `.factory/specs/prd/index.md` (v0.1.10) + supplements
-- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.9, 95 BCs)
-- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.22, commit 9734b40) + 17 ADRs (6 at v1.1 + 2 at v1.2 = 8 with Changelog) + 18 SS-NN (all at v1.1+) + VP-INDEX v0.1.6 + 27 VPs (4 at v1.2 + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog)
+- **Product brief:** `.factory/specs/product-brief.md` (v0.4.20, commit f6725b9)
+- **PRD:** `.factory/specs/prd/index.md` (v0.1.12, commit b7f8551) + supplements (nfr-catalog v0.1.1, error-taxonomy v0.1.2)
+- **BC-INDEX:** `.factory/specs/behavioral-contracts/BC-INDEX.md` (v0.1.12, commit 39d6fba; 95 BCs)
+- **Architecture:** `.factory/specs/architecture/ARCH-INDEX.md` (v0.1.23, commit d7582d4) + 17 ADRs + 18 SS-NN (SS-18 v1.5) + VP-INDEX v0.1.7 + 27 VPs
+- **Stories:** `.factory/stories/STORY-INDEX.md` (v0.3.0, commit 53d7f29; 43 stories across 9 epics)
 - **Project conventions:** `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
