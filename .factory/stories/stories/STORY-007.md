@@ -85,8 +85,7 @@ BC-2.04.017 event catalog compliance)
 
 ## Tasks
 
-1. **[failing test — Red Gate]** Write `plugins/brain-factory/tests/hooks.bats` (or append
-   to it if started by a prior story) with the VP-003 assertions in failing state:
+1. **[failing test — Red Gate]** Create `plugins/brain-factory/tests/validate-source-immutability.bats` with the VP-003 assertions in failing state:
    - Test: clean stdin (path not in manifest) → exit 0 + `verdict:allow` stdout.
      Use a JSON fixture with a temp manifest.json that does NOT contain the path.
    - Test: overwrite stdin (path in manifest) → exit 2 + `verdict:block` +
@@ -112,7 +111,7 @@ BC-2.04.017 event catalog compliance)
      exit 0
    - Generate a uuid for the `trace` field
 
-3. **[green]** Run `bats plugins/brain-factory/tests/hooks.bats` — all VP-003 tests pass.
+3. **[green]** Run `bats plugins/brain-factory/tests/validate-source-immutability.bats` — all VP-003 tests pass.
 
 4. **[green]** Run `shellcheck plugins/brain-factory/hooks/validate-source-immutability.sh`
    — clean. Run `shfmt -d -i 2` — no diff.
@@ -130,9 +129,9 @@ BC-2.04.017 event catalog compliance)
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-003 | Existing source overwrite → exit 2 | `tests/hooks.bats` |
-| VP-003 | New source write → exit 0 | `tests/hooks.bats` |
-| VP-003 | Missing manifest → exit 2 (fail-closed) | `tests/hooks.bats` |
+| VP-003 | Existing source overwrite → exit 2 | `tests/validate-source-immutability.bats` |
+| VP-003 | New source write → exit 0 | `tests/validate-source-immutability.bats` |
+| VP-003 | Missing manifest → exit 2 (fail-closed) | `tests/validate-source-immutability.bats` |
 
 ## Architecture Compliance Rules
 
@@ -172,7 +171,7 @@ Files to create/modify:
 | Path | Action | Notes |
 |------|--------|-------|
 | `plugins/brain-factory/hooks/validate-source-immutability.sh` | Modify (replace stub) | Full implementation per BC-2.04.002 |
-| `plugins/brain-factory/tests/hooks.bats` | Create or extend | VP-003 assertions (Red Gate → Green) |
+| `plugins/brain-factory/tests/validate-source-immutability.bats` | Create | VP-003 assertions (Red Gate → Green) |
 | `plugins/brain-factory/tests/fixtures/manifest-with-source.json` | Create | Fixture: manifest.json with one source entry for negative test |
 | `plugins/brain-factory/tests/fixtures/manifest-empty.json` | Create | Fixture: empty sources object `{"sources":{}}` for positive test |
 
@@ -184,8 +183,9 @@ Files NOT to modify: `hooks.json.template`, `plugin.json`, any file under `.fact
 STORY-001 created the `validate-source-immutability.sh` stub. STORY-006 established the
 pattern for bats test fixtures (feeding JSON payloads via stdin) and the use of
 `hooks/lib/hook-event-emit.sh` for structured JSONL emission. Follow that pattern exactly.
-STORY-006 may have created `tests/quarantine.bats` but NOT `tests/hooks.bats` — this
-story starts or extends `tests/hooks.bats` for all PostToolUse hooks.
+STORY-006 may have created `tests/quarantine.bats`. This story creates
+`tests/validate-source-immutability.bats` as a standalone per-hook bats file following
+the per-hook test convention (SS-04 v1.5, BC-2.18.005 v1.2).
 
 ## Token Budget Estimate
 
@@ -198,7 +198,7 @@ story starts or extends `tests/hooks.bats` for all PostToolUse hooks.
 | ADR-016 helper architecture | ~1,000 |
 | BC-2.04.002 file | ~800 |
 | VP-003 file | ~500 |
-| validate-source-immutability.sh stub + hooks.bats stub | ~300 |
+| validate-source-immutability.sh stub + validate-source-immutability.bats stub | ~300 |
 | Test output context | ~400 |
 | **Total** | **~9,500** |
 

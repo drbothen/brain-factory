@@ -138,12 +138,13 @@ both scripts.
    "boil the ocean", "low-hanging fruit", "move the needle", "bandwidth",
    "touch base", "in the weeds", "ping". Exactly 30 terms total.
 
-2. **[failing test — Red Gate]** Extend `plugins/brain-factory/tests/hooks.bats` with
-   VP-002 assertions in failing state:
-   - Page type tests: all 6 valid directories → exit 0; `wiki/tools/` → exit 2 + E-WIKI-005;
+2. **[failing test — Red Gate]** Create two per-hook bats files in failing state:
+   - `plugins/brain-factory/tests/validate-page-type-policy.bats` with VP-002 assertions:
+     all 6 valid directories → exit 0; `wiki/tools/` → exit 2 + E-WIKI-005;
      direct `wiki/stray.md` → exit 2 + E-WIKI-006; `wiki/index.md` → exit 0 (exempt);
      `wiki/log.md` → exit 0 (exempt).
-   - Voice avoid tests: no match → exit 0; one match → exit 1 + `verdict:advise`;
+   - `plugins/brain-factory/tests/validate-voice-avoid-list.bats` with VP-002 assertions:
+     no match → exit 0; one match → exit 1 + `verdict:advise`;
      3 matches → exit 1 + `matches` array length 3; missing avoid-list → exit 1 + E-VOICE-002;
      note: voice hook NEVER exits 2.
    Create fixtures: `wiki-page-valid-type-path.md` (path context only),
@@ -176,8 +177,9 @@ both scripts.
    - This hook MUST NEVER exit 2 under any condition (including error cases: exit 1 for
      all non-success paths)
 
-5. **[green]** Run `bats plugins/brain-factory/tests/hooks.bats` — all VP-002 tests for
-   page-type-policy and voice-avoid-list pass.
+5. **[green]** Run `bats plugins/brain-factory/tests/validate-page-type-policy.bats` and
+   `bats plugins/brain-factory/tests/validate-voice-avoid-list.bats` — all VP-002 tests
+   for page-type-policy and voice-avoid-list pass.
 
 6. **[green]** Run `shellcheck` and `shfmt -d -i 2` on both scripts — clean.
 
@@ -200,10 +202,10 @@ both scripts.
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-002 | PostToolUse hook trigger on wiki writes | `tests/hooks.bats` |
-| VP-002 | Invalid wiki type path → exit 2 | `tests/hooks.bats` |
-| VP-002 | All 6 valid wiki types pass | `tests/hooks.bats` (parameterized) |
-| VP-002 | index.md and log.md exempt from type check | `tests/hooks.bats` |
+| VP-002 | PostToolUse hook trigger on wiki writes | `tests/validate-page-type-policy.bats` |
+| VP-002 | Invalid wiki type path → exit 2 | `tests/validate-page-type-policy.bats` |
+| VP-002 | All 6 valid wiki types pass | `tests/validate-page-type-policy.bats` (parameterized) |
+| VP-002 | index.md and log.md exempt from type check | `tests/validate-page-type-policy.bats` |
 
 ## Architecture Compliance Rules
 
@@ -249,7 +251,8 @@ Files to create/modify:
 | `plugins/brain-factory/hooks/validate-page-type-policy.sh` | Modify (replace stub) | Full implementation per BC-2.04.007 |
 | `plugins/brain-factory/hooks/validate-voice-avoid-list.sh` | Modify (replace stub) | Full implementation per BC-2.04.008 |
 | `plugins/brain-factory/rules/voice-avoid-list.txt` | Create | Exactly 30 terms, one per line |
-| `plugins/brain-factory/tests/hooks.bats` | Extend | VP-002 assertions for both hooks |
+| `plugins/brain-factory/tests/validate-page-type-policy.bats` | Create | VP-002 assertions for page-type-policy hook |
+| `plugins/brain-factory/tests/validate-voice-avoid-list.bats` | Create | VP-002 assertions for voice-avoid-list hook |
 | `plugins/brain-factory/tests/fixtures/briefs-draft-no-matches.md` | Create | Draft with no avoid-list terms |
 | `plugins/brain-factory/tests/fixtures/briefs-draft-with-matches.md` | Create | Draft with 3+ avoid-list terms |
 
@@ -258,11 +261,14 @@ Files NOT to modify: `hooks.json.template`, `plugin.json`, any file under `.fact
 ## Previous Story Intelligence
 
 STORY-009 established the per-field validation pattern in `validate-frontmatter-schema.sh`
-and extended `tests/hooks.bats`. This story adds further test cases to the same file.
-Note the key distinction: STORY-009 validates the `type` frontmatter FIELD value;
-this story (STORY-010) validates the `type` DIRECTORY PATH. Both can fail independently
-(e.g., a file at `wiki/concepts/page.md` with `type: people` in frontmatter would pass
-the path hook but fail the frontmatter hook). The two validations are complementary.
+and created `tests/validate-frontmatter-schema.bats`. This story creates two standalone
+per-hook bats files (`tests/validate-page-type-policy.bats` and
+`tests/validate-voice-avoid-list.bats`) following the same per-hook convention (SS-04
+v1.5, BC-2.18.005 v1.2). Note the key distinction: STORY-009 validates the `type`
+frontmatter FIELD value; this story (STORY-010) validates the `type` DIRECTORY PATH.
+Both can fail independently (e.g., a file at `wiki/concepts/page.md` with `type: people`
+in frontmatter would pass the path hook but fail the frontmatter hook). The two
+validations are complementary.
 
 The voice avoid-list hook (BC-2.04.008) is P1 priority (unlike all other hooks in this
 epic which are P0). Its bats tests are included here because the hook implementation is
@@ -280,7 +286,7 @@ first.
 | ADR-016 helper architecture | ~1,000 |
 | BC-2.04.007, BC-2.04.008 files | ~1,500 |
 | VP-002 file | ~500 |
-| hooks.bats from prior stories | ~1,500 |
+| Per-hook bats files from prior stories (pattern reference) | ~1,500 |
 | Test output context | ~500 |
 | **Total** | **~11,000** |
 

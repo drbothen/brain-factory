@@ -131,12 +131,13 @@ exits 2 with `"code":"E-PUBLISH-002"`.
    `plugins/brain-factory/hooks/validate-publish-state.sh`. If absent, create them with
    the canonical shebang + `set -euo pipefail` + `exit 0` stub body.
 
-2. **[failing test — Red Gate]** Extend `plugins/brain-factory/tests/hooks.bats` with
-   VP-002 assertions in failing state:
-   - Source citation tests: resolved `source_ids` → exit 0; unresolved slug → exit 2 +
-     E-WIKI-007; empty `source_ids` → exit 0; `manifest.json` absent → exit 2 + E-WIKI-008;
+2. **[failing test — Red Gate]** Create two per-hook bats files in failing state:
+   - `plugins/brain-factory/tests/validate-source-id-citation.bats` with VP-002 assertions:
+     resolved `source_ids` → exit 0; unresolved slug → exit 2 + E-WIKI-007;
+     empty `source_ids` → exit 0; `manifest.json` absent → exit 2 + E-WIKI-008;
      multiple unresolved IDs listed.
-   - Publish state tests: new file + `status: draft` → exit 0; `draft→ready` → exit 0;
+   - `plugins/brain-factory/tests/validate-publish-state.bats` with VP-002 assertions:
+     new file + `status: draft` → exit 0; `draft→ready` → exit 0;
      `ready→published` → exit 0; `draft→published` (skip) → exit 2 + E-PUBLISH-001;
      `published→draft` (reverse) → exit 2 + E-PUBLISH-001; missing `status` field → exit 2 + E-PUBLISH-002.
    Create fixtures: `wiki-page-valid-source-ids.json`, `wiki-page-unresolved-source-id.json`,
@@ -166,7 +167,8 @@ exits 2 with `"code":"E-PUBLISH-002"`.
      JSONL stderr; exit 2
    - On valid: emit `publish.state.transition_accepted` JSONL stderr; exit 0
 
-5. **[green]** Run `bats plugins/brain-factory/tests/hooks.bats` — all new tests pass.
+5. **[green]** Run `bats plugins/brain-factory/tests/validate-source-id-citation.bats` and
+   `bats plugins/brain-factory/tests/validate-publish-state.bats` — all new tests pass.
 
 6. **[green]** Run `shellcheck` and `shfmt -d -i 2` on both scripts — clean.
 
@@ -190,11 +192,11 @@ exits 2 with `"code":"E-PUBLISH-002"`.
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-002 | PostToolUse trigger: source citation validation on wiki writes | `tests/hooks.bats` |
-| VP-002 | Unresolved source_id → exit 2 + E-WIKI-007 | `tests/hooks.bats` |
-| VP-002 | manifest.json absent → exit 2 fail-closed | `tests/hooks.bats` |
-| VP-002 | PostToolUse trigger: publish state machine enforcement | `tests/hooks.bats` |
-| VP-002 | Invalid state transition → exit 2 + E-PUBLISH-001 | `tests/hooks.bats` |
+| VP-002 | PostToolUse trigger: source citation validation on wiki writes | `tests/validate-source-id-citation.bats` |
+| VP-002 | Unresolved source_id → exit 2 + E-WIKI-007 | `tests/validate-source-id-citation.bats` |
+| VP-002 | manifest.json absent → exit 2 fail-closed | `tests/validate-source-id-citation.bats` |
+| VP-002 | PostToolUse trigger: publish state machine enforcement | `tests/validate-publish-state.bats` |
+| VP-002 | Invalid state transition → exit 2 + E-PUBLISH-001 | `tests/validate-publish-state.bats` |
 
 ## Architecture Compliance Rules
 
@@ -232,7 +234,8 @@ No Node.js, no yq, no Python.
 |------|--------|-------|
 | `plugins/brain-factory/hooks/validate-source-id-citation.sh` | Modify (replace stub) | Full implementation per BC-2.04.009 |
 | `plugins/brain-factory/hooks/validate-publish-state.sh` | Modify (replace stub) | Full implementation per BC-2.04.010 |
-| `plugins/brain-factory/tests/hooks.bats` | Extend | VP-002 assertions for both hooks |
+| `plugins/brain-factory/tests/validate-source-id-citation.bats` | Create | VP-002 assertions for source-id-citation hook |
+| `plugins/brain-factory/tests/validate-publish-state.bats` | Create | VP-002 assertions for publish-state hook |
 | `plugins/brain-factory/tests/fixtures/wiki-page-valid-source-ids.json` | Create | Payload with resolved source_ids |
 | `plugins/brain-factory/tests/fixtures/wiki-page-unresolved-source-id.json` | Create | Payload with missing manifest entry |
 | `plugins/brain-factory/tests/fixtures/publish-state-valid-new.json` | Create | New file status: draft |
@@ -242,8 +245,9 @@ Files NOT to modify: `hooks.json.template`, `plugin.json`, any file under `.fact
 
 ## Previous Story Intelligence
 
-STORY-010 established the pattern for two hooks per story and extended `tests/hooks.bats`
-with parameterized test cases. STORY-011 follows the same pattern. Note that
+STORY-010 established the pattern for two hooks per story and created per-hook bats files
+(`tests/validate-page-type-policy.bats` and `tests/validate-voice-avoid-list.bats`).
+STORY-011 follows the same per-hook convention (SS-04 v1.5, BC-2.18.005 v1.2). Note that
 `validate-source-id-citation.sh` reads from `.brain/manifest.json` (vault root), not from
 the plugin root; bats tests must set up a temp manifest fixture. The publish-state hook
 requires reading the file's PRIOR state — the stdin payload from the harness includes the
@@ -261,7 +265,7 @@ for how prior-state is delivered.
 | ADR-016 helper architecture | ~1,000 |
 | BC-2.04.009, BC-2.04.010 files | ~1,500 |
 | VP-002 file | ~500 |
-| hooks.bats from prior stories | ~2,000 |
+| Per-hook bats files from prior stories (pattern reference) | ~2,000 |
 | Test fixture files | ~500 |
 | **Total** | **~12,000** |
 

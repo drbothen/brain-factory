@@ -114,7 +114,7 @@ BC-2.04.005 postconditions: missing step 3, all-valid step 2; BC-2.04.017 event 
 
 ## Tasks
 
-1. **[failing test — Red Gate]** Extend `plugins/brain-factory/tests/hooks.bats` with
+1. **[failing test — Red Gate]** Create `plugins/brain-factory/tests/validate-frontmatter-schema.bats` with
    VP-002 and VP-005 assertions in failing state:
    - Test: complete valid wiki frontmatter → exit 0.
    - Test: missing `embedding_status` → exit 2 + E-SCHEMA-001.
@@ -152,7 +152,7 @@ BC-2.04.005 postconditions: missing step 3, all-valid step 2; BC-2.04.017 event 
    - For sources schema: check `title`, `url`, `ingested_at`, `source_id`, `topic`
    - On success: emit `frontmatter.schema.validated` JSONL stderr; exit 0
 
-3. **[green]** Run `bats plugins/brain-factory/tests/hooks.bats` — all VP-005 tests pass.
+3. **[green]** Run `bats plugins/brain-factory/tests/validate-frontmatter-schema.bats` — all VP-005 tests pass.
 
 4. **[green]** Run `shellcheck` and `shfmt -d -i 2` on the hook script — clean.
 
@@ -176,12 +176,12 @@ BC-2.04.005 postconditions: missing step 3, all-valid step 2; BC-2.04.017 event 
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-002 | PostToolUse hook trigger on wiki writes | `tests/hooks.bats` |
-| VP-005 | Missing `embedding_status` → exit 2 | `tests/hooks.bats` |
-| VP-005 | Valid `embedding_status` → exit 0 | `tests/hooks.bats` |
-| VP-005 | All 5 mandatory fields enforced | `tests/hooks.bats` (one test per field) |
-| VP-005 | All 6 valid type values pass | `tests/hooks.bats` (parameterized) |
-| VP-005 | Invalid type value → exit 2 | `tests/hooks.bats` |
+| VP-002 | PostToolUse hook trigger on wiki writes | `tests/validate-frontmatter-schema.bats` |
+| VP-005 | Missing `embedding_status` → exit 2 | `tests/validate-frontmatter-schema.bats` |
+| VP-005 | Valid `embedding_status` → exit 0 | `tests/validate-frontmatter-schema.bats` |
+| VP-005 | All 5 mandatory fields enforced | `tests/validate-frontmatter-schema.bats` (one test per field) |
+| VP-005 | All 6 valid type values pass | `tests/validate-frontmatter-schema.bats` (parameterized) |
+| VP-005 | Invalid type value → exit 2 | `tests/validate-frontmatter-schema.bats` |
 
 ## Architecture Compliance Rules
 
@@ -225,7 +225,7 @@ Files to create/modify:
 | Path | Action | Notes |
 |------|--------|-------|
 | `plugins/brain-factory/hooks/validate-frontmatter-schema.sh` | Modify (replace stub) | Full implementation per BC-2.04.004 + BC-2.04.005 |
-| `plugins/brain-factory/tests/hooks.bats` | Extend | VP-002 + VP-005 assertions |
+| `plugins/brain-factory/tests/validate-frontmatter-schema.bats` | Create | VP-002 + VP-005 assertions |
 | `plugins/brain-factory/tests/fixtures/wiki-page-full-valid.md` | Create | All 5 mandatory fields; valid values |
 | `plugins/brain-factory/tests/fixtures/wiki-page-missing-embedding.md` | Create | Missing `embedding_status` |
 | `plugins/brain-factory/tests/fixtures/wiki-page-bad-embedding.md` | Create | `embedding_status: invalid_value` |
@@ -238,9 +238,10 @@ Files NOT to modify: `hooks.json.template`, `plugin.json`, any file under `.fact
 
 ## Previous Story Intelligence
 
-STORY-007 and STORY-008 established `tests/hooks.bats` and the fixture pattern. This
-story adds new test cases to the same file. STORY-008 confirmed the `awk`/`grep` pattern
-for wikilink extraction; this story uses `yq` for YAML parsing (different tool — ensure
+STORY-007 and STORY-008 established the per-hook bats convention and the fixture pattern.
+This story creates `tests/validate-frontmatter-schema.bats` as a standalone per-hook bats
+file following the same convention. STORY-008 confirmed the `awk`/`grep` pattern for
+wikilink extraction; this story uses `yq` for YAML parsing (different tool — ensure
 `yq` is installed via `make setup` before running bats). The path-routing logic (wiki vs
 sources) is new in this story and requires careful path-prefix detection.
 
@@ -254,7 +255,7 @@ sources) is new in this story and requires careful path-prefix detection.
 | ADR-016 helper architecture | ~1,000 |
 | BC-2.04.004, BC-2.04.005 files | ~1,600 |
 | VP-002, VP-005 files | ~800 |
-| hooks.bats prior stories' content | ~1,000 |
+| Per-hook bats files from prior stories (pattern reference) | ~1,000 |
 | Test output context | ~500 |
 | **Total** | **~10,900** |
 

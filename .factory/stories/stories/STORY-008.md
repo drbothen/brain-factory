@@ -121,11 +121,12 @@ BC-2.04.017 event catalog compliance)
 
 ## Tasks
 
-1. **[failing test — Red Gate]** Extend `plugins/brain-factory/tests/hooks.bats` with
-   VP-002 and VP-004 assertions in failing state:
-   - Wikilink tests: all-valid → exit 0; broken slug → exit 2 + E-WIKI-001; no wikilinks
-     → exit 0; missing index.md → exit 2 + E-WIKI-002; blocked → stderr E-WIKI event.
-   - Coherence tests: coherent → exit 0; slug in index not in log → exit 2 + E-WIKI-003;
+1. **[failing test — Red Gate]** Create two per-hook bats files in failing state:
+   - `plugins/brain-factory/tests/validate-wikilink-integrity.bats` with VP-004 assertions:
+     all-valid → exit 0; broken slug → exit 2 + E-WIKI-001; no wikilinks → exit 0;
+     missing index.md → exit 2 + E-WIKI-002; blocked → stderr E-WIKI event.
+   - `plugins/brain-factory/tests/validate-index-log-coherence.bats` with VP-002 assertions:
+     coherent → exit 0; slug in index not in log → exit 2 + E-WIKI-003;
      missing log.md → exit 2 + E-WIKI-004; both empty → exit 0.
    Create bats fixtures under `tests/fixtures/`: `wiki-index-with-slugs.md`,
    `wiki-log-with-slugs.md`, `wiki-page-valid-links.md`, `wiki-page-broken-link.md`,
@@ -156,8 +157,9 @@ BC-2.04.017 event catalog compliance)
    - If coherent: emit allow stdout + `wiki.index_log.coherence_verified` JSONL stderr;
      exit 0
 
-4. **[green]** Run `bats plugins/brain-factory/tests/hooks.bats` — all VP-002 and VP-004
-   tests pass.
+4. **[green]** Run `bats plugins/brain-factory/tests/validate-wikilink-integrity.bats` and
+   `bats plugins/brain-factory/tests/validate-index-log-coherence.bats` — all VP-002 and
+   VP-004 tests pass.
 
 5. **[green]** Run `shellcheck` and `shfmt -d -i 2` on both hook scripts — clean.
 
@@ -179,10 +181,10 @@ BC-2.04.017 event catalog compliance)
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-002 | PostToolUse hook trigger on wiki writes | `tests/hooks.bats` |
-| VP-002 | Coherence violation → exit 2 | `tests/hooks.bats` |
-| VP-004 | Broken wikilink → exit 2 | `tests/hooks.bats` |
-| VP-004 | O(n) index-first resolution (performance assertion) | `tests/hooks.bats` |
+| VP-002 | PostToolUse hook trigger on wiki writes | `tests/validate-index-log-coherence.bats` |
+| VP-002 | Coherence violation → exit 2 | `tests/validate-index-log-coherence.bats` |
+| VP-004 | Broken wikilink → exit 2 | `tests/validate-wikilink-integrity.bats` |
+| VP-004 | O(n) index-first resolution (performance assertion) | `tests/validate-wikilink-integrity.bats` |
 
 ## Architecture Compliance Rules
 
@@ -228,7 +230,8 @@ Files to create/modify:
 |------|--------|-------|
 | `plugins/brain-factory/hooks/validate-wikilink-integrity.sh` | Modify (replace stub) | Full implementation per BC-2.04.003 |
 | `plugins/brain-factory/hooks/validate-index-log-coherence.sh` | Modify (replace stub) | Full implementation per BC-2.04.006 |
-| `plugins/brain-factory/tests/hooks.bats` | Extend | VP-002 + VP-004 assertions |
+| `plugins/brain-factory/tests/validate-wikilink-integrity.bats` | Create | VP-004 assertions for wikilink integrity hook |
+| `plugins/brain-factory/tests/validate-index-log-coherence.bats` | Create | VP-002 assertions for index-log coherence hook |
 | `plugins/brain-factory/tests/fixtures/wiki-index-with-slugs.md` | Create | 3+ slug entries for resolution tests |
 | `plugins/brain-factory/tests/fixtures/wiki-log-with-slugs.md` | Create | Matching log entries |
 | `plugins/brain-factory/tests/fixtures/wiki-page-valid-links.md` | Create | Page with valid `[[slug]]` references |
@@ -239,11 +242,12 @@ Files NOT to modify: `hooks.json.template`, `plugin.json`, any file under `.fact
 
 ## Previous Story Intelligence
 
-STORY-007 established `tests/hooks.bats` and the pattern for bats fixtures (JSON payloads
-via stdin using `run bash quarantine-fetch.sh < fixture.json` pattern). STORY-008 MUST
-extend that same `hooks.bats` file — do NOT create a separate `wikilink.bats` file. The
-SS-04 test surface specification (SS-04 §Test Surface) says a single `tests/hooks.bats`
-file covers all 13 hooks with >= 3 test cases per hook.
+STORY-007 established the pattern for bats fixtures (JSON payloads via stdin using
+`run bash <hook>.sh < fixture.json` pattern) and created
+`tests/validate-source-immutability.bats` as the first per-hook bats file. STORY-008
+follows the same per-hook convention: each hook implemented in this story gets its own
+standalone bats file (`tests/validate-wikilink-integrity.bats` and
+`tests/validate-index-log-coherence.bats`) per SS-04 v1.5 and BC-2.18.005 v1.2.
 
 ## Token Budget Estimate
 
@@ -256,7 +260,7 @@ file covers all 13 hooks with >= 3 test cases per hook.
 | ADR-016 helper architecture | ~1,000 |
 | BC-2.04.003, BC-2.04.006 files | ~1,500 |
 | VP-002, VP-004 files | ~800 |
-| hooks.bats stub from STORY-007 | ~500 |
+| validate-source-immutability.bats from STORY-007 (pattern reference) | ~500 |
 | Test output context | ~500 |
 | **Total** | **~11,800** |
 
