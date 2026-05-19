@@ -1,18 +1,18 @@
 ---
 artifact_type: story-index
-version: "0.1.0"
+version: "0.2.0"
 created: 2026-05-18
 authored_by: vsdd-factory:story-writer
-total_stories: 39
-total_points: 237
+total_stories: 43
+total_points: 263
 phase: phase-2-story-decomposition-step-b
-epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06, EPIC-07, EPIC-08]
-epics_pending: [EPIC-09]
+epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06, EPIC-07, EPIC-08, EPIC-09]
+epics_pending: []
 ---
 
 # brain-factory Story Index
 
-**39 stories across 8 completed epics. 95 BCs total project scope. All stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. All stories status: draft.**
 
 ---
 
@@ -111,6 +111,17 @@ epics_pending: [EPIC-09]
 
 ---
 
+## EPIC-09: Plugin Packaging and Governance (4 stories / 26 points)
+
+| Story ID | Title | Status | Points | Priority | BCs |
+|----------|-------|--------|--------|----------|-----|
+| STORY-040 | Adversarial review core dispatch — cognitive diversity gate and four-agent validation | draft | 8 | P0 | BC-2.07.001, BC-2.07.002 |
+| STORY-041 | Adversarial review structured verdict, streak counter, and multi-pass writescore revision loop | draft | 8 | P0 | BC-2.07.003, BC-2.07.004 |
+| STORY-042 | Governance policies initialization — .brain/policies.yaml with 10 baseline policies | draft | 5 | P1 | BC-2.15.001 |
+| STORY-043 | Policy registry management — /brain:policy-add and /brain:policy-registry-validate | draft | 5 | P1 | BC-2.15.002, BC-2.15.003 |
+
+---
+
 ## Coverage Verification Footer
 
 | Epic | Stories | Points | Running Story Total | Running Point Total |
@@ -123,6 +134,5 @@ epics_pending: [EPIC-09]
 | EPIC-06 | 5 | 29 | 31 | 174 |
 | EPIC-07 | 4 | 29 | 35 | 203 |
 | EPIC-08 | 4 | 34 | 39 | 237 |
-| **TOTAL (epics 1–8)** | **39** | **237** | — | — |
-
-Note: EPIC-09 stories are pending the final Step B burst.
+| EPIC-09 | 4 | 26 | 43 | 263 |
+| **TOTAL (epics 1–9)** | **43** | **263** | — | — |
