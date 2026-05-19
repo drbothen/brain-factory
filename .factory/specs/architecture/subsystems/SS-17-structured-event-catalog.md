@@ -3,9 +3,9 @@ document_type: subsystem-design
 id: SS-17
 title: "Structured Event Catalog"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 capability_anchor: CAP-017
@@ -93,10 +93,14 @@ This check runs at meta-lint time, not at hook runtime — it's a static analysi
 
 ## Test Surface
 
-- `tests/hooks.bats` — stderr capture assertion: each hook produces ≥ 1 JSONL event (NFR-011); stdout contains only the verdict JSON
+- `tests/<hook-name>.bats` (per-hook bats files) — stderr capture assertion in each per-hook file: each hook produces ≥ 1 JSONL event (NFR-011); stdout contains only the verdict JSON
 - `meta-lint.bats` — catalog completeness: all emit_event calls have catalog entries; no stdout echo in hook scripts
 
 ## Changelog
+
+### v1.2 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Test Surface updated to per-hook .bats convention):** §Test Surface entry "tests/hooks.bats — stderr capture assertion..." replaced with "tests/<hook-name>.bats (per-hook bats files) — stderr capture assertion in each per-hook file...". Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]
 
 ### v1.1 (2026-05-16)
 

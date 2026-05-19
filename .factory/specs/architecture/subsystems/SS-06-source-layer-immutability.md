@@ -3,9 +3,9 @@ document_type: subsystem-design
 id: SS-06
 title: "Source Layer and Immutability"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 capability_anchor: CAP-006
@@ -81,10 +81,14 @@ Enforced at two levels:
 
 ## Test Surface
 
-- `tests/hooks.bats` (immutability assertions): existing source path → E-SOURCE-001; new path → exit 0
+- `tests/validate-source-immutability.bats` (immutability assertions): existing source path → E-SOURCE-001; new path → exit 0
 - `tests/skills.bats`: manifest.json valid JSON after ingest; `chunks` field present and empty; `last_ingest` populated (covered by VP-012 Group 2)
 
 ## Changelog
+
+### v1.2 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Test Surface updated to per-hook .bats convention):** §Test Surface entry "tests/hooks.bats (immutability assertions)..." replaced with "tests/validate-source-immutability.bats (immutability assertions)...". Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]
 
 ### v1.1 (2026-05-16)
 

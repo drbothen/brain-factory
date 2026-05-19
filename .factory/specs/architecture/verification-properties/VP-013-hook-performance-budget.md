@@ -3,11 +3,11 @@ document_type: verification-property
 id: VP-013
 title: "Hook p99 latency under 100ms"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-18T00:00:00
 verifies_bcs: [BC-2.04.015, NFR-001]
 created: 2026-05-15
 status: proposed
@@ -23,7 +23,7 @@ The wikilink integrity hook's per-invocation latency when processing a page with
 
 ## Verification Mechanism
 
-bats (hooks.bats) — timing assertion per hook:
+bats (per-hook .bats files) — timing assertion per hook, in each hook's own `tests/<hook-name>.bats`:
 
 ```bash
 @test "quarantine-fetch.sh: p99 latency < 100ms on canonical payload" {
@@ -72,4 +72,10 @@ This test runs for each of the 13 hooks with representative canonical payloads. 
 
 ## Status
 
-proposed — pending Phase 3 implementation; profiling during hooks.bats Red Gate phase
+proposed — pending Phase 3 implementation; profiling during per-hook .bats Red Gate phase
+
+## Changelog
+
+### v1.1 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Verification Mechanism and §Status updated to per-hook .bats convention):** Mechanism changed from `bats (hooks.bats) — timing assertion per hook` to `bats (per-hook .bats files) — timing assertion per hook, in each hook's own tests/<hook-name>.bats`. §Status reference to "hooks.bats Red Gate phase" updated to "per-hook .bats Red Gate phase". Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]

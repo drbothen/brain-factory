@@ -3,11 +3,11 @@ document_type: verification-property
 id: VP-003
 title: "Source immutability enforcement"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-18T00:00:00
 verifies_bcs: [BC-2.04.002, BC-2.06.001]
 created: 2026-05-15
 status: proposed
@@ -21,7 +21,7 @@ For any path P that exists as a key in `manifest.json`, a PostToolUse hook invoc
 
 ## Verification Mechanism
 
-bats (hooks.bats) with fixture manifest.json:
+bats (`tests/validate-source-immutability.bats`) with fixture manifest.json:
 
 ```bash
 @test "validate-source-immutability.sh: existing source path → E-SOURCE-001" {
@@ -62,3 +62,9 @@ bats (hooks.bats) with fixture manifest.json:
 ## Status
 
 proposed — pending Phase 3 implementation
+
+## Changelog
+
+### v1.1 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Verification Mechanism updated to per-hook .bats convention):** Mechanism changed from `bats (hooks.bats) with fixture manifest.json` to `bats (tests/validate-source-immutability.bats) with fixture manifest.json`. The hook tests now live in the per-hook file `tests/validate-source-immutability.bats`. Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]

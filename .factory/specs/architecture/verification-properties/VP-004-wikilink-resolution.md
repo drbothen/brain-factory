@@ -3,11 +3,11 @@ document_type: verification-property
 id: VP-004
 title: "Wikilink resolution correctness"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 verifies_bcs: [BC-2.04.003, BC-2.05.002]
 created: 2026-05-15
 status: proposed
@@ -24,7 +24,7 @@ Given a wiki/index.md containing a known set of page slugs S, and a wiki page bo
 
 ## Verification Mechanism
 
-bats (skills.bats and hooks.bats) — two layers:
+bats (skills.bats and `tests/validate-wikilink-integrity.bats`) — two layers:
 
 **Layer 1 — pure unit test on resolution algorithm:**
 ```bash
@@ -79,6 +79,10 @@ bats (skills.bats and hooks.bats) — two layers:
 proposed — pending Phase 3 implementation
 
 ## Changelog
+
+### v1.2 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Verification Mechanism updated to per-hook .bats convention):** Mechanism changed from `bats (skills.bats and hooks.bats)` to `bats (skills.bats and tests/validate-wikilink-integrity.bats)`. The Layer 2 hook integration test now lives in the per-hook file `tests/validate-wikilink-integrity.bats` rather than a consolidated `tests/hooks.bats`. Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]
 
 ### v1.1 (2026-05-16)
 

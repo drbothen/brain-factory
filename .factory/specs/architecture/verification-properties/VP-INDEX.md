@@ -1,14 +1,14 @@
 ---
 document_type: vp-index
 level: L3
-version: "0.1.6"
+version: "0.1.7"
 status: draft
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 created: 2026-05-15
-last_updated: 2026-05-16
+last_updated: 2026-05-18
 ---
 
 # Verification Property Index: brain-factory
@@ -23,11 +23,11 @@ last_updated: 2026-05-16
 
 | VP-ID | Title | Mechanism | Target BCs | Phase | Status |
 |-------|-------|-----------|------------|-------|--------|
-| VP-001 | Hook exit-code semantics coverage | bats (hooks.bats) | BC-2.04.016, BC-2.04.015 | P0 | proposed |
+| VP-001 | Hook exit-code semantics coverage | bats (per-hook .bats files) | BC-2.04.016, BC-2.04.015 | P0 | proposed |
 | VP-002 | PostToolUse hook trigger on wiki writes | bats (integration.bats) | BC-2.04.003..BC-2.04.007, BC-2.04.009, BC-2.04.010 | P0 | proposed |
-| VP-003 | Source immutability enforcement | bats (hooks.bats) | BC-2.04.002, BC-2.06.001 | P0 | proposed |
-| VP-004 | Wikilink resolution correctness | bats (unit + integration) | BC-2.04.003, BC-2.05.002 | P0 | proposed |
-| VP-005 | Frontmatter schema conformance | bats (hooks.bats) | BC-2.04.004, BC-2.04.005, BC-2.05.006 | P0 | proposed |
+| VP-003 | Source immutability enforcement | bats (validate-source-immutability.bats) | BC-2.04.002, BC-2.06.001 | P0 | proposed |
+| VP-004 | Wikilink resolution correctness | bats (skills.bats + validate-wikilink-integrity.bats) | BC-2.04.003, BC-2.05.002 | P0 | proposed |
+| VP-005 | Frontmatter schema conformance | bats (validate-frontmatter-schema.bats) | BC-2.04.004, BC-2.04.005, BC-2.05.006 | P0 | proposed |
 | VP-006 | Meta-lint factory self-audit | meta-lint.bats | BC-2.18.001..BC-2.18.005 | P0 | proposed |
 | VP-007 | Lobster workflow determinism | bats (integration.bats) | BC-2.12.001, BC-2.12.002 | P0 | proposed |
 | VP-008 | Hook event catalog completeness | meta-lint.bats cross-ref | BC-2.17.001, BC-2.17.002 | P0 | proposed |
@@ -35,20 +35,20 @@ last_updated: 2026-05-16
 | VP-010 | Adversarial 3-CLEAN convergence | adversary cascade protocol | BC-2.07.001..BC-2.07.004 | P1 | proposed |
 | VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | BC-2.10.002, BC-2.04.001 | P0 | proposed |
 | VP-012 | Manifest write atomicity and last_ingest field correctness | bats (integration.bats) | NFR-018, BC-2.03.002, BC-2.06.003 | P0 | proposed |
-| VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | BC-2.04.015, NFR-001 | P0 | proposed |
+| VP-013 | Hook p99 latency under 100ms | bats perf assertion (per-hook .bats files) | BC-2.04.015, NFR-001 | P0 | proposed |
 | VP-014 | Brain initialization scaffolds complete folder structure | bats (integration.bats) | BC-2.01.001, BC-2.01.002, BC-2.01.003, BC-2.01.004 | P0 | proposed |
 | VP-015 | URL ingest pipeline: Defuddle fetch to manifest delta to wiki pages | bats (integration.bats) | BC-2.02.001, BC-2.02.002, BC-2.02.003, BC-2.02.004, BC-2.02.006 | P0 | proposed |
 | VP-016 | Source ingest pipeline: local file ingest and out-of-vault path rejection | bats (skills.bats + integration.bats) | BC-2.03.001, BC-2.03.003, BC-2.03.004 | P0 | proposed |
-| VP-017 | Hook enforcement: kebab-case filename gate and AI attribution block | bats (hooks.bats) | BC-2.04.011, BC-2.04.012, BC-2.04.017 | P0 | proposed |
+| VP-017 | Hook enforcement: kebab-case filename gate and AI attribution block | bats (enforce-kebab-case.bats + block-ai-attribution.bats) | BC-2.04.011, BC-2.04.012, BC-2.04.017 | P0 | proposed |
 | VP-018 | Wiki layer: page schema, embedding state machine, and partial-failure fan-out | bats (skills.bats + integration.bats) | BC-2.05.001, BC-2.05.003, BC-2.05.004, BC-2.05.005 | P0 | proposed |
 | VP-019 | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION structure enforcement | bats (skills.bats) | BC-2.08.001, BC-2.08.002 | P0 | proposed |
-| VP-020 | Publishing pipeline: state machine enforcement and LinkedIn API call shape | bats (hooks.bats + skills.bats + LinkedIn DTU) | BC-2.09.001, BC-2.09.004, BC-2.09.005 | P0 | proposed |
+| VP-020 | Publishing pipeline: state machine enforcement and LinkedIn API call shape | bats (validate-publish-state.bats + skills.bats + LinkedIn DTU) | BC-2.09.001, BC-2.09.004, BC-2.09.005 | P0 | proposed |
 | VP-021 | Quarantine check skill activation and corpus location resolution | bats (quarantine.bats) | BC-2.10.001, BC-2.10.003 | P0 | proposed |
 | VP-022 | Lobster headless execution: no interactive prompts in non-TTY context | bats (integration.bats) | BC-2.12.004 | P0 | proposed |
 | VP-023 | GitHub Action templates: v0.1 core set YAML validity and trigger configuration | bats (meta-lint.bats) | BC-2.13.001 | P0 | proposed |
 | VP-024 | Plugin lifecycle: install from marketplace and upgrade migration execution | bats (upgrade.bats) | BC-2.14.001, BC-2.14.003 | P0 | proposed |
 | VP-025 | Scale-aware token instrumentation: JSONL record written on every ingest invocation | bats (integration.bats) | BC-2.16.001 | P0 | proposed |
-| VP-026 | Event catalog: JSON schema validity and emit-site completeness | bats (meta-lint.bats + hooks.bats) | BC-2.17.003, BC-2.17.004 | P0 | proposed |
+| VP-026 | Event catalog: JSON schema validity and emit-site completeness | bats (meta-lint.bats + per-hook .bats files) | BC-2.17.003, BC-2.17.004 | P0 | proposed |
 | VP-027 | Sub-linear ingest latency as wiki grows from 1K to 10K pages | bats (integration.bats — slow lane) | BC-2.02.007 | P1 | proposed |
 
 **Totals:** 27 VPs total. P0: 25. P1: 2. Mechanism breakdown: bats: 26; adversary cascade protocol: 1.
@@ -111,6 +111,10 @@ it but the body and index table did not reflect it; VP-012 extended with Group 2
 - [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS6-O1-arch — mirrors ARCH-INDEX freshness discipline established in F-PASS5.) Incremental scope: check VP-INDEX on every burst. Canonical-baseline scope: one-time audit at Pass 6 codification time — VP-INDEX confirmed clean at that point. (Dual-scope declaration added F-PASS11-C2.)
 
 ## Changelog
+
+### v0.1.7 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — VP table Mechanism column updated to per-hook .bats convention):** 8 VP rows updated: VP-001 (`hooks.bats` → `per-hook .bats files`), VP-003 (`hooks.bats` → `validate-source-immutability.bats`), VP-004 (`unit + integration` → `skills.bats + validate-wikilink-integrity.bats`), VP-005 (`hooks.bats` → `validate-frontmatter-schema.bats`), VP-013 (`perf assertion (hooks.bats)` → `perf assertion (per-hook .bats files)`), VP-017 (`hooks.bats` → `enforce-kebab-case.bats + block-ai-attribution.bats`), VP-020 (`hooks.bats + skills.bats + LinkedIn DTU` → `validate-publish-state.bats + skills.bats + LinkedIn DTU`), VP-026 (`meta-lint.bats + hooks.bats` → `meta-lint.bats + per-hook .bats files`). Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]
 
 ### v0.1.6 (2026-05-16)
 

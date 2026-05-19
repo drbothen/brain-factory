@@ -3,9 +3,9 @@ document_type: subsystem-design
 id: SS-01
 title: "Brain Initialization and Scaffold"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 capability_anchor: CAP-001
@@ -73,7 +73,7 @@ When `/brain:init` runs against a directory that already has `.brain/` initializ
 - `local-dev-test.sh` — full `/brain:init` execution in temp vault; assert all directories exist; assert manifest.json valid JSON; assert policies.yaml has 10 entries
 - NFR-002: `assert_under_5_minutes` timer assertion in `local-dev-test.sh`
 
-**Note:** Init tests live in `tests/integration.bats` per NFR-019's 9-suite roster (no `tests/init.bats` exists; that would violate the 9-suite constraint). `/brain:init` is an end-to-end skill test, not a unit test — integration.bats is the correct suite.
+**Note:** Init tests live in `tests/integration.bats`. `/brain:init` is an end-to-end skill test, not a hook unit test, so there is no per-hook `tests/init.bats`. The 8-category test surface reserves `integration.bats` for end-to-end skill flows including brain init.
 
 ## Scale Considerations
 
@@ -84,6 +84,10 @@ Init is O(1) — creates a fixed set of directories and files regardless of futu
 None for v0.x. The `/brain:init` feature set is complete in v0.1.
 
 ## Changelog
+
+### v1.2 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Test Surface Note updated to remove 9-suite-roster framing):** The §Test Surface note "Init tests live in tests/integration.bats per NFR-019's 9-suite roster (no tests/init.bats exists; that would violate the 9-suite constraint)" replaced with explanation grounded in 8-category test surface and skill-vs-hook distinction. Conclusion unchanged: init tests remain in integration.bats. Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]
 
 ### v1.1 (2026-05-16)
 

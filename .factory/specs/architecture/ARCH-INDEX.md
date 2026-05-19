@@ -1,16 +1,16 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.22"
+version: "0.1.23"
 status: draft
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-17T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.10
 deployment_topology: single-service
 created: 2026-05-15
-last_updated: 2026-05-17
+last_updated: 2026-05-18
 ---
 
 # Architecture Index: brain-factory
@@ -319,11 +319,11 @@ Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when
 
 | VP-ID | Title | Mechanism | Phase |
 |-------|-------|-----------|-------|
-| VP-001 | Hook exit-code semantics coverage | bats (hooks.bats) | P0 |
+| VP-001 | Hook exit-code semantics coverage | bats (per-hook .bats files) | P0 |
 | VP-002 | PostToolUse hook trigger on wiki writes | bats (integration.bats) | P0 |
-| VP-003 | Source immutability enforcement | bats (hooks.bats) | P0 |
-| VP-004 | Wikilink resolution correctness | bats (unit + integration) | P0 |
-| VP-005 | Frontmatter schema conformance | bats (hooks.bats) | P0 |
+| VP-003 | Source immutability enforcement | bats (validate-source-immutability.bats) | P0 |
+| VP-004 | Wikilink resolution correctness | bats (skills.bats + validate-wikilink-integrity.bats) | P0 |
+| VP-005 | Frontmatter schema conformance | bats (validate-frontmatter-schema.bats) | P0 |
 | VP-006 | Meta-lint factory self-audit | meta-lint.bats | P0 |
 | VP-007 | Lobster workflow determinism | bats (integration.bats) | P0 |
 | VP-008 | Hook event catalog completeness | meta-lint.bats cross-ref | P0 |
@@ -331,20 +331,20 @@ Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when
 | VP-010 | Adversarial 3-CLEAN convergence | adversary cascade protocol | P1 |
 | VP-011 | Quarantine on every WebFetch | bats (quarantine.bats) | P0 |
 | VP-012 | Manifest write atomicity and last_ingest field correctness | bats (integration.bats) | P0 |
-| VP-013 | Hook p99 latency under 100ms | bats perf assertion (hooks.bats) | P0 |
+| VP-013 | Hook p99 latency under 100ms | bats perf assertion (per-hook .bats files) | P0 |
 | VP-014 | Brain initialization scaffolds complete folder structure | bats (integration.bats) | P0 |
 | VP-015 | URL ingest pipeline: Defuddle fetch to manifest delta to wiki pages | bats (integration.bats) | P0 |
 | VP-016 | Source ingest pipeline: local file ingest and out-of-vault path rejection | bats (skills.bats + integration.bats) | P0 |
-| VP-017 | Hook enforcement: kebab-case filename gate and AI attribution block | bats (hooks.bats) | P0 |
+| VP-017 | Hook enforcement: kebab-case filename gate and AI attribution block | bats (enforce-kebab-case.bats + block-ai-attribution.bats) | P0 |
 | VP-018 | Wiki layer: page schema, embedding state machine, and partial-failure fan-out | bats (skills.bats + integration.bats) | P0 |
 | VP-019 | Content brief pipeline: ONE THING / PROOF / TRANSFORMATION structure enforcement | bats (skills.bats) | P0 |
-| VP-020 | Publishing pipeline: state machine enforcement and LinkedIn API call shape | bats (hooks.bats + skills.bats + LinkedIn DTU) | P0 |
+| VP-020 | Publishing pipeline: state machine enforcement and LinkedIn API call shape | bats (validate-publish-state.bats + skills.bats + LinkedIn DTU) | P0 |
 | VP-021 | Quarantine check skill activation and corpus location resolution | bats (quarantine.bats) | P0 |
 | VP-022 | Lobster headless execution: no interactive prompts in non-TTY context | bats (integration.bats) | P0 |
 | VP-023 | GitHub Action templates: v0.1 core set YAML validity and trigger configuration | bats (meta-lint.bats) | P0 |
 | VP-024 | Plugin lifecycle: install from marketplace and upgrade migration execution | bats (upgrade.bats) | P0 |
 | VP-025 | Scale-aware token instrumentation: JSONL record written on every ingest invocation | bats (integration.bats) | P0 |
-| VP-026 | Event catalog: JSON schema validity and emit-site completeness | bats (meta-lint.bats + hooks.bats) | P0 |
+| VP-026 | Event catalog: JSON schema validity and emit-site completeness | bats (meta-lint.bats + per-hook .bats files) | P0 |
 | VP-027 | Sub-linear ingest latency as wiki grows from 1K to 10K pages | bats (integration.bats — slow lane) | P1 |
 
 ---
@@ -470,6 +470,10 @@ Additional Self-Audit items:
 ---
 
 ## Changelog
+
+### v0.1.23 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — VP-INDEX Summary Mechanism column updated to per-hook .bats convention):** 8 VP rows in the VP-INDEX Summary table updated to remove `hooks.bats` references in favor of per-hook .bats file names: VP-001, VP-003, VP-004, VP-005, VP-013, VP-017, VP-020, VP-026. All updates match corresponding VP file bodies (source of truth per Source-of-Truth Precedence rule 4) and VP-INDEX.md v0.1.7. Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1); PO upstream bursts: brief v0.4.20, nfr-catalog v0.1.1, BC-2.18.005 v1.2, BC-2.18.001 v1.2. [audit-trail]
 
 ### v0.1.22 (2026-05-17)
 

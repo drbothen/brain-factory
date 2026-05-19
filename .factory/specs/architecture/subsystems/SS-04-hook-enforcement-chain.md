@@ -3,9 +3,9 @@ document_type: subsystem-design
 id: SS-04
 title: "Hook Enforcement Chain"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 capability_anchor: CAP-004
@@ -76,7 +76,7 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 
 ## Test Surface
 
-- `tests/hooks.bats` — covers all 13 hooks with ≥ 3 test cases per hook (positive + negative + edge); per NFR-019 this is the single bats file for hook tests in the 9-suite roster
+- `tests/<hook-name>.bats` — one per-hook bats file per hook script; each file covers that hook with ≥ 3 test cases (positive + negative + edge) per NFR-020 and CLAUDE.md TDD Inner Loop Discipline
 - NFR-001 perf assertion: `time <hook> < fixture.json` → assert under 100ms
 - NFR-016 fail-closed: inject malformed stdin → assert exit 2
 
@@ -85,6 +85,10 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 PostToolUse hooks fire on every Write/Edit. At 10K page ingest, this means 10K+ hook invocations. Hooks must be fast (NFR-001: 100ms p99). The O(n) wikilink resolution (grep -F on wiki/index.md) is the bottleneck; profiled and optimized in Phase 3 if needed.
 
 ## Changelog
+
+### v1.2 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Test Surface updated to per-hook .bats convention):** §Test Surface entry "tests/hooks.bats — covers all 13 hooks... per NFR-019 this is the single bats file for hook tests in the 9-suite roster" replaced with "tests/<hook-name>.bats — one per-hook bats file per hook script... per NFR-020 and CLAUDE.md TDD Inner Loop Discipline." Cascades from SS-18 v1.5 per-hook .bats convention reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]
 
 ### v1.1 (2026-05-16)
 

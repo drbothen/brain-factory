@@ -3,11 +3,11 @@ document_type: verification-property
 id: VP-005
 title: "Frontmatter schema conformance"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-18T00:00:00
 verifies_bcs: [BC-2.04.004, BC-2.04.005, BC-2.05.006]
 created: 2026-05-15
 status: proposed
@@ -21,7 +21,7 @@ For any markdown file written to `wiki/`, `briefs/`, or `sources/`: if the file'
 
 ## Verification Mechanism
 
-bats (hooks.bats) with fixture payloads:
+bats (`tests/validate-frontmatter-schema.bats`) with fixture payloads:
 
 ```bash
 @test "validate-frontmatter-schema.sh: missing embedding_status → E-SCHEMA-001" {
@@ -61,3 +61,9 @@ bats (hooks.bats) with fixture payloads:
 ## Status
 
 proposed — pending Phase 3 implementation
+
+## Changelog
+
+### v1.1 (2026-05-18)
+
+**STRUCTURAL FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE — §Verification Mechanism updated to per-hook .bats convention):** Mechanism changed from `bats (hooks.bats) with fixture payloads` to `bats (tests/validate-frontmatter-schema.bats) with fixture payloads`. The hook tests now live in the per-hook file `tests/validate-frontmatter-schema.bats`. Cascades from SS-18 v1.5 per-hook .bats reversal (F-PHASE2-STEP-B-CLOSEOUT-O1). [audit-trail]
