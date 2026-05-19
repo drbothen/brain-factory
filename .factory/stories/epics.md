@@ -1,19 +1,19 @@
 ---
 artifact_type: epics
-version: "0.1.2"
+version: "0.1.3"
 created: 2026-05-18
 last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
 inputs:
   - product-brief.md@v0.4.20
-  - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.12
+  - prd/index.md@v0.1.13
+  - behavioral-contracts/BC-INDEX.md@v0.1.15
   - architecture/ARCH-INDEX.md@v0.1.23
   - verification-properties/VP-INDEX.md@v0.1.7
   - docs/planning/llm-second-brain-phased-build-plan.md (immutable)
 total_epics: 9
 total_bcs_covered: 95
-phase: phase-2-story-decomposition-step-c
+phase: phase-2-story-decomposition-step-b
 phase_2_status: STEP-B-COMPLETE
 ---
 
@@ -332,6 +332,10 @@ Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
 ---
 
 ## Changelog
+
+### v0.1.3 (2026-05-19)
+
+F-PHASE2-ADV-PASS2-I03+S03: Input version refresh — `prd/index.md` v0.1.12 → v0.1.13; `behavioral-contracts/BC-INDEX.md` v0.1.12 → v0.1.15. No epic content amended. Phase field corrected: `phase-2-story-decomposition-step-c` → `phase-2-story-decomposition-step-b` (epics.md is the Step B deliverable; `phase_2_status: STEP-B-COMPLETE` is the consistent representation).
 
 ### v0.1.2 (2026-05-19)
 

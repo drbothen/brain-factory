@@ -1,8 +1,8 @@
 ---
 artifact_type: story-index
-version: "0.3.2"
+version: "0.3.3"
 created: 2026-05-18
-last_updated: 2026-05-18
+last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
 total_stories: 43
 total_points: 264
@@ -13,11 +13,11 @@ epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06, EPIC-07,
 epics_pending: []
 inputs:
   - product-brief.md@v0.4.20
-  - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.14
+  - prd/index.md@v0.1.13
+  - behavioral-contracts/BC-INDEX.md@v0.1.15
   - architecture/ARCH-INDEX.md@v0.1.23
   - architecture/verification-properties/VP-INDEX.md@v0.1.7
-  - stories/epics.md@v0.1.1
+  - stories/epics.md@v0.1.3
   - prd/prd-supplements/nfr-catalog.md@v0.1.1
   - prd/prd-supplements/error-taxonomy.md@v0.1.2
 ---
@@ -26,9 +26,16 @@ inputs:
 
 **43 stories across 9 completed epics. 95 BCs total project scope. All stories status: draft.**
 
+> **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
+
 ---
 
 ## Changelog
+
+### v0.3.3 — 2026-05-19 (F-PHASE2-ADV-PASS2-I03+S04)
+
+- **Input version refresh (I03):** `prd/index.md` v0.1.12 → v0.1.13; `behavioral-contracts/BC-INDEX.md` v0.1.14 → v0.1.15; `stories/epics.md` v0.1.1 → v0.1.3. No story content amended.
+- **S04 invariant comment added:** Input-version freshness rule codified in artifact header per F-PHASE2-ADV-PASS2-S04.
 
 ### v0.3.2 — 2026-05-19 (F-PHASE2-ADV-PASS1-I04)
 

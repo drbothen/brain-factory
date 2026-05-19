@@ -11,11 +11,6 @@ points: 8
 priority: P0
 subsystems: [SS-04, SS-10]
 behavioral_contracts: [BC-2.04.001, BC-2.10.001, BC-2.10.002, BC-2.10.003]
-cross_cutting_bcs: [BC-2.04.017]
-# BC-2.04.017 note: STORY-006 OBSERVES the universal event-emission contract via AC-007.
-# BC-2.04.017 is implemented by STORY-014 (the shim); STORY-006 is a call-site consumer.
-# Listed here for explicit traceability; not in behavioral_contracts because STORY-006
-# does not implement BC-2.04.017 — it calls the shim that STORY-014 delivers.
 vps: [VP-011, VP-021]
 dependencies: [STORY-001]
 blocks: [STORY-007, STORY-008, STORY-009, STORY-010]
@@ -230,6 +225,8 @@ hook stdin payloads; the hook fetches its own preview.
 | `node scripts/quarantine.mjs --check` with injection pattern on stdin | N/A (quarantine.mjs unit test) | exit 2; `{"verdict":"blocked","code":"E-QUARANTINE-001"}` | error | BC-2.10.001 |
 
 ## Verification Evidence
+
+**BC-2.04.017 observer note (F-PHASE2-ADV-PASS2-S02):** AC-007 requires `quarantine-fetch.sh` to emit structured JSONL events via `hook-event-emit.sh`. This makes STORY-006 a *call-site consumer* of BC-2.04.017 (universal event-emission contract), not an implementor. BC-2.04.017 is implemented by STORY-014 (the emit shim). The canonical record of this observer relationship is the dep-graph §F-PHASE2-CONSISTENCY Resolutions entry for `STORY-014 → STORY-006`. `cross_cutting_bcs:` frontmatter field removed per UD-007 supersession convention; dep-graph is the authoritative source for inter-story relationships.
 
 | VP | Property | Test Location |
 |----|----------|---------------|

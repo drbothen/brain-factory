@@ -1,6 +1,6 @@
 ---
 artifact_type: dependency-graph
-version: "v0.1.0"
+version: "v0.1.1"
 created: 2026-05-19
 last_updated: 2026-05-19
 total_stories: 43
@@ -8,11 +8,11 @@ total_epics: 9
 authored_by: vsdd-factory:story-writer
 inputs:
   - product-brief.md@v0.4.20
-  - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.12
+  - prd/index.md@v0.1.13
+  - behavioral-contracts/BC-INDEX.md@v0.1.15
   - architecture/ARCH-INDEX.md@v0.1.23
   - architecture/verification-properties/VP-INDEX.md@v0.1.7
-  - stories/STORY-INDEX.md@v0.3.0
+  - stories/STORY-INDEX.md@v0.3.3
 phase: phase-2-story-decomposition-step-c
 phase_2_status: STEP-C-IN-PROGRESS
 input-hash: ""
@@ -20,7 +20,23 @@ input-hash: ""
 
 # brain-factory Dependency Graph
 
-**43 stories — 9 epics — v0.1.0**
+**43 stories — 9 epics — v0.1.1**
+
+> **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, STORY-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one. State-manager and story-writer dispatches handling upstream amendments MUST stage downstream artifacts' `inputs:` refresh in the same logical burst chain.
+
+---
+
+## Changelog
+
+### v0.1.1 — 2026-05-19 (F-PHASE2-ADV-PASS2-I01+I03+S04)
+
+- **§Stats WIP cleanup (I01):** Removed internal monologue lines (494–515). Replaced with clean authoritative §Stats block: 16 terminal nodes, 68 total edges, STORY-001 max out-degree 16, STORY-022 max in-degree 6, critical path 13 stories.
+- **Input version refresh (I03):** `prd/index.md` v0.1.12 → v0.1.13; `behavioral-contracts/BC-INDEX.md` v0.1.12 → v0.1.15; `stories/STORY-INDEX.md` v0.3.0 → v0.3.3. No derived content amended.
+- **S04 invariant comment added:** Input-version freshness rule codified in artifact header per F-PHASE2-ADV-PASS2-S04.
+
+### v0.1.0 — 2026-05-19 (initial)
+
+Initial dependency graph. 43 stories, 68 directed edges, 9 epics. Topological order, cycle-check, BC dependency audit, and §Stats verified.
 
 ---
 
@@ -470,49 +486,21 @@ Breakdown:
   - STORY-011 → STORY-030 (C03)
 
 **Max in-degree (most-blocked story):**
-- STORY-039: 4 incoming edges (STORY-036, STORY-038, STORY-034, STORY-035)
-- STORY-022: 6 incoming edges (STORY-001..005, STORY-020) — winner
+- STORY-022: 6 incoming edges (STORY-001, STORY-002, STORY-003, STORY-004, STORY-005, STORY-020)
 
 **Max out-degree (most-blocking story):**
-- STORY-014: 10 outgoing edges (STORY-006..013, STORY-015, STORY-016, STORY-017, STORY-019, STORY-020) — checking:
-  014→006,007,008,009,010,011,012,013 (8) + 014→015 (1) + 014→016 (1) + 014→017 (1) + 014→019 (1) + 014→020 (1) = 13 outgoing edges from STORY-014
-- STORY-001: outgoing edges = 002,003,004,005,006,014,016,020,022,027,032,034,037,038,040,042 = 16 outgoing edges
-
-**STORY-001 is max out-degree: 16 outgoing edges**
+- STORY-001: 16 outgoing edges (STORY-002, STORY-003, STORY-004, STORY-005, STORY-006, STORY-014, STORY-016, STORY-020, STORY-022, STORY-027, STORY-032, STORY-034, STORY-037, STORY-038, STORY-040, STORY-042)
 
 **Critical path (longest chain from Layer 0 to terminal):**
 
-Full critical path to STORY-039 (12 edges, 13 stories):
 `STORY-001 → STORY-014 → STORY-016 → STORY-017 → STORY-019 → STORY-020 → STORY-024 → STORY-025 → STORY-028 → STORY-029 → STORY-030 → STORY-035 → STORY-039`
 
-**Critical path length: 12 hops (13 stories), Layer 12**
+**Critical path length: 12 hops (13 stories), terminating at Layer 12**
 
-**Terminal nodes (out-degree = 0, nothing depends on them — 14 stories):**
+**Terminal nodes (out-degree = 0, nothing depends on them — 16 stories):**
 STORY-005, STORY-007, STORY-008, STORY-010, STORY-011, STORY-012, STORY-013,
-STORY-018, STORY-021, STORY-023, STORY-025, STORY-026, STORY-031, STORY-039, STORY-043
-
-Wait — re-check each:
-- STORY-005: blocks: [] ✓ terminal
-- STORY-007: blocks: [] ✓ terminal
-- STORY-008: blocks: [] ✓ terminal
-- STORY-010: blocks: [] ✓ terminal
-- STORY-011: blocks: [] ✓ terminal
-- STORY-012: blocks: [] ✓ terminal
-- STORY-013: blocks: [] ✓ terminal
-- STORY-015: blocks: [] ✓ terminal
-- STORY-018: blocks: [] ✓ terminal (after I06 edge is incoming, not outgoing)
-- STORY-021: blocks: [] ✓ terminal
-- STORY-023: blocks: [] ✓ terminal
-- STORY-025: blocks: [STORY-028 via STORY-025 → STORY-028]? No — STORY-025 blocks STORY-028 per STORY-028 `dependencies: [STORY-027, STORY-025]`. So STORY-025 has 1 outgoing edge and is NOT terminal.
-- STORY-026: blocks: [] ✓ terminal
-- STORY-031: blocks: [] ✓ terminal
-- STORY-037: blocks: [] ✓ terminal
-- STORY-039: blocks: [] ✓ terminal
-- STORY-043: blocks: [] ✓ terminal
-
-Terminal nodes (no outgoing edges): STORY-005, STORY-007, STORY-008, STORY-010,
-STORY-011, STORY-012, STORY-013, STORY-015, STORY-018, STORY-021, STORY-023,
-STORY-026, STORY-031, STORY-037, STORY-039, STORY-043
+STORY-015, STORY-018, STORY-021, STORY-023, STORY-026, STORY-031, STORY-037,
+STORY-039, STORY-043
 
 **Terminal node count: 16**
 

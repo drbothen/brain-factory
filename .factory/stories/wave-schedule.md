@@ -1,16 +1,16 @@
 ---
 artifact_type: wave-schedule
-version: "v0.1.2"
+version: "v0.1.3"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
 inputs:
-  - dependency-graph.md@v0.1.0
-  - stories/STORY-INDEX.md@v0.3.2
-  - behavioral-contracts/BC-INDEX.md@v0.1.14
+  - dependency-graph.md@v0.1.1
+  - stories/STORY-INDEX.md@v0.3.3
+  - behavioral-contracts/BC-INDEX.md@v0.1.15
   - architecture/ARCH-INDEX.md@v0.1.23
   - product-brief.md@v0.4.20
-  - stories/epics.md@v0.1.1
+  - stories/epics.md@v0.1.3
 total_waves: 11
 total_stories: 43
 total_points: 264
@@ -22,11 +22,21 @@ phase_2_status: STEP-D-IN-PROGRESS
 
 **11 waves — 43 stories — 264 points**
 
-Source: dependency-graph.md v0.1.0 (canonical for all inter-story dependency claims).
+Source: dependency-graph.md v0.1.1 (canonical for all inter-story dependency claims).
+
+> **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, dep-graph, STORY-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.1.3 — 2026-05-19 (F-PHASE2-ADV-PASS2-I02+I03+S01+S04)
+
+- **W4 Terminal Nodes column corrected (I02):** W4 row "0" → "1 (015)". STORY-015 is terminal per dep-graph §Stats and sprint-state.yaml.
+- **Holdout-Eligibility Map updated (I02):** Added "After W4" row noting STORY-015 (hook meta-lint suite) enables EPIC-02 hook-contract holdout scenarios.
+- **Input version refresh (I03):** `behavioral-contracts/BC-INDEX.md` v0.1.14 → v0.1.15; `stories/STORY-INDEX.md` v0.3.2 → v0.3.3; `dependency-graph.md` v0.1.0 → v0.1.1; `stories/epics.md` v0.1.1 → v0.1.3. No wave content amended.
+- **Footer note updated (S01):** `STORY-INDEX v0.3.1` → `v0.3.3` (matches current STORY-INDEX version after I03 bump).
+- **S04 invariant comment added:** Input-version freshness rule codified in artifact header.
 
 ### v0.1.2 — 2026-05-19 (F-PHASE2-ADV-PASS1-I04)
 
@@ -511,7 +521,7 @@ Phase 3 complete. Phase 4 holdout evaluation authorized.
 | W1 | 4 | 21 | 2 | 2 | 0 | 2 (001, 014) | 0 | None |
 | W2 | 3 | 24 | 3 | 0 | 0 | 1 (016) | 0 | W1 |
 | W3 | 8 | 32 | 7 | 1 | 0 | 0 | 6 (007,008,010,011,012,013) | W1, W2 |
-| W4 | 4 | 26 | 3 | 1 | 0 | 1 (017) | 0 | W1, W2, W3 |
+| W4 | 4 | 26 | 3 | 1 | 0 | 1 (017) | 1 (015) | W1, W2, W3 |
 | W5 | 4 | 26 | 4 | 0 | 0 | 1 (019) | 0 | W1, W2, W4 |
 | W6 | 5 | 37 | 4 | 1 | 0 | 1 (020) | 1 (005) | W1-W5 |
 | W7 | 6 | 33 | 2 | 4 | 0 | 1 (024) | 3 (018,021,026) | W1-W6 |
@@ -521,7 +531,7 @@ Phase 3 complete. Phase 4 holdout evaluation authorized.
 | W11 | 1 | 13 | 0 | 1 | 0 | 1 (039) | 1 (039) | W1, W5, W6, W10 |
 | **Total** | **43** | **264** | **29** | **14** | **0** | **13** | **16** | — |
 
-_Note: P0/P1 per STORY-INDEX v0.3.1. Terminal node count per dep-graph §Stats._
+_Note: P0/P1 per STORY-INDEX v0.3.3. Terminal node count per dep-graph §Stats._
 
 ---
 
@@ -541,6 +551,7 @@ STORY-014 (critical-path, event catalog), then STORY-027 and STORY-038 in parall
 | Wave Completion | Holdout-Eligible Capabilities |
 |-----------------|-------------------------------|
 | After W3 | Hook enforcement chain (all 7 hooks, EPIC-02) |
+| After W4 | Hook meta-lint suite (STORY-015) — first terminal node from hook enforcement layer complete; enables EPIC-02 hook-contract holdout scenarios. |
 | After W6 | Install flow, lint-wiki, v0.1 GH Action templates, adversarial review |
 | After W7 | Ingest scale gate, rename-page, meta-lint, connection discovery, inbox routing |
 | After W8 | Full meta-lint surface, synthesis, governance |
