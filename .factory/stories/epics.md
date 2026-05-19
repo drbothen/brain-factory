@@ -1,6 +1,6 @@
 ---
 artifact_type: epics
-version: "0.1.3"
+version: "0.1.4"
 created: 2026-05-18
 last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
@@ -18,6 +18,8 @@ phase_2_status: STEP-B-COMPLETE
 ---
 
 # brain-factory Epics
+
+> **Input-version freshness invariant (per F-PHASE2-ADV-PASS2-S04 + F-PHASE2-ADV-PASS4-S01-CASCADE):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` pins are a Pass-fail-class defect per BC-5.39.001 cascade discipline.
 
 **95 BCs assigned across 9 epics. Every BC in exactly one epic. Coverage matrix verified.**
 
@@ -332,6 +334,10 @@ Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
 ---
 
 ## Changelog
+
+### v0.1.4 (2026-05-19)
+
+F-PHASE2-ADV-PASS4-S01: S04 input-version freshness invariant comment added (after H1, before content) for sibling-sweep parity with STORY-INDEX / dep-graph / wave-schedule / sprint-state / holdout-scenarios. No semantic change.
 
 ### v0.1.3 (2026-05-19)
 
