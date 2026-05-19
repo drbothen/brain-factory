@@ -1,15 +1,15 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.9"
+version: "0.1.10"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.10
 created: 2026-05-15
-last_updated: 2026-05-16
+last_updated: 2026-05-18
 ---
 
 # Behavioral Contract Index: brain-factory
@@ -276,11 +276,15 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 
   Incremental scope: applied before any BC-INDEX burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: BC-INDEX section headers scanned for count claims. The H1 preamble blockquote cites "all 95 behavioral contract files" and "18 subsystems" (ARCH-INDEX Subsystem Registry has exactly 18 SS-NN rows each with a BC count that sums to 95). BC-INDEX body contains 18 `## ss-NN:` section headers (one per subsystem), each followed by a table of BC rows. Spot-check: ss-01 has 6 BCs (table rows 1-6 match Subsystem Registry BC-2.01.001..BC-2.01.006 count=6). Total BC count in all tables = 95 (verified by Subsystem Registry arithmetic). No count-claim header drift found at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
 
-**last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.9 (2026-05-16). **PASS.**
+**last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-18`; most recent Changelog entry: v0.1.10 (2026-05-18). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.10 (2026-05-18)
+
+**CONTENT FIX (F-PHASE2-STEP-B-EPIC-02-PART-1-I1 — BC-2.04.001 v1.1 → v1.2 — PreToolUse-WebFetch payload shape corrected):** BC-2.04.001 (`quarantine-fetch.sh`) bumped from v1.1 to v1.2. Preconditions §2 corrected to reflect the actual Claude Code PreToolUse-WebFetch payload shape (URL-only, no `content` field). Added Preconditions §5 documenting the hook's own curl preview fetch. Canonical Test Vectors updated to URL-only payload shape with mocked curl output. EC-001/EC-002 rephrased from "fetched content" to "curl preview". EC-007 added (curl failure → fail-closed E-QUARANTINE-004). Error taxonomy supplement v0.1.0 → v0.1.1: E-QUARANTINE-004 registered. PreToolUse-input-shape sweep confirmed BC-2.04.002 / BC-2.04.007 / BC-2.04.008 VERIFIED CLEAN (all three are PostToolUse hooks with correct payload shape descriptions).
 
 ### v0.1.9 (2026-05-16)
 

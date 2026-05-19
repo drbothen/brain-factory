@@ -1,14 +1,14 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.0"
+version: "0.1.1"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 traces_to: prd/index.md
 created: 2026-05-15
-last_updated: 2026-05-16
+last_updated: 2026-05-18
 ---
 
 # brain-factory Error Taxonomy
@@ -133,6 +133,7 @@ Message format uses `<placeholder>` for dynamic values.
 | E-QUARANTINE-001 | broken | 2 | `quarantine-fetch.sh`, `/brain:quarantine-check` | `Prompt-injection pattern detected in fetched content from <url>. Content quarantined.` |
 | E-QUARANTINE-002 | broken | 2 | `quarantine-fetch.sh`, `/brain:quarantine-check` | `Quarantine corpus missing at ${CLAUDE_PLUGIN_ROOT}/scripts/quarantine.mjs. Cannot safely proceed.` |
 | E-QUARANTINE-003 | broken | 2 | `quarantine-fetch.sh` | `Node 20+ required for quarantine check. Install Node from nodejs.org.` |
+| E-QUARANTINE-004 | broken | 2 | `quarantine-fetch.sh` | `Preview fetch failed; cannot safely proceed.` |
 
 ---
 
@@ -269,3 +270,15 @@ Per CLAUDE.md Canonical Principle:
   ```
 
   **NOTE (exclusion-list-extension protocol — VSDD level designators):** This supplement carries `level: L3` in frontmatter. `L3` is a VSDD specification tier designator — not a line-number anchor. Per the exclusion-list-extension protocol: added `grep -v 'level: L[0-9]+|Level [0-9]+|L2|L3|L4|LEVEL'` to this gate's command. Gate re-run returns zero matches. This exclusion is identical to the one in the PRD index gate.
+
+---
+
+## Changelog
+
+### v0.1.1 (2026-05-18)
+
+**CONTENT FIX (F-PHASE2-STEP-B-EPIC-02-PART-1-I1 — E-QUARANTINE-004 registered):** Added E-QUARANTINE-004 (broken, exit 2, raised by `quarantine-fetch.sh`) with message "Preview fetch failed; cannot safely proceed." This error covers the case where the hook's own `curl --max-filesize 2048 -s --max-time 5` preview fetch fails (network timeout, DNS error, non-2xx response). The error was introduced alongside BC-2.04.001 v1.2 which corrected the PreToolUse-WebFetch payload shape and made explicit that the hook fetches its own curl preview per SS-10 §Key Design.
+
+### v0.1.0 (2026-05-16)
+
+Initial error taxonomy created during Phase 1b spec crystallization.
