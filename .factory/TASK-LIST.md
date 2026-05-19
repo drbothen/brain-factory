@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-G-PASS-5-CLOSED-PASS-6-PENDING — Pass 5 PASS (0C+0I+0S — zero findings — second consecutive PASS) — streak 2/3 — decay 17→7→4→1→0 (floor) — Pass 6 dispatch is next-action (task #168). Pass 6 is the THIRD-streak convergence candidate per BC-5.39.001 3-CLEAN. HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to story-writer, architect, adversary, implementer, or any Phase 2/3 agent other than holdout-evaluator (Phase 4).**
+> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 Step G CONVERGED at Pass 6 — Phase 2 closure HUMAN APPROVAL GATE pending — Phase 3 TDD dispatch awaits human authorization. BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED. Adversarial cascade CLOSED. Decay: 17→7→4→1→0→0. HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to story-writer, architect, adversary, implementer, or any Phase 2/3 agent other than holdout-evaluator (Phase 4).**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -23,7 +23,9 @@ BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 4
 
 Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (F-PASS39-I3 hit-by-hit enumeration vs F-PASS37-O2 mirror tension), F-PASS40-O3 (historical Pass 35-37 closure-summary ordering inconsistency), F-PASS41-O2 (inherited F-PASS40-O2/O3), F-PASS42-O2 (inherited same). May be revisited during Phase 2 if relevant or post-Phase-2.
 
-## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-G-PASS-4-CLOSED; Pass 5 NEXT-ACTION)
+## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-G-CONVERGED; Phase 2 CLOSURE HUMAN APPROVAL GATE PENDING)
+
+**Surface Phase 2 closure to user for human approval gate.**
 
 **State summary:**
 - Phase 1d: CONVERGED at commit `44cda58` (Pass 42 state-mgr FINAL — 2026-05-18); BC-5.39.001 3-CLEAN literal streak 3/3 achieved.
@@ -37,10 +39,11 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 - Phase 2 Step G Pass 2: CLOSED (FAIL — 0C+3I+4S). Persist: 6ff5afe. Fix-bundle: f160696 (story-writer, 7 findings closed). Streak 0/3 reset. Decay C:4→0 I:8→3. State-mgr FINAL: 7afb2a0.
 - Phase 2 Step G Pass 3: CLOSED (FAIL — 0C+2I+2S). Persist: 318326a. Fix-bursts: 4f611f7 (story-writer) + 7b1ae9d (PO). 4 findings closed (F-P3-S02 deferred). Streak 0/3 reset. Decay C:4→0→0 I:8→3→2. State-mgr FINAL: 18684f5.
 - Phase 2 Step G Pass 4: CLOSED (PASS — 0C+0I+1S). FIRST PASS VERDICT IN PHASE 2 CASCADE. Persist: 698846d. Fix-burst: 3a0dc66 (story-writer — epics v0.1.4). 1 finding closed (S01). Streak 0/3 → 1/3. Decay 17→7→4→1. State-mgr FINAL: 2eb0ba4.
-- Phase 2 Step G Pass 5: CLOSED (PASS — 0C+0I+0S). SECOND CONSECUTIVE PASS. Persist: 3c7605b. No fix-burst (zero findings). Streak 1/3 → 2/3. Decay floor 17→7→4→1→0. State-mgr FINAL: (this commit).
-- Phase 2 Step G Pass 6: NEXT-ACTION (task #168) — dispatch adversarial story-reviewer with fresh context per BC-5.39.001 3-CLEAN protocol. Streak 2/3. CONVERGENCE CANDIDATE — if PASS, Phase 2 Step G converges at 3/3.
+- Phase 2 Step G Pass 5: CLOSED (PASS — 0C+0I+0S). SECOND CONSECUTIVE PASS. Persist: 3c7605b. No fix-burst (zero findings). Streak 1/3 → 2/3. Decay floor 17→7→4→1→0. State-mgr FINAL: 9843c70.
+- Phase 2 Step G Pass 6: CLOSED (PASS — 0C+0I+0S). THIRD CONSECUTIVE PASS — **CONVERGED**. Persist: 543c588. No fix-burst (zero findings). Streak 2/3 → 3/3 CONVERGED. Decay floor held `17→7→4→1→0→0`. State-mgr FINAL: (this commit).
+- **Phase 2 closure: HUMAN APPROVAL GATE PENDING** — present Phase 3 pre-dispatch checklist to user.
 - Working tree: clean (only untracked planning notes + .factory/logs/ + .claude/).
-- HEAD: Phase 2 Pass 4 fix-closure state-mgr FINAL commit.
+- HEAD: Phase 2 Step G FINAL state-mgr CONVERGED commit.
 
 **UD-007+UD-008 carry-forward note:** dependency-graph.md is CANONICAL for inter-story dependencies. Per-story frontmatter `dependencies:`/`blocks:` are at-creation-time snapshots. I07 (frontmatter blocks asymmetry) DEFERRED per UD-008. Downstream agents consult dep-graph, not frontmatter. Consistency-validator MUST NOT flag frontmatter-vs-dep-graph asymmetries as defects.
 
@@ -62,17 +65,24 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #168 | NEXT-ACTION | Phase 2 Step G Pass 6 — adversarial-story-review Pass 6 (streak 2/3 entering — CONVERGENCE CANDIDATE — DO NOT pass holdout-scenarios.md) |
-| 2 | #167 | COMPLETED | Phase 2 Step G Pass 5 — PASS (0C+0I+0S — zero findings) — 3c7605b + Pass 5 closure state-mgr FINAL (this commit) — streak 2/3 |
-| 3 | #166 | COMPLETED | Phase 2 Step G Pass 4 — PASS (0C+0I+1S) — 698846d + fix-burst 3a0dc66 (epics v0.1.4 S01 closed) + Pass 4 fix-closure state-mgr FINAL 2eb0ba4 — streak 1/3 |
-| 3 | #165 | COMPLETED | Phase 2 Step G Pass 3 — FAIL (0C+2I+2S) — 318326a + fix-bursts 4f611f7+7b1ae9d (4 findings closed; F-P3-S02 deferred) + Pass 3 fix-closure state-mgr FINAL 18684f5 |
-| 4 | #164 | COMPLETED | Phase 2 Step G Pass 2 — FAIL (0C+3I+4S) — 6ff5afe + fix-bundle f160696 (7 findings closed) + Pass 2 fix-closure state-mgr FINAL 7afb2a0 |
-| 5 | #163 | COMPLETED | Phase 2 Step G Pass 1 — FAIL (4C+8I+5S) — fc3b5af + 3 fix-bursts (13d4d4e+02c681f+82ec4f5) + fix-closure 89382b4 |
-| 6 | #162 | COMPLETED | Phase 2 Step F — consistency-validator decomposition-gate CLEAN-GATE-PASS (c123e51+c749ad3+8ba1487) |
-| 7 | #161 | COMPLETED | Phase 2 Step E — product-owner holdout-scenarios (9b44845+5a3a942+8ba1487 v0.1.3) |
-| 8 | #160 | COMPLETED | Phase 2 Step D — story-writer wave-schedule (efc3001+c749ad3+f160696 v0.1.3) |
-| 9 | #159 | COMPLETED | Phase 2 Step C — story-writer dependency-graph (90d90fd+f160696 v0.1.1) |
-| 10 | #155 | STEP-G-IN-PROGRESS | Phase 2 (Story Decomposition) — Step G Pass 5 closed (PASS); Pass 6 next — streak 2/3 |
+| 1 | #169 | NEXT-ACTION | Phase 2 closure — surface to user for human approval gate (UD-009 candidate) — present Phase 3 pre-dispatch checklist from STATE.md |
+| 2 | #168 | COMPLETED | Phase 2 Step G Pass 6 — PASS (0C+0I+0S — zero findings) — 543c588 + Step G FINAL state-mgr commit (this commit) — streak 3/3 CONVERGED |
+| 3 | #167 | COMPLETED | Phase 2 Step G Pass 5 — PASS (0C+0I+0S — zero findings) — 3c7605b + Pass 5 closure state-mgr FINAL 9843c70 — streak 2/3 |
+| 4 | #166 | COMPLETED | Phase 2 Step G Pass 4 — PASS (0C+0I+1S) — 698846d + fix-burst 3a0dc66 (epics v0.1.4 S01 closed) + Pass 4 fix-closure state-mgr FINAL 2eb0ba4 — streak 1/3 |
+| 5 | #165 | COMPLETED | Phase 2 Step G Pass 3 — FAIL (0C+2I+2S) — 318326a + fix-bursts 4f611f7+7b1ae9d (4 findings closed; F-P3-S02 deferred) + Pass 3 fix-closure state-mgr FINAL 18684f5 |
+| 6 | #164 | COMPLETED | Phase 2 Step G Pass 2 — FAIL (0C+3I+4S) — 6ff5afe + fix-bundle f160696 (7 findings closed) + Pass 2 fix-closure state-mgr FINAL 7afb2a0 |
+| 7 | #163 | COMPLETED | Phase 2 Step G Pass 1 — FAIL (4C+8I+5S) — fc3b5af + 3 fix-bursts (13d4d4e+02c681f+82ec4f5) + fix-closure 89382b4 |
+| 8 | #162 | COMPLETED | Phase 2 Step F — consistency-validator decomposition-gate CLEAN-GATE-PASS (c123e51+c749ad3+8ba1487) |
+| 9 | #161 | COMPLETED | Phase 2 Step E — product-owner holdout-scenarios (9b44845+5a3a942+8ba1487 v0.1.3) |
+| 10 | #160 | COMPLETED | Phase 2 Step D — story-writer wave-schedule (efc3001+c749ad3+f160696 v0.1.3) |
+| 11 | #159 | COMPLETED | Phase 2 Step C — story-writer dependency-graph (90d90fd+f160696 v0.1.1) |
+| 12 | #155 | COMPLETED | Phase 2 (Story Decomposition) — Step G CONVERGED at Pass 6 — 3/3 streak — adversarial cascade CLOSED |
+
+**UD-009 candidate (pending human decision):** Phase 2 closure approval + Phase 3 dispatch authorization.
+
+**Process-gap carry-forward (to Cycle-Closing Checklist):**
+- **F-PHASE2-ADV-PASS2-S04:** Sibling-sweep discipline for invariant codification — when codifying an invariant, sweep ALL artifacts in the same architectural layer. Candidate: extend story-writer agent prompt.
+- **F-PHASE2-ADV-PASS3-S02:** dep-graph §Stats edge-count automation — post-cycle dep-graph cleanup.
 
 ## Task Status
 

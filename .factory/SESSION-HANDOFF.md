@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-2-story-decomposition-step-g-pass-5-closed
-session_stage: phase-2-step-g-pass-5-closed-pass-6-pending
+session_phase: phase-2-story-decomposition-step-g-converged
+session_stage: phase-2-step-g-converged-phase-2-closure-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.13
@@ -88,7 +88,7 @@ current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
 holdout_must_pass: 10
 holdout_nice_to_pass: 7
-status: phase-2-step-g-pass-5-closed-pass-6-pending
+status: phase-2-step-g-converged-phase-2-closure-pending
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d
@@ -109,29 +109,29 @@ status: phase-2-step-g-pass-5-closed-pass-6-pending
 ### Step 2 — Verify git state before dispatching any agent
 
 ```
-git log --oneline -1
+git log --oneline -2
 ```
-Expected: HEAD subject starts with "factory(state): Phase 2 Pass 5 closure"
+Expected: HEAD subject ~ "Phase 2 Step G FINAL CONVERGED"; HEAD^ ~ "Pass 6 report PASS 3/3 CONVERGED"
 
 ```
 git status --short
 ```
 Expected: empty (all tracked files clean after this snapshot commit)
 
-### Step 3 — Phase 2 Step G Pass 5 CLOSED (PASS — 0C+0I+0S); Pass 6 is next-action
+### Step 3 — Phase 2 Step G CONVERGED at Pass 6; Phase 2 closure is next-action
 
-**3a. DONE — Phase 2 Pass 5 adversary persist (commit 3c7605b):**
-Pass 5 adversary report persisted. Verdict: PASS. 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION. SECOND CONSECUTIVE PASS IN PHASE 2 CASCADE. Streak advances 1/3 → 2/3. Zero findings. S04 sibling-sweep audit: all 6 derived artifacts carry invariant. Pass 1-4 closure verification: all 26 unique findings VERIFIED-CLOSED.
+**3a. DONE — Phase 2 Pass 6 adversary persist (commit 543c588):**
+Pass 6 adversary report persisted. Verdict: PASS. 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION. THIRD CONSECUTIVE PASS IN PHASE 2 CASCADE. Streak advances 2/3 → 3/3. BC-5.39.001 3-CLEAN literal streak ACHIEVED. Zero findings. Adversarial cascade CLOSED. All 26 unique findings from Passes 1-5 VERIFIED-CLOSED. I07 and P3-S02 remain DEFERRED per prior decisions.
 
-**3b. NO-ARCHITECT-BURST — Pass 5 PASS verdict, zero findings.**
+**3b. NO-ARCHITECT-BURST — Pass 6 PASS verdict, zero findings.**
 
-**3c. NO-PO-BURST — Pass 5 PASS verdict, zero findings.**
+**3c. NO-PO-BURST — Pass 6 PASS verdict, zero findings.**
 
-**3d. DONE — Phase 2 Pass 5 closure state-mgr FINAL (this commit):**
-STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Pass 4 SHA-pending row back-filled to 2eb0ba4. Streak 2/3 recorded. Decay 17→7→4→1→0 documented. Pass 6 dispatch procedure updated with convergence note.
+**3d. DONE — Phase 2 Step G FINAL state-mgr commit (this commit):**
+STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Pass 5 closure SHA-pending row back-filled to 9843c70. Streak 3/3 CONVERGED recorded. Decay `17→7→4→1→0→0` documented. Phase 2 CLOSURE section with Phase 3 pre-dispatch checklist added to STATE.md. Phase 2 step_g_status set to CONVERGED at 543c588.
 
-**3e. TOP-OF-STACK — Phase 2 Step G Pass 6:**
-Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-INDEX.md (v0.3.3) → wave-schedule.md (v0.1.4) → dispatches `vsdd-factory:adversary` with FRESH CONTEXT for Pass 6. CRITICAL: DO NOT pass holdout-scenarios.md (restricted). BC-5.39.001 3-CLEAN cascade — streak 2/3 entering Pass 6. Pass 6 is the THIRD-streak convergence candidate. If Pass 6 PASSes, streak reaches 3/3 and Phase 2 Step G CONVERGES. Decay: C:4→0→0→0→0, I:8→3→2→0→0, S:5→4→2→1→0. Floor reached.
+**3e. TOP-OF-STACK — Phase 2 closure / human approval gate:**
+Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md. Surfaces Phase 2 closure to human. Presents Phase 3 pre-dispatch checklist. Awaits human authorization before dispatching Phase 3 TDD agents. Phase 3 first wave: Wave 1 (STORY-001 + STORY-014 + STORY-027 + STORY-038).
 
 ### Step 4 — Key constraints to carry forward
 
@@ -145,9 +145,9 @@ Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-I
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step G Pass 5 CLOSED (PASS 0C+0I+0S — zero findings) — streak 2/3 — Pass 6 is next-action.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step G CONVERGED at Pass 6 (PASS 0C+0I+0S — third consecutive PASS — BC-5.39.001 3-CLEAN streak 3/3) — adversarial cascade CLOSED — awaiting human approval for Phase 2 closure + Phase 3 TDD dispatch.**
 
-Phase 2 Step G Pass 5 CLOSED on 2026-05-19. Report persisted at 3c7605b (PASS — 0C+0I+0S). SECOND CONSECUTIVE PASS IN PHASE 2 CASCADE. No fix-burst (zero findings). Streak advances 1/3 → 2/3. Decay trajectory: Pass 1=17 findings (4C+8I+5S) → Pass 2=7 findings (0C+3I+4S) → Pass 3=4 findings (0C+2I+2S) → Pass 4=1 finding (0C+0I+1S) → Pass 5=0 findings (0C+0I+0S). CRITICAL eliminated at Pass 2 (4→0→0→0→0). IMPORTANT eliminated at Pass 4 (8→3→2→0→0). SUGGESTION eliminated at Pass 5 (5→4→2→1→0). Decay at floor. Pass 6 is the THIRD-streak convergence candidate per BC-5.39.001 3-CLEAN protocol.
+Phase 2 Step G Pass 6 CLOSED on 2026-05-19. Report persisted at 543c588 (PASS — 0C+0I+0S). THIRD CONSECUTIVE PASS IN PHASE 2 CASCADE. No fix-burst (zero findings). Streak advances 2/3 → 3/3. BC-5.39.001 3-CLEAN literal streak ACHIEVED. Phase 2 adversarial cascade CLOSED. Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+2S) → Pass 4=1(0C+0I+1S) → Pass 5=0(0C+0I+0S) → Pass 6=0(0C+0I+0S). Shorthand: `17→7→4→1→0→0`. CRITICAL eliminated at Pass 2 (`4→0→0→0→0→0`). IMPORTANT eliminated at Pass 4 (`8→3→2→0→0→0`). SUGGESTION eliminated at Pass 5 (`5→4→2→1→0→0`). Floor held at Pass 6.
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
