@@ -1,13 +1,13 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.11"
+version: "0.1.12"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
-inherits_from: prd@v0.1.10
+inherits_from: prd@v0.1.11
 created: 2026-05-15
 last_updated: 2026-05-18
 ---
@@ -211,7 +211,7 @@ last_updated: 2026-05-18
 | BC-2.18.002 | `meta-lint.bats` validates hook scripts: shebang, `set -euo pipefail`, no bare exit, no eval | SS-18 | CAP-018 | P0 | active | ss-18/BC-2.18.002.md |
 | BC-2.18.003 | `meta-lint.bats` validates AGENT.md scope + tool-profile + routing reference | SS-18 | CAP-018 | P0 | active | ss-18/BC-2.18.003.md |
 | BC-2.18.004 | `meta-lint.bats` validates cross-cutting: no AI attribution, no `--no-verify`, no hardcoded template paths | SS-18 | CAP-018 | P0 | active | ss-18/BC-2.18.004.md |
-| BC-2.18.005 | 9 bats test suites cover 13 hooks and all skills (positive + negative + edge case per hook) | SS-18 | CAP-018 | P0 | active | ss-18/BC-2.18.005.md |
+| BC-2.18.005 | Test surface organization — 8 category bats suites + per-hook .bats files at plugins/brain-factory/tests/ | SS-18 | CAP-018 | P0 | active | ss-18/BC-2.18.005.md |
 
 ---
 
@@ -282,9 +282,13 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 
 ## Changelog
 
+### v0.1.12 (2026-05-18)
+
+**TEST-ARCHITECTURE AMENDMENT CASCADE (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE):** BC-2.18.005 row 214 title updated from "9 bats test suites cover 13 hooks and all skills (positive + negative + edge case per hook)" to "Test surface organization — 8 category bats suites + per-hook .bats files at plugins/brain-factory/tests/" to mirror BC-2.18.005 H1 (now v1.2). BC body fully rewritten in same burst. `inherits_from` updated to `prd@v0.1.11`. (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE)
+
 ### v0.1.11 (2026-05-18)
 
-**TEST-ARCHITECTURE AMENDMENT (F-PHASE2-STEP-B-CLOSEOUT-O1 — version bump reflecting brief v0.4.20 per-hook bats model):** BC-INDEX bumped to v0.1.11 to reflect brief v0.4.20's test-architecture amendment (consolidated `hooks.bats` → per-hook + category model per CLAUDE.md). BC-2.18.005 title ("9 bats test suites...") will be updated by the architect's SS-18 burst (SS-18 is architect scope; not touched in this product-owner burst). `inherits_from` field remains at `prd@v0.1.10` (PRD index version unchanged in this burst). (F-PHASE2-STEP-B-CLOSEOUT-O1, F-PHASE2-STEP-B-CLOSEOUT-O2)
+**TEST-ARCHITECTURE AMENDMENT (F-PHASE2-STEP-B-CLOSEOUT-O1 — version bump reflecting brief v0.4.20 per-hook bats model):** BC-INDEX bumped to v0.1.11 to reflect brief v0.4.20's test-architecture amendment (consolidated `hooks.bats` → per-hook + category model per CLAUDE.md). BC-2.18.005 row title cascade deferred to follow-up PO burst (this burst). (F-PHASE2-STEP-B-CLOSEOUT-O1, F-PHASE2-STEP-B-CLOSEOUT-O2)
 
 ### v0.1.10 (2026-05-18)
 

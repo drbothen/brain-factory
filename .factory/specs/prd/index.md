@@ -1,15 +1,15 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.10"
+version: "0.1.11"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 artifact_type: prd
-inherits_from: product-brief.md@v0.4.19
+inherits_from: product-brief.md@v0.4.20
 created: 2026-05-15
-last_updated: 2026-05-16
+last_updated: 2026-05-18
 traces_to: product-brief.md
 supplements:
   - prd-supplements/interface-definitions.md
@@ -303,7 +303,7 @@ The plugin eliminates this burden by centralizing the methodology as versioned a
 | BC-2.18.002 | `meta-lint.bats` validates hook scripts: shebang, `set -euo pipefail`, no bare exit, no eval | P0 |
 | BC-2.18.003 | `meta-lint.bats` validates AGENT.md scope + tool-profile + routing reference | P0 |
 | BC-2.18.004 | `meta-lint.bats` validates cross-cutting: no AI attribution, no `--no-verify`, no hardcoded template paths | P0 |
-| BC-2.18.005 | 9 bats test suites cover 13 hooks and all skills (positive + negative + edge case per hook) | P0 |
+| BC-2.18.005 | Test surface organization — 8 category bats suites + per-hook .bats files at plugins/brain-factory/tests/ | P0 |
 
 > Full contracts: `../behavioral-contracts/ss-18/`
 
@@ -489,7 +489,7 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 
 Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
-- [x] Did I rationalize any decision with "MVP," "for now," "good enough," or "we can fix later"? **No.** All BC preconditions and postconditions are fully specified. All counts (26 skills, 14 agents, 13 hooks, 18 CAP subsystems, 95 BCs total across 18 subsystems, 9 bats suites) are stated as exact commitments. No "TBD" or placeholder language in BC bodies.
+- [x] Did I rationalize any decision with "MVP," "for now," "good enough," or "we can fix later"? **No.** All BC preconditions and postconditions are fully specified. All counts (26 skills, 14 agents, 13 hooks, 18 CAP subsystems, 95 BCs total across 18 subsystems, 8 category bats suites + 13 per-hook bats files) are stated as exact commitments. No "TBD" or placeholder language in BC bodies.
 - [x] Did I add a new tech-debt-register entry without all three of: explicit human direction, concrete future dependency, and a specific future story/wave anchor? **No.** No tech-debt-register entries created.
 - [x] Did I leave any "pending architect review," "TODO for architect," or "Placeholder for architect" in a spec artifact for a question I could have answered in scope? **No.** Module column in traceability matrix originally used a Phase 1b placeholder at delivery time (legitimate cross-component work requiring architect output). Backfilled with canonical SS-NN module labels during F-1c-CV-07 fix-burst (2026-05-15) after architect Subsystem Registry landed.
 - [x] Did I find a bug or gap in another AI's output and surface it as a question/advisory instead of fixing it in scope? **No.** All brief underspecifications elaborated into full BCs in scope.
@@ -558,11 +558,15 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   Incremental scope: applied before any PRD burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: PRD section headers carrying number claims include "21 total" scopes in §5 Error Taxonomy and counts embedded in body prose; no PRD section headers carry a standalone count-claim `(N total ...)` format in the heading text itself that would require body reconciliation. PRD is clean at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
 
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-16`; most recent Changelog entry: v0.1.10 (2026-05-16). **PASS.**
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-18`; most recent Changelog entry: v0.1.11 (2026-05-18). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.11 (2026-05-18)
+
+**TEST-ARCHITECTURE AMENDMENT CASCADE (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE):** BC-2.18.005 row 306 title updated from "9 bats test suites cover 13 hooks and all skills (positive + negative + edge case per hook)" to "Test surface organization — 8 category bats suites + per-hook .bats files at plugins/brain-factory/tests/" to mirror BC-2.18.005 H1 (now v1.2). Requirements Traceability Matrix row 484 title cell unchanged (no title column; cell is CAP/SS/priority/test-method). Self-Audit Checklist count claim updated from "9 bats suites" to "8 category bats suites + 13 per-hook bats files". `inherits_from` updated to `product-brief.md@v0.4.20`. (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE)
 
 ### v0.1.10 (2026-05-16)
 

@@ -1,18 +1,18 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 origin: greenfield
 subsystem: "SS-18"
 capability: "CAP-018"
 lifecycle_status: active
 introduced: v0.1.0
-modified: []
+modified: ["v1.2"]
 ---
 
 # Behavioral Contract BC-2.18.001: `meta-lint.bats` validates SKILL.md frontmatter and canonical 6-section structure
@@ -73,4 +73,14 @@ modified: []
 - BC-2.18.002 — composes with (hook meta-lint)
 - BC-2.18.003 — composes with (agent meta-lint)
 - BC-2.18.004 — composes with (cross-cutting meta-lint)
-- BC-2.18.005 — depends on (this is part of the 9-suite bats coverage)
+- BC-2.18.005 — depends on (meta-lint.bats is one of the 8 category bats suites in the per-hook + category test model)
+
+## Changelog
+
+### v1.2 (2026-05-18)
+
+**TEST-ARCHITECTURE AMENDMENT CASCADE (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE):** Related BCs entry for BC-2.18.005 updated from "9-suite bats coverage" to "8 category bats suites in the per-hook + category test model". [audit-trail]
+
+### v1.1 (2026-05-16)
+
+Prior version. Referenced BC-2.18.005 as "part of the 9-suite bats coverage".

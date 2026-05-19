@@ -1,18 +1,18 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 origin: greenfield
 subsystem: "SS-04"
 capability: "CAP-004"
 lifecycle_status: active
 introduced: v0.1.0
-modified: []
+modified: ["v1.2"]
 deprecated: null
 deprecated_by: null
 replacement: null
@@ -25,7 +25,7 @@ removal_reason: null
 
 ## Description
 
-Every hook in the 13-hook set must process its canonical sample payload in under 100ms p99 on a standard GitHub Actions runner. This is a v0.1 ship gate requirement, not an aspiration. Latency assertions are embedded as test cases inside `plugins/brain-factory/tests/hooks.bats` — within the existing 9-suite bats coverage, not a separate suite. Wikilink validation across a 500+ page wiki may require incremental design at Phase 1c; the bats test budget covers single-payload performance only.
+Every hook in the 13-hook set must process its canonical sample payload in under 100ms p99 on a standard GitHub Actions runner. This is a v0.1 ship gate requirement, not an aspiration. Latency assertions are embedded as test cases inside the per-hook bats file for each hook (`plugins/brain-factory/tests/<hook-name>.bats`) — not in a separate performance suite. Wikilink validation across a 500+ page wiki may require incremental design at Phase 1c; the bats test budget covers single-payload performance only.
 
 ## Preconditions
 
@@ -37,7 +37,7 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 ## Postconditions
 
 1. For each hook, the latency assertion in `hooks.bats` passes: wall-clock time from hook invocation to exit is under 100ms.
-2. The bats suite remains within the 9-suite count (latency tests are test cases within `hooks.bats`, not a separate suite).
+2. The latency assertions live inside the per-hook bats file for that hook (not a separate performance suite).
 
 ## Invariants
 
@@ -58,15 +58,15 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 | Input | Expected Output | Category |
 |-------|----------------|----------|
 | Canonical fixture for each of 13 hooks | All 13 hooks: wall-clock < 100ms per run; bats latency assertion passes | happy-path |
-| `hooks.bats` run with `--tap` output | All latency test cases pass (green) | happy-path |
+| `bats tests/<hook-name>.bats` run with `--tap` output (per hook) | All latency test cases pass (green) | happy-path |
 | Simulate slow hook (inject `sleep 0.2`) | Bats latency assertion fails; CI blocks | edge-case |
 
 ## Verification Properties
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-001, VP-013 | All 13 hook latency assertions pass in CI | bats hooks.bats (latency test cases) |
-| VP-001, VP-013 | Node startup overhead for quarantine hook < 100ms | bats hooks.bats timing assertion |
+| VP-001, VP-013 | All 13 hook latency assertions pass in CI | bats tests/<hook-name>.bats (per-hook latency test cases) |
+| VP-001, VP-013 | Node startup overhead for quarantine hook < 100ms | bats tests/quarantine-fetch.bats timing assertion |
 
 ## Traceability
 
@@ -81,7 +81,7 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 ## Related BCs
 
 - BC-2.04.016 — composes with (performance budget applies to hooks conforming to the I/O contract)
-- BC-2.18.005 — related to (bats suites cover hook performance as test cases within hooks.bats)
+- BC-2.18.005 — related to (per-hook bats files cover hook performance as latency test cases)
 
 ## Architecture Anchors
 
@@ -93,5 +93,15 @@ Every hook in the 13-hook set must process its canonical sample payload in under
 
 ## VP Anchors
 
-- VP-001 — Hook exit-code semantics coverage (bats hooks.bats)
-- VP-013 — Hook p99 latency under 100ms (bats perf assertion hooks.bats)
+- VP-001 — Hook exit-code semantics coverage (bats per-hook files)
+- VP-013 — Hook p99 latency under 100ms (bats perf assertion in per-hook bats files)
+
+## Changelog
+
+### v1.2 (2026-05-18)
+
+**TEST-ARCHITECTURE AMENDMENT CASCADE (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE):** Description, Postcondition 2, Test Vectors, VP table, VP Anchors, and Related BCs updated to replace `hooks.bats` / "9-suite" references with per-hook bats file model per brief v0.4.20. No semantic change to the 100ms p99 performance contract itself. [audit-trail]
+
+### v1.1 (2026-05-16)
+
+Prior version. Referenced consolidated `hooks.bats` and "9-suite bats coverage".
