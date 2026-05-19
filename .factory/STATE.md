@@ -3,14 +3,16 @@ artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-19
+current_pass_number: "5 (CLOSED PASS — 0C+0I+0S — second consecutive PASS)"
+current_streak: "2/3 (one more PASS needed for 3-CLEAN convergence)"
 mode: greenfield
-phase: phase-2-story-decomposition-step-g-pass-4-closed-pass-5-pending
+phase: phase-2-story-decomposition-step-g-pass-5-closed-pass-6-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
 phase_1d_status: "**CONVERGED** — BC-5.39.001 3-CLEAN literal streak 3/3 achieved at Pass 42 (Pass 40 PASS + Pass 41 PASS + Pass 42 PASS); 42 passes complete (39 FAIL + 3 PASS consecutively at end); 68 fix-bursts complete; 24 disciplines codified; 13 sub-checks codified; Phase 1d adversarial spec review cascade CLOSED at commit 44cda58"
-phase_2_status: STEP-G-PASS-4-CLOSED-PASS-5-PENDING — Pass 4 PASS (0C+0I+1S — S01 closed at 3a0dc66) — streak 1/3 (first PASS in Phase 2 cascade) — decay 17→7→4→1 — Pass 5 pending
-session_continuity: FRESH-CONTEXT-READY — Phase 2 Step G Pass 4 CLOSED (PASS 0C+0I+1S); fix-burst 3a0dc66 applied; streak 1/3; Pass 5 pending; next session reads Resume procedure below and dispatches adversary Pass 5 with FRESH CONTEXT
+phase_2_status: STEP-G-PASS-5-CLOSED-PASS-6-PENDING — Pass 5 PASS (0C+0I+0S — zero findings — second consecutive PASS) — streak 2/3 — decay 17→7→4→1→0 — Pass 6 pending (3-CLEAN convergence candidate)
+session_continuity: FRESH-CONTEXT-READY — Phase 2 Step G Pass 5 CLOSED (PASS 0C+0I+0S — zero findings); streak 2/3; Pass 6 pending; next session reads Resume procedure below and dispatches adversary Pass 6 with FRESH CONTEXT — Pass 6 is 3-CLEAN convergence candidate
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -48,9 +50,9 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 2 Step G Pass 5 PENDING — RESUME ENTRY POINT FOR FRESH SESSION
+## TOP OF STACK — Phase 2 Step G Pass 6 PENDING — RESUME ENTRY POINT FOR FRESH SESSION
 
-**Status:** Phase 2 Step G Pass 4 CLOSED (PASS — 0C+0I+1S). FIRST PASS VERDICT IN PHASE 2 CASCADE. Fix-burst: 3a0dc66 (story-writer — epics.md v0.1.4 S04 invariant comment — F-PHASE2-ADV-PASS4-S01). Streak advances 0/3 → 1/3. F-P3-S02 DEFERRED (dep-graph §Stats edge count — verifiable but low-confidence; no implementer-blocking impact). Decay trajectory: Pass 1 = 17 findings (4C+8I+5S) → Pass 2 = 7 findings (0C+3I+4S) → Pass 3 = 4 findings (0C+2I+2S) → Pass 4 = 1 finding (0C+0I+1S). CRITICAL: 4→0→0→0 (eliminated). IMPORTANT: 8→3→2→0 (eliminated). SUGGESTION: 5→4→2→1 (decaying). Decay is exponential — convergence trajectory healthy. Pass 5 dispatch is next-action.
+**Status:** Phase 2 Step G Pass 5 CLOSED (PASS — 0C+0I+0S). SECOND CONSECUTIVE PASS IN PHASE 2 CASCADE. Zero findings. No fix-burst needed. Streak advances 1/3 → 2/3. F-P3-S02 DEFERRED (dep-graph §Stats edge count — verifiable but low-confidence; no implementer-blocking impact). Decay trajectory: Pass 1 = 17 findings (4C+8I+5S) → Pass 2 = 7 findings (0C+3I+4S) → Pass 3 = 4 findings (0C+2I+2S) → Pass 4 = 1 finding (0C+0I+1S) → Pass 5 = 0 findings (0C+0I+0S). CRITICAL: 4→0→0→0→0 (eliminated at Pass 2). IMPORTANT: 8→3→2→0→0 (eliminated at Pass 4). SUGGESTION: 5→4→2→1→0 (eliminated at Pass 5). Decay at floor. Pass 6 dispatch is next-action. **Pass 6 is the THIRD-streak pass. If Pass 6 PASSes, streak reaches 3/3 and Phase 2 Step G CONVERGES per BC-5.39.001 literal 3-CLEAN protocol. Phase 2 closure / human approval gate becomes the next pipeline step.**
 
 **Process-gap noted (F-PHASE2-ADV-PASS2-S04 / F-PHASE2-ADV-PASS3-LESSON):** Input-version-currency invariant (S04): Pass 2 codified S04 invariant in 4 artifacts but missed sprint-state.yaml + holdout-scenarios.md + wave-schedule.md L125 body prose. Pass 3 closed via story-writer + PO sibling-sweep (4f611f7 + 7b1ae9d). Lesson: when codifying an invariant, sweep ALL artifacts in the same architectural layer (not just the agent's own-scope subset). Codification candidate: extend story-writer agent prompt with this discipline post-Phase-2. Carry forward to Cycle-Closing Checklist when Phase 2 closes.
 
@@ -65,10 +67,10 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 **Next action for fresh-context orchestrator:**
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md` → `.factory/stories/STORY-INDEX.md` (v0.3.3 — 43 stories) → `.factory/stories/wave-schedule.md` (v0.1.4).
-2. Verify HEAD via `git log --oneline -1` shows Phase 2 Pass 4 fix-closure state-mgr FINAL subject. Verify clean tree via `git status --short`.
+2. Verify HEAD via `git log --oneline -1` shows Phase 2 Pass 5 closure state-mgr FINAL subject. Verify clean tree via `git status --short`.
 3. Confirm holdout-scenarios.md at `.factory/stories/holdout-scenarios.md` v0.1.4 (17 scenarios) — DO NOT read contents (restricted).
-4. Dispatch `vsdd-factory:adversary` for Phase 2 Step G Pass 5 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol. IMPORTANT: DO NOT pass holdout-scenarios.md to the adversary — restricted artifact; information-asymmetry MUST be preserved.
-5. Per-pass discipline: each adversary pass produces a structured finding report (CRITICAL/IMPORTANT/SUGGESTION). Findings route to PO/architect/story-writer via fix-bursts. After fix, re-dispatch adversary with NEW fresh context. Continue until 3 consecutive PASS verdicts (BC-5.39.001 3-CLEAN literal streak). Current streak 1/3 entering Pass 5 (Pass 4 = first PASS verdict in Phase 2 cascade).
+4. Dispatch `vsdd-factory:adversary` for Phase 2 Step G Pass 6 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol. IMPORTANT: DO NOT pass holdout-scenarios.md to the adversary — restricted artifact; information-asymmetry MUST be preserved. **Pass 6 is the THIRD-streak pass — if PASS, streak reaches 3/3 and Phase 2 Step G CONVERGES.**
+5. Per-pass discipline: each adversary pass produces a structured finding report (CRITICAL/IMPORTANT/SUGGESTION). Findings route to PO/architect/story-writer via fix-bursts. After fix, re-dispatch adversary with NEW fresh context. Continue until 3 consecutive PASS verdicts (BC-5.39.001 3-CLEAN literal streak). Current streak 2/3 entering Pass 6 (Pass 4 + Pass 5 both PASS).
 6. If finding count does not decay below 5 IMPORTANT+CRITICAL after 5 passes, surface to human for direction.
 7. I07 deferral (frontmatter blocks asymmetry): per UD-008, dep-graph is canonical; per-story frontmatter blocks/dependencies are at-creation-time snapshots. DO NOT re-raise I07 unless adversary surfaces stronger implementer-blocking evidence.
 
@@ -150,41 +152,41 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 
 **User decision (UD-007 — 2026-05-19):** Dep-graph supersession convention established. `.factory/stories/dependency-graph.md` is the CANONICAL source-of-truth for inter-story dependencies. Per-story frontmatter `dependencies:` and `blocks:` fields are at-creation-time snapshots only. Downstream agents (wave-scheduler, implementer Phase 3, adversary, CI) consult dependency-graph.md, NOT per-story frontmatter. Asymmetry between frontmatter and graph is legitimate per this convention — consistency-validator MUST NOT flag these as defects.
 
-**Top-of-stack action:** **Phase 2 Step G Pass 3 CLOSED (FAIL — 0C+2I+2S). Pass 4 is next-action.** Post-Pass-3-fix versions: sprint-state v0.1.1, wave-schedule v0.1.4, holdout-scenarios v0.1.4. STORY-INDEX v0.3.3 unchanged. Dispatch `vsdd-factory:adversary` for Pass 4 per Pass 4 Dispatch Procedure below. HOLDOUT ISOLATION mandatory. Decay trajectory: 17→7→4 findings. Pass 4 should produce ≤2 findings if sibling-sweep was thorough.
+**Top-of-stack action:** **Phase 2 Step G Pass 5 CLOSED (PASS — 0C+0I+0S). Pass 6 is next-action.** All artifact versions unchanged from Pass 4 (no fix-burst needed — zero findings). Streak 2/3. Dispatch `vsdd-factory:adversary` for Pass 6 per Pass 6 Dispatch Procedure below. HOLDOUT ISOLATION mandatory. Decay trajectory: 17→7→4→1→0. Floor reached. Pass 6 is the THIRD-streak convergence candidate per BC-5.39.001 3-CLEAN.
 
 ---
 
 ## Resume procedure for FRESH-CONTEXT ORCHESTRATOR
 
-**Phase 2 Step G Pass 2 CLOSED (FAIL). Pass 3 is next-action.** Read these documents IN ORDER before dispatching any agent:
+**Phase 2 Step G Pass 5 CLOSED (PASS — 0C+0I+0S). Pass 6 is next-action.** Read these documents IN ORDER before dispatching any agent:
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file — canonical state-discovery entry point)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
-5. `/Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md` (v0.1.4 — post-Pass-3-fix)
+5. `/Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md` (v0.1.4)
 6. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md` (v0.3.3 — 43 stories)
 
 **Pre-dispatch verification:**
 
 ```bash
 cd /Users/jmagady/Dev/brain-factory
-git log --oneline -1                # expect HEAD subject ~ "factory(state): Phase 2 Pass 3 fix-closure"
+git log --oneline -1                # expect HEAD subject ~ "factory(state): Phase 2 Pass 5 closure"
 git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
-grep -nE '^phase_2_status:' .factory/STATE.md     # expect phase_2_status: STEP-G-PASS-3-CLOSED-PASS-4-PENDING ...
+grep -nE '^phase_2_status:' .factory/STATE.md     # expect phase_2_status: STEP-G-PASS-5-CLOSED-PASS-6-PENDING ...
 ls /Users/jmagady/Dev/brain-factory/.factory/stories/holdout-scenarios.md  # expect v0.1.4 — 17 scenarios (DO NOT read contents)
 ls /Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md      # expect v0.1.4
 ls /Users/jmagady/Dev/brain-factory/.factory/stories/stories/ | wc -l      # expect 43
 ```
 
-**Step G Pass 4 — proceed directly:**
-- Phase 2 Step G Pass 3: FAIL (0C+2I+2S). Fix-bursts 4f611f7+7b1ae9d (story-writer+PO, 4 findings closed). Decay: C:4→0→0, I:8→3→2, S:5→4→2.
-- Post-Pass-3-fix versions: sprint-state v0.1.1, wave-schedule v0.1.4, holdout-scenarios v0.1.4. STORY-INDEX v0.3.3, dep-graph v0.1.1, epics v0.1.3 unchanged. Spec versions unchanged: BC-INDEX v0.1.15, PRD v0.1.13.
-- Dep-graph supersession convention (UD-007/UD-008): dependency-graph.md is canonical; per-story frontmatter is snapshot-only. F-P3-S02 DEFERRED (dep-graph §Stats edge count — not blocking).
-- Streak 0/3 entering Pass 4 (Passes 1+2+3 all FAILED).
-- Dispatch `vsdd-factory:adversary` with FRESH CONTEXT for Pass 4 per BC-5.39.001 3-CLEAN protocol.
-- CRITICAL HOLDOUT ISOLATION: DO NOT pass holdout-scenarios.md contents to the adversary — restricted artifact. Information-asymmetry between adversary and implementer MUST be preserved.
-- Step G output: adversary cascade pass reports. 3 consecutive PASS verdicts required to advance to Phase 3 human gate.
+**Step G Pass 6 — proceed directly:**
+- Phase 2 Step G Pass 5: PASS (0C+0I+0S). Zero findings. No fix-burst needed. Streak 1/3 → 2/3.
+- All artifact versions unchanged from Pass 4: epics v0.1.4, sprint-state v0.1.1, wave-schedule v0.1.4, holdout-scenarios v0.1.4, STORY-INDEX v0.3.3, dep-graph v0.1.1, BC-INDEX v0.1.15, PRD v0.1.13, ARCH-INDEX v0.1.23, VP-INDEX v0.1.7, brief v0.4.20.
+- Dep-graph supersession convention (UD-007/UD-008): dependency-graph.md is canonical; per-story frontmatter is snapshot-only. F-P3-S02 DEFERRED.
+- Streak 2/3 entering Pass 6 (Pass 4 + Pass 5 both PASS). **Pass 6 is the THIRD-streak convergence candidate.**
+- Dispatch `vsdd-factory:adversary` with FRESH CONTEXT for Pass 6 per BC-5.39.001 3-CLEAN protocol.
+- CRITICAL HOLDOUT ISOLATION: DO NOT pass holdout-scenarios.md contents to the adversary — restricted artifact. Information-asymmetry MUST be preserved.
+- Step G output: adversary cascade pass reports. 3 consecutive PASS verdicts required to advance to Phase 3 human gate. **If Pass 6 PASSes, convergence is achieved.**
 
 ---
 
@@ -336,9 +338,26 @@ ls /Users/jmagady/Dev/brain-factory/.factory/stories/stories/ | wc -l      # exp
 |---|-----|-------|---------|
 | 1 | 698846d | state-manager | Pass 4 report persisted — PASS (0C+0I+1S) — streak 0/3 → 1/3 — first PASS in Phase 2 cascade |
 | 2 | 3a0dc66 | story-writer | Pass 4 fix — epics.md v0.1.4 S04 invariant comment (F-PHASE2-ADV-PASS4-S01) |
-| 3 | (this commit) | state-manager | Pass 4 fix-closure — epics v0.1.4 noted — streak 1/3 — decay 17→7→4→1 — Pass 5 dispatch procedure added |
+| 3 | 2eb0ba4 | state-manager | Pass 4 fix-closure — epics v0.1.4 noted — streak 1/3 — decay 17→7→4→1 — Pass 5 dispatch procedure added |
 
-## Phase 2 Step G Pass 5 Dispatch Procedure
+## Phase 2 Step G Pass 5 — CLOSED (PASS — 0C+0I+0S)
+
+**Pass 5 verdict:** PASS. 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION. SECOND CONSECUTIVE PASS IN PHASE 2 CASCADE. Streak advances 1/3 → 2/3. No fix-burst needed (zero findings). Report persisted at 3c7605b (2026-05-19).
+
+**Decay trajectory:** Pass 1 = 17 findings (4C+8I+5S) → Pass 2 = 7 findings (0C+3I+4S) → Pass 3 = 4 findings (0C+2I+2S) → Pass 4 = 1 finding (0C+0I+1S) → Pass 5 = 0 findings (0C+0I+0S). CRITICAL: 4→0→0→0→0 (eliminated at Pass 2). IMPORTANT: 8→3→2→0→0 (eliminated at Pass 4). SUGGESTION: 5→4→2→1→0 (eliminated at Pass 5). Decay at floor.
+
+**S04 sibling-sweep verified:** All 6 derived artifacts carry input-version-currency invariant: STORY-INDEX v0.3.3, epics.md v0.1.4 (all 9 epics), dep-graph v0.1.1, wave-schedule v0.1.4, sprint-state v0.1.1, holdout-scenarios v0.1.4. CLEAN.
+
+**Pass 6 convergence note:** Pass 6 is the THIRD-streak pass. If Pass 6 PASSes, streak reaches 3/3 and Phase 2 Step G CONVERGES per BC-5.39.001 literal 3-CLEAN protocol. Phase 2 closure / human approval gate becomes the next pipeline step.
+
+**Phase 2 Step G Pass 5 Burst Cascade Table:**
+
+| # | SHA | Agent | Subject |
+|---|-----|-------|---------|
+| 1 | 3c7605b | state-manager | Pass 5 report persisted — PASS (0C+0I+0S) — streak 1/3 → 2/3 — second consecutive PASS |
+| 2 | (this commit) | state-manager | Pass 5 closure — streak 2/3 — decay at floor 17→7→4→1→0 — Pass 6 pending (convergence candidate) |
+
+## Phase 2 Step G Pass 6 Dispatch Procedure
 
 **Inputs (ALL Phase 2 deliverables — post-Pass-4-fix versions):**
 
@@ -359,7 +378,7 @@ ls /Users/jmagady/Dev/brain-factory/.factory/stories/stories/ | wc -l      # exp
 
 **HOLDOUT ISOLATION — REAFFIRM:** Adversary MUST NOT receive holdout-scenarios.md. Orchestrator MUST exclude it from dispatch input list. Information-asymmetry is the primary mechanism of Phase 4 holdout evaluation.
 
-**3-CLEAN streak entering Pass 5:** 1/3 (Pass 4 = first PASS verdict; Passes 1+2+3 FAILED). To converge: need Pass 5 + Pass 6 both PASS. Any CRITICAL or IMPORTANT finding in Pass 5 resets streak to 0/3.
+**3-CLEAN streak entering Pass 6:** 2/3 (Pass 4 + Pass 5 both PASS). To converge: need Pass 6 PASS. Any CRITICAL or IMPORTANT finding in Pass 6 resets streak to 0/3. **Pass 6 is the THIRD-streak convergence candidate — if PASS, Phase 2 Step G CONVERGES.**
 
 **Per-pass discipline:**
 1. Dispatch `vsdd-factory:adversary` with FRESH CONTEXT — different model family for cognitive diversity (per F-PASS12-O1).

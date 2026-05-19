@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-G-PASS-4-CLOSED-PASS-5-PENDING — Pass 4 PASS (0C+0I+1S) — fix-burst 3a0dc66 (S01 closed; epics v0.1.4) — streak 1/3 (first PASS in Phase 2 cascade) — decay 17→7→4→1 — Pass 5 dispatch is next-action (task #167). HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to story-writer, architect, adversary, implementer, or any Phase 2/3 agent other than holdout-evaluator (Phase 4).**
+> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-G-PASS-5-CLOSED-PASS-6-PENDING — Pass 5 PASS (0C+0I+0S — zero findings — second consecutive PASS) — streak 2/3 — decay 17→7→4→1→0 (floor) — Pass 6 dispatch is next-action (task #168). Pass 6 is the THIRD-streak convergence candidate per BC-5.39.001 3-CLEAN. HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to story-writer, architect, adversary, implementer, or any Phase 2/3 agent other than holdout-evaluator (Phase 4).**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -36,8 +36,9 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 - Phase 2 Step G Pass 1: CLOSED (FAIL — 4C+8I+5S). Persist: fc3b5af. 3 fix-bursts: 13d4d4e+02c681f+82ec4f5. 17 findings closed. I07 DEFERRED per UD-008. State-mgr FINAL: 89382b4.
 - Phase 2 Step G Pass 2: CLOSED (FAIL — 0C+3I+4S). Persist: 6ff5afe. Fix-bundle: f160696 (story-writer, 7 findings closed). Streak 0/3 reset. Decay C:4→0 I:8→3. State-mgr FINAL: 7afb2a0.
 - Phase 2 Step G Pass 3: CLOSED (FAIL — 0C+2I+2S). Persist: 318326a. Fix-bursts: 4f611f7 (story-writer) + 7b1ae9d (PO). 4 findings closed (F-P3-S02 deferred). Streak 0/3 reset. Decay C:4→0→0 I:8→3→2. State-mgr FINAL: 18684f5.
-- Phase 2 Step G Pass 4: CLOSED (PASS — 0C+0I+1S). FIRST PASS VERDICT IN PHASE 2 CASCADE. Persist: 698846d. Fix-burst: 3a0dc66 (story-writer — epics v0.1.4). 1 finding closed (S01). Streak 0/3 → 1/3. Decay 17→7→4→1. State-mgr FINAL: (this commit).
-- Phase 2 Step G Pass 5: NEXT-ACTION (task #167) — dispatch adversarial story-reviewer with fresh context per BC-5.39.001 3-CLEAN protocol. Streak 1/3.
+- Phase 2 Step G Pass 4: CLOSED (PASS — 0C+0I+1S). FIRST PASS VERDICT IN PHASE 2 CASCADE. Persist: 698846d. Fix-burst: 3a0dc66 (story-writer — epics v0.1.4). 1 finding closed (S01). Streak 0/3 → 1/3. Decay 17→7→4→1. State-mgr FINAL: 2eb0ba4.
+- Phase 2 Step G Pass 5: CLOSED (PASS — 0C+0I+0S). SECOND CONSECUTIVE PASS. Persist: 3c7605b. No fix-burst (zero findings). Streak 1/3 → 2/3. Decay floor 17→7→4→1→0. State-mgr FINAL: (this commit).
+- Phase 2 Step G Pass 6: NEXT-ACTION (task #168) — dispatch adversarial story-reviewer with fresh context per BC-5.39.001 3-CLEAN protocol. Streak 2/3. CONVERGENCE CANDIDATE — if PASS, Phase 2 Step G converges at 3/3.
 - Working tree: clean (only untracked planning notes + .factory/logs/ + .claude/).
 - HEAD: Phase 2 Pass 4 fix-closure state-mgr FINAL commit.
 
@@ -54,15 +55,16 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 
 1. [ ] Read CLAUDE.md → STATE.md → SESSION-HANDOFF.md → TASK-LIST.md (this file) → .factory/stories/STORY-INDEX.md (v0.3.3) → wave-schedule.md (v0.1.4)
 2. [ ] Confirm holdout-scenarios.md at v0.1.4 (17 scenarios) — DO NOT read contents (restricted)
-3. [ ] Dispatch `vsdd-factory:adversary` for Step G Pass 5 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol — different model family from prior pipeline agents; chat-only output (DO NOT instruct adversary to Write or Commit); DO NOT pass holdout-scenarios.md; streak 1/3 entering Pass 5 (Pass 4 = first PASS verdict in Phase 2 cascade)
+3. [ ] Dispatch `vsdd-factory:adversary` for Step G Pass 6 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol — different model family from prior pipeline agents; chat-only output (DO NOT instruct adversary to Write or Commit); DO NOT pass holdout-scenarios.md; streak 2/3 entering Pass 6 (CONVERGENCE CANDIDATE — if PASS, Phase 2 Step G converges)
 4. [ ] Per-pass: collect finding report, route CRITICAL/IMPORTANT findings via CLAUDE.md agent routing table, fix, re-dispatch adversary with NEW fresh context
 5. [ ] Continue until 3 consecutive PASS verdicts (BC-5.39.001 literal streak 3/3)
 6. [ ] At Phase 2 convergence (streak 3/3), surface to human for Phase 3 gate
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #167 | NEXT-ACTION | Phase 2 Step G Pass 5 — adversarial-story-review Pass 5 (streak 1/3 entering — DO NOT pass holdout-scenarios.md) |
-| 2 | #166 | COMPLETED | Phase 2 Step G Pass 4 — PASS (0C+0I+1S) — 698846d + fix-burst 3a0dc66 (epics v0.1.4 S01 closed) + Pass 4 fix-closure state-mgr FINAL (this commit) — streak 1/3 |
+| 1 | #168 | NEXT-ACTION | Phase 2 Step G Pass 6 — adversarial-story-review Pass 6 (streak 2/3 entering — CONVERGENCE CANDIDATE — DO NOT pass holdout-scenarios.md) |
+| 2 | #167 | COMPLETED | Phase 2 Step G Pass 5 — PASS (0C+0I+0S — zero findings) — 3c7605b + Pass 5 closure state-mgr FINAL (this commit) — streak 2/3 |
+| 3 | #166 | COMPLETED | Phase 2 Step G Pass 4 — PASS (0C+0I+1S) — 698846d + fix-burst 3a0dc66 (epics v0.1.4 S01 closed) + Pass 4 fix-closure state-mgr FINAL 2eb0ba4 — streak 1/3 |
 | 3 | #165 | COMPLETED | Phase 2 Step G Pass 3 — FAIL (0C+2I+2S) — 318326a + fix-bursts 4f611f7+7b1ae9d (4 findings closed; F-P3-S02 deferred) + Pass 3 fix-closure state-mgr FINAL 18684f5 |
 | 4 | #164 | COMPLETED | Phase 2 Step G Pass 2 — FAIL (0C+3I+4S) — 6ff5afe + fix-bundle f160696 (7 findings closed) + Pass 2 fix-closure state-mgr FINAL 7afb2a0 |
 | 5 | #163 | COMPLETED | Phase 2 Step G Pass 1 — FAIL (4C+8I+5S) — fc3b5af + 3 fix-bursts (13d4d4e+02c681f+82ec4f5) + fix-closure 89382b4 |
@@ -70,7 +72,7 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 | 7 | #161 | COMPLETED | Phase 2 Step E — product-owner holdout-scenarios (9b44845+5a3a942+8ba1487 v0.1.3) |
 | 8 | #160 | COMPLETED | Phase 2 Step D — story-writer wave-schedule (efc3001+c749ad3+f160696 v0.1.3) |
 | 9 | #159 | COMPLETED | Phase 2 Step C — story-writer dependency-graph (90d90fd+f160696 v0.1.1) |
-| 10 | #155 | STEP-G-IN-PROGRESS | Phase 2 (Story Decomposition) — Step G Pass 4 closed (PASS); Pass 5 next |
+| 10 | #155 | STEP-G-IN-PROGRESS | Phase 2 (Story Decomposition) — Step G Pass 5 closed (PASS); Pass 6 next — streak 2/3 |
 
 ## Task Status
 

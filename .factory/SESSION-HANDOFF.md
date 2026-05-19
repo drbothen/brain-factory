@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-2-story-decomposition-step-g-pass-4-closed
-session_stage: phase-2-step-g-pass-4-closed-pass-5-pending
+session_phase: phase-2-story-decomposition-step-g-pass-5-closed
+session_stage: phase-2-step-g-pass-5-closed-pass-6-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.13
@@ -88,7 +88,7 @@ current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
 holdout_must_pass: 10
 holdout_nice_to_pass: 7
-status: phase-2-step-g-pass-4-closed-pass-5-pending
+status: phase-2-step-g-pass-5-closed-pass-6-pending
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d
@@ -111,28 +111,27 @@ status: phase-2-step-g-pass-4-closed-pass-5-pending
 ```
 git log --oneline -1
 ```
-Expected: HEAD subject starts with "factory(state): Phase 2 Pass 4 fix-closure"
+Expected: HEAD subject starts with "factory(state): Phase 2 Pass 5 closure"
 
 ```
 git status --short
 ```
 Expected: empty (all tracked files clean after this snapshot commit)
 
-### Step 3 — Phase 2 Step G Pass 4 CLOSED (PASS — 0C+0I+1S); Pass 5 is next-action
+### Step 3 — Phase 2 Step G Pass 5 CLOSED (PASS — 0C+0I+0S); Pass 6 is next-action
 
-**3a. DONE — Phase 2 Pass 4 adversary persist (commit 698846d):**
-Pass 4 adversary report persisted. Verdict: PASS. 0 CRITICAL + 0 IMPORTANT + 1 SUGGESTION. FIRST PASS VERDICT IN PHASE 2 CASCADE. Streak advances 0/3 → 1/3. F-PHASE2-ADV-PASS4-S01 surfaced (epics.md EPIC-09 missing S04 invariant comment).
+**3a. DONE — Phase 2 Pass 5 adversary persist (commit 3c7605b):**
+Pass 5 adversary report persisted. Verdict: PASS. 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION. SECOND CONSECUTIVE PASS IN PHASE 2 CASCADE. Streak advances 1/3 → 2/3. Zero findings. S04 sibling-sweep audit: all 6 derived artifacts carry invariant. Pass 1-4 closure verification: all 26 unique findings VERIFIED-CLOSED.
 
-**3b. DONE — Phase 2 Pass 4 story-writer fix-burst (commit 3a0dc66):**
-epics.md v0.1.4 — EPIC-09 S04 invariant comment added. Finding closed: S01. NO separate PO or architect burst (PASS verdict — only 1 SUGGESTION).
+**3b. NO-ARCHITECT-BURST — Pass 5 PASS verdict, zero findings.**
 
-**3c. NO-PO-BURST — Pass 4 PASS verdict, no CRITICAL or IMPORTANT findings.**
+**3c. NO-PO-BURST — Pass 5 PASS verdict, zero findings.**
 
-**3d. DONE — Phase 2 Pass 4 fix-closure state-mgr FINAL (this commit):**
-STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Pass 3 SHA-pending (row 4) back-filled to 18684f5. Epics v0.1.4 noted. Streak 1/3 recorded. Decay 17→7→4→1 documented. Pass 5 dispatch procedure added.
+**3d. DONE — Phase 2 Pass 5 closure state-mgr FINAL (this commit):**
+STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Pass 4 SHA-pending row back-filled to 2eb0ba4. Streak 2/3 recorded. Decay 17→7→4→1→0 documented. Pass 6 dispatch procedure updated with convergence note.
 
-**3e. TOP-OF-STACK — Phase 2 Step G Pass 5:**
-Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-INDEX.md (v0.3.3) → wave-schedule.md (v0.1.4) → dispatches `vsdd-factory:adversary` with FRESH CONTEXT for Pass 5. CRITICAL: DO NOT pass holdout-scenarios.md (restricted). BC-5.39.001 3-CLEAN cascade — streak 1/3 entering Pass 5. Pass 4 = first PASS verdict in Phase 2 cascade. Decay: C:4→0→0→0, I:8→3→2→0, S:5→4→2→1. F-P3-S02 deferred — does NOT block adversary dispatch.
+**3e. TOP-OF-STACK — Phase 2 Step G Pass 6:**
+Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-INDEX.md (v0.3.3) → wave-schedule.md (v0.1.4) → dispatches `vsdd-factory:adversary` with FRESH CONTEXT for Pass 6. CRITICAL: DO NOT pass holdout-scenarios.md (restricted). BC-5.39.001 3-CLEAN cascade — streak 2/3 entering Pass 6. Pass 6 is the THIRD-streak convergence candidate. If Pass 6 PASSes, streak reaches 3/3 and Phase 2 Step G CONVERGES. Decay: C:4→0→0→0→0, I:8→3→2→0→0, S:5→4→2→1→0. Floor reached.
 
 ### Step 4 — Key constraints to carry forward
 
@@ -146,9 +145,9 @@ Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-I
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step G Pass 4 CLOSED (PASS 0C+0I+1S — fix-burst 3a0dc66 applied) — streak 1/3 — Pass 5 is next-action.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step G Pass 5 CLOSED (PASS 0C+0I+0S — zero findings) — streak 2/3 — Pass 6 is next-action.**
 
-Phase 2 Step G Pass 4 CLOSED on 2026-05-19. Report persisted at 698846d (PASS — 0C+0I+1S). FIRST PASS VERDICT IN PHASE 2 CASCADE. Fix-burst: 3a0dc66 (story-writer — epics.md v0.1.4 — S04 invariant comment on EPIC-09). 1 finding closed (S01). Streak advances 0/3 → 1/3. Decay trajectory: Pass 1=17 findings (4C+8I+5S) → Pass 2=7 findings (0C+3I+4S) → Pass 3=4 findings (0C+2I+2S) → Pass 4=1 finding (0C+0I+1S). CRITICAL eliminated (4→0→0→0). IMPORTANT eliminated at Pass 4 (8→3→2→0). SUGGESTION decaying 5→4→2→1. Pass 5 is next-action per BC-5.39.001 3-CLEAN cascade.
+Phase 2 Step G Pass 5 CLOSED on 2026-05-19. Report persisted at 3c7605b (PASS — 0C+0I+0S). SECOND CONSECUTIVE PASS IN PHASE 2 CASCADE. No fix-burst (zero findings). Streak advances 1/3 → 2/3. Decay trajectory: Pass 1=17 findings (4C+8I+5S) → Pass 2=7 findings (0C+3I+4S) → Pass 3=4 findings (0C+2I+2S) → Pass 4=1 finding (0C+0I+1S) → Pass 5=0 findings (0C+0I+0S). CRITICAL eliminated at Pass 2 (4→0→0→0→0). IMPORTANT eliminated at Pass 4 (8→3→2→0→0). SUGGESTION eliminated at Pass 5 (5→4→2→1→0). Decay at floor. Pass 6 is the THIRD-streak convergence candidate per BC-5.39.001 3-CLEAN protocol.
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -232,7 +231,7 @@ See SESSION-HANDOFF prior versions or `.factory/cycles/v0.1-phase-1a-brief/adver
 - **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
 - **Phase 1c status:** COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89ea4b)
 - **Phase 1d status:** CONVERGED — Pass 42 CLOSED (PASS); 68 fix-bursts; streak 3/3; Phase 2 authorized per UD-005
-- **Phase 2 status:** STEP-G-PASS-4-CLOSED (Pass 4 PASS — 0C+0I+1S; fix-burst 3a0dc66; epics v0.1.4; streak 1/3 — first PASS in Phase 2 cascade; Pass 5 next-action)
+- **Phase 2 status:** STEP-G-PASS-5-CLOSED (Pass 5 PASS — 0C+0I+0S; zero findings; streak 2/3 — second consecutive PASS; Pass 6 next-action — convergence candidate)
 - **Holdout scenarios:** `.factory/stories/holdout-scenarios.md` (v0.1.4, commit 7b1ae9d) — ACCESS CONTROL: restricted — holdout-evaluator-only
 - **Dependency graph:** `.factory/stories/dependency-graph.md` (v0.1.1, commit f160696) — CANONICAL for inter-story deps (UD-007)
 - **Five-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md)
