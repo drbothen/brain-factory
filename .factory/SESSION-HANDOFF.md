@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-2-story-decomposition-step-c-complete
-session_stage: phase-2-step-c-complete-step-d-next-action
+session_phase: phase-2-story-decomposition-step-d-complete
+session_stage: phase-2-step-d-complete-step-e-next-action
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.12
@@ -16,6 +16,11 @@ current_story_index_path: .factory/stories/STORY-INDEX.md
 current_story_index_version: "0.3.0"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.0"
+current_wave_schedule_path: .factory/stories/wave-schedule.md
+current_wave_schedule_version: "0.1.0"
+current_sprint_state_path: .factory/stories/sprint-state.yaml
+current_sprint_state_version: "0.1.0"
+total_waves: 11
 total_stories_drafted: 43
 total_bc_count: 95
 total_adr_count: 17
@@ -78,7 +83,7 @@ user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule 
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
 last_updated: 2026-05-19
-status: phase-2-step-c-complete-step-d-next-action
+status: phase-2-step-d-complete-step-e-next-action
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d
@@ -107,20 +112,20 @@ git status --short
 ```
 Expected: empty (all tracked files clean after this snapshot commit)
 
-### Step 3 — Phase 2 Step C COMPLETED (dependency-graph.md v0.1.0 at 90d90fd); Step D (wave-schedule) is next-action
+### Step 3 — Phase 2 Step D COMPLETED (wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 at efc3001); Step E (holdout-scenarios) is next-action
 
-**3a. DONE — Phase 2 Step C story-writer burst (commit 90d90fd):**
-dependency-graph.md v0.1.0 produced. 43 stories, 67 edges (57 frontmatter-confirmed + 10 graph-derived), 13 topological layers, acyclic (Kahn's algorithm PASS). Critical path 11 hops (12 stories). 16 terminal nodes. 6 carry-forward findings adjudicated: F-PHASE2-CONSISTENCY-I04/I05/I06/I07 RESOLVED-EDGE-ADDED + S01/S02 RESOLVED-TRANSITIVE-NOT-DIRECT. UD-007 dep-graph supersession convention established.
+**3a. DONE — Phase 2 Step D story-writer burst (commit efc3001):**
+wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 produced. 11 waves, 43 stories, 264 total points. 12 critical-path stories at wave_position 1 within their waves. 16 terminal nodes assigned to specific waves (W3=6, W4=1, W6=2, W7=3, W8=2, W10=1, W11=1). 7 holdout-evaluation-eligible waves: W3, W6, W7, W8, W9, W10, W11. sprint-state.yaml parses cleanly (yaml.safe_load verified), 2-space indent throughout.
 
-**3b. NO SEPARATE ARCHITECT BURST — no architecture changes in Step C.**
+**3b. NO SEPARATE ARCHITECT BURST — no architecture changes in Step D.**
 
-**3c. NO SEPARATE PO BURST — no BC/PRD changes in Step C.**
+**3c. NO SEPARATE PO BURST — no BC/PRD changes in Step D.**
 
-**3d. DONE — Phase 2 Step C state-mgr FINAL (Step C - commit SHA-pending-this-burst):**
-Phase 2 Step C state-mgr FINAL burst. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. UD-007 recorded. Phase advanced to step-d-next-action.
+**3d. DONE — Phase 2 Step D state-mgr FINAL (Step D - commit SHA-pending-this-burst):**
+Phase 2 Step D state-mgr FINAL burst. STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Step C SHA-pending-this-burst back-filled to 76edc10. Phase advanced to step-e-next-action.
 
-**3e. TOP-OF-STACK — Phase 2 Step D (wave-schedule):**
-Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → dependency-graph.md (v0.1.0) → STORY-INDEX.md (v0.3.0) → dispatches `vsdd-factory:story-writer` for Step D (wave-schedule). Inputs: dependency-graph.md v0.1.0 + STORY-INDEX v0.3.0 + 43 story files. Outputs: `.factory/stories/wave-schedule.md` + `.factory/stories/sprint-state.yaml`.
+**3e. TOP-OF-STACK — Phase 2 Step E (holdout-scenarios):**
+Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → wave-schedule.md (v0.1.0) → STORY-INDEX.md (v0.3.0) → dispatches `vsdd-factory:product-owner` for Step E (holdout-scenarios). Inputs: brief v0.4.20 + PRD v0.1.12 + BC-INDEX v0.1.12 + ARCH-INDEX v0.1.23 + STORY-INDEX v0.3.0 + dep-graph v0.1.0 + wave-schedule v0.1.0 + 43 story files. Output: `.factory/stories/holdout-scenarios.md`.
 
 ### Step 4 — Key constraints to carry forward
 
@@ -134,9 +139,9 @@ Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → depende
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step C COMPLETED — dependency-graph.md v0.1.0 (67 edges, 13 topo layers, 6 findings adjudicated, UD-007 established) — Step D (wave-schedule) is next-action.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step D COMPLETED — wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 (11 waves, 43 stories, 264 points) — Step E (holdout-scenarios) is next-action.**
 
-Phase 2 Step C (Dependency Graph) COMPLETED on 2026-05-19. Story-writer produced dependency-graph.md v0.1.0 at commit 90d90fd. 67 edges (57 frontmatter-confirmed + 10 graph-derived), 13 topological layers, acyclic (Kahn's PASS), 16 terminal nodes, critical path 11 hops. UD-007 dep-graph supersession convention established: dependency-graph.md is canonical for inter-story dependencies; per-story frontmatter is snapshot-only. Step D (wave-schedule) is next-action per Phase 2 lobster workflow.
+Phase 2 Step D (Wave Schedule) COMPLETED on 2026-05-19. Story-writer produced wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 at commit efc3001. 11 waves, 43 stories, 264 total points, 12 critical-path stories at wave_position 1, 16 terminal nodes assigned to specific waves, 7 holdout-evaluation-eligible waves. Step E (holdout-scenarios) is next-action per Phase 2 lobster workflow.
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -472,39 +477,41 @@ Per discipline #23, this header count is updated alongside every row addition. D
 | 53d7f29 | story-writer | Phase 2 consistency closeout — STORY-INDEX v0.3.0 rebuild — F-PHASE2-CONSISTENCY-I01/I02/I03 |
 | 1ecbdfc | state | Phase 2 Step B state-mgr FINAL — create-stories CLOSED — 43 stories 95/95 BC coverage — per-hook .bats cascade complete — phase advanced to step-c-next-action |
 | 90d90fd | story-writer | Phase 2 Step C — dependency-graph.md v0.1.0 (43 stories, F-PHASE2-CONSISTENCY-I04..I07 + S01..S02 adjudicated) |
-| SHA-pending-this-burst | state | Phase 2 Step C state-mgr FINAL — dependency-graph CLOSED — UD-007 dep-graph supersession convention — phase advanced to step-d-next-action |
+| 76edc10 | state | Phase 2 Step C state-mgr FINAL — dependency-graph CLOSED — UD-007 dep-graph supersession convention — phase advanced to step-d-next-action |
+| efc3001 | story-writer | Phase 2 Step D — wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 (11 waves, 43 stories, 264 points, critical-path-aware) |
+| SHA-pending-this-burst | state | Phase 2 Step D state-mgr FINAL — wave-schedule CLOSED — phase advanced to step-e-next-action |
 
 ## 9. Resume procedure for FRESH-CONTEXT ORCHESTRATOR (post-Phase-1d CONVERGENCE)
 
-**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d CONVERGED — Phase 2 STEP-C-COMPLETE (dependency-graph.md v0.1.0 at 90d90fd; 67 edges, 13 topo layers; UD-007 established). Step D (wave-schedule) is next-action.**
+**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d CONVERGED — Phase 2 STEP-D-COMPLETE (wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 at efc3001; 11 waves, 43 stories, 264 points). Step E (holdout-scenarios) is next-action.**
 
 **Read these documents IN ORDER before dispatching any agent:**
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (canonical state-discovery entry point)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` (this file)
-4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger; task #160 is next-action)
-5. `/Users/jmagady/Dev/brain-factory/.factory/stories/dependency-graph.md` (v0.1.0 — primary input to Step D)
+4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger; task #161 is next-action)
+5. `/Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md` (v0.1.0 — Phase 2 Step D output)
 6. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md` (v0.3.0 — 43 stories)
 
 **Pre-dispatch verification:**
 
 ```bash
 cd /Users/jmagady/Dev/brain-factory
-git log --oneline -1                # expect HEAD = factory(state): Phase 2 Step C state-mgr FINAL
+git log --oneline -1                # expect HEAD = factory(state): Phase 2 Step D state-mgr FINAL
 git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
-grep -nE '^phase:' .factory/STATE.md              # expect phase: phase-2-story-decomposition-step-c-complete-step-d-next-action
-grep -nE '^phase_2_status:' .factory/STATE.md     # expect phase_2_status: STEP-C-COMPLETE ...
-ls /Users/jmagady/Dev/brain-factory/.factory/stories/dependency-graph.md  # expect v0.1.0
-ls /Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md       # expect v0.3.0
+grep -nE '^phase:' .factory/STATE.md              # expect phase: phase-2-story-decomposition-step-d-complete-step-e-next-action
+grep -nE '^phase_2_status:' .factory/STATE.md     # expect phase_2_status: STEP-D-COMPLETE ...
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md     # expect v0.1.0
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/sprint-state.yaml    # expect v0.1.0
 ls /Users/jmagady/Dev/brain-factory/.factory/stories/stories/ | wc -l     # expect 43
 ```
 
 **Resume steps:**
 
-1. Confirm dependency-graph.md exists at `.factory/stories/dependency-graph.md` (v0.1.0, 67 edges, 13 topo layers, acyclic). Confirm STORY-INDEX.md at v0.3.0 (43 stories). Confirm `ls .factory/stories/stories/ | wc -l` returns 43.
-2. Dispatch `vsdd-factory:story-writer` for Phase 2 Step D (wave-schedule). Inputs = dependency-graph.md v0.1.0 + STORY-INDEX v0.3.0 + 43 story files. Outputs = `.factory/stories/wave-schedule.md` + `.factory/stories/sprint-state.yaml`.
-3. After wave-schedule, dispatch consistency-validator + adversarial spec-reviewer 3-CLEAN cascade per BC-5.39.001. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply.
+1. Confirm wave-schedule.md exists at `.factory/stories/wave-schedule.md` (v0.1.0, 11 waves, 43 stories, 264 points). Confirm sprint-state.yaml at v0.1.0. Confirm STORY-INDEX.md at v0.3.0 (43 stories).
+2. Dispatch `vsdd-factory:product-owner` for Phase 2 Step E (holdout-scenarios). Inputs = brief v0.4.20 + PRD v0.1.12 + BC-INDEX v0.1.12 + ARCH-INDEX v0.1.23 + STORY-INDEX v0.3.0 + dep-graph v0.1.0 + wave-schedule v0.1.0 + 43 story files. Output = `.factory/stories/holdout-scenarios.md` (5-15 hidden scenarios for Phase 4 holdout evaluator; NOT visible to implementer).
+3. After holdout-scenarios, dispatch consistency-validator + adversarial spec-reviewer 3-CLEAN cascade per BC-5.39.001. Same 24 disciplines + 13 sub-checks codified in Phase 1d apply.
 4. At Phase 2 convergence (streak 3/3), surface to human for Phase 2 approval gate before Phase 3 transition.
 
 **State-update discipline:**
