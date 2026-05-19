@@ -46,7 +46,7 @@ input-hash: ""
 Deliver three related capabilities within the scale-aware architecture layer: (1) add the
 token budget dimension to `/brain:health` — YELLOW alert at 2x baseline (>100K tokens
 30-day average), RED at 3x (>150K); (2) validate the source immutability behavioral
-invariant with a dedicated scale bats test in `tests/hooks.bats`; (3) ensure every
+invariant with a dedicated scale bats test in `tests/validate-source-immutability.bats`; (3) ensure every
 new manifest entry written by the ingest skills contains `"chunks": []` and
 `"embeddings_model": null` from v0.1 onward (schema forward-compatibility).
 
@@ -99,23 +99,24 @@ value from `.brain/policies.yaml` (default 50K if the policy key is absent).
 
 ### Source immutability behavioral invariant (BC-2.06.001)
 
-**AC-007** — `tests/hooks.bats` contains the VP-003 test cases: a PostToolUse Write
-to an existing source path (in manifest.json fixture) produces `validate-source-immutability.sh`
-exit 2 and error code `E-SOURCE-001`. A Write to a new source path produces exit 0 and
-`"verdict":"allow"`.
+**AC-007** — `tests/validate-source-immutability.bats` contains the VP-003 test cases: a
+PostToolUse Write to an existing source path (in manifest.json fixture) produces
+`validate-source-immutability.sh` exit 2 and error code `E-SOURCE-001`. A Write to a new
+source path produces exit 0 and `"verdict":"allow"`.
 (traces to BC-2.06.001 postcondition 1; VP-003 verification mechanism)
 
-**AC-008** — `tests/hooks.bats` contains a determinism assertion: running the same
-`validate-source-immutability.sh` payload twice in succession produces byte-identical
-stdout (modulo `ts` and `trace` fields). This confirms the hook is a pure function of
-its manifest.json state.
+**AC-008** — `tests/validate-source-immutability.bats` contains a determinism assertion:
+running the same `validate-source-immutability.sh` payload twice in succession produces
+byte-identical stdout (modulo `ts` and `trace` fields). This confirms the hook is a pure
+function of its manifest.json state.
 (traces to BC-2.06.001 invariant 1; VP-003 determinism property)
 
 **AC-009** — A Bash-tool write to an existing source path (simulating `echo >> sources/ai/foo.md`)
 triggers the PostToolUse hook at exit 2. The write already occurred (PostToolUse cannot
 prevent writes); the hook's advisory causes the session to flag the mutation. A bats test
-documents this limitation with a comment: "PostToolUse detects but cannot prevent —
-this is an inherent limitation per BC-2.06.001 EC-001."
+in `tests/validate-source-immutability.bats` documents this limitation with a comment:
+"PostToolUse detects but cannot prevent — this is an inherent limitation per BC-2.06.001
+EC-001."
 (traces to BC-2.06.001 edge case EC-001; CLAUDE.md §Canonical Principle — document known limitations)
 
 ### Manifest chunks schema forward-compatibility (BC-2.06.002)
@@ -159,7 +160,7 @@ confirms `jq -e '.embeddings_model == null'` passes.
    - `"compute-token-average.sh: shellcheck clean"`.
    - `"compute-token-average.sh: shfmt -d -i 2 clean"`.
 
-   In `tests/hooks.bats` (VP-003):
+   In `tests/validate-source-immutability.bats` (VP-003 — add to the per-hook suite created by STORY-007):
    - `"validate-source-immutability.sh: existing source path → E-SOURCE-001"` (VP-003).
    - `"validate-source-immutability.sh: new source path → allow"` (VP-003).
    - `"validate-source-immutability.sh: path not in sources/ → allow (no-op)"` (VP-003).
@@ -210,9 +211,9 @@ confirms `jq -e '.embeddings_model == null'` passes.
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-003 | Source immutability: existing path → exit 2 + E-SOURCE-001 | `tests/hooks.bats` |
-| VP-003 | Source immutability: new path → exit 0 + allow | `tests/hooks.bats` |
-| VP-003 | Determinism property | `tests/hooks.bats` |
+| VP-003 | Source immutability: existing path → exit 2 + E-SOURCE-001 | `tests/validate-source-immutability.bats` |
+| VP-003 | Source immutability: new path → exit 0 + allow | `tests/validate-source-immutability.bats` |
+| VP-003 | Determinism property | `tests/validate-source-immutability.bats` |
 
 ## Architecture Compliance Rules
 
@@ -267,7 +268,7 @@ From `architecture/verification-properties/VP-003-source-immutability.md`:
 | `plugins/brain-factory/skills/health/run.sh` | Modify | Add Sources dimension YELLOW/RED alert |
 | `plugins/brain-factory/scripts/lib/manifest-write.sh` | Modify | Add `chunks: []` and `embeddings_model: null` to every new entry template |
 | `plugins/brain-factory/tests/integration.bats` | Modify | Add 7 budget-alert + manifest schema bats tests |
-| `plugins/brain-factory/tests/hooks.bats` | Modify | Add 5 VP-003 source-immutability bats tests |
+| `plugins/brain-factory/tests/validate-source-immutability.bats` | Extend | Add 5 VP-003 source-immutability bats tests to the per-hook suite (STORY-007 created it) |
 | `plugins/brain-factory/tests/fixtures/manifest-with-existing-source.json` | Create | Fixture manifest with a pre-existing source entry for VP-003 tests |
 
 Files NOT to modify: any `.factory/` artifact, `hooks/validate-source-immutability.sh`
@@ -299,7 +300,7 @@ Read that file before modifying it to add the `chunks` and `embeddings_model` fi
 | VP-003 file (with bats test vectors) | ~700 |
 | STORY-001 health run.sh context | ~500 |
 | Existing integration.bats (prior tests) | ~1,500 |
-| Existing hooks.bats (prior tests) | ~1,500 |
+| Existing validate-source-immutability.bats (extend) | ~1,500 |
 | **Total** | **~12,000** |
 
 Within 20% of a 200K-token context window (~40K). No split required.

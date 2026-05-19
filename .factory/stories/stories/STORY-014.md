@@ -171,7 +171,8 @@ produces no diff.
      (domain.past-tense).
    - Test: `jq empty` on each entry's `example` field passes.
    - Test: all `emit_event` call sites in hook scripts have matching catalog rows.
-   - Test: `emit_event` writes to stderr; `emit_verdict` writes to stdout; no cross-contamination.
+   - Test: `emit_event` writes to stderr; `emit_verdict` writes to stdout; no cross-contamination
+     (in `tests/hook-event-emit.bats`).
    Run bats — confirm all new tests fail (Red Gate confirmed).
 
 3. **[impl]** Implement `plugins/brain-factory/hooks/lib/hook-event-emit.sh` per
@@ -220,7 +221,7 @@ produces no diff.
 | VP-008 | All hook emit sites have catalog rows | `tests/meta-lint.bats` or `tests/integration.bats` |
 | VP-008 | All catalog entries have required fields | `tests/meta-lint.bats` |
 | VP-008 | All example payloads valid JSON | `tests/meta-lint.bats` |
-| VP-017 | `emit_event` writes to stderr only (no stdout contamination) | `tests/hooks.bats` |
+| VP-017 | `emit_event` writes to stderr only (no stdout contamination) | `tests/hook-event-emit.bats` |
 
 ## Architecture Compliance Rules
 
@@ -264,6 +265,7 @@ No Node.js required for the shim itself.
 |------|--------|-------|
 | `plugins/brain-factory/hooks/lib/hook-event-emit.sh` | Modify (replace stub) | Full implementation: emit_event + emit_verdict functions |
 | `plugins/brain-factory/scripts/event-catalog.json` | Create | 27+ event entries, pre-populated |
+| `plugins/brain-factory/tests/hook-event-emit.bats` | Create | Per-hook bats suite for the emit shim: emit_event stderr-only, emit_verdict stdout-only, credential masking, JSONL schema (≥ 3 @test blocks) |
 | `plugins/brain-factory/tests/meta-lint.bats` | Extend | VP-008 catalog completeness assertions |
 
 Files NOT to modify: individual hook scripts (they call the shim; STORY-006..STORY-013

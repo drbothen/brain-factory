@@ -171,8 +171,8 @@ no `.claude/templates/` hardcoding.
    skeleton. Iron Law: "Never move a file to published/ before the LinkedIn API confirms
    success — file moves are committed only on 201 response." Procedure steps are stubs.
 
-4. **[failing tests — Red Gate]** Add failing `@test` blocks to
-   `plugins/brain-factory/tests/hooks.bats` (state machine tests, matching VP-020):
+4. **[failing tests — Red Gate]** Create `plugins/brain-factory/tests/validate-publish-state.bats`
+   with failing `@test` blocks (state machine tests, matching VP-020):
    - `"validate-publish-state: ready-state file in to-publish/ → exit 0"` — VP-020
      vector.
    - `"validate-publish-state: draft→published skip blocked with E-PUBLISH-001"` —
@@ -242,8 +242,8 @@ no `.claude/templates/` hardcoding.
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-020 | All valid state transitions pass | `tests/hooks.bats` |
-| VP-020 | All invalid transitions blocked with E-PUBLISH-001 | `tests/hooks.bats` |
+| VP-020 | All valid state transitions pass | `tests/validate-publish-state.bats` |
+| VP-020 | All invalid transitions blocked with E-PUBLISH-001 | `tests/validate-publish-state.bats` |
 | VP-020 | Posts API endpoint `/rest/posts` used (not deprecated UGC) | `tests/skills.bats` (DTU mock) |
 | VP-020 | File not moved until API 201 success | `tests/skills.bats` (DTU mock) |
 | VP-020 | LinkedIn directories present + file in correct location | `tests/integration.bats` |
@@ -297,7 +297,7 @@ From `architecture/subsystems/SS-09-publishing-pipeline.md`:
 | `plugins/brain-factory/hooks/validate-publish-state.sh` | Create | PostToolUse state machine enforcement hook |
 | `plugins/brain-factory/scripts/linkedin-post.mjs` | Create | Node 20+ LinkedIn Posts API caller |
 | `plugins/brain-factory/skills/publish-content/SKILL.md` | Create | Publish orchestration skill |
-| `plugins/brain-factory/tests/hooks.bats` | Modify | Add 4 failing-then-passing state machine hook tests |
+| `plugins/brain-factory/tests/validate-publish-state.bats` | Create | Per-hook bats suite for validate-publish-state.sh: 4 state machine VP-020 test cases (≥ 3 @test blocks) |
 | `plugins/brain-factory/tests/skills.bats` | Modify | Add 8 failing-then-passing publish skill tests |
 | `plugins/brain-factory/scripts/event-catalog.json` | Modify | Register `publish.state_checked` event type |
 
@@ -332,7 +332,7 @@ extend it. Mark it explicitly in the File Structure table above.
 | BC-2.09.003 file | ~600 |
 | BC-2.09.004 file | ~700 |
 | VP-020 file (bats spec) | ~2,200 |
-| Existing `hooks.bats` (for hook test context) | ~2,000 |
+| Existing `validate-publish-state.bats` (new per-hook suite) | ~2,000 |
 | Existing `skills.bats` (for skill test context) | ~2,000 |
 | **Total** | **~13,800** |
 

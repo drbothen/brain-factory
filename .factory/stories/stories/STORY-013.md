@@ -23,7 +23,8 @@ inputs:
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Note: BC-2.04.013 and BC-2.04.014 are both P1 — no dedicated VP; bats coverage
-# is through hooks.bats test cases (no formal VP-NNN assigned per VP-INDEX).
+# is through per-hook .bats files (flush-state-and-commit.bats, brain-health-check.bats;
+# no formal VP-NNN assigned per VP-INDEX).
 ---
 
 # STORY-013: flush-state-and-commit.sh and brain-health-check.sh — session Stop commit and SessionStart health banner
@@ -139,14 +140,16 @@ diagnosis."
    `plugins/brain-factory/hooks/flush-state-and-commit.sh` and
    `plugins/brain-factory/hooks/brain-health-check.sh`. If absent, create canonical stubs.
 
-2. **[failing test — Red Gate]** Add bats test cases to
-   `plugins/brain-factory/tests/hooks.bats` in failing state:
-   - Flush tests: uncommitted changes → commit performed + exit 0; no changes → exit 0 +
-     "No changes to flush"; git commit fails → exit 1 + E-FLUSH-001; outside git repo →
-     exit 0 no-op; auto-commit message uses `brain(auto):` prefix; hook NEVER exits 2.
-   - Health tests: non-brain dir (no `.brain/STATE.md`) → exit 0 + `brain.health.skipped`;
-     GREEN STATE.md → exit 0 + "Brain health: GREEN"; RED STATE.md → exit 1 +
-     E-HEALTH-002; malformed STATE.md → exit 1 + advisory; hook NEVER exits 2.
+2. **[failing test — Red Gate]** Create `plugins/brain-factory/tests/flush-state-and-commit.bats`
+   and `plugins/brain-factory/tests/brain-health-check.bats` with test cases in failing state:
+   - `flush-state-and-commit.bats` (≥ 3 `@test` blocks): uncommitted changes → commit
+     performed + exit 0; no changes → exit 0 + "No changes to flush"; git commit fails →
+     exit 1 + E-FLUSH-001; outside git repo → exit 0 no-op; auto-commit message uses
+     `brain(auto):` prefix; hook NEVER exits 2.
+   - `brain-health-check.bats` (≥ 3 `@test` blocks): non-brain dir (no `.brain/STATE.md`)
+     → exit 0 + `brain.health.skipped`; GREEN STATE.md → exit 0 + "Brain health: GREEN";
+     RED STATE.md → exit 1 + E-HEALTH-002; malformed STATE.md → exit 1 + advisory; hook
+     NEVER exits 2.
    Create fixtures: `stop-event-with-changes.json`, `stop-event-no-changes.json`,
    `session-start-green-brain.json`, `session-start-red-brain.json`,
    `session-start-non-brain.json`.
@@ -181,7 +184,8 @@ diagnosis."
      JSONL stderr; exit 1
    - INVARIANT: this hook NEVER reaches `exit 2` under any execution path
 
-5. **[green]** Run `bats plugins/brain-factory/tests/hooks.bats` — all new tests pass.
+5. **[green]** Run `bats plugins/brain-factory/tests/flush-state-and-commit.bats` and
+   `bats plugins/brain-factory/tests/brain-health-check.bats` — all new tests pass.
 
 6. **[green]** Run `shellcheck` and `shfmt -d -i 2` on both scripts — clean.
 
@@ -204,11 +208,11 @@ diagnosis."
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| (no VP — P1) | Flush hook auto-commits on Stop | `tests/hooks.bats` |
-| (no VP — P1) | Flush hook never exits 2 | `tests/hooks.bats` |
-| (no VP — P1) | Health hook shows GREEN/RED banner | `tests/hooks.bats` |
-| (no VP — P1) | Health hook never exits 2 | `tests/hooks.bats` |
-| (no VP — P1) | Health hook exits 0 in non-brain dir + skipped event | `tests/hooks.bats` |
+| (no VP — P1) | Flush hook auto-commits on Stop | `tests/flush-state-and-commit.bats` |
+| (no VP — P1) | Flush hook never exits 2 | `tests/flush-state-and-commit.bats` |
+| (no VP — P1) | Health hook shows GREEN/RED banner | `tests/brain-health-check.bats` |
+| (no VP — P1) | Health hook never exits 2 | `tests/brain-health-check.bats` |
+| (no VP — P1) | Health hook exits 0 in non-brain dir + skipped event | `tests/brain-health-check.bats` |
 
 ## Architecture Compliance Rules
 
@@ -248,7 +252,8 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md` and ADR-002:
 |------|--------|-------|
 | `plugins/brain-factory/hooks/flush-state-and-commit.sh` | Modify (replace stub) | Full implementation per BC-2.04.013 |
 | `plugins/brain-factory/hooks/brain-health-check.sh` | Modify (replace stub) | Full implementation per BC-2.04.014 |
-| `plugins/brain-factory/tests/hooks.bats` | Extend | Bats test cases for both hooks (no VP — P1 hooks) |
+| `plugins/brain-factory/tests/flush-state-and-commit.bats` | Create | Bats test cases for flush-state-and-commit.sh (≥ 3 @test blocks; no VP — P1) |
+| `plugins/brain-factory/tests/brain-health-check.bats` | Create | Bats test cases for brain-health-check.sh (≥ 3 @test blocks; no VP — P1) |
 | `plugins/brain-factory/tests/fixtures/stop-event-with-changes.json` | Create | Stop payload with uncommitted changes flag |
 | `plugins/brain-factory/tests/fixtures/stop-event-no-changes.json` | Create | Stop payload clean |
 | `plugins/brain-factory/tests/fixtures/session-start-green-brain.json` | Create | SessionStart payload in green brain dir |
@@ -259,14 +264,15 @@ Files NOT to modify: `hooks.json.template`, `plugin.json`, any file under `.fact
 
 ## Previous Story Intelligence
 
-STORY-012 established PreToolUse hooks; STORY-013 introduces a new event category: Stop
-and SessionStart lifecycle hooks. The stdin JSON payload schema differs for Stop and
-SessionStart events — check ADR-002 §Universal Hook Input Schema for the exact field
-names (they may carry session metadata rather than tool call data). Note that bats tests
-for these hooks require simulating git state (tmp git repos) — the test harness must
-create a temporary git repository as a fixture rather than relying on the real brain vault.
-Both hooks are P1 (not P0), which means they have no dedicated VP. Coverage is through
-bats test cases in hooks.bats.
+STORY-012 established PreToolUse hooks and the per-hook .bats convention; STORY-013
+introduces a new event category: Stop and SessionStart lifecycle hooks. The stdin JSON
+payload schema differs for Stop and SessionStart events — check ADR-002 §Universal Hook
+Input Schema for the exact field names (they may carry session metadata rather than tool
+call data). Note that bats tests for these hooks require simulating git state (tmp git
+repos) — the test harness must create a temporary git repository as a fixture rather than
+relying on the real brain vault. Both hooks are P1 (not P0), which means they have no
+dedicated VP. Coverage is through dedicated per-hook .bats files (`flush-state-and-commit.bats`
+and `brain-health-check.bats`), NOT a shared hooks.bats.
 
 ## Token Budget Estimate
 
@@ -277,7 +283,8 @@ bats test cases in hooks.bats.
 | ADR-002 hook chain contract | ~1,500 |
 | ADR-016 helper architecture | ~1,000 |
 | BC-2.04.013, BC-2.04.014 files | ~1,500 |
-| hooks.bats from prior stories | ~3,000 |
+| flush-state-and-commit.bats (new) | ~1,500 |
+| brain-health-check.bats (new) | ~1,500 |
 | Test fixtures | ~500 |
 | **Total** | **~12,500** |
 

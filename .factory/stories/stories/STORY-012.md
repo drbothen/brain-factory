@@ -132,14 +132,15 @@ clean command, stderr contains `"event_type":"attribution.token.cleared"`.
    `plugins/brain-factory/hooks/enforce-kebab-case.sh` and
    `plugins/brain-factory/hooks/block-ai-attribution.sh`. If absent, create canonical stubs.
 
-2. **[failing test — Red Gate]** Extend `plugins/brain-factory/tests/hooks.bats` with
-   VP-017 assertions in failing state:
-   - Kebab-case tests: `ai-agents.md` → exit 0; `AI Agents.md` → exit 2 + E-NAMING-001 +
-     suggestion; `ai_agents.md` → exit 2 + E-NAMING-001; `CLAUDE.md` → exit 0 (exempt);
-     all 7 exception-list files → exit 0.
-   - Attribution tests: clean commit command → exit 0; `Co-Authored-By: Claude` → exit 2 +
-     E-ATTR-001; robot emoji `🤖` → exit 2 + E-ATTR-001; `Generated with Claude Code` →
-     exit 2 + E-ATTR-001.
+2. **[failing test — Red Gate]** Create `plugins/brain-factory/tests/enforce-kebab-case.bats`
+   and `plugins/brain-factory/tests/block-ai-attribution.bats` with VP-017 assertions in
+   failing state:
+   - `enforce-kebab-case.bats` (≥ 3 `@test` blocks): `ai-agents.md` → exit 0;
+     `AI Agents.md` → exit 2 + E-NAMING-001 + suggestion; `ai_agents.md` → exit 2 +
+     E-NAMING-001; `CLAUDE.md` → exit 0 (exempt); all 7 exception-list files → exit 0.
+   - `block-ai-attribution.bats` (≥ 3 `@test` blocks): clean commit command → exit 0;
+     `Co-Authored-By: Claude` → exit 2 + E-ATTR-001; robot emoji `🤖` → exit 2 +
+     E-ATTR-001; `Generated with Claude Code` → exit 2 + E-ATTR-001.
    Create fixtures: `write-kebab-valid.json`, `write-kebab-invalid-space.json`,
    `write-kebab-exempt-claude-md.json`, `bash-clean-commit.json`,
    `bash-ai-attribution-coauthored.json`, `bash-ai-attribution-emoji.json`.
@@ -168,7 +169,8 @@ clean command, stderr contains `"event_type":"attribution.token.cleared"`.
      `attribution.token.blocked` JSONL stderr via `hooks/lib/hook-event-emit.sh`; exit 2
    - If no match: emit `attribution.token.cleared` JSONL stderr; exit 0
 
-5. **[green]** Run `bats plugins/brain-factory/tests/hooks.bats` — all new VP-017 tests pass.
+5. **[green]** Run `bats plugins/brain-factory/tests/enforce-kebab-case.bats` and
+   `bats plugins/brain-factory/tests/block-ai-attribution.bats` — all new VP-017 tests pass.
 
 6. **[green]** Run `shellcheck` and `shfmt -d -i 2` on both scripts — clean.
 
@@ -189,11 +191,11 @@ clean command, stderr contains `"event_type":"attribution.token.cleared"`.
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-017 | Non-kebab-case names blocked before write | `tests/hooks.bats` |
-| VP-017 | Valid kebab-case names pass | `tests/hooks.bats` |
-| VP-017 | Exception list covers known uppercase files | `tests/hooks.bats` |
-| VP-017 | All 3 forbidden attribution patterns blocked | `tests/hooks.bats` |
-| VP-017 | Clean bash commands pass | `tests/hooks.bats` |
+| VP-017 | Non-kebab-case names blocked before write | `tests/enforce-kebab-case.bats` |
+| VP-017 | Valid kebab-case names pass | `tests/enforce-kebab-case.bats` |
+| VP-017 | Exception list covers known uppercase files | `tests/enforce-kebab-case.bats` |
+| VP-017 | All 3 forbidden attribution patterns blocked | `tests/block-ai-attribution.bats` |
+| VP-017 | Clean bash commands pass | `tests/block-ai-attribution.bats` |
 
 ## Architecture Compliance Rules
 
@@ -233,7 +235,8 @@ No Node.js, no yq required.
 |------|--------|-------|
 | `plugins/brain-factory/hooks/enforce-kebab-case.sh` | Modify (replace stub) | Full implementation per BC-2.04.011 |
 | `plugins/brain-factory/hooks/block-ai-attribution.sh` | Modify (replace stub) | Full implementation per BC-2.04.012 |
-| `plugins/brain-factory/tests/hooks.bats` | Extend | VP-017 assertions for both hooks |
+| `plugins/brain-factory/tests/enforce-kebab-case.bats` | Create | VP-017 assertions for enforce-kebab-case.sh (≥ 3 @test blocks) |
+| `plugins/brain-factory/tests/block-ai-attribution.bats` | Create | VP-017 assertions for block-ai-attribution.sh (≥ 3 @test blocks) |
 | `plugins/brain-factory/tests/fixtures/write-kebab-valid.json` | Create | Valid kebab target path |
 | `plugins/brain-factory/tests/fixtures/write-kebab-invalid-space.json` | Create | Space in filename |
 | `plugins/brain-factory/tests/fixtures/write-kebab-exempt-claude-md.json` | Create | CLAUDE.md exempt path |
@@ -245,11 +248,13 @@ Files NOT to modify: `hooks.json.template`, `plugin.json`, any file under `.fact
 
 ## Previous Story Intelligence
 
-STORY-010 established the two-hooks-per-story pattern and tests against `tests/hooks.bats`.
-Note that these are PreToolUse hooks (unlike STORY-010's PostToolUse hooks). The stdin
-payload schema differs: PreToolUse `Write|Edit` delivers `tool_input.file_path`, and
-PreToolUse `Bash` delivers `tool_input.command`. Check ADR-002 §Universal Hook Input
-Schema for the exact field names.
+STORY-010 established the two-hooks-per-story pattern and per-hook .bats files (one .bats
+file per hook, not a shared hooks.bats). Note that these are PreToolUse hooks (unlike
+STORY-010's PostToolUse hooks). The stdin payload schema differs: PreToolUse `Write|Edit`
+delivers `tool_input.file_path`, and PreToolUse `Bash` delivers `tool_input.command`.
+Check ADR-002 §Universal Hook Input Schema for the exact field names. Create
+`tests/enforce-kebab-case.bats` and `tests/block-ai-attribution.bats` as standalone
+suites; do NOT add to a shared hooks.bats.
 
 ## Token Budget Estimate
 
@@ -261,7 +266,8 @@ Schema for the exact field names.
 | ADR-016 helper architecture | ~1,000 |
 | BC-2.04.011, BC-2.04.012 files | ~1,500 |
 | VP-017 file | ~500 |
-| hooks.bats from prior stories | ~2,500 |
+| enforce-kebab-case.bats (new) | ~1,200 |
+| block-ai-attribution.bats (new) | ~1,300 |
 | Test fixtures | ~400 |
 | **Total** | **~11,900** |
 

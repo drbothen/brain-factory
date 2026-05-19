@@ -31,7 +31,7 @@ input-hash: ""
 # BC-2.17.003 (stream separation), and BC-2.17.004 (no-credential) are all
 # CROSS-CUTTING properties that apply to every hook — they have no single hook
 # as their implementation surface. Their verification home is meta-lint.bats
-# (structural checks) and hooks.bats latency assertions. Bundling into one story
+# (structural checks) and hook-contracts.bats latency assertions. Bundling into one story
 # is correct: these BCs share the same test file targets and the same "expand
 # meta-lint.bats" task. Implementing them separately would produce 4 near-identical
 # stories each adding 1-2 tests to meta-lint.bats.
@@ -41,7 +41,7 @@ input-hash: ""
 
 ## Goal
 
-Expand `meta-lint.bats` and `hooks.bats` to enforce the four cross-cutting hook quality
+Expand `meta-lint.bats` and `hook-contracts.bats` to enforce the four cross-cutting hook quality
 gates that apply uniformly to all 13 hooks: (1) every hook processes its canonical
 sample payload under 100ms p99 (BC-2.04.015); (2) every hook reads JSON from stdin,
 writes JSON verdict to stdout, and exits exactly 0, 1, or 2 (BC-2.04.016); (3) every
@@ -70,9 +70,10 @@ violate these properties without a failing test.
 
 ### Performance Budget (BC-2.04.015)
 
-**AC-001** — `tests/hooks.bats` contains a latency assertion for each of the 13 hooks:
-measured wall-clock time from invocation to exit on the canonical fixture is under 100ms
-per run; measured over 10 consecutive runs; test passes only if p99 is under 100ms.
+**AC-001** — `tests/hook-contracts.bats` contains a latency assertion for each of the
+13 hooks: measured wall-clock time from invocation to exit on the canonical fixture is
+under 100ms per run; measured over 10 consecutive runs; test passes only if p99 is under
+100ms.
 (traces to BC-2.04.015 postconditions 1–2; invariant 3)
 
 **AC-002** — Each hook's canonical fixture for the latency test lives at
@@ -85,8 +86,8 @@ budget measurement (not excluded). If Node startup alone approaches the limit, t
 test comment flags this for Phase 1c incremental design review.
 (traces to BC-2.04.015 edge case EC-002)
 
-**AC-004** — The latency tests are test cases within `hooks.bats` (or a single dedicated
-`perf.bats` within the 9-suite roster), NOT a separate CI script outside bats.
+**AC-004** — The latency tests are test cases within `tests/hook-contracts.bats` (the
+cross-cutting runtime contract suite), NOT a separate CI script outside bats.
 (traces to BC-2.04.015 postcondition 2)
 
 ### Canonical I/O Contract (BC-2.04.016)
@@ -106,12 +107,12 @@ explicit value).
 contains the string `eval` anywhere in the file body.
 (traces to BC-2.04.016 invariant 2)
 
-**AC-008** — `tests/hooks.bats` contains a parameterized test (over all 13 hooks) that
-feeds empty stdin `""` and asserts: (a) exit code is 2; (b) stdout is valid JSON
+**AC-008** — `tests/hook-contracts.bats` contains a parameterized test (over all 13 hooks)
+that feeds empty stdin `""` and asserts: (a) exit code is 2; (b) stdout is valid JSON
 containing `"code":"E-HOOK-001"`. This verifies fail-closed on malformed input.
 (traces to BC-2.04.016 invariant 4; edge cases EC-001 and EC-002)
 
-**AC-009** — `tests/hooks.bats` contains a test that for each hook: feeding the
+**AC-009** — `tests/hook-contracts.bats` contains a test that for each hook: feeding the
 canonical happy-path fixture produces stdout that is valid JSON (`jq empty` succeeds on
 captured stdout).
 (traces to BC-2.04.016 postcondition 2 — stdout is always a single JSON object)
@@ -124,13 +125,14 @@ through `emit_verdict` (i.e., any `echo` not on a stderr-redirect line and not i
 comment). This is a static analysis check.
 (traces to BC-2.17.003 postcondition 3; edge case EC-002 — debug echoes blocked at lint time)
 
-**AC-011** — `tests/hooks.bats` contains a test for each hook: on a canonical fixture
-invocation, the captured stderr contains at least one valid JSONL line (`jq empty` on
-each line succeeds). The test asserts `wc -l ≥ 1` on captured stderr.
+**AC-011** — `tests/hook-contracts.bats` contains a test for each hook: on a canonical
+fixture invocation, the captured stderr contains at least one valid JSONL line (`jq empty`
+on each line succeeds). The test asserts `wc -l ≥ 1` on captured stderr.
 (traces to BC-2.17.003 postconditions 2; BC-2.04.017 invariant — ≥ 1 JSONL per invocation)
 
-**AC-012** — `tests/hooks.bats` contains a test for each hook: on the canonical happy-path
-fixture, the captured stdout contains exactly one JSON object and no additional lines.
+**AC-012** — `tests/hook-contracts.bats` contains a test for each hook: on the canonical
+happy-path fixture, the captured stdout contains exactly one JSON object and no additional
+lines.
 (traces to BC-2.17.003 postcondition 1; invariant 1 — even on error paths)
 
 ### No Credential Leakage (BC-2.17.004)
@@ -141,7 +143,7 @@ contains a pattern matching known credential variable names (`$LINKEDIN_ACCESS_T
 an `emit_event` or `emit_verdict` call. This is a grep-based static scan.
 (traces to BC-2.17.004 postcondition 1; invariant 1; SS-17 §No credential leakage)
 
-**AC-014** — `tests/hooks.bats` contains a test for each hook that processes
+**AC-014** — `tests/hook-contracts.bats` contains a test for each hook that processes
 credential-adjacent data: the hook is fed a fixture containing a synthetic credential
 value (e.g., a fake API key string matching `sk-[a-f0-9]{32}`), and the captured stdout
 and stderr are asserted NOT to contain that value.
@@ -169,8 +171,8 @@ produces no diff on any modified file.
    Run bats — confirm new tests fail (Red Gate confirmed, since hooks are stubs at
    this point).
 
-3. **[failing test — Red Gate]** Extend `tests/hooks.bats` with runtime contract
-   assertions in failing state:
+3. **[failing test — Red Gate]** Create `tests/hook-contracts.bats` with runtime contract
+   assertions in failing state (cross-cutting parameterized suite over all 13 hooks):
    - Empty stdin → exit 2 + E-HOOK-001 (parameterized over all 13 hooks).
    - Happy-path fixture stdout is valid JSON (parameterized over all 13 hooks).
    - Happy-path fixture stderr has ≥ 1 valid JSONL line (parameterized over all 13 hooks).
@@ -182,7 +184,7 @@ produces no diff on any modified file.
 
 4. **[impl]** The implementation for this story is in the TEST FILES, not in hook scripts.
    The hooks themselves are implemented in STORY-006..STORY-013. This story's
-   implementation task is to finalize the meta-lint + hooks.bats assertions such that:
+   implementation task is to finalize the meta-lint + hook-contracts.bats assertions such that:
    - All static analysis tests pass once STORY-006..STORY-013 are complete.
    - The latency assertions pass under CI runner conditions.
    - The parameterized empty-stdin tests pass for all hooks with full implementations.
@@ -192,7 +194,7 @@ produces no diff on any modified file.
 
 5. **[green]** Run `bats tests/meta-lint.bats` — all structural assertions pass.
 
-6. **[green]** Run `bats tests/hooks.bats` — all I/O contract and stream-separation
+6. **[green]** Run `bats tests/hook-contracts.bats` — all I/O contract and stream-separation
    assertions pass.
 
 7. **[green]** Run `shellcheck` and `shfmt -d -i 2` on `tests/meta-lint.bats` and any
@@ -216,12 +218,12 @@ produces no diff on any modified file.
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-001 | All 13 hooks exit 0/1/2 only; no bare `exit` | `tests/meta-lint.bats` (static) + `tests/hooks.bats` (empty-stdin) |
+| VP-001 | All 13 hooks exit 0/1/2 only; no bare `exit` | `tests/meta-lint.bats` (static) + `tests/hook-contracts.bats` (empty-stdin) |
 | VP-001 | No `eval` in any hook | `tests/meta-lint.bats` (grep) |
-| VP-013 | All 13 hook latency assertions pass < 100ms p99 | `tests/hooks.bats` (timing) |
-| VP-026 | stdout is always valid single JSON | `tests/hooks.bats` (jq empty) |
-| VP-026 | stderr contains JSONL ≥ 1 line per invocation | `tests/hooks.bats` (wc -l) |
-| VP-026 | No credential values in hook output | `tests/hooks.bats` (grep on captured output) |
+| VP-013 | All 13 hook latency assertions pass < 100ms p99 | `tests/hook-contracts.bats` (timing) |
+| VP-026 | stdout is always valid single JSON | `tests/hook-contracts.bats` (jq empty) |
+| VP-026 | stderr contains JSONL ≥ 1 line per invocation | `tests/hook-contracts.bats` (wc -l) |
+| VP-026 | No credential values in hook output | `tests/hook-contracts.bats` (grep on captured output) |
 
 ## Architecture Compliance Rules
 
@@ -265,7 +267,7 @@ No Node.js, no Python in test files.
 | Path | Action | Notes |
 |------|--------|-------|
 | `plugins/brain-factory/tests/meta-lint.bats` | Extend | Static analysis: bare-exit, eval, echo-stdout, credential-var assertions |
-| `plugins/brain-factory/tests/hooks.bats` | Extend | Runtime: empty-stdin, JSON stdout, JSONL stderr, latency assertions |
+| `plugins/brain-factory/tests/hook-contracts.bats` | Create | Runtime cross-cutting: empty-stdin, JSON stdout, JSONL stderr, latency assertions (parameterized over all 13 hooks) |
 | `plugins/brain-factory/tests/fixtures/<hook>-sample.json` | Create (×13) | One canonical fixture per hook for latency tests |
 
 Files NOT to modify: any hook script (STORY-006..STORY-013 own hook implementation),
@@ -279,7 +281,9 @@ separation tests depend on. STORY-015 tests are designed to pass once all hook s
 will cause runtime tests to fail — use bats `skip` annotations for hooks not yet
 implemented rather than removing assertions. The meta-lint static assertions (shebang,
 set -euo pipefail, no bare exit, no eval) should pass immediately on the stubs created
-by STORY-001 if those stubs were created correctly.
+by STORY-001 if those stubs were created correctly. The runtime cross-cutting tests live
+in `tests/hook-contracts.bats` (not a shared hooks.bats) — do NOT add them to any
+per-hook .bats file; they are parameterized over all 13 hooks by design.
 
 ## Token Budget Estimate
 
@@ -291,7 +295,8 @@ by STORY-001 if those stubs were created correctly.
 | ADR-002 hook chain contract | ~1,500 |
 | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 files | ~2,500 |
 | VP-001, VP-013, VP-026 files | ~1,000 |
-| meta-lint.bats + hooks.bats existing content | ~3,000 |
+| meta-lint.bats existing content | ~1,500 |
+| hook-contracts.bats (new) | ~1,500 |
 | 13 sample fixture files | ~1,000 |
 | **Total** | **~15,500** |
 
