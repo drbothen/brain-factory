@@ -1,7 +1,7 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.11"
+version: "0.1.12"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
@@ -412,7 +412,7 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC-2.04.006 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
 | BC-2.04.007 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
 | BC-2.04.008 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/hooks.bats |
-| BC-2.04.009 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.009 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-source-id-citation.bats |
 | BC-2.04.010 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
 | BC-2.04.011 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
 | BC-2.04.012 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
@@ -442,7 +442,7 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC-2.09.001 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/integration.bats |
 | BC-2.09.002 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
 | BC-2.09.003 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
-| BC-2.09.004 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/hooks.bats |
+| BC-2.09.004 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/validate-publish-state.bats |
 | BC-2.09.005 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/integration.bats |
 | BC-2.09.006 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
 | BC-2.10.001 | CAP-010 | SS-10: Prompt-Injection Quarantine | P0 | tests/quarantine.bats |
@@ -558,11 +558,15 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   Incremental scope: applied before any PRD burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: PRD section headers carrying number claims include "21 total" scopes in §5 Error Taxonomy and counts embedded in body prose; no PRD section headers carry a standalone count-claim `(N total ...)` format in the heading text itself that would require body reconciliation. PRD is clean at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
 
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-18`; most recent Changelog entry: v0.1.11 (2026-05-18). **PASS.**
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-18`; most recent Changelog entry: v0.1.12 (2026-05-18). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.12 (2026-05-18)
+
+**RTM FIX (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE-RTM):** Requirements Traceability Matrix row for BC-2.04.009 test-method migrated from `tests/hooks.bats` to `tests/validate-source-id-citation.bats` (hook confirmed from BC-2.04.009 H1: `validate-source-id-citation.sh`). RTM row for BC-2.09.004 test-method migrated from `tests/hooks.bats` to `tests/validate-publish-state.bats` (hook confirmed from BC-2.09.004 body: enforced by `validate-publish-state.sh` per BC-2.04.010). These two rows were the residual `hooks.bats` RTM hits noted in the PO closeout 2 cascade report (`39d6fba`) as out-of-scope for the per-hook bats grep pattern. Zero residual live `hooks.bats` RTM hits remain in `.factory/specs/`. (F-PHASE2-STEP-B-CLOSEOUT-O1-CASCADE-RTM)
 
 ### v0.1.11 (2026-05-18)
 
