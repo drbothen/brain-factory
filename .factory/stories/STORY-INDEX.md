@@ -3,16 +3,16 @@ artifact_type: story-index
 version: "0.1.0"
 created: 2026-05-18
 authored_by: vsdd-factory:story-writer
-total_stories: 31
-total_points: 176
+total_stories: 35
+total_points: 203
 phase: phase-2-story-decomposition-step-b
-epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06]
-epics_pending: [EPIC-07, EPIC-08, EPIC-09]
+epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06, EPIC-07]
+epics_pending: [EPIC-08, EPIC-09]
 ---
 
 # brain-factory Story Index
 
-**31 stories across 6 completed epics. 95 BCs total project scope. All stories status: draft.**
+**35 stories across 7 completed epics. 95 BCs total project scope. All stories status: draft.**
 
 ---
 
@@ -89,6 +89,17 @@ epics_pending: [EPIC-07, EPIC-08, EPIC-09]
 
 ---
 
+## EPIC-07: Lobster Runtime and GitHub Action Templates (4 stories / 29 points)
+
+| Story ID | Title | Status | Points | Priority | BCs |
+|----------|-------|--------|--------|----------|-----|
+| STORY-032 | bin/lobster-run — YAML parsing, topological sort, and exit-code contract | draft | 8 | P0 | BC-2.12.001, BC-2.12.002 |
+| STORY-033 | bin/lobster-run headless execution + six workflow YAML files | draft | 5 | P0 | BC-2.12.003, BC-2.12.004 |
+| STORY-034 | v0.1 core GH Action templates (6) and /brain:install-actions skill | draft | 8 | P0 | BC-2.13.001 |
+| STORY-035 | scripts/lib/api-retry.sh canonical, v0.5 GH Action templates (9), community templates (4) | draft | 8 | P1 | BC-2.13.002, BC-2.13.003, BC-2.13.004 |
+
+---
+
 ## Coverage Verification Footer
 
 | Epic | Stories | Points | Running Story Total | Running Point Total |
@@ -99,6 +110,7 @@ epics_pending: [EPIC-07, EPIC-08, EPIC-09]
 | EPIC-04 | 4 | 29 | 23 | 130 |
 | EPIC-05 | 3 | 15 | 26 | 145 |
 | EPIC-06 | 5 | 29 | 31 | 174 |
-| **TOTAL (epics 1–6)** | **31** | **174** | — | — |
+| EPIC-07 | 4 | 29 | 35 | 203 |
+| **TOTAL (epics 1–7)** | **35** | **203** | — | — |
 
-Note: EPIC-07/08/09 stories are pending their respective Step B bursts.
+Note: EPIC-08/09 stories are pending their respective Step B bursts.
