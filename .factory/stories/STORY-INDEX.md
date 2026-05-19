@@ -1,6 +1,6 @@
 ---
 artifact_type: story-index
-version: "0.3.0"
+version: "0.3.1"
 created: 2026-05-18
 last_updated: 2026-05-18
 authored_by: vsdd-factory:story-writer
@@ -14,10 +14,10 @@ epics_pending: []
 inputs:
   - product-brief.md@v0.4.20
   - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.12
+  - behavioral-contracts/BC-INDEX.md@v0.1.13
   - architecture/ARCH-INDEX.md@v0.1.23
   - architecture/verification-properties/VP-INDEX.md@v0.1.7
-  - stories/epics.md@v0.1.0
+  - stories/epics.md@v0.1.1
   - prd/prd-supplements/nfr-catalog.md@v0.1.1
   - prd/prd-supplements/error-taxonomy.md@v0.1.2
 ---
@@ -29,6 +29,10 @@ inputs:
 ---
 
 ## Changelog
+
+### v0.3.1 — 2026-05-19 (F-PHASE2-DECOMP-GATE-I02a)
+
+- **Input version refresh (I02a):** `behavioral-contracts/BC-INDEX.md` updated v0.1.12 → v0.1.13 (PO bump at c123e51). `stories/epics.md` updated v0.1.0 → v0.1.1 (story-writer bump). All other inputs confirmed current.
 
 ### v0.3.0 — 2026-05-18 (F-PHASE2-CONSISTENCY-I01-I03 closeout)
 

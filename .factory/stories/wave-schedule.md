@@ -1,13 +1,13 @@
 ---
 artifact_type: wave-schedule
-version: "v0.1.0"
+version: "v0.1.1"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
 inputs:
   - dependency-graph.md@v0.1.0
-  - stories/STORY-INDEX.md@v0.3.0
-  - behavioral-contracts/BC-INDEX.md@v0.1.12
+  - stories/STORY-INDEX.md@v0.3.1
+  - behavioral-contracts/BC-INDEX.md@v0.1.13
   - architecture/ARCH-INDEX.md@v0.1.23
   - product-brief.md@v0.4.20
   - stories/epics.md@v0.1.1
@@ -23,6 +23,20 @@ phase_2_status: STEP-D-IN-PROGRESS
 **11 waves — 43 stories — 264 points**
 
 Source: dependency-graph.md v0.1.0 (canonical for all inter-story dependency claims).
+
+---
+
+## Changelog
+
+### v0.1.1 — 2026-05-19 (F-PHASE2-DECOMP-GATE-I02c+S01+S02)
+
+- **W1 P0/P1 correction (I02c):** P0: 1→2, P1: 3→2 (STORY-001 and STORY-014 are both P0; STORY-027 and STORY-038 are both P1 per frontmatter).
+- **W6 P0/P1 correction (I02c):** P0: 3→4, P1: 2→1 (STORY-020, STORY-034, STORY-041, STORY-005 are P0; STORY-037 is P1 per frontmatter).
+- **Footer P0/P1 correction (I02c):** Total P0: 27→29, P1: 16→14 per full story frontmatter scan.
+- **§P0 vs P1 Distribution removed (I02c):** Paragraph described a discrepancy that was caused by the incorrect table values; removed now that the table is correct.
+- **Critical path 12-story → 13-story (S01):** Updated in §Convention (critical-path description) and §Critical-Path Summary. Correct chain is 13 stories: STORY-001, 014, 016, 017, 019, 020, 024, 025, 028, 029, 030, 035, 039.
+- **W3 terminal nodes 5→6 (S02):** Added STORY-013 to terminal node list (007,008,010,011,012,013). STORY-013 has `terminal_node: true` in sprint-state.yaml per dep-graph.
+- **Input version refresh:** BC-INDEX updated v0.1.12→v0.1.13; STORY-INDEX updated v0.3.0→v0.3.1.
 
 ---
 
@@ -75,7 +89,7 @@ wave-splitting.
 
 ### Critical-Path Priority within Waves
 
-Stories on the critical path (the 12-story chain
+Stories on the critical path (the 13-story chain
 `STORY-001 → STORY-014 → STORY-016 → STORY-017 → STORY-019 → STORY-020 → STORY-024 →
 STORY-025 → STORY-028 → STORY-029 → STORY-030 → STORY-035 → STORY-039`) must be
 assigned `wave_position: 1` (first) within their wave. Finishing critical-path stories
@@ -490,20 +504,20 @@ Phase 3 complete. Phase 4 holdout evaluation authorized.
 
 | Wave | Stories | Points | P0 | P1 | P2 | Critical-Path | Terminal Nodes | Deps on Prior Waves |
 |------|---------|--------|----|----|----|--------------:|---------------:|---------------------|
-| W1 | 4 | 21 | 1 | 3 | 0 | 2 (001, 014) | 0 | None |
+| W1 | 4 | 21 | 2 | 2 | 0 | 2 (001, 014) | 0 | None |
 | W2 | 3 | 24 | 3 | 0 | 0 | 1 (016) | 0 | W1 |
-| W3 | 8 | 32 | 7 | 1 | 0 | 0 | 5 (007,008,010,011,012) | W1, W2 |
+| W3 | 8 | 32 | 7 | 1 | 0 | 0 | 6 (007,008,010,011,012,013) | W1, W2 |
 | W4 | 4 | 26 | 3 | 1 | 0 | 1 (017) | 0 | W1, W2, W3 |
 | W5 | 4 | 26 | 4 | 0 | 0 | 1 (019) | 0 | W1, W2, W4 |
-| W6 | 5 | 37 | 3 | 2 | 0 | 1 (020) | 1 (005) | W1-W5 |
+| W6 | 5 | 37 | 4 | 1 | 0 | 1 (020) | 1 (005) | W1-W5 |
 | W7 | 6 | 33 | 2 | 4 | 0 | 1 (024) | 3 (018,021,026) | W1-W6 |
 | W8 | 3 | 18 | 1 | 2 | 0 | 1 (025) | 2 (023,043) | W7 |
 | W9 | 3 | 21 | 3 | 0 | 0 | 3 (028,029,030) | 0 | W1, W8 |
 | W10 | 2 | 13 | 0 | 2 | 0 | 1 (035) | 2 (031,037) | W6, W9 |
 | W11 | 1 | 13 | 0 | 1 | 0 | 1 (039) | 1 (039) | W1, W5, W6, W10 |
-| **Total** | **43** | **264** | **27** | **16** | **0** | **13** | **16** | — |
+| **Total** | **43** | **264** | **29** | **14** | **0** | **13** | **16** | — |
 
-_Note: P0/P1 per STORY-INDEX v0.3.0. Terminal node count per dep-graph §Stats._
+_Note: P0/P1 per STORY-INDEX v0.3.1. Terminal node count per dep-graph §Stats._
 
 ---
 
@@ -551,18 +565,9 @@ prior). For a multi-developer team, this serial dependency would be the primary
 schedule bottleneck. For solo-dev, the sequential nature is expected and the waves are
 sized appropriately (3-2-1 stories).
 
-### P0 vs P1 Distribution
-
-29 P0 stories and 14 P1 stories per STORY-INDEX v0.3.0. Note that the wave summary
-shows 27 P0 + 16 P1 = 43. The discrepancy is explained: W10 (STORY-031, STORY-035) are
-both P1, and W7 contains 4 P1 stories. The wave schedule does not separate P0 and P1
-into distinct waves — P1 stories are co-located with P0 stories in the same wave when
-their dependency position dictates it. The implementer should prioritize P0 stories
-within any wave where capacity is constrained.
-
 ### Critical-Path Summary
 
-The 12-story critical path runs through all 11 waves:
+The 13-story critical path runs through all 11 waves:
 
 ```
 STORY-001 (W1) → STORY-014 (W1) → STORY-016 (W2) → STORY-017 (W4) →

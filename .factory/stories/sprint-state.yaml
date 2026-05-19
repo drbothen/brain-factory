@@ -5,7 +5,7 @@
 # status enum: pending | in_progress | in_review | merged | rejected
 # phase enum: phase-2-story-decomposition-step-d (current) | phase-3-tdd-implementation-pending | ...
 # wave_position: order within wave (1 = first; sequential chains use explicit ordering)
-# critical_path: true if story is on the 12-story critical path
+# critical_path: true if story is on the 13-story critical path
 # terminal_node: true if story has no outgoing edges in the dependency graph
 # depends_on: direct cross-wave dependencies only (within-wave sequential deps are
 #   captured by wave_position; they are NOT listed here to avoid redundancy)
