@@ -1,18 +1,18 @@
 ---
 artifact_type: holdout-scenarios
-version: "v0.1.3"
+version: "v0.1.4"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:product-owner
 inputs:
   - product-brief.md@v0.4.20
-  - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.14
+  - prd/index.md@v0.1.13
+  - behavioral-contracts/BC-INDEX.md@v0.1.15
   - architecture/ARCH-INDEX.md@v0.1.23
   - verification-properties/VP-INDEX.md@v0.1.7
-  - stories/epics.md@v0.1.1
-  - stories/dependency-graph.md@v0.1.0
-  - stories/wave-schedule.md@v0.1.1
+  - stories/epics.md@v0.1.3
+  - stories/dependency-graph.md@v0.1.1
+  - stories/wave-schedule.md@v0.1.4
 total_scenarios: 17
 must_pass_count: 10
 nice_to_pass_count: 7
@@ -22,6 +22,8 @@ access_control: restricted
 ---
 
 # brain-factory Holdout Scenarios
+
+> **Input-version freshness invariant (per F-PHASE2-ADV-PASS2-S04 + F-PHASE2-ADV-PASS3-I02-CASCADE):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, STORY-INDEX, epics, dep-graph, wave-schedule) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` pins are a Pass-fail-class defect per BC-5.39.001 cascade discipline.
 
 **17 scenarios — 10 must-pass / 7 nice-to-pass. Phase 4 evaluator-only artifact.**
 
@@ -821,6 +823,10 @@ are exercised in HS-001, HS-006, HS-007 as side effects of the primary acceptanc
 ---
 
 ## §Changelog
+
+### v0.1.4 — 2026-05-19
+
+**INPUT REFRESH (F-PHASE2-ADV-PASS3-I02):** Input version pin refresh — `prd/index.md@v0.1.12` → `@v0.1.13`; `behavioral-contracts/BC-INDEX.md@v0.1.14` → `@v0.1.15`; `stories/epics.md@v0.1.1` → `@v0.1.3`; `stories/dependency-graph.md@v0.1.0` → `@v0.1.1`; `stories/wave-schedule.md@v0.1.1` → `@v0.1.4`. No scenario content modified. S04 input-version freshness invariant comment block added after H1.
 
 ### v0.1.3 — 2026-05-19
 
