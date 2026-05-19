@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-11
 title: "Knowledge Synthesis and Connection"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -30,7 +30,7 @@ Surfaces non-obvious cross-domain connections across recent ingests, builds a we
 
 **Inbound:** `/brain:connect [days]` (default: 7); `/brain:synthesize`; `/brain:process-inbox`
 
-**Outbound:** connection layer at `wiki/syntheses/<date>-connections.md`; weekly synthesis at `wiki/syntheses/<date>-weekly.md`; classified inbox notes moved to `wiki/{type}/{slug}.md`
+**Outbound:** connection layer at `briefs/weekly/connections-{YYYY-MM-DD}.md`; weekly synthesis at `briefs/weekly/synthesis-{YYYY-MM-DD}.md`; classified inbox notes moved to `wiki/{type}/{slug}.md`
 
 ## Key Design
 
@@ -38,13 +38,13 @@ Surfaces non-obvious cross-domain connections across recent ingests, builds a we
 
 The skill reads `wiki/log.md` to identify pages generated in the last N days (bounded context — only the log subset, not the full corpus). For each recent page, it reads the page content and asks the LLM to find non-obvious connections to other pages in the same time window.
 
-Connections are written to `wiki/syntheses/<date>-connections.md` as a list of `[[page-A]] ↔ [[page-B]]: <connection rationale>` entries.
+Connections are written to `briefs/weekly/connections-{YYYY-MM-DD}.md` as a list of `[[page-A]] ↔ [[page-B]]: <connection rationale>` entries.
 
 Scale discipline: the skill reads only the N-day window from wiki/log.md (bounded) + the corresponding page contents. It does NOT read the full wiki corpus. At 7 days + 5 pages/day = 35 pages, this is a bounded context budget.
 
 ### Weekly synthesis (`/brain:synthesize`)
 
-Reads the most recent connections file and the most recent daily briefs (from `.brain/cycles/`) to build a weekly thesis statement. Writes to `wiki/syntheses/<date>-weekly.md`. The thesis is the input to the next `/brain:brief` session.
+Reads the most recent connections file from `briefs/weekly/` and the most recent daily briefs (from `.brain/cycles/`) to build a weekly thesis statement. Writes to `briefs/weekly/synthesis-{YYYY-MM-DD}.md`. The thesis is the input to the next `/brain:brief` session.
 
 ### Inbox processing (`/brain:process-inbox`)
 
@@ -65,6 +65,10 @@ Reads `inbox/*.md` notes (quick captures from the operator). For each note, clas
 - `tests/skills.bats` — connect output has valid wikilinks; synthesize output has valid frontmatter; process-inbox moves file from inbox/ to wiki/{type}/
 
 ## Changelog
+
+### v1.2 (2026-05-18)
+
+**PATH ALIGNMENT FIX (F-PHASE2-STEP-B-EPIC-05-O1 — BC-2.11.001/002 path drift):** Output paths corrected to align with BC-2.11.001 and BC-2.11.002, which are the source of truth for contract semantics. Four path occurrences replaced: `wiki/syntheses/<date>-connections.md` → `briefs/weekly/connections-{YYYY-MM-DD}.md` (Interfaces §Outbound, §Connection discovery); `wiki/syntheses/<date>-weekly.md` → `briefs/weekly/synthesis-{YYYY-MM-DD}.md` (Interfaces §Outbound, §Weekly synthesis). §Weekly synthesis also clarified that the skill reads from `briefs/weekly/` (consistent with BC-2.11.002 precondition). Surfaced by EPIC-05 story-writer during Phase 2 Step B. [audit-trail]
 
 ### v1.1 (2026-05-16)
 
