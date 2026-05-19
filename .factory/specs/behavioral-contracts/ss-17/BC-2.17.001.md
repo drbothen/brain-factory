@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -53,7 +53,7 @@ The structured event catalog is a machine-readable registry of all event types e
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-008 | All hook scripts' emit sites have catalog rows | bats hooks.bats (cross-reference check) |
+| VP-008 | All hook scripts' emit sites have catalog rows | bats tests/meta-lint.bats (cross-reference check) |
 
 ## Traceability
 
@@ -68,3 +68,13 @@ The structured event catalog is a machine-readable registry of all event types e
 
 - BC-2.17.002 — composes with (catalog schema)
 - BC-2.04.017 — depends on (emit sites defined in hook contract)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/meta-lint.bats` (catalog cross-reference check; 1 row). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

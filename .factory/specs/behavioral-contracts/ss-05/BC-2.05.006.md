@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -54,8 +54,8 @@ Every wiki page — whether created by ingest, manually, or by any skill — mus
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-005 | All 3 valid values accepted | bats hooks.bats |
-| VP-005 | Missing field blocked | bats hooks.bats |
+| VP-005 | All 3 valid values accepted | bats tests/validate-frontmatter-schema.bats |
+| VP-005 | Missing field blocked | bats tests/validate-frontmatter-schema.bats |
 
 ## Traceability
 
@@ -70,3 +70,13 @@ Every wiki page — whether created by ingest, manually, or by any skill — mus
 
 - BC-2.04.004 — depends on (hook enforces this)
 - BC-2.01.004 — composes with (init writes this in templates)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-frontmatter-schema.bats` (2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -42,8 +42,8 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
 | EC-001 | A hook crashes mid-execution (e.g., `set -euo pipefail` triggers on an unset variable before the verdict JSON is written to stdout) | The bash `ERR` trap fires; the trap writes the error event to stderr; the hook then writes a `{"ok": false, "verdict": "block", "code": "E-HOOK-001", "message": "..."}` verdict to stdout and exits 2; stdout is never left empty |
-| EC-002 | A hook developer adds a debug `echo "DEBUG: entering check"` to stdout during development | `jq empty <stdout>` fails on the combined stdout (debug string + verdict); bats hooks.bats detects the violation; the debug echo must be removed or redirected to stderr before PR merge |
-| EC-003 | A hook produces zero JSONL events on stderr (the hook-event:emit helper call is accidentally removed) | bats hooks.bats captures stderr and asserts `wc -l ≥ 1`; the test fails; NFR-011 requires ≥ 1 JSONL event per hook invocation; the missing emit site must be restored |
+| EC-002 | A hook developer adds a debug `echo "DEBUG: entering check"` to stdout during development | `jq empty <stdout>` fails on the combined stdout (debug string + verdict); bats tests/hook-event-emit.bats detects the violation; the debug echo must be removed or redirected to stderr before PR merge |
+| EC-003 | A hook produces zero JSONL events on stderr (the hook-event:emit helper call is accidentally removed) | bats tests/hook-event-emit.bats captures stderr and asserts `wc -l ≥ 1`; the test fails; NFR-011 requires ≥ 1 JSONL event per hook invocation; the missing emit site must be restored |
 
 ## Canonical Test Vectors
 
@@ -57,8 +57,8 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-026 | stdout is always valid single JSON | bats hooks.bats (capture stdout; jq empty) |
-| VP-026 | stderr contains JSONL (not verdict) | bats hooks.bats (capture stderr; validate format) |
+| VP-026 | stdout is always valid single JSON | bats tests/hook-event-emit.bats (capture stdout; jq empty) |
+| VP-026 | stderr contains JSONL (not verdict) | bats tests/hook-event-emit.bats (capture stderr; validate format) |
 
 ## Traceability
 
@@ -73,3 +73,13 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 
 - BC-2.04.016 — composes with (I/O contract)
 - BC-2.04.017 — composes with (emission protocol)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/hook-event-emit.bats` (stdout/stderr separation; 2 rows). Also updated EC-002/EC-003 body references from `bats hooks.bats` → `bats tests/hook-event-emit.bats`. No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

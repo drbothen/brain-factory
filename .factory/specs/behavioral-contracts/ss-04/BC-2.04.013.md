@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -71,8 +71,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| (no VP — P1) | Auto-commit on Stop with pending changes | bats hooks.bats |
-| (no VP — P1) | Never exits 2 (never blocks Stop) | bats hooks.bats |
+| (no VP — P1) | Auto-commit on Stop with pending changes | bats tests/flush-state-and-commit.bats |
+| (no VP — P1) | Never exits 2 (never blocks Stop) | bats tests/flush-state-and-commit.bats |
 
 ## Traceability
 
@@ -86,3 +86,13 @@ modified: []
 ## Related BCs
 
 - BC-2.04.016 — composes with
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/flush-state-and-commit.bats` (2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

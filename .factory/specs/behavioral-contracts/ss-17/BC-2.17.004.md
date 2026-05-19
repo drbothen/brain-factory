@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -51,8 +51,8 @@ Security constraint: hook scripts must never echo tokens, API keys, credential v
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-026 | No credential values in hook stdout | bats hooks.bats (grep for known-test-key pattern) |
-| VP-026 | No credential values in hook stderr | bats hooks.bats |
+| VP-026 | No credential values in hook stdout | bats tests/hook-event-emit.bats (grep for known-test-key pattern) |
+| VP-026 | No credential values in hook stderr | bats tests/hook-event-emit.bats |
 
 ## Traceability
 
@@ -62,3 +62,13 @@ Security constraint: hook scripts must never echo tokens, API keys, credential v
 | Architecture Module | SS-17: Structured Event Catalog |
 | Stories | [filled by story-writer] |
 | Source Brief Section | product-brief.md CLAUDE.md §Conventions |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/hook-event-emit.bats` (credential redaction; 2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

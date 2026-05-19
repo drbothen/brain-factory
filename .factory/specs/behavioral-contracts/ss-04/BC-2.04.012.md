@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -62,8 +62,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-017 | All 3 forbidden patterns blocked | bats hooks.bats |
-| VP-017 | Clean commands pass | bats hooks.bats |
+| VP-017 | All 3 forbidden patterns blocked | bats tests/block-ai-attribution.bats |
+| VP-017 | Clean commands pass | bats tests/block-ai-attribution.bats |
 
 ## Traceability
 
@@ -77,3 +77,13 @@ modified: []
 ## Related BCs
 
 - BC-2.04.016 — composes with
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/block-ai-attribution.bats` (2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

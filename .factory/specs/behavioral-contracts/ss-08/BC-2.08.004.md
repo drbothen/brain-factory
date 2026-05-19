@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -57,7 +57,7 @@ The voice avoid-list is a 30-entry list of words and phrases that degrade the au
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
 | (no VP — P1) | Default avoid-list has exactly 30 entries | bats templates.bats (or meta-lint) |
-| (no VP — P1) | All 30 entries trigger advisory | bats hooks.bats (parameterized) |
+| (no VP — P1) | All 30 entries trigger advisory | bats tests/validate-voice-avoid-list.bats (parameterized) |
 
 ## Traceability
 
@@ -71,3 +71,13 @@ The voice avoid-list is a 30-entry list of words and phrases that degrade the au
 ## Related BCs
 
 - BC-2.04.008 — depends on (hook enforces the avoid-list)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-voice-avoid-list.bats` (1 row). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

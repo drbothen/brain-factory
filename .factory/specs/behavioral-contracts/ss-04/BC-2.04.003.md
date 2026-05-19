@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -70,8 +70,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-002, VP-004 | Broken wikilink → exit 2 | bats hooks.bats |
-| VP-002, VP-004 | Valid wikilinks → exit 0 | bats hooks.bats |
+| VP-002, VP-004 | Broken wikilink → exit 2 | bats tests/validate-wikilink-integrity.bats |
+| VP-002, VP-004 | Valid wikilinks → exit 0 | bats tests/validate-wikilink-integrity.bats |
 | VP-002, VP-004 | O(n) resolution (index-first, not filesystem scan) | bats performance assertion |
 
 ## Traceability
@@ -89,3 +89,13 @@ modified: []
 - BC-2.04.016 — composes with
 - BC-2.05.001 — related to (lint-wiki also checks wikilinks at bulk-audit time)
 - BC-2.04.006 — related to (index coherence hook is co-dependent)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-wikilink-integrity.bats` (2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -67,9 +67,9 @@ Beyond `embedding_status` (BC-2.04.004), wiki pages have additional mandatory fr
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-002, VP-005 | All 5 mandatory fields enforced | bats hooks.bats (one test case per field) |
-| VP-002, VP-005 | All 6 valid type values pass | bats hooks.bats (parameterized) |
-| VP-002, VP-005 | Invalid type → exit 2 | bats hooks.bats |
+| VP-002, VP-005 | All 5 mandatory fields enforced | bats tests/validate-frontmatter-schema.bats (one test case per field) |
+| VP-002, VP-005 | All 6 valid type values pass | bats tests/validate-frontmatter-schema.bats (parameterized) |
+| VP-002, VP-005 | Invalid type → exit 2 | bats tests/validate-frontmatter-schema.bats |
 
 ## Traceability
 
@@ -85,3 +85,13 @@ Beyond `embedding_status` (BC-2.04.004), wiki pages have additional mandatory fr
 - BC-2.04.004 — composes with (same hook, embedding_status check)
 - BC-2.04.016 — composes with
 - BC-2.05.005 — depends on (wiki page type taxonomy defined here)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-frontmatter-schema.bats` (3 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

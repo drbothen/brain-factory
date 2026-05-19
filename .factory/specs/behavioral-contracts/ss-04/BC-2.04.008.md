@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -63,8 +63,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| (no VP — P1) | Avoid-list match → exit 1 (not 2) | bats hooks.bats |
-| (no VP — P1) | All 30 avoid-list terms trigger advisory | bats hooks.bats (parameterized) |
+| (no VP — P1) | Avoid-list match → exit 1 (not 2) | bats tests/validate-voice-avoid-list.bats |
+| (no VP — P1) | All 30 avoid-list terms trigger advisory | bats tests/validate-voice-avoid-list.bats (parameterized) |
 
 ## Traceability
 
@@ -79,3 +79,13 @@ modified: []
 
 - BC-2.04.016 — composes with
 - BC-2.08.004 — related to (voice avoid-list also described at content-writing layer)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-voice-avoid-list.bats` (2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

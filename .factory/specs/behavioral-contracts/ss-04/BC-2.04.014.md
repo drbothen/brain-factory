@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,9 +66,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| (no VP — P1) | GREEN brain → exit 0 | bats hooks.bats |
-| (no VP — P1) | RED dimension → exit 1 (never 2) | bats hooks.bats |
-| (no VP — P1) | Non-brain directory → exit 0 + `brain.health.skipped` event on stderr | bats hooks.bats |
+| (no VP — P1) | GREEN brain → exit 0 | bats tests/brain-health-check.bats |
+| (no VP — P1) | RED dimension → exit 1 (never 2) | bats tests/brain-health-check.bats |
+| (no VP — P1) | Non-brain directory → exit 0 + `brain.health.skipped` event on stderr | bats tests/brain-health-check.bats |
 
 ## Traceability
 
@@ -83,3 +83,13 @@ modified: []
 
 - BC-2.04.016 — composes with
 - BC-2.01.006 — related to (/brain:health skill surfaces the same dimensions)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/brain-health-check.bats` (3 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

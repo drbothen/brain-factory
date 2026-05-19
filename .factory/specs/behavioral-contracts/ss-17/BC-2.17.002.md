@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -57,7 +57,7 @@ Each entry in the structured event catalog has a defined schema. The catalog is 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
 | VP-008 | All entries have required fields | bats integration.bats (JSON parse) |
-| VP-008 | All example payloads are valid JSON | bats hooks.bats |
+| VP-008 | All example payloads are valid JSON | bats tests/meta-lint.bats |
 
 ## Traceability
 
@@ -71,3 +71,13 @@ Each entry in the structured event catalog has a defined schema. The catalog is 
 ## Related BCs
 
 - BC-2.17.001 — composes with
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/meta-lint.bats` (catalog schema JSON validation; 1 row). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

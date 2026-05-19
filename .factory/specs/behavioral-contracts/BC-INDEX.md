@@ -1,15 +1,15 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.12"
+version: "0.1.13"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-18T00:00:00
+timestamp: 2026-05-19T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.11
 created: 2026-05-15
-last_updated: 2026-05-18
+last_updated: 2026-05-19
 ---
 
 # Behavioral Contract Index: brain-factory
@@ -281,6 +281,10 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 ---
 
 ## Changelog
+
+### v0.1.13 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** 25 BC body files swept from deprecated consolidated `hooks.bats` test-path strings to per-hook `.bats` convention per UD-006 + SS-18 v1.5. Files affected: BC-2.01.004, BC-2.04.002 through BC-2.04.017 (excludes 2.04.001, 2.04.015 — already compliant), BC-2.05.005, BC-2.05.006, BC-2.06.001, BC-2.08.004, BC-2.09.004, BC-2.17.001 through BC-2.17.004. All 25 BCs bumped v1.1 → v1.2. No semantic change; only test-path strings and Changelog entries updated. `inherits_from` remains `prd@v0.1.11`.
 
 ### v0.1.12 (2026-05-18)
 

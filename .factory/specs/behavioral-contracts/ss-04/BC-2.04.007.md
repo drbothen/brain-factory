@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -64,9 +64,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-002 | All 6 valid types pass | bats hooks.bats (parameterized) |
-| VP-002 | Invalid type → exit 2 | bats hooks.bats |
-| VP-002 | index.md and log.md exempt | bats hooks.bats |
+| VP-002 | All 6 valid types pass | bats tests/validate-page-type-policy.bats (parameterized) |
+| VP-002 | Invalid type → exit 2 | bats tests/validate-page-type-policy.bats |
+| VP-002 | index.md and log.md exempt | bats tests/validate-page-type-policy.bats |
 
 ## Traceability
 
@@ -81,3 +81,13 @@ modified: []
 
 - BC-2.04.016 — composes with
 - BC-2.05.005 — depends on (type taxonomy defined in wiki layer BC)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-page-type-policy.bats` (3 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

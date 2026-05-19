@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -60,7 +60,7 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-017 | All 13 hooks emit at least one JSONL line per invocation | bats hooks.bats (stderr capture assertion) |
+| VP-017 | All 13 hooks emit at least one JSONL line per invocation | bats tests/hook-event-emit.bats (stderr capture assertion) |
 | VP-017 | JSONL schema valid for all emitted events | bats assertion (`jq empty` on stderr capture) |
 | VP-017 | No secrets in emitted events | grep assertion on stderr capture |
 
@@ -80,3 +80,13 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 - BC-2.17.002 — depends on (catalog schema)
 - BC-2.17.003 — composes with (this BC implements the stderr-only rule)
 - BC-2.17.004 — composes with (no secrets in emission)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/hook-event-emit.bats` (1 row; emission lib helper test suite). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

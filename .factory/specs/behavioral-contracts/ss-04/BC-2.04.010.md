@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -67,8 +67,8 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-002 | All valid transitions pass | bats hooks.bats |
-| VP-002 | All invalid transitions blocked | bats hooks.bats |
+| VP-002 | All valid transitions pass | bats tests/validate-publish-state.bats |
+| VP-002 | All invalid transitions blocked | bats tests/validate-publish-state.bats |
 
 ## Traceability
 
@@ -83,3 +83,13 @@ modified: []
 
 - BC-2.04.016 — composes with
 - BC-2.09.004 — depends on (publishing skill uses this state machine)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-publish-state.bats` (2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

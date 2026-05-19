@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -67,9 +67,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-017 | Non-kebab-case names blocked | bats hooks.bats |
-| VP-017 | Valid kebab-case names pass | bats hooks.bats |
-| VP-017 | Exception list covers known uppercase files | bats hooks.bats |
+| VP-017 | Non-kebab-case names blocked | bats tests/enforce-kebab-case.bats |
+| VP-017 | Valid kebab-case names pass | bats tests/enforce-kebab-case.bats |
+| VP-017 | Exception list covers known uppercase files | bats tests/enforce-kebab-case.bats |
 
 ## Traceability
 
@@ -84,3 +84,13 @@ modified: []
 
 - BC-2.04.016 — composes with
 - BC-2.05.003 — related to (rename-page skill is the correct path for slug changes)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/enforce-kebab-case.bats` (3 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

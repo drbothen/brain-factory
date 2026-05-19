@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -64,9 +64,9 @@ modified: []
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-003 | Existing source overwrite → exit 2 | bats hooks.bats |
-| VP-003 | New source → exit 0 | bats hooks.bats |
-| VP-003 | Missing manifest → exit 2 (fail-closed) | bats hooks.bats |
+| VP-003 | Existing source overwrite → exit 2 | bats tests/validate-source-immutability.bats |
+| VP-003 | New source → exit 0 | bats tests/validate-source-immutability.bats |
+| VP-003 | Missing manifest → exit 2 (fail-closed) | bats tests/validate-source-immutability.bats |
 
 ## Traceability
 
@@ -83,3 +83,13 @@ modified: []
 - BC-2.04.016 — composes with (universal hook I/O contract)
 - BC-2.06.001 — depends on (source immutability invariant)
 - BC-2.04.017 — composes with (event emission: source.immutability.violated, source.added — past-tense per SS-17)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-source-immutability.bats` (3 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

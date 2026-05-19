@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -54,8 +54,8 @@ The wiki layer is organized by TYPE, not by topic. The 6 valid wiki type directo
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-018 | All 6 type directories valid | bats hooks.bats |
-| VP-018 | Non-type directories blocked | bats hooks.bats |
+| VP-018 | All 6 type directories valid | bats tests/validate-page-type-policy.bats |
+| VP-018 | Non-type directories blocked | bats tests/validate-page-type-policy.bats |
 
 ## Traceability
 
@@ -69,3 +69,13 @@ The wiki layer is organized by TYPE, not by topic. The 6 valid wiki type directo
 ## Related BCs
 
 - BC-2.04.007 — depends on (hook enforces this taxonomy at write time)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-page-type-policy.bats` (2 rows). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

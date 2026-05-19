@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -54,7 +54,7 @@ A source file, once written to `sources/{topic}/{slug}.md`, is immutable. It can
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-003 | Existing source overwrite → hook exit 2 | bats hooks.bats |
+| VP-003 | Existing source overwrite → hook exit 2 | bats tests/validate-source-immutability.bats |
 
 ## Traceability
 
@@ -69,3 +69,13 @@ A source file, once written to `sources/{topic}/{slug}.md`, is immutable. It can
 
 - BC-2.04.002 — depends on (hook enforces this)
 - BC-2.02.006 — related to (skill-level duplicate detection)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**SWEEP FIX (F-PHASE2-DECOMP-GATE-I01-CASCADE):** BC body Verification Properties table swept to per-hook .bats convention per UD-006 + SS-18 v1.5. `bats hooks.bats` → `bats tests/validate-source-immutability.bats` (1 row). No semantic change; only test-path strings updated.
+
+### v1.1 (2026-05-16)
+
+Initial content release.

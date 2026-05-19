@@ -1,13 +1,13 @@
 ---
 artifact_type: holdout-scenarios
-version: "v0.1.1"
+version: "v0.1.2"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:product-owner
 inputs:
   - product-brief.md@v0.4.20
   - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.12
+  - behavioral-contracts/BC-INDEX.md@v0.1.13
   - architecture/ARCH-INDEX.md@v0.1.23
   - verification-properties/VP-INDEX.md@v0.1.7
   - stories/epics.md@v0.1.1
@@ -524,8 +524,8 @@ plus 7 additional specialist skills defined in the plugin manifest.
 
 **Operator setup:**
 1. Start from any initialized brain.
-2. Confirm the voice avoid-list exists at `${CLAUDE_PLUGIN_ROOT}/voice-avoid-list.yaml`
-   and contains at least 5 forbidden words/phrases. Note three of them for use in the test.
+2. Confirm the voice avoid-list exists at `${CLAUDE_PLUGIN_ROOT}/rules/voice-avoid-list.txt`
+   and contains at least 5 forbidden words/phrases (one per line). Note three of them for use in the test.
 
 **Trigger sequence:**
 1. Write a new brief draft file to `drafts/linkedin/test-voice-draft.md` that deliberately
@@ -821,6 +821,10 @@ are exercised in HS-001, HS-006, HS-007 as side effects of the primary acceptanc
 ---
 
 ## §Changelog
+
+### v0.1.2 — 2026-05-19
+
+**PATH FIX (F-PHASE2-DECOMP-GATE-I03):** HS-012 Operator Setup step 2 voice avoid-list path corrected from `${CLAUDE_PLUGIN_ROOT}/voice-avoid-list.yaml` to `${CLAUDE_PLUGIN_ROOT}/rules/voice-avoid-list.txt` to align with STORY-027 AC-004, BC-2.04.008 Precondition §2, and BC-2.08.004 canonical paths. Also clarified "contains at least 5 forbidden words/phrases (one per line)". No scenario semantics changed.
 
 ### v0.1.1 — 2026-05-19
 
