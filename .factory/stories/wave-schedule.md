@@ -1,6 +1,6 @@
 ---
 artifact_type: wave-schedule
-version: "v0.1.3"
+version: "v0.1.4"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
@@ -29,6 +29,11 @@ Source: dependency-graph.md v0.1.1 (canonical for all inter-story dependency cla
 ---
 
 ## Changelog
+
+### v0.1.4 — 2026-05-19 (F-PHASE2-ADV-PASS3-I01+S01)
+
+- **§Source-of-Truth Precedence stale version corrected (I01):** L125 `v0.1.0` → `v0.1.1` (dep-graph version). Eliminates internal contradiction with L25 which already cited v0.1.1.
+- **sprint-state.yaml sibling-sweep (S01):** sprint-state.yaml Source: comment bumped v0.1.0/v0.1.0 → v0.1.4/v0.1.1 and schema_version v0.1.0 → v0.1.1. S04 invariant comment block added to sprint-state.yaml to prevent future Source: pin staleness.
 
 ### v0.1.3 — 2026-05-19 (F-PHASE2-ADV-PASS2-I02+I03+S01+S04)
 
@@ -122,7 +127,7 @@ Waves that complete multiple terminal nodes are marked "holdout-eligible."
 
 ### Source-of-Truth Precedence
 
-Wave assignment derives from dependency-graph.md v0.1.0. When wave assignment requires
+Wave assignment derives from dependency-graph.md v0.1.1. When wave assignment requires
 reasoning about dependencies, the dep-graph is authoritative. Per-story `dependencies:`
 and `blocks:` frontmatter fields are at-creation-time estimates that the dep-graph
 supersedes (see dep-graph §Convention and CLAUDE.md Source-of-Truth Precedence rule).

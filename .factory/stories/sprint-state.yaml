@@ -1,6 +1,9 @@
 # .factory/stories/sprint-state.yaml
 # Machine-readable wave-tracking state consumed by Phase 3 implementer + CI.
-# Source: wave-schedule.md v0.1.0 / dependency-graph.md v0.1.0
+# Source: wave-schedule.md v0.1.4 / dependency-graph.md v0.1.1
+# S04 input-version freshness invariant (F-PHASE2-ADV-PASS2-S04 + F-PHASE2-ADV-PASS3-I01-CASCADE):
+# The above Source: line MUST be refreshed when wave-schedule.md or dependency-graph.md is bumped.
+# Stale Source: pins are a Pass-fail-class defect per BC-5.39.001 cascade discipline.
 #
 # status enum: pending | in_progress | in_review | merged | rejected
 # phase enum: phase-2-story-decomposition-step-d (current) | phase-3-tdd-implementation-pending | ...
@@ -9,7 +12,7 @@
 # terminal_node: true if story has no outgoing edges in the dependency graph
 # depends_on: direct cross-wave dependencies only (within-wave sequential deps are
 #   captured by wave_position; they are NOT listed here to avoid redundancy)
-schema_version: "v0.1.0"
+schema_version: "v0.1.1"
 project: brain-factory
 phase: phase-2-story-decomposition-step-d
 total_waves: 11
