@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-2-story-decomposition-step-g-pass-1-closed
-session_stage: phase-2-step-g-pass-1-closed-pass-2-pending
+session_phase: phase-2-story-decomposition-step-g-pass-2-closed
+session_stage: phase-2-step-g-pass-2-closed-pass-3-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.13
@@ -13,11 +13,11 @@ current_architecture_version: 0.1.23
 current_arch_index_path: .factory/specs/architecture/ARCH-INDEX.md
 current_vp_index_version: 0.1.7
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.3.2"
+current_story_index_version: "0.3.3"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
-current_dependency_graph_version: "0.1.0"
+current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
-current_wave_schedule_version: "0.1.2"
+current_wave_schedule_version: "0.1.3"
 current_sprint_state_path: .factory/stories/sprint-state.yaml
 current_sprint_state_version: "0.1.0"
 total_waves: 11
@@ -88,7 +88,7 @@ current_holdout_scenarios_version: "0.1.3"
 total_holdout_scenarios: 17
 holdout_must_pass: 10
 holdout_nice_to_pass: 7
-status: phase-2-step-g-pass-1-closed-pass-2-pending
+status: phase-2-step-g-pass-2-closed-pass-3-pending
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d
@@ -129,11 +129,20 @@ VP path sweep (9 stories), STORY-001/006/024/030 anchor/ref/dep fixes, dep-graph
 **3c. DONE — Phase 2 Pass 1 product-owner fix-burst (commit 02c681f) + state-manager fix-burst (commit 82ec4f5):**
 02c681f: PRD index.md v0.1.13 — 23 RTM rows per-hook bats sweep. Finding closed: C02. 82ec4f5: 95 BC Stories bidirectional traceability backfill + BC-INDEX v0.1.15. Finding closed: C04. NO separate architect burst.
 
-**3d. DONE — Phase 2 Pass 1 fix-closure state-mgr FINAL (commit SHA-pending-this-burst):**
+**3d. DONE — Phase 2 Pass 1 fix-closure state-mgr FINAL (commit 89382b4):**
 STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Step F SHA-pending back-filled to 74e2bf0. UD-008 recorded. Spec/story versions bumped. Pass 2 dispatch procedure documented.
 
-**3e. TOP-OF-STACK — Phase 2 Step G Pass 2:**
-Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-INDEX.md (v0.3.2) → dispatches `vsdd-factory:adversary` with FRESH CONTEXT for Pass 2. CRITICAL: DO NOT pass holdout-scenarios.md (restricted). Adversary sees spec/story artifacts only. BC-5.39.001 3-CLEAN cascade — streak 0/3 entering Pass 2.
+**3e. DONE — Phase 2 adversary Pass 2 report (commit 6ff5afe):**
+Pass 2 verdict: FAIL (0C+3I+4S). Streak 0/3 reset. Pass 1 closures verified. F-PHASE2-ADV-PASS2 findings surfaced.
+
+**3f. DONE — Phase 2 Pass 2 fix-bundle story-writer (commit f160696):**
+dep-graph §Stats cleanup + wave-schedule W4/holdout-map + 4-artifact inputs refresh + cross_cutting_bcs decision + epics phase fix + S04 invariant comment. 7 findings closed (I01+I02+I03+S01+S02+S03+S04).
+
+**3g. DONE — Phase 2 Pass 2 fix-closure state-mgr FINAL (commit (this commit)):**
+STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. 89382b4 back-filled at Pass 1 §8 row. Versions bumped (STORY-INDEX v0.3.3, wave-schedule v0.1.3, dep-graph v0.1.1, epics v0.1.3). F-PHASE2-ADV-PASS2-S04 process-gap noted. Pass 3 dispatch procedure added. Decay trajectory: 17→7 findings.
+
+**3h. TOP-OF-STACK — Phase 2 Step G Pass 3:**
+Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-INDEX.md (v0.3.3) → dispatches `vsdd-factory:adversary` with FRESH CONTEXT for Pass 3. CRITICAL: DO NOT pass holdout-scenarios.md (restricted). Adversary sees spec/story artifacts only. BC-5.39.001 3-CLEAN cascade — streak 0/3 entering Pass 3.
 
 ### Step 4 — Key constraints to carry forward
 
@@ -147,9 +156,9 @@ Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md → STORY-I
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step F COMPLETED (CLEAN-GATE-PASS) — decomposition-gate closed at c123e51+c749ad3+8ba1487 (9 findings closed) — Step G (adversarial-story-review) is next-action.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED; Phase 2 Step G Pass 2 CLOSED (FAIL 0C+3I+4S — fix-bundle f160696 applied) — Pass 3 is next-action.**
 
-Phase 2 Step F (decomposition-gate) COMPLETED on 2026-05-19. Consistency-validator dispatched with FRESH CONTEXT. Initial audit: CRITICAL=0, IMPORTANT=3, SUGGESTION=2. Fix-bursts: c123e51 (product-owner, 25 BCs + HS-012), c749ad3 (story-writer, STORY-INDEX + wave-schedule + sprint-state), 8ba1487 (product-owner, BC-2.04.015/016 + holdout-scenarios + BC-INDEX). Retry audit: CLEAN-GATE-PASS. 9 total findings closed. BC-INDEX advanced to v0.1.14, STORY-INDEX to v0.3.1, wave-schedule to v0.1.1, holdout-scenarios to v0.1.3. Step G (adversarial-story-review) is next-action per BC-5.39.001 3-CLEAN cascade.
+Phase 2 Step G Pass 2 CLOSED on 2026-05-19. Report persisted at 6ff5afe (FAIL — 0C+3I+4S). Fix-bundle f160696 (story-writer): dep-graph §Stats cleanup + wave-schedule W4/holdout-map + 4-artifact inputs refresh + cross_cutting_bcs decision + epics phase fix + S04 invariant comment (7 findings closed). Streak 0/3 (reset — Pass 2 FAILED). Decay trajectory: Pass 1=17 findings (4C+8I+5S) → Pass 2=7 findings (0C+3I+4S). CRITICAL eliminated. IMPORTANT decaying 8→3. Pass 3 is next-action per BC-5.39.001 3-CLEAN cascade.
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -228,12 +237,12 @@ See SESSION-HANDOFF prior versions or `.factory/cycles/v0.1-phase-1a-brief/adver
 - **SS-NN designs:** 18 (SS-01 through SS-18; SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2; rest at v1.1+)
 - **VPs:** 27 (VP-001 through VP-027; 64/64 P0 BC coverage)
 - **Total BCs:** 95 across 18 subsystems (SS-TBD fully eliminated)
-- **STORY-INDEX:** v0.3.1 (43 stories, commit c749ad3)
+- **STORY-INDEX:** v0.3.3 (43 stories, commit f160696)
 - **Phase 1a streak:** 3/3 — CASCADE CONVERGED on v0.4.15 (Phase 1a Stage 5 CLOSED)
 - **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
 - **Phase 1c status:** COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89ea4b)
 - **Phase 1d status:** CONVERGED — Pass 42 CLOSED (PASS); 68 fix-bursts; streak 3/3; Phase 2 authorized per UD-005
-- **Phase 2 status:** STEP-F-COMPLETE (decomposition-gate CLEAN-GATE-PASS @ c123e51+c749ad3+8ba1487; 9 findings closed; BC-INDEX v0.1.14, STORY-INDEX v0.3.1, wave-schedule v0.1.1; Step G next-action)
+- **Phase 2 status:** STEP-G-PASS-2-CLOSED (Pass 2 FAIL — 0C+3I+4S; fix-bundle f160696; STORY-INDEX v0.3.3, wave-schedule v0.1.3, dep-graph v0.1.1, epics v0.1.3; streak 0/3; Pass 3 next-action)
 - **Holdout scenarios:** `.factory/stories/holdout-scenarios.md` (v0.1.3, commit 8ba1487) — ACCESS CONTROL: restricted — holdout-evaluator-only
 - **Dependency graph:** `.factory/stories/dependency-graph.md` (v0.1.0, commit 90d90fd) — CANONICAL for inter-story deps (UD-007)
 - **Five-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md)
@@ -375,7 +384,7 @@ Plus from later session decisions (not in stage-3-locks.md):
 | `.factory/specs/architecture/verification-properties/VP-INDEX.md` | v0.1.6 | commit a3a83b1 |
 | `.factory/specs/architecture/verification-properties/VP-001-*.md` through `VP-027-*.md` | various | 27 files; 4 at v1.2 (VP-014/021/026/027) + VP-004 at v1.1 + VP-012 at v1.3 = 6 with Changelog |
 
-## 8. Recent session commits (this session, 2026-05-16/2026-05-18 — 79 commits)
+## 8. Recent session commits (this session, 2026-05-16/2026-05-19 — 83 commits)
 
 Per discipline #23, this header count is updated alongside every row addition. Discipline #23 incremental scope binds future state-manager bursts.
 
@@ -500,37 +509,40 @@ Per discipline #23, this header count is updated alongside every row addition. D
 | 13d4d4e | story-writer | Phase 2 Pass 1 fix-burst A — VP path sweep + 4 story anchor/ref fixes + dep-graph edge + STORY-INDEX v0.3.2 + wave-schedule v0.1.2 + epics.md v0.1.2 + STORY-014 I08+S01 (C01+C03+I01-I06+I08+S01+S03-S05) |
 | 02c681f | product-owner | Phase 2 Pass 1 fix-burst C — PRD index.md v0.1.13 — 23 RTM rows per-hook bats sweep (C02) |
 | 82ec4f5 | state | Phase 2 Pass 1 fix-burst D — 95 BC Stories bidirectional traceability backfill + BC-INDEX v0.1.15 (C04) |
-| (this commit) | state | Phase 2 Pass 1 fix-closure state-mgr FINAL — UD-008 recorded — spec/story versions bumped — Pass 2 dispatch procedure added |
+| 89382b4 | state | Phase 2 Pass 1 fix-closure state-mgr FINAL — UD-008 recorded — spec/story versions bumped — Pass 2 dispatch procedure added |
+| 6ff5afe | state | Phase 2 Pass 2 adversary report persisted — FAIL (0C+3I+4S) — streak 0/3 reset — Pass 1 closures verified |
+| f160696 | story-writer | Phase 2 Pass 2 fix-bundle — dep-graph §Stats + wave-schedule W4/holdout-map + 4-artifact inputs refresh + cross_cutting_bcs decision + epics phase fix + S04 invariant comment (7 findings: I01+I02+I03+S01+S02+S03+S04 closed) |
+| (this commit) | state | Phase 2 Pass 2 fix-closure state-mgr FINAL — 89382b4 back-filled — versions bumped — F-PHASE2-ADV-PASS2-S04 process-gap noted — Pass 3 dispatch procedure added |
 
 ## 9. Resume procedure for FRESH-CONTEXT ORCHESTRATOR (post-Phase-1d CONVERGENCE)
 
-**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d CONVERGED — Phase 2 STEP-G-PASS-1-CLOSED (Pass 1 FAIL — 4C+8I+5S; 3 fix-bursts applied; BC-INDEX v0.1.15; STORY-INDEX v0.3.2; PRD v0.1.13). Pass 2 is next-action.**
+**PHASE 1a CLOSED. PHASE 1b COMPLETED. PHASE 1c COMPLETED. PHASE 1d CONVERGED — Phase 2 STEP-G-PASS-2-CLOSED (Pass 2 FAIL — 0C+3I+4S; fix-bundle f160696; STORY-INDEX v0.3.3; wave-schedule v0.1.3; dep-graph v0.1.1; epics v0.1.3). Pass 3 is next-action.**
 
 **Read these documents IN ORDER before dispatching any agent:**
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (canonical state-discovery entry point)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` (this file)
-4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger; task #164 is next-action)
-5. `/Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md` (v0.1.2 — post-Pass-1-fix)
-6. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md` (v0.3.2 — 43 stories)
+4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger; task #165 is next-action)
+5. `/Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md` (v0.1.3 — post-Pass-2-fix)
+6. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md` (v0.3.3 — 43 stories)
 
 **Pre-dispatch verification:**
 
 ```bash
 cd /Users/jmagady/Dev/brain-factory
-git log --oneline -1                # expect HEAD = factory(state): Phase 2 Pass 1 fix-closure
+git log --oneline -1                # expect HEAD = factory(state): Phase 2 Pass 2 fix-closure
 git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
-grep -nE '^phase_2_status:' .factory/STATE.md     # expect phase_2_status: STEP-G-PASS-1-CLOSED-PASS-2-PENDING ...
+grep -nE '^phase_2_status:' .factory/STATE.md     # expect phase_2_status: STEP-G-PASS-2-CLOSED-PASS-3-PENDING ...
 ls /Users/jmagady/Dev/brain-factory/.factory/stories/holdout-scenarios.md # expect v0.1.3 — 17 scenarios (DO NOT read contents)
-ls /Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md     # expect v0.1.2
+ls /Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md     # expect v0.1.3
 ls /Users/jmagady/Dev/brain-factory/.factory/stories/stories/ | wc -l     # expect 43
 ```
 
 **Resume steps:**
 
-1. Confirm holdout-scenarios.md at `.factory/stories/holdout-scenarios.md` v0.1.3 (17 scenarios) — DO NOT read contents (restricted). Confirm wave-schedule.md at v0.1.2. Confirm STORY-INDEX.md at v0.3.2 (43 stories).
-2. Dispatch `vsdd-factory:adversary` for Phase 2 Step G Pass 2 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol. Streak 0/3. Use different model family from prior pipeline agents (cognitive diversity). Chat-only output — DO NOT instruct adversary to Write or Commit files.
+1. Confirm holdout-scenarios.md at `.factory/stories/holdout-scenarios.md` v0.1.3 (17 scenarios) — DO NOT read contents (restricted). Confirm wave-schedule.md at v0.1.3. Confirm STORY-INDEX.md at v0.3.3 (43 stories).
+2. Dispatch `vsdd-factory:adversary` for Phase 2 Step G Pass 3 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol. Streak 0/3. Use different model family from prior pipeline agents (cognitive diversity). Chat-only output — DO NOT instruct adversary to Write or Commit files.
 3. HOLDOUT ISOLATION: DO NOT pass holdout-scenarios.md to the adversary. Adversary sees spec/story artifacts only.
 4. Per-pass: collect structured finding report, route fixes via CLAUDE.md agent routing table, re-dispatch adversary with NEW fresh context. Continue until 3 consecutive PASS verdicts (BC-5.39.001 literal streak 3/3).
 5. At Phase 2 convergence (streak 3/3), surface to human for Phase 2 approval gate before Phase 3 transition.

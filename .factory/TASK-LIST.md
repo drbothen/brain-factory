@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-G-PASS-1-CLOSED-PASS-2-PENDING — Pass 1 FAIL (4C+8I+5S) — 3 fix-bursts applied (13d4d4e+02c681f+82ec4f5) — I07 DEFERRED per UD-008 — Pass 2 dispatch is next-action (task #164). HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to story-writer, architect, adversary, implementer, or any Phase 2/3 agent other than holdout-evaluator (Phase 4).**
+> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-G-PASS-2-CLOSED-PASS-3-PENDING — Pass 2 FAIL (0C+3I+4S) — fix-bundle f160696 (7 findings closed) — streak 0/3 reset — decay C:4→0 I:8→3 — Pass 3 dispatch is next-action (task #165). HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to story-writer, architect, adversary, implementer, or any Phase 2/3 agent other than holdout-evaluator (Phase 4).**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -23,44 +23,50 @@ BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 4
 
 Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (F-PASS39-I3 hit-by-hit enumeration vs F-PASS37-O2 mirror tension), F-PASS40-O3 (historical Pass 35-37 closure-summary ordering inconsistency), F-PASS41-O2 (inherited F-PASS40-O2/O3), F-PASS42-O2 (inherited same). May be revisited during Phase 2 if relevant or post-Phase-2.
 
-## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-G-PASS-1-CLOSED; Pass 2 NEXT-ACTION)
+## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-G-PASS-2-CLOSED; Pass 3 NEXT-ACTION)
 
 **State summary:**
 - Phase 1d: CONVERGED at commit `44cda58` (Pass 42 state-mgr FINAL — 2026-05-18); BC-5.39.001 3-CLEAN literal streak 3/3 achieved.
-- Phase 2 Step A: COMPLETED — epics.md v0.1.2 at a9e6a04+80a814a+13d4d4e. 9 epics. 95/95 BC coverage. State-mgr FINAL: 8d33625.
-- Phase 2 Step B: COMPLETED (2026-05-18/19) — 43 story specs across 9 epics. STORY-INDEX v0.3.2 at 13d4d4e. 95/95 BC coverage. State-mgr FINAL: 1ecbdfc.
-- Phase 2 Step C: COMPLETED (2026-05-19) — dependency-graph.md v0.1.0 at 90d90fd (story-writer). 67 edges, 13 topo layers, acyclic, 6 findings adjudicated. UD-007 dep-graph supersession convention established. State-mgr FINAL: 76edc10.
-- Phase 2 Step D: COMPLETED (2026-05-19) — wave-schedule.md v0.1.2 at 13d4d4e (story-writer Pass-1-fix). 11 waves, 43 stories, 264 points, 13 critical-path stories, 16 terminal nodes, 7 holdout-eligible waves. State-mgr FINAL: 10354be.
+- Phase 2 Step A: COMPLETED — epics.md v0.1.3 at f160696. 9 epics. 95/95 BC coverage. State-mgr FINAL: 8d33625.
+- Phase 2 Step B: COMPLETED (2026-05-18/19) — 43 story specs across 9 epics. STORY-INDEX v0.3.3 at f160696. 95/95 BC coverage. State-mgr FINAL: 1ecbdfc.
+- Phase 2 Step C: COMPLETED (2026-05-19) — dependency-graph.md v0.1.1 at f160696 (story-writer Pass-2-fix). 67 edges, 13 topo layers, acyclic. State-mgr FINAL: 76edc10.
+- Phase 2 Step D: COMPLETED (2026-05-19) — wave-schedule.md v0.1.3 at f160696 (story-writer Pass-2-fix). 11 waves, 43 stories, 264 points, 13 critical-path stories, 16 terminal nodes, 7 holdout-eligible waves. State-mgr FINAL: 10354be.
 - Phase 2 Step E: COMPLETED (2026-05-19) — holdout-scenarios.md v0.1.3 at 8ba1487 (product-owner retry-fix). 17 scenarios, 10 must-pass, 7 nice-to-pass, 100% story coverage, 91.6% BC coverage. State-mgr FINAL: ccc5f5b.
 - Phase 2 Step F: COMPLETED (2026-05-19) — decomposition-gate CLEAN-GATE-PASS. 9 findings closed (c123e51+c749ad3+8ba1487). BC-INDEX v0.1.14. State-mgr FINAL: 74e2bf0.
-- Phase 2 Step G Pass 1: CLOSED (FAIL — 4C+8I+5S). Persist: fc3b5af. 3 fix-bursts: 13d4d4e+02c681f+82ec4f5. 17 findings closed. I07 DEFERRED per UD-008. Streak 0/3.
-- Phase 2 Step G Pass 2: NEXT-ACTION (task #164) — dispatch adversarial story-reviewer with fresh context per BC-5.39.001 3-CLEAN protocol. Streak 0/3.
+- Phase 2 Step G Pass 1: CLOSED (FAIL — 4C+8I+5S). Persist: fc3b5af. 3 fix-bursts: 13d4d4e+02c681f+82ec4f5. 17 findings closed. I07 DEFERRED per UD-008. State-mgr FINAL: 89382b4.
+- Phase 2 Step G Pass 2: CLOSED (FAIL — 0C+3I+4S). Persist: 6ff5afe. Fix-bundle: f160696 (story-writer, 7 findings closed). Streak 0/3 reset. Decay C:4→0 I:8→3.
+- Phase 2 Step G Pass 3: NEXT-ACTION (task #165) — dispatch adversarial story-reviewer with fresh context per BC-5.39.001 3-CLEAN protocol. Streak 0/3.
 - Working tree: clean (only untracked planning notes + .factory/logs/ + .claude/).
-- HEAD: Phase 2 Pass 1 fix-closure state-mgr FINAL commit.
+- HEAD: Phase 2 Pass 2 fix-closure state-mgr FINAL commit.
 
 **UD-007+UD-008 carry-forward note:** dependency-graph.md is CANONICAL for inter-story dependencies. Per-story frontmatter `dependencies:`/`blocks:` are at-creation-time snapshots. I07 (frontmatter blocks asymmetry) DEFERRED per UD-008. Downstream agents consult dep-graph, not frontmatter. Consistency-validator MUST NOT flag frontmatter-vs-dep-graph asymmetries as defects.
 
 **HOLDOUT-SCENARIOS ACCESS CONTROL — RESTRICTED:** `.factory/stories/holdout-scenarios.md` has `access_control: restricted`. Orchestrator MUST NOT pass its contents to story-writer, architect, adversary, implementer, or any agent other than holdout-evaluator (Phase 4). DO NOT include holdout-scenarios.md in any Phase 2/3 agent context.
 
+**Process-gaps carried forward:**
+- **F-PHASE2-ADV-PASS2-S04 [process-gap]:** Input-version-currency check on derived artifacts (story-writer should verify artifact inputs are current before closing any burst). Recommendation: codify as permanent invariant in story-writer's burst-completion checklist. Carry to Cycle-Closing Checklist when Phase 2 closes.
+- **F-PASS40-O2 / F-PASS40-O3 / F-PASS41-O2 / F-PASS42-O2** — inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2).
+
 **Next-action checklist for fresh-context orchestrator:**
 
-1. [ ] Read CLAUDE.md → STATE.md → SESSION-HANDOFF.md → TASK-LIST.md (this file) → .factory/stories/STORY-INDEX.md (v0.3.2) → wave-schedule.md (v0.1.2)
+1. [ ] Read CLAUDE.md → STATE.md → SESSION-HANDOFF.md → TASK-LIST.md (this file) → .factory/stories/STORY-INDEX.md (v0.3.3) → wave-schedule.md (v0.1.3)
 2. [ ] Confirm holdout-scenarios.md at v0.1.3 (17 scenarios) — DO NOT read contents (restricted)
-3. [ ] Dispatch `vsdd-factory:adversary` for Step G Pass 2 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol — different model family from prior pipeline agents; chat-only output (DO NOT instruct adversary to Write or Commit); DO NOT pass holdout-scenarios.md; streak 0/3 entering Pass 2
+3. [ ] Dispatch `vsdd-factory:adversary` for Step G Pass 3 with FRESH CONTEXT per BC-5.39.001 3-CLEAN protocol — different model family from prior pipeline agents; chat-only output (DO NOT instruct adversary to Write or Commit); DO NOT pass holdout-scenarios.md; streak 0/3 entering Pass 3
 4. [ ] Per-pass: collect finding report, route CRITICAL/IMPORTANT findings via CLAUDE.md agent routing table, fix, re-dispatch adversary with NEW fresh context
 5. [ ] Continue until 3 consecutive PASS verdicts (BC-5.39.001 literal streak 3/3)
 6. [ ] At Phase 2 convergence (streak 3/3), surface to human for Phase 3 gate
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #164 | NEXT-ACTION | Phase 2 Step G Pass 2 — adversarial-story-review Pass 2 (streak 0/3 — DO NOT pass holdout-scenarios.md) |
-| 2 | #163 | COMPLETED | Phase 2 Step G Pass 1 — FAIL (4C+8I+5S) — fc3b5af + 3 fix-bursts (13d4d4e+02c681f+82ec4f5) + this-burst fix-closure |
-| 3 | #162 | COMPLETED | Phase 2 Step F — consistency-validator decomposition-gate CLEAN-GATE-PASS (c123e51+c749ad3+8ba1487) |
-| 4 | #161 | COMPLETED | Phase 2 Step E — product-owner holdout-scenarios (9b44845+5a3a942+8ba1487 v0.1.3) |
-| 5 | #160 | COMPLETED | Phase 2 Step D — story-writer wave-schedule (efc3001+c749ad3+13d4d4e v0.1.2) |
-| 6 | #159 | COMPLETED | Phase 2 Step C — story-writer dependency-graph (90d90fd) |
-| 7 | #157 | COMPLETED | Phase 2 Step B — story-writer create-stories (21 bursts, 43 stories, STORY-INDEX v0.3.2) |
-| 8 | #155 | STEP-G-IN-PROGRESS | Phase 2 (Story Decomposition) — Step G Pass 1 closed; Pass 2 next |
+| 1 | #165 | NEXT-ACTION | Phase 2 Step G Pass 3 — adversarial-story-review Pass 3 (streak 0/3 — DO NOT pass holdout-scenarios.md) |
+| 2 | #164 | COMPLETED | Phase 2 Step G Pass 2 — FAIL (0C+3I+4S) — 6ff5afe + fix-bundle f160696 (7 findings closed) + Pass 2 fix-closure state-mgr FINAL (this commit) |
+| 3 | #163 | COMPLETED | Phase 2 Step G Pass 1 — FAIL (4C+8I+5S) — fc3b5af + 3 fix-bursts (13d4d4e+02c681f+82ec4f5) + fix-closure 89382b4 |
+| 4 | #162 | COMPLETED | Phase 2 Step F — consistency-validator decomposition-gate CLEAN-GATE-PASS (c123e51+c749ad3+8ba1487) |
+| 5 | #161 | COMPLETED | Phase 2 Step E — product-owner holdout-scenarios (9b44845+5a3a942+8ba1487 v0.1.3) |
+| 6 | #160 | COMPLETED | Phase 2 Step D — story-writer wave-schedule (efc3001+c749ad3+f160696 v0.1.3) |
+| 7 | #159 | COMPLETED | Phase 2 Step C — story-writer dependency-graph (90d90fd+f160696 v0.1.1) |
+| 8 | #157 | COMPLETED | Phase 2 Step B — story-writer create-stories (21 bursts, 43 stories, STORY-INDEX v0.3.3) |
+| 9 | #155 | STEP-G-IN-PROGRESS | Phase 2 (Story Decomposition) — Step G Pass 2 closed; Pass 3 next |
 
 ## Task Status
 
