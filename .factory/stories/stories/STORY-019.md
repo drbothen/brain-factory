@@ -21,7 +21,7 @@ inputs:
   - behavioral-contracts/ss-03/BC-2.03.003.md
   - behavioral-contracts/ss-03/BC-2.03.004.md
   - architecture/verification-properties/VP-016-source-ingest-pipeline.md
-  - architecture/verification-properties/VP-012-manifest-write-atomicity.md
+  - architecture/verification-properties/VP-012-manifest-atomicity.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Bundling rationale: BC-2.03.001 (local file ingest), BC-2.03.002 (manifest delta),
@@ -358,5 +358,5 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - BC-2.03.003: `behavioral-contracts/ss-03/BC-2.03.003.md`
 - BC-2.03.004: `behavioral-contracts/ss-03/BC-2.03.004.md`
 - VP-016: `architecture/verification-properties/VP-016-source-ingest-pipeline.md`
-- VP-012: `architecture/verification-properties/VP-012-manifest-write-atomicity.md`
+- VP-012: `architecture/verification-properties/VP-012-manifest-atomicity.md`
 - SS-03: `architecture/subsystems/SS-03-source-ingest-pipeline.md`

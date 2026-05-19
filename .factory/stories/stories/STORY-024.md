@@ -20,8 +20,12 @@ inputs:
 input-hash: ""
 # BC status: BC-2.11.001 assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Priority: P1 — depends on wiki layer (EPIC-04) producing pages to synthesize across
-# Dependency rationale: STORY-019 (wiki page creation pipeline) must exist before connect
-# can read pages; STORY-020 (wiki index and log) provides wiki/log.md the skill reads.
+# Dependency rationale: STORY-019 (local source ingest, EPIC-03) must exist before
+# connect can read pages via the ingest pipeline; STORY-020 (lint-wiki, EPIC-04)
+# delivers wikilink-resolve.sh that /brain:connect uses to validate output wikilinks.
+# wiki/log.md is first written by STORY-017 (URL ingest wiki gen pipeline) and also
+# appended by STORY-019 (which reuses STORY-017's pipeline). STORY-020 is a READER
+# of wiki/log.md (check 7 of lint-wiki), not the writer.
 # Blocks STORY-025: synthesize reads the connections file this story produces.
 ---
 
@@ -188,12 +192,28 @@ any prior STORY-NNN.md, any other existing bats files or skill files.
 
 ## Previous Story Intelligence
 
-STORY-019 and STORY-020 (EPIC-04, wiki layer) produce the `wiki/log.md` file and the
-`wiki/{type}/` directory tree that this skill reads. Confirm `wiki/log.md` exists and
-its format before implementing the log-parsing step. If the log format is a JSONL
-record per page (as implied by the structured event catalog from EPIC-02), the date
-filter in Step 2 should parse the `ts` field. If it is a plain markdown list, use
-`grep` against date-prefixed lines.
+STORY-017 (EPIC-03, URL ingest wiki generation pipeline) is the story that first
+produces `wiki/log.md` and the `wiki/{type}/` directory tree during URL ingest. The
+log.md WRITER is STORY-017; it appends an entry every time the wiki generation pipeline
+runs. STORY-019 (EPIC-03, local source ingest) is NOT EPIC-04 — it is the local-file
+variant of the same ingest pipeline and REUSES the STORY-017 wiki generation pipeline;
+STORY-019 also appends to `wiki/log.md` via the same step. STORY-020 (EPIC-04,
+`/brain:lint-wiki`) is a READER of `wiki/log.md` for the index-coherence check
+(check 7 of 7) — it does not produce the log.
+
+Dependency rationale for this story's `dependencies: [STORY-019, STORY-020]`:
+- STORY-019 must exist because `/brain:connect` reads `wiki/log.md` entries from recent
+  ingests. STORY-019 (local source ingest) and STORY-017 (URL ingest, via transitive
+  chain STORY-017 → STORY-019) populate the log that `/brain:connect` consumes. STORY-019
+  is the nearer upstream dependency (same pipeline, closest producer).
+- STORY-020 must exist because `/brain:connect` uses `wikilink-resolve.sh`
+  (delivered by STORY-020's `hooks/lib/wikilink-resolve.sh`) to validate that all
+  wikilinks in the connection brief resolve correctly.
+
+Confirm `wiki/log.md` exists and its format before implementing the log-parsing step.
+If the log format is a JSONL record per page (as implied by the structured event catalog
+from EPIC-02), the date filter in Step 2 should parse the `ts` field. If it is a plain
+markdown list, use `grep` against date-prefixed lines.
 
 N/A for prior EPIC-05 stories — this is the first story in the epic.
 
@@ -224,6 +244,7 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 
 - BC-2.11.001: `behavioral-contracts/ss-11/BC-2.11.001.md`
 - SS-11: `architecture/subsystems/SS-11-knowledge-synthesis.md`
-- STORY-019: `stories/stories/STORY-019.md` (wiki page creation — provides wiki/log.md)
-- STORY-020: `stories/stories/STORY-020.md` (wiki index and log format)
+- STORY-017: `stories/stories/STORY-017.md` (URL ingest wiki generation — first producer of wiki/log.md)
+- STORY-019: `stories/stories/STORY-019.md` (local source ingest — also appends to wiki/log.md via STORY-017 pipeline reuse; direct `depends_on` source)
+- STORY-020: `stories/stories/STORY-020.md` (lint-wiki — delivers wikilink-resolve.sh used by /brain:connect for link validation)
 - CLAUDE.md §Meta-Lint Contract: authoritative SKILL.md assertion list

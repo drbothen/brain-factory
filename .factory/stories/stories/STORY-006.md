@@ -11,6 +11,11 @@ points: 8
 priority: P0
 subsystems: [SS-04, SS-10]
 behavioral_contracts: [BC-2.04.001, BC-2.10.001, BC-2.10.002, BC-2.10.003]
+cross_cutting_bcs: [BC-2.04.017]
+# BC-2.04.017 note: STORY-006 OBSERVES the universal event-emission contract via AC-007.
+# BC-2.04.017 is implemented by STORY-014 (the shim); STORY-006 is a call-site consumer.
+# Listed here for explicit traceability; not in behavioral_contracts because STORY-006
+# does not implement BC-2.04.017 — it calls the shim that STORY-014 delivers.
 vps: [VP-011, VP-021]
 dependencies: [STORY-001]
 blocks: [STORY-007, STORY-008, STORY-009, STORY-010]
@@ -320,7 +325,7 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 ## Out of Scope
 
 - All other hook scripts in EPIC-02 — separate stories STORY-007..STORY-010
-- Structured event catalog implementation (BC-2.17.001..004) — EPIC-02 Part 2 (STORY-011)
+- Structured event catalog implementation (BC-2.17.001..004) — EPIC-02 Part 2 (STORY-014)
 - Any hook helper library (`hooks/lib/hook-event-emit.sh`) full implementation —
   EPIC-02 Part 2 covers BC-2.04.016/017; stubs created in STORY-001 are sufficient
   to call here

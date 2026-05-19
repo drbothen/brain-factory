@@ -1,6 +1,6 @@
 ---
 artifact_type: story-index
-version: "0.3.1"
+version: "0.3.2"
 created: 2026-05-18
 last_updated: 2026-05-18
 authored_by: vsdd-factory:story-writer
@@ -14,7 +14,7 @@ epics_pending: []
 inputs:
   - product-brief.md@v0.4.20
   - prd/index.md@v0.1.12
-  - behavioral-contracts/BC-INDEX.md@v0.1.13
+  - behavioral-contracts/BC-INDEX.md@v0.1.14
   - architecture/ARCH-INDEX.md@v0.1.23
   - architecture/verification-properties/VP-INDEX.md@v0.1.7
   - stories/epics.md@v0.1.1
@@ -29,6 +29,10 @@ inputs:
 ---
 
 ## Changelog
+
+### v0.3.2 — 2026-05-19 (F-PHASE2-ADV-PASS1-I04)
+
+- **Input version refresh (I04):** `behavioral-contracts/BC-INDEX.md` updated v0.1.13 → v0.1.14 (current). No story content amended.
 
 ### v0.3.1 — 2026-05-19 (F-PHASE2-DECOMP-GATE-I02a)
 

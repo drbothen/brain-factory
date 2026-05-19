@@ -21,7 +21,7 @@ inputs:
   - behavioral-contracts/ss-02/BC-2.02.004.md
   - behavioral-contracts/ss-02/BC-2.02.006.md
   - architecture/verification-properties/VP-015-url-ingest-pipeline.md
-  - architecture/verification-properties/VP-012-manifest-write-atomicity.md
+  - architecture/verification-properties/VP-012-manifest-atomicity.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Bundling rationale: BC-2.02.001 (fetch + source write), BC-2.02.006 (duplicate guard),
@@ -312,6 +312,6 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - BC-2.02.004: `behavioral-contracts/ss-02/BC-2.02.004.md`
 - BC-2.02.006: `behavioral-contracts/ss-02/BC-2.02.006.md`
 - VP-015: `architecture/verification-properties/VP-015-url-ingest-pipeline.md`
-- VP-012: `architecture/verification-properties/VP-012-manifest-write-atomicity.md`
+- VP-012: `architecture/verification-properties/VP-012-manifest-atomicity.md`
 - SS-02: `architecture/subsystems/SS-02-url-ingest-pipeline.md`
 - ADR-010: `architecture/adr/ADR-010-manifest-delta-architecture.md`

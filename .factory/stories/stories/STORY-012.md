@@ -20,7 +20,7 @@ inputs:
   - architecture/adr/ADR-016-hook-helper-architecture.md
   - behavioral-contracts/ss-04/BC-2.04.011.md
   - behavioral-contracts/ss-04/BC-2.04.012.md
-  - architecture/verification-properties/VP-017-naming-and-attribution.md
+  - architecture/verification-properties/VP-017-hook-naming-and-attribution.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 ---
@@ -285,7 +285,7 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 
 - BC-2.04.011: `behavioral-contracts/ss-04/BC-2.04.011.md`
 - BC-2.04.012: `behavioral-contracts/ss-04/BC-2.04.012.md`
-- VP-017: `architecture/verification-properties/VP-017-naming-and-attribution.md`
+- VP-017: `architecture/verification-properties/VP-017-hook-naming-and-attribution.md`
 - SS-04: `architecture/subsystems/SS-04-hook-enforcement-chain.md`
 - ADR-002: `architecture/adr/ADR-002-hook-chain-contract.md`
 - ADR-016: `architecture/adr/ADR-016-hook-helper-architecture.md`

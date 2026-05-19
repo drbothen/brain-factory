@@ -1,6 +1,6 @@
 ---
 artifact_type: epics
-version: "0.1.1"
+version: "0.1.2"
 created: 2026-05-18
 last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
@@ -95,7 +95,7 @@ Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
   wiring, the structured event catalog, and the quarantine corpus patterns (the quarantine
   script is a hook co-requisite: it is invoked by quarantine-fetch.sh and must exist
   before any WebFetch hook can enforce).
-- **Estimated stories:** 9
+- **Estimated stories:** 10
 - **Rationale:** SS-04, SS-17, and SS-10 are tightly coupled at the implementation level:
   every SS-04 hook (BC-2.04.001–017) must emit structured JSONL events (BC-2.17.001–004),
   and the quarantine hook (BC-2.04.001) invokes the quarantine corpus (BC-2.10.001–003).
@@ -141,7 +141,7 @@ Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
 
 ---
 
-## Epic: Wiki Layer and Content Production
+## Epic: Wiki Layer and Meta-Lint
 
 - **Goal:** The wiki layer enforces the six-type page structure, maintains wikilink
   integrity through index-first lookup, and provides a `/brain:rename-page` skill that
@@ -185,7 +185,7 @@ Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
   vault; they migrate to the plugin in Phase 1 (§5.4). Build-plan Phase 3 (§7 dogfood)
   is where they get real usage validation. These are P1 BCs; they are built after the
   P0 foundation is stable.
-- **Estimated stories:** 2
+- **Estimated stories:** 3
 - **Rationale:** BC-2.11.001–003 are the three synthesis capabilities. They are all P1
   priority, depend on the wiki layer (EPIC-03 ingest produces the pages they synthesize
   across), and have no inter-dependencies with each other that would require further
@@ -332,6 +332,10 @@ Sum = 95. Every BC in exactly one epic. Coverage: **PASS**.
 ---
 
 ## Changelog
+
+### v0.1.2 (2026-05-19)
+
+F-PHASE2-ADV-PASS1-I05+I06: EPIC-02 "Estimated stories: 9" → 10 (actual STORY-006..015 = 10 stories per STORY-INDEX). EPIC-05 "Estimated stories: 2" → 3 (actual STORY-024, 025, 026 = 3 stories). EPIC-04 name corrected: "Wiki Layer and Content Production" → "Wiki Layer and Meta-Lint" (align with STORY-INDEX naming).
 
 ### v0.1.1 (2026-05-19)
 

@@ -18,7 +18,7 @@ inputs:
   - architecture/subsystems/SS-18-meta-lint-self-audit.md  # v1.5 (F-PHASE2-STEP-B-CLOSEOUT-O1: per-hook .bats canonical; SKILL/AGENT surfaces unchanged)
   - behavioral-contracts/ss-18/BC-2.18.001.md
   - behavioral-contracts/ss-18/BC-2.18.003.md
-  - architecture/verification-properties/VP-006-meta-lint-factory-self-audit.md
+  - architecture/verification-properties/VP-006-meta-lint-suite.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # SS-18 v1.5 impact: §Test surface organization and §Hook script surface changed (bats suite
@@ -305,6 +305,6 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 
 - BC-2.18.001: `behavioral-contracts/ss-18/BC-2.18.001.md`
 - BC-2.18.003: `behavioral-contracts/ss-18/BC-2.18.003.md`
-- VP-006: `architecture/verification-properties/VP-006-meta-lint-factory-self-audit.md`
+- VP-006: `architecture/verification-properties/VP-006-meta-lint-suite.md`
 - SS-18: `architecture/subsystems/SS-18-meta-lint-self-audit.md`
 - CLAUDE.md §Meta-Lint Contract: authoritative assertion list

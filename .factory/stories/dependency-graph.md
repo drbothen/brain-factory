@@ -147,6 +147,7 @@ All direct dependency edges. Sorted by source story ID. Format:
 - STORY-027 → STORY-028 [frontmatter-confirmed] (STORY-028 `/brain:brief` writes to `briefs/content/` directories scaffolded by STORY-027)
 - STORY-025 → STORY-028 [frontmatter-confirmed] (STORY-028 brief scaffold derives from synthesis output from STORY-025)
 - STORY-028 → STORY-029 [frontmatter-confirmed] (STORY-029 `/brain:write` requires the brief file produced by `/brain:brief` from STORY-028)
+- STORY-011 → STORY-030 [graph-derived] (STORY-030 publish state machine bats tests exercise `validate-publish-state.sh` which is implemented by STORY-011; the per-hook bats suite for validate-publish-state.sh depends on the hook being delivered — see F-PHASE2-ADV-PASS1-C03)
 - STORY-029 → STORY-030 [frontmatter-confirmed] (STORY-030 `/brain:publish-content` publishes the written piece from STORY-029)
 - STORY-027 → STORY-030 [frontmatter-confirmed] (STORY-030 state machine enforces `draft → ready → published` transitions in `briefs/content/` directories from STORY-027)
 - STORY-030 → STORY-031 [frontmatter-confirmed] (STORY-031 `/brain:monthly-perf` reads LinkedIn post performance data from content published via STORY-030)
@@ -320,6 +321,26 @@ back to STORY-020).
 
 ---
 
+### F-PHASE2-ADV-PASS1-C03 — STORY-011 → STORY-030 missing edge
+
+**Finding:** STORY-030's `validate-publish-state.bats` tests exercise `validate-publish-state.sh`,
+which is implemented by STORY-011 (BC-2.04.009/010). STORY-030 frontmatter listed
+`dependencies: [STORY-029, STORY-027]` but omitted STORY-011.
+
+**Analysis (production-vs-consumption):** STORY-030 creates `tests/validate-publish-state.bats`
+(a per-hook bats suite). The bats tests invoke `hooks/validate-publish-state.sh`. That hook
+is delivered by STORY-011. Without STORY-011, the hook script does not exist and
+STORY-030's bats tests cannot pass. The dependency is real and direct.
+
+**Edge added:**
+```
+STORY-011 → STORY-030 [graph-derived]
+```
+
+**Status:** RESOLVED-EDGE-ADDED (1 graph-derived edge added; STORY-030 `dependencies` also updated)
+
+---
+
 ### F-PHASE2-CONSISTENCY-S01 — STORY-027 → STORY-029 transitive
 
 **Finding:** STORY-027 claims `blocks: [STORY-028, STORY-029, STORY-030]`. The
@@ -364,133 +385,7 @@ Topological sort using Kahn's algorithm (consistent with `bin/lobster-run` algor
 BC-2.12.001 and STORY-032 design). Stories within the same layer have no mutual
 dependencies and can execute in parallel.
 
-**Layer 0 — No dependencies (7 stories):**
-STORY-001, STORY-006 (stubs-only phase precedes STORY-014 integration — see note),
-STORY-027, STORY-032, STORY-038, STORY-040, STORY-042*
-
-_Note: STORY-006 frontmatter lists `dependencies: [STORY-001]` only; the graph-derived
-STORY-014 → STORY-006 edge means STORY-006 cannot fully integrate until STORY-014 lands.
-For topological purposes, STORY-006 is placed in Layer 1 (after STORY-001). STORY-001
-alone is Layer 0._
-
-**Revised Layer 0 — No dependencies (1 story):**
-- STORY-001
-
-**Layer 1 — Depends only on Layer 0:**
-STORY-006, STORY-014, STORY-027, STORY-032, STORY-038, STORY-040
-
-_STORY-006 depends on STORY-001 and STORY-014. Since STORY-014 also depends on
-STORY-001 only, and STORY-006 depends on both: STORY-014 → Layer 1, STORY-006 → Layer 2._
-
-**Re-sorted by strict Kahn's:**
-
-Starting from in-degree=0: STORY-001 only.
-
-Remove STORY-001 and its outgoing edges; recompute:
-
-**Layer 0 (in-degree = 0):**
-STORY-001
-
-After removing STORY-001, new in-degree = 0:
-- STORY-014 (was: depends on STORY-001)
-- STORY-027 (was: depends on STORY-001)
-- STORY-032 (was: depends on STORY-001, STORY-002 → Layer 1 minimum)
-- STORY-038 (was: depends on STORY-001)
-- STORY-040 (was: depends on STORY-001, STORY-002 → Layer 1 minimum)
-
-Wait — STORY-032 depends on STORY-001 AND STORY-002. STORY-040 depends on STORY-001
-AND STORY-002. They belong in the layer after STORY-002 (which itself is after STORY-001).
-
-Let me enumerate cleanly:
-
 ### Topological Layers (strict Kahn's)
-
-**Layer 0:**
-STORY-001
-
-**Layer 1** (all deps in Layer 0):
-STORY-014 (deps: STORY-001)
-STORY-027 (deps: STORY-001)
-STORY-038 (deps: STORY-001)
-
-**Layer 2** (all deps in Layer 0..1):
-STORY-002 (deps: STORY-001)
-STORY-006 (deps: STORY-001, STORY-014)
-STORY-007 (deps: STORY-001, STORY-006 → not yet; STORY-014 is L1) — STORY-007 deps: STORY-001, STORY-006. STORY-006 is L2. So STORY-007 is L3+.
-STORY-016 (deps: STORY-001, STORY-014 — both done by L1)
-
-Corrected Layer 2:
-STORY-002 (deps: STORY-001 ✓)
-STORY-016 (deps: STORY-001 ✓, STORY-014 ✓)
-
-**Layer 3** (all deps in Layer 0..2):
-STORY-003 (deps: STORY-001 ✓, STORY-002 ✓)
-STORY-006 (deps: STORY-001 ✓, STORY-014 ✓ — STORY-014 in L1, STORY-001 in L0; both satisfied by L2)
-
-Wait — Layer 2 includes STORY-002 and STORY-016. STORY-006 deps are STORY-001 (L0) and
-STORY-014 (L1). All satisfied before Layer 2. So STORY-006 belongs in Layer 2.
-
-Re-sorting cleanly:
-
-| Layer | Stories | Count |
-|-------|---------|-------|
-| 0 | STORY-001 | 1 |
-| 1 | STORY-014, STORY-027, STORY-038 | 3 |
-| 2 | STORY-002, STORY-006, STORY-016 | 3 |
-| 3 | STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-017, STORY-032 | 10 |
-| 4 | STORY-004, STORY-015, STORY-018†, STORY-019, STORY-033, STORY-036, STORY-040 | 7 |
-| 5 | STORY-005, STORY-020, STORY-034, STORY-037, STORY-039†, STORY-041 | 6 |
-| 6 | STORY-021, STORY-022, STORY-035†, STORY-042 | 4 |
-| 7 | STORY-023, STORY-043 | 2 |
-| 8 | STORY-024, STORY-026 | 2 |
-| 9 | STORY-025 | 1 |
-| 10 | STORY-028 | 1 |
-| 11 | STORY-029 | 1 |
-| 12 | STORY-030 | 1 |
-| 13 | STORY-031 | 1 |
-
-† STORY-018 in Layer 4: deps STORY-017 (L3) ✓ and STORY-038 (L1) ✓ → min=L4.
-† STORY-039 in Layer 5: deps STORY-036 (L4), STORY-038 (L1), STORY-034 (L5), STORY-035 (L6) → STORY-039 must be after STORY-035 (L6) → Layer 7.
-† STORY-035 in Layer 6: deps STORY-034 (L5), STORY-030 (L12) → STORY-035 must wait for STORY-030 → Layer 13+.
-
-Let me recompute layers for the EPIC-06/07/08 chain properly:
-
-**STORY-027** (L1) → **STORY-028** deps: STORY-027 (L1), STORY-025 (need to find)
-**STORY-025** deps: STORY-024. **STORY-024** deps: STORY-019, STORY-020.
-**STORY-019** deps: STORY-016 (L2), STORY-017 (L3), STORY-014 (L1) → Layer 4
-**STORY-020** deps: STORY-001 (L0), STORY-009 (L3), STORY-014 (L1) → Layer 4
-**STORY-024** → Layer 5; **STORY-025** → Layer 6; **STORY-028** deps: STORY-027 (L1), STORY-025 (L6) → Layer 7
-**STORY-029** → Layer 8; **STORY-030** deps: STORY-029 (L8), STORY-027 (L1) → Layer 9
-**STORY-031** → Layer 10
-**STORY-035** deps: STORY-034, STORY-030 (L9) → Layer 10
-**STORY-039** deps: STORY-036 (L4†), STORY-038 (L1), STORY-034 (L?), STORY-035 (L10) → L11
-
-STORY-034 deps: STORY-033 (L?), STORY-001 (L0). STORY-033 deps: STORY-032. STORY-032
-deps: STORY-001 (L0), STORY-002 (L2) → Layer 3. STORY-033 → Layer 4. STORY-034 → Layer 5.
-
-Full corrected table:
-
-| Layer | Stories | Count |
-|-------|---------|-------|
-| 0 | STORY-001 | 1 |
-| 1 | STORY-014, STORY-027, STORY-038 | 3 |
-| 2 | STORY-002, STORY-006, STORY-016 | 3 |
-| 3 | STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-017, STORY-032 | 10 |
-| 4 | STORY-004, STORY-015, STORY-019, STORY-033, STORY-036, STORY-040 | 6 |
-| 5 | STORY-005, STORY-020, STORY-022*, STORY-034, STORY-037, STORY-041 | 6 |
-| 6 | STORY-018, STORY-021, STORY-024, STORY-026, STORY-042 | 5 |
-| 7 | STORY-023, STORY-025, STORY-039†, STORY-043 | 4 |
-| 8 | STORY-028 | 1 |
-| 9 | STORY-029 | 1 |
-| 10 | STORY-030 | 1 |
-| 11 | STORY-031, STORY-035 | 2 |
-
-*STORY-022 deps: STORY-001..005 (max = STORY-005 at L5), STORY-020 (L5) → Layer 6.
-Corrected: STORY-022 → Layer 6.
-
-† STORY-039 deps: STORY-036 (L4), STORY-038 (L1), STORY-034 (L5), STORY-035 (L11) → Layer 12.
-
-Corrected final table:
 
 | Layer | Stories | Count |
 |-------|---------|-------|
@@ -508,6 +403,16 @@ Corrected final table:
 | 11 | STORY-031, STORY-035 | 2 |
 | 12 | STORY-039 | 1 |
 | **Total** | 43 stories | **13 layers** |
+
+Layer derivation notes:
+- STORY-006 deps: STORY-001 (L0), STORY-014 (L1) → Layer 2
+- STORY-016 deps: STORY-001 (L0), STORY-014 (L1) → Layer 2
+- STORY-019 deps: STORY-016 (L2), STORY-017 (L3), STORY-014 (L1) → Layer 4
+- STORY-020 deps: STORY-001 (L0), STORY-009 (L3), STORY-014 (L1) → Layer 4
+- STORY-022 deps: STORY-001..005 (max STORY-005 at L5), STORY-020 (L4) → Layer 6
+- STORY-030 deps: STORY-029 (L9), STORY-027 (L1), STORY-011 (L3) → Layer 10
+- STORY-035 deps: STORY-034 (L5), STORY-030 (L10) → Layer 11
+- STORY-039 deps: STORY-036 (L4), STORY-038 (L1), STORY-034 (L5), STORY-035 (L11) → Layer 12
 
 ---
 
@@ -547,11 +452,11 @@ Spot-check of 8 critical dependency edges via BC → SS → story chain.
 
 ## §Stats
 
-**Total direct edges:** 66
+**Total direct edges: 68**
 
 Breakdown:
 - Frontmatter-confirmed edges: 57
-- Graph-derived edges (new in this burst): 9
+- Graph-derived edges: 11
   - STORY-014 → STORY-006 (I04)
   - STORY-014 → STORY-007 (I04)
   - STORY-014 → STORY-008 (I04)
@@ -562,11 +467,7 @@ Breakdown:
   - STORY-014 → STORY-013 (I04)
   - STORY-038 → STORY-018 (I06)
   - STORY-020 → STORY-022 (I07)
-
-Wait — that is 10 graph-derived edges. Recount: I04 added 8 edges
-(014→006..013), I06 added 1 (038→018), I07 added 1 (020→022). Total graph-derived = 10.
-
-**Total direct edges: 67**
+  - STORY-011 → STORY-030 (C03)
 
 **Max in-degree (most-blocked story):**
 - STORY-039: 4 incoming edges (STORY-036, STORY-038, STORY-034, STORY-035)
@@ -580,23 +481,11 @@ Wait — that is 10 graph-derived edges. Recount: I04 added 8 edges
 **STORY-001 is max out-degree: 16 outgoing edges**
 
 **Critical path (longest chain from Layer 0 to terminal):**
-Following the longest chain:
-STORY-001 → STORY-002 → STORY-003 → STORY-004 → STORY-005 → STORY-020 → STORY-022 (Layer 6)
-versus
-STORY-001 → STORY-014 → STORY-016 → STORY-017 → STORY-019 → STORY-020 → STORY-024 → STORY-025 → STORY-028 → STORY-029 → STORY-030 → STORY-031 (12 hops, Layer 11)
-versus
-STORY-001 → STORY-002 → STORY-032 → STORY-033 → STORY-034 → STORY-035 → STORY-039 (6 hops via lobster + scale gate, at Layer 12)
 
-Wait — STORY-039 is at Layer 12 and depends on STORY-035 which depends on STORY-030
-(L10). The STORY-001 → ... → STORY-035 path:
-STORY-001 → STORY-027 → STORY-028... no. STORY-030 depends on STORY-029 → STORY-028
-→ STORY-025 → STORY-024 → STORY-019 → STORY-017 → STORY-016 → STORY-014 → STORY-001.
-That is 9 hops to STORY-030, then STORY-035 at hop 10, then STORY-039 at hop 11.
+Full critical path to STORY-039 (12 edges, 13 stories):
+`STORY-001 → STORY-014 → STORY-016 → STORY-017 → STORY-019 → STORY-020 → STORY-024 → STORY-025 → STORY-028 → STORY-029 → STORY-030 → STORY-035 → STORY-039`
 
-Full critical path to STORY-039 (11 edges):
-`STORY-001 → STORY-014 → STORY-016 → STORY-017 → STORY-019 → STORY-024 → STORY-025 → STORY-028 → STORY-029 → STORY-030 → STORY-035 → STORY-039`
-
-**Critical path length: 11 hops (12 stories), Layer 12**
+**Critical path length: 12 hops (13 stories), Layer 12**
 
 **Terminal nodes (out-degree = 0, nothing depends on them — 14 stories):**
 STORY-005, STORY-007, STORY-008, STORY-010, STORY-011, STORY-012, STORY-013,

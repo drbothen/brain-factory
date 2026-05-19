@@ -21,8 +21,8 @@ inputs:
   - behavioral-contracts/ss-04/BC-2.04.017.md
   - behavioral-contracts/ss-17/BC-2.17.001.md
   - behavioral-contracts/ss-17/BC-2.17.002.md
-  - architecture/verification-properties/VP-008-event-catalog-completeness.md
-  - architecture/verification-properties/VP-017-naming-and-attribution.md
+  - architecture/verification-properties/VP-008-hook-event-catalog-completeness.md
+  - architecture/verification-properties/VP-017-hook-naming-and-attribution.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Bundling rationale: BC-2.04.017 (universal hook emission) and BC-2.17.001+002
@@ -142,12 +142,23 @@ invariant 1).
 
 ### Meta-Lint Catalog Completeness
 
-**AC-012** — `tests/meta-lint.bats` (or a new `tests/integration.bats` catalog-completeness
-suite per BC-2.17.001 postcondition 3) contains a test that: (1) greps all 13 hook
+**AC-012** — `tests/meta-lint.bats` contains a test that: (1) greps all 13 hook
 scripts for `emit_event` call sites, extracts the `event_type` argument, and (2) verifies
 each extracted `event_type` appears in `scripts/event-catalog.json`. Any unregistered
-emit site fails the test.
+emit site fails the test. The catalog-completeness check lives in `tests/meta-lint.bats`
+(the 8-category static analysis suite) — do NOT create a separate `tests/integration.bats`
+catalog suite for this purpose.
 (traces to BC-2.17.001 postcondition 1; VP-008 cross-reference check)
+
+**AC-009b** — Cross-check: every `event_type` emitted by STORY-006 through STORY-013
+(per their ACs) MUST appear in the catalog. Implementer: before declaring STORY-014
+done, grep all EPIC-02 hook stories for `hook-event:emit` calls and verify the emitted
+`event_type` strings are in `scripts/event-catalog.json`. If any hook story emits an
+event NOT in the catalog, that is a defect blocking STORY-014's wave gate. The catalog
+list in AC-009 is the authoritative source-of-truth; STORY-014 owns it and STORY-014's
+bats meta-test verifies catalog-vs-hook-emission consistency at build time. The catalog
+is open-ended and grows as hook stories add events.
+(traces to BC-2.17.001 postcondition 1; BC-2.17.001 invariant 1)
 
 **AC-013** — The `jq empty` check on every `example` field in `scripts/event-catalog.json`
 passes in bats.
@@ -310,8 +321,8 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - BC-2.04.017: `behavioral-contracts/ss-04/BC-2.04.017.md`
 - BC-2.17.001: `behavioral-contracts/ss-17/BC-2.17.001.md`
 - BC-2.17.002: `behavioral-contracts/ss-17/BC-2.17.002.md`
-- VP-008: `architecture/verification-properties/VP-008-event-catalog-completeness.md`
-- VP-017: `architecture/verification-properties/VP-017-naming-and-attribution.md`
+- VP-008: `architecture/verification-properties/VP-008-hook-event-catalog-completeness.md`
+- VP-017: `architecture/verification-properties/VP-017-hook-naming-and-attribution.md`
 - SS-17: `architecture/subsystems/SS-17-structured-event-catalog.md`
 - SS-04: `architecture/subsystems/SS-04-hook-enforcement-chain.md`
 - ADR-016: `architecture/adr/ADR-016-hook-helper-architecture.md`

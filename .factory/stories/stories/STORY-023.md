@@ -19,7 +19,7 @@ inputs:
   - behavioral-contracts/ss-18/BC-2.18.002.md
   - behavioral-contracts/ss-18/BC-2.18.004.md
   - behavioral-contracts/ss-18/BC-2.18.005.md
-  - architecture/verification-properties/VP-006-meta-lint-factory-self-audit.md
+  - architecture/verification-properties/VP-006-meta-lint-suite.md
   - architecture/verification-properties/VP-008-hook-event-catalog-completeness.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
@@ -358,7 +358,7 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - BC-2.18.002: `behavioral-contracts/ss-18/BC-2.18.002.md`
 - BC-2.18.004: `behavioral-contracts/ss-18/BC-2.18.004.md`
 - BC-2.18.005: `behavioral-contracts/ss-18/BC-2.18.005.md`
-- VP-006: `architecture/verification-properties/VP-006-meta-lint-factory-self-audit.md`
+- VP-006: `architecture/verification-properties/VP-006-meta-lint-suite.md`
 - VP-008: `architecture/verification-properties/VP-008-hook-event-catalog-completeness.md`
 - SS-18: `architecture/subsystems/SS-18-meta-lint-self-audit.md`
 - CLAUDE.md §Meta-Lint Contract: authoritative assertion list

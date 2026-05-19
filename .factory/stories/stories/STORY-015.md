@@ -23,8 +23,8 @@ inputs:
   - behavioral-contracts/ss-17/BC-2.17.003.md
   - behavioral-contracts/ss-17/BC-2.17.004.md
   - architecture/verification-properties/VP-001-hook-exit-code-semantics.md
-  - architecture/verification-properties/VP-013-hook-latency.md
-  - architecture/verification-properties/VP-026-event-catalog-schema.md
+  - architecture/verification-properties/VP-013-hook-performance-budget.md
+  - architecture/verification-properties/VP-026-event-catalog-schema-and-completeness.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Bundling rationale: BC-2.04.015 (perf budget), BC-2.04.016 (I/O contract),
@@ -317,8 +317,8 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - BC-2.17.003: `behavioral-contracts/ss-17/BC-2.17.003.md`
 - BC-2.17.004: `behavioral-contracts/ss-17/BC-2.17.004.md`
 - VP-001: `architecture/verification-properties/VP-001-hook-exit-code-semantics.md`
-- VP-013: `architecture/verification-properties/VP-013-hook-latency.md`
-- VP-026: `architecture/verification-properties/VP-026-event-catalog-schema.md`
+- VP-013: `architecture/verification-properties/VP-013-hook-performance-budget.md`
+- VP-026: `architecture/verification-properties/VP-026-event-catalog-schema-and-completeness.md`
 - SS-04: `architecture/subsystems/SS-04-hook-enforcement-chain.md`
 - SS-17: `architecture/subsystems/SS-17-structured-event-catalog.md`
 - ADR-002: `architecture/adr/ADR-002-hook-chain-contract.md`

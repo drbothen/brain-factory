@@ -1,13 +1,13 @@
 ---
 artifact_type: wave-schedule
-version: "v0.1.1"
+version: "v0.1.2"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:story-writer
 inputs:
   - dependency-graph.md@v0.1.0
-  - stories/STORY-INDEX.md@v0.3.1
-  - behavioral-contracts/BC-INDEX.md@v0.1.13
+  - stories/STORY-INDEX.md@v0.3.2
+  - behavioral-contracts/BC-INDEX.md@v0.1.14
   - architecture/ARCH-INDEX.md@v0.1.23
   - product-brief.md@v0.4.20
   - stories/epics.md@v0.1.1
@@ -27,6 +27,10 @@ Source: dependency-graph.md v0.1.0 (canonical for all inter-story dependency cla
 ---
 
 ## Changelog
+
+### v0.1.2 — 2026-05-19 (F-PHASE2-ADV-PASS1-I04)
+
+- **Input version refresh (I04):** `behavioral-contracts/BC-INDEX.md` updated v0.1.13 → v0.1.14; `stories/STORY-INDEX.md` updated v0.3.1 → v0.3.2. No wave content amended.
 
 ### v0.1.1 — 2026-05-19 (F-PHASE2-DECOMP-GATE-I02c+S01+S02)
 

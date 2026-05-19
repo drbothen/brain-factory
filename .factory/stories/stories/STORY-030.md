@@ -12,7 +12,7 @@ priority: P0
 subsystems: [SS-09]
 behavioral_contracts: [BC-2.09.001, BC-2.09.002, BC-2.09.003, BC-2.09.004]
 vps: [VP-020]
-dependencies: [STORY-029, STORY-027]
+dependencies: [STORY-029, STORY-027, STORY-011]
 blocks: [STORY-031]
 inputs:
   - architecture/subsystems/SS-09-publishing-pipeline.md

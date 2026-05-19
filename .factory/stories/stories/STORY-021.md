@@ -18,7 +18,7 @@ inputs:
   - architecture/subsystems/SS-05-wiki-layer.md
   - behavioral-contracts/ss-05/BC-2.05.003.md
   - behavioral-contracts/ss-05/BC-2.05.004.md
-  - architecture/verification-properties/VP-018-wiki-layer.md
+  - architecture/verification-properties/VP-018-wiki-layer-integrity.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Bundling rationale: BC-2.05.003 (atomic rename + backlink propagation) and BC-2.05.004
@@ -262,5 +262,5 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 
 - BC-2.05.003: `behavioral-contracts/ss-05/BC-2.05.003.md`
 - BC-2.05.004: `behavioral-contracts/ss-05/BC-2.05.004.md`
-- VP-018: `architecture/verification-properties/VP-018-wiki-layer.md`
+- VP-018: `architecture/verification-properties/VP-018-wiki-layer-integrity.md`
 - SS-05: `architecture/subsystems/SS-05-wiki-layer.md`

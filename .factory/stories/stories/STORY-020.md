@@ -20,8 +20,8 @@ inputs:
   - behavioral-contracts/ss-05/BC-2.05.002.md
   - behavioral-contracts/ss-05/BC-2.05.005.md
   - behavioral-contracts/ss-05/BC-2.05.006.md
-  - architecture/verification-properties/VP-018-wiki-layer.md
-  - architecture/verification-properties/VP-004-wikilink-resolution-correctness.md
+  - architecture/verification-properties/VP-018-wiki-layer-integrity.md
+  - architecture/verification-properties/VP-004-wikilink-resolution.md
   - architecture/verification-properties/VP-005-frontmatter-schema-conformance.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
@@ -327,7 +327,7 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - BC-2.05.002: `behavioral-contracts/ss-05/BC-2.05.002.md`
 - BC-2.05.005: `behavioral-contracts/ss-05/BC-2.05.005.md`
 - BC-2.05.006: `behavioral-contracts/ss-05/BC-2.05.006.md`
-- VP-018: `architecture/verification-properties/VP-018-wiki-layer.md`
-- VP-004: `architecture/verification-properties/VP-004-wikilink-resolution-correctness.md`
+- VP-018: `architecture/verification-properties/VP-018-wiki-layer-integrity.md`
+- VP-004: `architecture/verification-properties/VP-004-wikilink-resolution.md`
 - VP-005: `architecture/verification-properties/VP-005-frontmatter-schema-conformance.md`
 - SS-05: `architecture/subsystems/SS-05-wiki-layer.md`

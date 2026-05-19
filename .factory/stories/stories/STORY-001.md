@@ -203,9 +203,9 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 
 ## Anchors
 
-- BC-2.14.003: `architecture/behavioral-contracts/ss-14/BC-2.14.003.md`
-- BC-2.14.004: `architecture/behavioral-contracts/ss-14/BC-2.14.004.md`
-- BC-2.14.005: `architecture/behavioral-contracts/ss-14/BC-2.14.005.md`
+- BC-2.14.003: `behavioral-contracts/ss-14/BC-2.14.003.md`
+- BC-2.14.004: `behavioral-contracts/ss-14/BC-2.14.004.md`
+- BC-2.14.005: `behavioral-contracts/ss-14/BC-2.14.005.md`
 - VP-009: `architecture/verification-properties/VP-009-plugin-manifest-correctness.md`
 - ADR-003: `architecture/adr/ADR-003-plugin-packaging.md`
 - SS-14: `architecture/subsystems/SS-14-plugin-lifecycle.md`
