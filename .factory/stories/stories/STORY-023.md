@@ -2,7 +2,7 @@
 artifact_type: story
 story_id: STORY-023
 epic_id: EPIC-04
-title: "meta-lint.bats hook script and cross-cutting surfaces plus 9-suite completeness gate"
+title: "meta-lint.bats hook script and cross-cutting surfaces plus per-hook bats completeness gate"
 status: draft
 created: 2026-05-18
 tdd_mode: strict
@@ -15,7 +15,7 @@ vps: [VP-006, VP-008]
 dependencies: [STORY-022]
 blocks: []
 inputs:
-  - architecture/subsystems/SS-18-meta-lint-self-audit.md
+  - architecture/subsystems/SS-18-meta-lint-self-audit.md  # v1.5
   - behavioral-contracts/ss-18/BC-2.18.002.md
   - behavioral-contracts/ss-18/BC-2.18.004.md
   - behavioral-contracts/ss-18/BC-2.18.005.md
@@ -23,28 +23,32 @@ inputs:
   - architecture/verification-properties/VP-008-hook-event-catalog-completeness.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
+# SS-18 version note: inputs cite SS-18 v1.5 which reversed F-PASS1-I8 — per-hook .bats
+# files are now canonical (not a consolidated hooks.bats). All ACs and tasks in this story
+# reflect v1.5 semantics. The earlier F-PASS1-I8 decision is explicitly rejected in §Out of Scope.
 # Bundling rationale: BC-2.18.002 (hook script surface), BC-2.18.004 (cross-cutting), and
-# BC-2.18.005 (9-suite completeness) are the three remaining meta-lint surfaces that
+# BC-2.18.005 (8-category + per-hook completeness) are the three remaining meta-lint surfaces that
 # complete the meta-lint.bats file started by STORY-022. They are naturally bundled here
-# because: (1) BC-2.18.005's count-9-suites assertion requires ALL other suites to exist
-# first — it is the final "count the files" gate that locks the suite; (2) BC-2.18.004's
+# because: (1) BC-2.18.005's completeness assertion requires ALL category suites to exist
+# first — it is the final gate that locks the suite; (2) BC-2.18.004's
 # cross-cutting checks (git ls-files grep patterns) are implemented in the same bats
 # file using the same helper infrastructure as the hook-script checks; (3) BC-2.18.002
 # (hook scripts) depends on the same fixture infrastructure (hooks/ directory) as the
-# count test in BC-2.18.005. All three complete the meta-lint.bats file to its final
-# green state. Total: 3 BCs × ~2.5K each + infrastructure = fits comfortably in one story.
+# per-hook file existence check in BC-2.18.005. All three complete the meta-lint.bats
+# file to its final green state. Total: 3 BCs × ~2.5K each + infrastructure = fits comfortably in one story.
 ---
 
-# STORY-023: `meta-lint.bats` hook script and cross-cutting surfaces plus 9-suite completeness gate
+# STORY-023: `meta-lint.bats` hook script and cross-cutting surfaces plus per-hook bats completeness gate
 
 ## Goal
 
 Extend `meta-lint.bats` (started in STORY-022) with three remaining validation surfaces:
 hook script static analysis (shebang, `set -euo pipefail`, no bare `exit`, no `eval`,
-per-hook test case coverage, `shellcheck`, `shfmt`); cross-cutting tracked-file checks
-(no AI attribution, no `--no-verify`, all `${CLAUDE_PLUGIN_ROOT}` references resolve,
-all internal markdown links resolve); and the 9-suite completeness gate (exactly 9 bats
-files, each hook has ≥ 3 test cases in `hooks.bats`). After this story,
+per-hook bats file existence and coverage, `shellcheck`, `shfmt`); cross-cutting
+tracked-file checks (no AI attribution, no `--no-verify`, all `${CLAUDE_PLUGIN_ROOT}`
+references resolve, all internal markdown links resolve); and the completeness gate
+(exactly 8 category bats files exist, and every hook in `hooks/` has a corresponding
+`tests/<hook-name>.bats` file containing ≥ 3 `@test` blocks). After this story,
 `bats tests/meta-lint.bats` is the complete factory self-audit gate.
 
 ## User Value
@@ -61,7 +65,7 @@ are caught automatically before they reach adversarial review or production.
 |-------|-------|----------|
 | BC-2.18.002 | `meta-lint.bats` validates hook scripts: shebang, `set -euo pipefail`, no bare exit, no eval | P0 |
 | BC-2.18.004 | `meta-lint.bats` validates cross-cutting: no AI attribution, no `--no-verify`, no hardcoded template paths | P0 |
-| BC-2.18.005 | 9 bats suites cover 13 hooks and all skills (positive + negative + edge case per hook) | P0 |
+| BC-2.18.005 | 8 category suites + N per-hook suites cover all hooks and skills (positive + negative + edge case per hook) | P0 |
 
 ## Acceptance Criteria
 
@@ -87,17 +91,19 @@ test verifies the word-boundary behavior using a fixture hook that contains the 
 "exit" inside a comment.
 (traces to BC-2.18.002 edge case EC-002)
 
-**AC-004** — Per-hook test case coverage: `meta-lint.bats` asserts that
-`tests/hooks.bats` contains ≥ 3 `@test` blocks prefixed with each hook's filename
-(e.g., `@test "quarantine-fetch.sh: ..."`). This is NOT a check for per-hook bats files
-(which would violate the 9-suite invariant); it is a count of `@test` blocks within the
-single `tests/hooks.bats` file.
-(traces to BC-2.18.002 postcondition 1; SS-18 §meta-lint.bats assertions clarification)
+**AC-004** — Per-hook bats file coverage: `meta-lint.bats` asserts that for every hook
+script in `plugins/brain-factory/hooks/*.sh`, a corresponding
+`plugins/brain-factory/tests/<hook-name>.bats` file exists AND contains ≥ 3 `@test`
+blocks (one positive, one negative, one edge case). The count is of `@test` declarations
+within the per-hook bats file itself — NOT a prefix-grep across a shared `hooks.bats`.
+(traces to BC-2.18.002 postcondition 1; SS-18 v1.5 §meta-lint.bats assertions §Hook script surface)
 
-**AC-005** — When a new hook is added to `plugins/brain-factory/hooks/` but
-`tests/hooks.bats` does not yet have ≥ 3 `@test` blocks for that hook's filename prefix,
-the assertion fails: `"<hook-name>.sh: found <N> @test blocks in hooks.bats (minimum 3)."`.
-(traces to BC-2.18.002 edge case EC-003)
+**AC-005** — When a hook script in `plugins/brain-factory/hooks/` has no corresponding
+`tests/<hook-name>.bats` file, the assertion fails:
+`"<hook-name>.sh: missing per-hook bats file tests/<hook-name>.bats"`.
+When the file exists but contains fewer than 3 `@test` blocks, the assertion fails:
+`"<hook-name>.sh: found <N> @test blocks in tests/<hook-name>.bats (minimum 3)."`.
+(traces to BC-2.18.002 edge case EC-003; SS-18 v1.5 §NFR-020)
 
 **AC-006** — Fixture files for this surface:
 - `tests/fixtures/meta-lint/valid-hook.sh` — a minimal conformant hook.
@@ -140,26 +146,29 @@ Use \${CLAUDE_PLUGIN_ROOT}/templates/ instead."`.
 `@test` for assertion (a) asserts this fixture triggers a failure.
 (traces to BC-2.18.004)
 
-### 9-Suite Completeness Gate (BC-2.18.005)
+### 8-Category + Per-Hook Completeness Gate (BC-2.18.005)
 
-**AC-012** — `meta-lint.bats` has a `@test "bats suites: exactly 9 suite files exist"` that
-counts `ls plugins/brain-factory/tests/*.bats | wc -l` and asserts the result is exactly 9.
-Fewer than 9 or more than 9 both fail.
+**AC-012** — `meta-lint.bats` has a `@test "bats suites: exactly 8 category suite files exist"` that
+counts `ls plugins/brain-factory/tests/*.bats | wc -l` and asserts the result is exactly 8.
+Fewer than 8 or more than 8 both fail. (Per-hook bats files live in the same `tests/`
+directory and contribute to this count when hooks exist — see AC-015 for the invariant
+that keeps category suites distinct from per-hook files.)
 (traces to BC-2.18.005 postcondition 2; invariant 1)
 
 **AC-013** — `meta-lint.bats` has a `@test "bats suites: meta-lint.bats is in the suite list"` that asserts `tests/meta-lint.bats` exists.
 (traces to BC-2.18.005 invariant 3)
 
-**AC-014** — `meta-lint.bats` has a `@test "bats suites: all suites exit 0"` that runs
+**AC-014** — `meta-lint.bats` has a `@test "bats suites: all category suites exit 0"` that runs
 `bats tests/` and asserts exit 0. This is the full-suite integration gate that runs as
 the last meta-lint test.
 (traces to BC-2.18.005 postcondition 1)
 
-**AC-015** — The 9-suite gate (AC-012) passes only when all 9 suites exist:
-`meta-lint.bats`, `hooks.bats`, `skills.bats`, `templates.bats`, `quarantine.bats`,
-`adversary.bats`, `policies.bats`, `upgrade.bats`, `integration.bats`. If any is
-missing, the count test fails. Suite names are canonical (per SS-18 §9 bats suites and
-BC-2.18.005 preconditions).
+**AC-015** — The 8-category suite check (AC-012) counts ONLY the 8 canonical category files:
+`meta-lint.bats`, `skills.bats`, `templates.bats`, `quarantine.bats`,
+`adversary.bats`, `policies.bats`, `upgrade.bats`, `integration.bats`.
+Per-hook bats files (e.g., `quarantine-fetch.bats`) are validated separately by AC-004.
+If any canonical category suite is missing, the count test fails. Suite names are
+canonical (per SS-18 v1.5 §Test surface organization Layer 1 and BC-2.18.005).
 (traces to BC-2.18.005 preconditions 1–3; invariant 1)
 
 **AC-016** — `meta-lint.bats` itself is shellcheck-clean. Even though it is a bats file
@@ -171,13 +180,15 @@ BC-2.18.005 preconditions).
 
 1. **[failing test — Red Gate]** Extend `tests/meta-lint.bats` (created in STORY-022)
    with failing `@test` blocks for all hook-script assertions (AC-001 through AC-006),
-   all cross-cutting assertions (AC-007 through AC-011), and the 9-suite gate (AC-012
+   all cross-cutting assertions (AC-007 through AC-011), and the completeness gate (AC-012
    through AC-015).
    Create fixture files from AC-006 and AC-011.
    Run bats — confirm all new tests fail (Red Gate confirmed).
-   NOTE: The 9-suite count test (AC-012) will fail until STORY-023 confirms all 9 suites
-   exist. During Phase 2, stub empty `.bats` files for missing suites to unblock the
-   count assertion.
+   NOTE: The 8-category suite count test (AC-012) will fail until all 8 category suites
+   exist. During Phase 2, stub empty `.bats` files for the 7 missing category suites
+   (`skills.bats`, `templates.bats`, `quarantine.bats`, `adversary.bats`, `policies.bats`,
+   `upgrade.bats`, `integration.bats`) to unblock the count assertion. Per-hook bats files
+   are created by EPIC-02 hook stories — stubs for them are NOT needed here.
 
 2. **[impl]** Implement hook-script validation in `meta-lint.bats`:
    - `check_hook_shebang <file>`: `head -1 | grep -F "#!/usr/bin/env bash"`.
@@ -187,7 +198,9 @@ BC-2.18.005 preconditions).
    - `check_hook_no_eval <file>`: `grep -n '\beval\b'` — assert no match.
    - `check_hook_shellcheck <file>`: `shellcheck --shell=bash "$file"` — assert exit 0.
    - `check_hook_shfmt <file>`: `shfmt -d -i 2 "$file"` — assert exit 0.
-   - `check_hook_test_coverage <hook_name>`: `grep -c "@test \"${hook_name}:"` tests/hooks.bats — assert ≥ 3.
+   - `check_hook_test_coverage <hook_name>`: assert file `tests/${hook_name}.bats` exists;
+     then `grep -c "@test"` within that file — assert ≥ 3. File-not-found is a hard fail
+     with the message from AC-005, not a skip.
    - Fixture-based `@test` blocks for each violation type.
    - Live-hooks `@test` block iterating `plugins/brain-factory/hooks/*.sh`.
 
@@ -201,11 +214,14 @@ BC-2.18.005 preconditions).
    - `check_markdown_links_resolve`: for each SKILL.md + AGENT.md, extract
      `[...](path)` links; for each path (not a URL), assert file exists at repo root.
 
-4. **[impl]** Implement 9-suite completeness gate:
-   - `@test "bats suites: exactly 9 suite files exist"` — count check.
-   - `@test "bats suites: canonical suite names present"` — assert each of the 9 canonical
-     names exists.
-   - `@test "bats suites: full suite run exits 0"` — `bats tests/` — assert exit 0.
+4. **[impl]** Implement 8-category + per-hook completeness gate:
+   - `@test "bats suites: exactly 8 category suite files exist"` — count check (AC-012).
+   - `@test "bats suites: canonical category suite names present"` — assert each of the 8
+     canonical names exists (AC-015).
+   - `@test "bats suites: every hook has a per-hook bats file with >= 3 tests"` — iterate
+     `hooks/*.sh`; for each, assert `tests/<hook-name>.bats` exists and `grep -c "@test"` ≥ 3
+     (covered by the AC-004/AC-005 helper calls from Task 2, unified here as the full-roster loop).
+   - `@test "bats suites: full category suite run exits 0"` — `bats tests/` — assert exit 0.
 
 5. **[green]** Run `bats tests/meta-lint.bats` — all new tests pass.
    Run `shellcheck --shell=bash tests/meta-lint.bats` — clean.
@@ -223,8 +239,10 @@ BC-2.18.005 preconditions).
 | `hook-with-exit-in-comment.sh` | Bare-exit check PASS (word-boundary match) | edge-case | BC-2.18.002 EC-002 |
 | `invalid-crosscutting-ai-attribution.md` | AI attribution check FAIL; file + line | error | BC-2.18.004 |
 | Tracked file with `${CLAUDE_PLUGIN_ROOT}/missing.md` | PLUGIN_ROOT ref check FAIL | error | BC-2.18.004 canonical test 3 |
-| Suite count = 9 | Count check PASS; `bats tests/` exits 0 | happy-path | BC-2.18.005 |
-| Suite count = 8 (one suite missing) | Count check FAIL | error | BC-2.18.005 invariant 1 |
+| 8 category suites present + all hooks have per-hook .bats files (≥ 3 tests each) | Count check PASS; `bats tests/` exits 0 | happy-path | BC-2.18.005 |
+| 7 category suites present (one missing) | Category count check FAIL | error | BC-2.18.005 invariant 1 |
+| Hook exists; no corresponding `tests/<hook-name>.bats` | Per-hook file check FAIL; message names missing file | error | BC-2.18.005; AC-005 |
+| Hook has per-hook bats file with only 2 `@test` blocks | Count check FAIL; message names count and minimum | error | BC-2.18.005; AC-005 |
 
 ## Verification Evidence
 
@@ -233,16 +251,19 @@ BC-2.18.005 preconditions).
 | VP-006 | All 13 hooks pass meta-lint hook assertions | `tests/meta-lint.bats` |
 | VP-006 | No AI attribution in any tracked file | `tests/meta-lint.bats` (git grep) |
 | VP-006 | All CLAUDE_PLUGIN_ROOT refs resolve | `tests/meta-lint.bats` (path check) |
-| VP-006 | Exactly 9 bats files; full suite run exits 0 | `tests/meta-lint.bats` (count + run) |
+| VP-006 | Exactly 8 category bats suites; every hook has per-hook .bats file; full suite run exits 0 | `tests/meta-lint.bats` (count + per-hook file check + run) |
 | VP-008 | Hook event catalog completeness verified by meta-lint cross-ref | `tests/meta-lint.bats` |
 
 ## Architecture Compliance Rules
 
 From `architecture/subsystems/SS-18-meta-lint-self-audit.md`:
 
-1. The per-hook test-coverage check counts `@test` blocks in `tests/hooks.bats` using
-   the hook filename as a prefix (e.g., `@test "quarantine-fetch.sh: ..."'`). It does
-   NOT expect per-hook `.bats` files — that would violate NFR-019 (exactly 9 suites).
+1. The per-hook test-coverage check asserts that each hook script in `hooks/` has a
+   dedicated `tests/<hook-name>.bats` file with ≥ 3 `@test` blocks. Per-hook bats files
+   are CANONICAL per CLAUDE.md §TDD Inner Loop Discipline and SS-18 v1.5. The earlier
+   F-PASS1-I8 consolidation decision (all hook tests in `tests/hooks.bats`) is REVERSED.
+   NFR-019 was also rewritten in nfr-catalog v0.1.1 to match: 8 category suites are
+   counted; per-hook files are NOT counted in the 8-suite invariant.
 2. `shellcheck` and `shfmt` are called on hook scripts FROM `meta-lint.bats` — this means
    `shellcheck` and `shfmt` must be in PATH for the test to pass. The test suite
    documents this dependency clearly; CI provision is handled by STORY-003 toolchain setup.
@@ -279,7 +300,7 @@ From `architecture/subsystems/SS-18-meta-lint-self-audit.md`:
 
 | Path | Action | Notes |
 |------|--------|-------|
-| `plugins/brain-factory/tests/meta-lint.bats` | Extend | Add hook + cross-cutting + 9-suite gate surfaces |
+| `plugins/brain-factory/tests/meta-lint.bats` | Extend | Add hook + cross-cutting + 8-category + per-hook completeness gate surfaces |
 | `plugins/brain-factory/tests/fixtures/meta-lint/valid-hook.sh` | Create | Conformant minimal hook fixture |
 | `plugins/brain-factory/tests/fixtures/meta-lint/invalid-hook-no-shebang.sh` | Create | Missing `#!/usr/bin/env bash` |
 | `plugins/brain-factory/tests/fixtures/meta-lint/invalid-hook-bare-exit.sh` | Create | Contains bare `exit` |
@@ -300,12 +321,12 @@ surfaces and the fixture infrastructure in `tests/fixtures/meta-lint/`. Confirm:
 - The bats `test_helper.bash` pattern used in STORY-022 is consistent with what this
   story adds. Do NOT introduce a second helper pattern.
 
-The SS-18 design document contains the critical clarification (F-PASS1-I8 decision):
-the per-hook test-coverage check looks for `@test` blocks prefixed with the hook's
-filename in `tests/hooks.bats` — NOT for per-hook bats files. Confirm this interpretation
-against the SS-18 document before implementing AC-004, as getting this wrong would
-either falsely pass (checking the wrong thing) or falsely fail (looking for files that
-must not exist per NFR-019).
+The SS-18 design document v1.5 REVERSED the earlier F-PASS1-I8 decision: per-hook
+bats files (`tests/<hook-name>.bats`) are now canonical. The consolidated `tests/hooks.bats`
+file is REJECTED (see §Out of Scope). When implementing AC-004, the check must look for
+per-hook files — NOT for prefix-grep patterns within a shared hooks.bats. SS-18 v1.5 is
+authoritative; disregard any prior session or research output that references the
+consolidated-hooks.bats pattern.
 
 ## Token Budget Estimate
 
@@ -325,8 +346,12 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 
 - SKILL.md and AGENT.md validation surfaces — STORY-022.
 - Actual hook script implementation (`hooks/*.sh`) — STORY-009 through STORY-015 (EPIC-02).
-- Adding test cases to `tests/hooks.bats` for any hook — EPIC-02 stories own that.
 - Running the full Phase 1 exit gate — Phase 3+ activity after implementation is complete.
+- Single consolidated `tests/hooks.bats` (rejected — see SS-18 v1.5 F-PASS1-I8 reversal;
+  CLAUDE.md §TDD Inner Loop Discipline mandates per-hook .bats files). The file
+  `tests/hooks.bats` must NOT be created by this story or any story — the canonical
+  pattern is `tests/<hook-name>.bats` (one file per hook). EPIC-02 hook stories each
+  create their own `tests/<hook-name>.bats`; this story's completeness gate verifies them.
 
 ## Anchors
 

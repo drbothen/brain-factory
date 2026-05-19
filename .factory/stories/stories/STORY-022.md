@@ -15,12 +15,16 @@ vps: [VP-006]
 dependencies: [STORY-001, STORY-002, STORY-003, STORY-004, STORY-005]
 blocks: [STORY-023]
 inputs:
-  - architecture/subsystems/SS-18-meta-lint-self-audit.md
+  - architecture/subsystems/SS-18-meta-lint-self-audit.md  # v1.5 (F-PHASE2-STEP-B-CLOSEOUT-O1: per-hook .bats canonical; SKILL/AGENT surfaces unchanged)
   - behavioral-contracts/ss-18/BC-2.18.001.md
   - behavioral-contracts/ss-18/BC-2.18.003.md
   - architecture/verification-properties/VP-006-meta-lint-factory-self-audit.md
 input-hash: ""
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
+# SS-18 v1.5 impact: §Test surface organization and §Hook script surface changed (bats suite
+# model); the SKILL.md surface (BC-2.18.001) and AGENT.md surface (BC-2.18.003) covered by
+# this story are UNCHANGED in v1.5. No AC content changes required. Inputs reference bumped
+# to v1.5 for audit-trail completeness.
 # Bundling rationale: BC-2.18.001 (SKILL.md surface) and BC-2.18.003 (AGENT.md surface)
 # both write to the same test file (meta-lint.bats) and share the same fixture
 # infrastructure (one passing SKILL.md fixture, one failing SKILL.md fixture, same for
@@ -214,10 +218,10 @@ From `architecture/subsystems/SS-18-meta-lint-self-audit.md`:
 1. `meta-lint.bats` is a STATIC analysis suite. It reads the text of source files; it
    does NOT execute skills, hooks, or agents. Every assertion uses text-matching tools
    (`grep`, `yq`, `wc`, `awk`) — never `bash` or `source`.
-2. The meta-lint.bats file is one of the exactly 9 bats suite files. Adding it does NOT
-   increase the suite count beyond 9 when combined with STORY-023. STORY-022 creates
-   `meta-lint.bats`; STORY-023 extends it. The count-9 gate is verified by BC-2.18.005
-   (owned by STORY-023).
+2. The meta-lint.bats file is one of the exactly 8 category bats suite files. Adding it
+   does NOT increase the category suite count beyond 8 when combined with STORY-023.
+   STORY-022 creates `meta-lint.bats`; STORY-023 extends it. The 8-category + per-hook
+   completeness gate is verified by BC-2.18.005 (owned by STORY-023).
 3. Meta-lint rules MUST NOT be weakened to make a failing fixture pass. If the fixture
    reveals a false positive in the assertion logic, fix the assertion logic (not the
    fixture). The fixture is ground truth for the failing case.
@@ -293,7 +297,7 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 
 - Hook script validation surface (BC-2.18.002) — STORY-023.
 - Cross-cutting validation surface (BC-2.18.004) — STORY-023.
-- 9-suite completeness gate (BC-2.18.005) — STORY-023.
+- 8-category + per-hook completeness gate (BC-2.18.005) — STORY-023.
 - Actual implementation of any SKILL.md or AGENT.md files — those are Phase 3 (TDD
   implementation stories). This story creates the test harness and fixtures only.
 

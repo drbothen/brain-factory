@@ -12,7 +12,7 @@ priority: P0
 subsystems: [SS-16]
 behavioral_contracts: [BC-2.16.001]
 vps: [VP-025]
-dependencies: [STORY-017, STORY-015]
+dependencies: [STORY-017, STORY-019]
 blocks: [STORY-037, STORY-039]
 inputs:
   - architecture/subsystems/SS-16-scale-aware-architecture.md
@@ -23,9 +23,10 @@ input-hash: ""
 # Priority: P0 — token instrumentation is a first-class architectural constraint
 #   required before any scale measurement or budget alerting (STORY-037, STORY-039) can run.
 # Dependency rationale:
-#   STORY-017 (/brain:ingest-url core pipeline) and STORY-015 (/brain:ingest-source)
-#   are the two skills whose run.sh entry points get the token-write wiring added here.
-#   Both must be merged before this story modifies them.
+#   STORY-017 (/brain:ingest-url core pipeline) and STORY-019 (/brain:ingest-source,
+#   EPIC-03) are the two skills whose run.sh entry points get the token-write wiring
+#   added here. Both must be merged before this story modifies them.
+#   (STORY-015 is the hook contract meta-lint expansion in EPIC-02 — not an ingest skill.)
 # VP anchor: VP-025 is anchored here — this is the story where the token JSONL
 #   instrumentation is built and the VP-025 integration.bats tests are written.
 # Blocks rationale:
@@ -225,8 +226,8 @@ added in STORY-014's scope; this story calls the emit helper, not the catalog it
 
 ## Previous Story Intelligence
 
-STORY-015 (`/brain:ingest-source`) and STORY-017 (`/brain:ingest-url`) established the
-ingest skill entry points (`run.sh`). STORY-014 (EPIC-02 part 2) delivered the
+STORY-019 (`/brain:ingest-source`, EPIC-03) and STORY-017 (`/brain:ingest-url`) established
+the ingest skill entry points (`run.sh`). STORY-014 (EPIC-02 part 2) delivered the
 `hook-event-emit.sh` helper and the `scripts/event-catalog.json` file. The `emit_event`
 function from STORY-014 is available for use in `write-token-record.sh`.
 
@@ -243,7 +244,7 @@ expected field names before implementation.
 | BC-2.16.001 file | ~600 |
 | VP-025 file (with bats test vectors) | ~1,800 |
 | STORY-017 run.sh (ingest-url context) | ~800 |
-| STORY-015 run.sh (ingest-source context) | ~800 |
+| STORY-019 run.sh (ingest-source context) | ~800 |
 | Existing integration.bats (prior tests) | ~1,500 |
 | **Total** | **~10,700** |
 
@@ -263,6 +264,6 @@ Within 20% of a 200K-token context window (~40K). No split required.
 - VP-025: `architecture/verification-properties/VP-025-scale-token-instrumentation.md`
 - SS-16: `architecture/subsystems/SS-16-scale-aware-architecture.md`
 - STORY-017: `stories/stories/STORY-017.md` (ingest-url — predecessor)
-- STORY-015: `stories/stories/STORY-015.md` (ingest-source — predecessor)
+- STORY-019: `stories/stories/STORY-019.md` (ingest-source — predecessor)
 - STORY-014: `stories/stories/STORY-014.md` (emit helper — prerequisite)
 - STORY-031: `stories/stories/STORY-031.md` (monthly-perf reads this JSONL)
