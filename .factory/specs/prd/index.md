@@ -1,15 +1,15 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.12"
+version: "0.1.13"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-18T00:00:00
+timestamp: 2026-05-19T00:00:00
 phase: phase-1b
 artifact_type: prd
 inherits_from: product-brief.md@v0.4.20
 created: 2026-05-15
-last_updated: 2026-05-18
+last_updated: 2026-05-19
 traces_to: product-brief.md
 supplements:
   - prd-supplements/interface-definitions.md
@@ -405,29 +405,29 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC-2.03.003 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/skills.bats |
 | BC-2.03.004 | CAP-003 | SS-03: Source Ingest Pipeline | P0 | tests/skills.bats |
 | BC-2.04.001 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/quarantine.bats |
-| BC-2.04.002 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.003 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.004 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.005 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.006 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.007 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.008 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/hooks.bats |
+| BC-2.04.002 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-source-immutability.bats |
+| BC-2.04.003 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-wikilink-integrity.bats |
+| BC-2.04.004 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-frontmatter-schema.bats |
+| BC-2.04.005 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-frontmatter-schema.bats |
+| BC-2.04.006 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-index-log-coherence.bats |
+| BC-2.04.007 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-page-type-policy.bats |
+| BC-2.04.008 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/validate-voice-avoid-list.bats |
 | BC-2.04.009 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-source-id-citation.bats |
-| BC-2.04.010 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.011 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.012 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.013 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/hooks.bats |
-| BC-2.04.014 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/hooks.bats |
-| BC-2.04.015 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats (perf assertion — p99 latency) |
-| BC-2.04.016 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
-| BC-2.04.017 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hooks.bats |
+| BC-2.04.010 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/validate-publish-state.bats |
+| BC-2.04.011 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/enforce-kebab-case.bats |
+| BC-2.04.012 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/block-ai-attribution.bats |
+| BC-2.04.013 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/flush-state-and-commit.bats |
+| BC-2.04.014 | CAP-004 | SS-04: Hook Enforcement Chain | P1 | tests/brain-health-check.bats |
+| BC-2.04.015 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hook-contracts.bats (perf assertion — p99 latency) |
+| BC-2.04.016 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hook-contracts.bats |
+| BC-2.04.017 | CAP-004 | SS-04: Hook Enforcement Chain | P0 | tests/hook-event-emit.bats |
 | BC-2.05.001 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats (scale path) |
 | BC-2.05.002 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats (property-based) |
 | BC-2.05.003 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats |
 | BC-2.05.004 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats |
 | BC-2.05.005 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/skills.bats |
-| BC-2.05.006 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/hooks.bats |
-| BC-2.06.001 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/hooks.bats |
+| BC-2.05.006 | CAP-005 | SS-05: Wiki Layer and Wikilink Integrity | P0 | tests/validate-frontmatter-schema.bats |
+| BC-2.06.001 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/validate-source-immutability.bats |
 | BC-2.06.002 | CAP-006 | SS-06: Source Layer and Immutability | P1 | tests/skills.bats |
 | BC-2.06.003 | CAP-006 | SS-06: Source Layer and Immutability | P0 | tests/integration.bats |
 | BC-2.06.004 | CAP-006 | SS-06: Source Layer and Immutability | P1 | tests/integration.bats |
@@ -438,7 +438,7 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC-2.08.001 | CAP-008 | SS-08: Content Brief and Writing | P0 | tests/integration.bats |
 | BC-2.08.002 | CAP-008 | SS-08: Content Brief and Writing | P0 | tests/integration.bats |
 | BC-2.08.003 | CAP-008 | SS-08: Content Brief and Writing | P1 | tests/integration.bats |
-| BC-2.08.004 | CAP-008 | SS-08: Content Brief and Writing | P1 | tests/hooks.bats |
+| BC-2.08.004 | CAP-008 | SS-08: Content Brief and Writing | P1 | tests/validate-voice-avoid-list.bats |
 | BC-2.09.001 | CAP-009 | SS-09: Publishing Pipeline | P0 | tests/integration.bats |
 | BC-2.09.002 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
 | BC-2.09.003 | CAP-009 | SS-09: Publishing Pipeline | P1 | tests/integration.bats |
@@ -473,10 +473,10 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC-2.16.004 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/integration.bats (perf assertion) |
 | BC-2.16.005 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/integration.bats (perf assertion — scale) |
 | BC-2.16.006 | CAP-016 | SS-16: Scale-Aware Architecture | P1 | tests/integration.bats |
-| BC-2.17.001 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hooks.bats |
+| BC-2.17.001 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/meta-lint.bats |
 | BC-2.17.002 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/meta-lint.bats (catalog completeness) |
-| BC-2.17.003 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hooks.bats |
-| BC-2.17.004 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hooks.bats (security grep assertion) |
+| BC-2.17.003 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hook-event-emit.bats |
+| BC-2.17.004 | CAP-017 | SS-17: Structured Event Catalog | P0 | tests/hook-event-emit.bats (security grep assertion) |
 | BC-2.18.001 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
 | BC-2.18.002 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
 | BC-2.18.003 | CAP-018 | SS-18: Meta-Lint and Self-Audit | P0 | tests/meta-lint.bats |
@@ -558,11 +558,15 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   Incremental scope: applied before any PRD burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: PRD section headers carrying number claims include "21 total" scopes in §5 Error Taxonomy and counts embedded in body prose; no PRD section headers carry a standalone count-claim `(N total ...)` format in the heading text itself that would require body reconciliation. PRD is clean at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
 
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-18`; most recent Changelog entry: v0.1.12 (2026-05-18). **PASS.**
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-19`; most recent Changelog entry: v0.1.13 (2026-05-19). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.13 (2026-05-19)
+
+**RTM FIX (F-PHASE2-ADV-PASS1-C02):** 21 Requirements Traceability Matrix rows swept from stale `tests/hooks.bats` to per-hook `tests/<hook-name>.bats` to align with UD-006 per-hook bats convention (SS-18 v1.5 + NFR-019 v0.1.1). Rows affected: BC-2.04.002–2.04.008, BC-2.04.010–2.04.017, BC-2.05.006, BC-2.06.001, BC-2.08.004, BC-2.17.001, BC-2.17.003–2.17.004. No semantic change to contract definitions. Zero residual live `tests/hooks.bats` hits in `.factory/specs/`. (F-PHASE2-ADV-PASS1-C02)
 
 ### v0.1.12 (2026-05-18)
 
