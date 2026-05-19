@@ -1,6 +1,6 @@
 ---
 artifact_type: holdout-scenarios
-version: "v0.1.0"
+version: "v0.1.1"
 created: 2026-05-19
 last_updated: 2026-05-19
 authored_by: vsdd-factory:product-owner
@@ -13,8 +13,8 @@ inputs:
   - stories/epics.md@v0.1.1
   - stories/dependency-graph.md@v0.1.0
   - stories/wave-schedule.md@v0.1.0
-total_scenarios: 15
-must_pass_count: 8
+total_scenarios: 17
+must_pass_count: 10
 nice_to_pass_count: 7
 phase: phase-2-story-decomposition-step-e
 visibility: holdout-evaluator-only
@@ -23,7 +23,7 @@ access_control: restricted
 
 # brain-factory Holdout Scenarios
 
-**15 scenarios — 8 must-pass / 7 nice-to-pass. Phase 4 evaluator-only artifact.**
+**17 scenarios — 10 must-pass / 7 nice-to-pass. Phase 4 evaluator-only artifact.**
 
 ---
 
@@ -65,7 +65,7 @@ independently probes emergent behavior from those artifacts.
    NICE-TO-PASS scenarios cover emergent-behavior probes and edge cases; they contribute
    to the mean satisfaction score (target ≥ 0.85) but do not individually block.
 
-6. **Coverage intent, not enumeration.** These 15 scenarios collectively exercise the
+6. **Coverage intent, not enumeration.** These 17 scenarios collectively exercise the
    critical user-visible surface across all 9 epics. They are NOT one-per-BC. Each
    scenario is a meaningful integration test that produces a binary (pass/fail) result
    on the most important behavioral surface of the implementation.
@@ -821,6 +821,12 @@ are exercised in HS-001, HS-006, HS-007 as side effects of the primary acceptanc
 ---
 
 ## §Changelog
+
+### v0.1.1 — 2026-05-19
+
+Micro-fix F-PHASE2-STEP-E-O1: frontmatter count drift corrected — total_scenarios 15→17,
+must_pass_count 8→10, nice_to_pass_count unchanged at 7. Body content unchanged. Discipline
+statement and body summary line updated to match. Version bumped from v0.1.0.
 
 ### v0.1.0 — 2026-05-19
 
