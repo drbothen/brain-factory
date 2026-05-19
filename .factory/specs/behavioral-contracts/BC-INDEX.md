@@ -1,7 +1,7 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.10"
+version: "0.1.11"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
@@ -281,6 +281,10 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 ---
 
 ## Changelog
+
+### v0.1.11 (2026-05-18)
+
+**TEST-ARCHITECTURE AMENDMENT (F-PHASE2-STEP-B-CLOSEOUT-O1 — version bump reflecting brief v0.4.20 per-hook bats model):** BC-INDEX bumped to v0.1.11 to reflect brief v0.4.20's test-architecture amendment (consolidated `hooks.bats` → per-hook + category model per CLAUDE.md). BC-2.18.005 title ("9 bats test suites...") will be updated by the architect's SS-18 burst (SS-18 is architect scope; not touched in this product-owner burst). `inherits_from` field remains at `prd@v0.1.10` (PRD index version unchanged in this burst). (F-PHASE2-STEP-B-CLOSEOUT-O1, F-PHASE2-STEP-B-CLOSEOUT-O2)
 
 ### v0.1.10 (2026-05-18)
 

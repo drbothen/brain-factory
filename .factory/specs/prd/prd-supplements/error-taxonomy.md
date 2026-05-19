@@ -1,7 +1,7 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.1"
+version: "0.1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
@@ -210,6 +210,7 @@ Message format uses `<placeholder>` for dynamic values.
 |------|----------|------|-----------|---------------|
 | E-POLICY-001 | broken | 2 | `/brain:policy-add` | `Policy ID '<id>' already exists.` |
 | E-POLICY-002 | broken | 2 | `/brain:policy-add` | `Policy body is not valid YAML.` |
+| E-POLICY-003 | broken | 2 | `/brain:policy-add` | `Policy body missing required field: <field>.` |
 
 ---
 
@@ -274,6 +275,10 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.2 (2026-05-18)
+
+**CONTENT FIX (F-PHASE2-STEP-B-CLOSEOUT-O2 — E-POLICY-003 registered):** Added E-POLICY-003 (broken, exit 2, raised by `/brain:policy-add`) with message "Policy body missing required field: `<field>`." This error covers the case where the policy YAML body is valid YAML but omits a required field (`id`, `name`, `description`, `enforcement`, or `severity`). The error was introduced alongside STORY-043 (EPIC-09: Policy registry management) which defined it inline at AC-006. Formally registered here per STORY-043's inline specification to complete the POLICY error series.
 
 ### v0.1.1 (2026-05-18)
 
