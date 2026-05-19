@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-D-COMPLETE — wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 at commit efc3001 (11 waves, 43 stories, 264 points). Step E (holdout-scenarios) is next-action (task #161).**
+> Snapshot updated: 2026-05-19. **Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED. Phase 2 STEP-E-COMPLETE — holdout-scenarios v0.1.1 at 9b44845+5a3a942 — Step F (decomposition-gate) is next-action (task #162). HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to any Phase 2/3 agent; holdout-evaluator-only (Phase 4).**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
 
@@ -22,36 +22,40 @@ BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 4
 
 Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (F-PASS39-I3 hit-by-hit enumeration vs F-PASS37-O2 mirror tension), F-PASS40-O3 (historical Pass 35-37 closure-summary ordering inconsistency), F-PASS41-O2 (inherited F-PASS40-O2/O3), F-PASS42-O2 (inherited same). May be revisited during Phase 2 if relevant or post-Phase-2.
 
-## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-D-COMPLETE; Step E (holdout-scenarios) NEXT-ACTION)
+## TOP OF STACK (RESUME ENTRY POINT — Phase 2 STEP-E-COMPLETE; Step F (decomposition-gate) NEXT-ACTION)
 
 **State summary:**
 - Phase 1d: CONVERGED at commit `44cda58` (Pass 42 state-mgr FINAL — 2026-05-18); BC-5.39.001 3-CLEAN literal streak 3/3 achieved.
 - Phase 2 Step A: COMPLETED — epics.md v0.1.0 at a9e6a04+80a814a. 9 epics. 95/95 BC coverage. State-mgr FINAL: 8d33625.
 - Phase 2 Step B: COMPLETED (2026-05-18/19) — 43 story specs across 9 epics. STORY-INDEX v0.3.0 at 53d7f29. 95/95 BC coverage. State-mgr FINAL: 1ecbdfc.
 - Phase 2 Step C: COMPLETED (2026-05-19) — dependency-graph.md v0.1.0 at 90d90fd (story-writer). 67 edges, 13 topo layers, acyclic, 6 findings adjudicated. UD-007 dep-graph supersession convention established. State-mgr FINAL: 76edc10.
-- Phase 2 Step D: COMPLETED (2026-05-19) — wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 at efc3001 (story-writer). 11 waves, 43 stories, 264 points, 12 critical-path stories, 16 terminal nodes, 7 holdout-eligible waves. State-mgr FINAL: SHA-pending-this-burst.
-- Phase 2 Step E: NEXT-ACTION (task #161) — dispatch product-owner for holdout-scenarios step.
+- Phase 2 Step D: COMPLETED (2026-05-19) — wave-schedule.md v0.1.0 + sprint-state.yaml v0.1.0 at efc3001 (story-writer). 11 waves, 43 stories, 264 points, 12 critical-path stories, 16 terminal nodes, 7 holdout-eligible waves. State-mgr FINAL: 10354be.
+- Phase 2 Step E: COMPLETED (2026-05-19) — holdout-scenarios.md v0.1.1 at 9b44845+5a3a942 (product-owner). 17 scenarios, 10 must-pass, 7 nice-to-pass, 100% story coverage, 91.6% BC coverage. State-mgr FINAL: SHA-pending-this-burst.
+- Phase 2 Step F: NEXT-ACTION (task #162) — dispatch consistency-validator with fresh context.
 - Working tree: clean (only untracked planning notes + .factory/logs/ + .claude/).
-- HEAD: Phase 2 Step D state-mgr FINAL commit (subject starts with `factory(state): Phase 2 Step D state-mgr FINAL`).
+- HEAD: Phase 2 Step E state-mgr FINAL commit (subject starts with `factory(state): Phase 2 Step E state-mgr FINAL`).
 
 **UD-007 carry-forward note:** dependency-graph.md is CANONICAL for inter-story dependencies. Per-story frontmatter `dependencies:`/`blocks:` are at-creation-time snapshots. Downstream agents consult dep-graph, not frontmatter. Consistency-validator MUST NOT flag frontmatter-vs-dep-graph asymmetries as defects.
 
+**HOLDOUT-SCENARIOS ACCESS CONTROL — RESTRICTED:** `.factory/stories/holdout-scenarios.md` has `access_control: restricted`. Orchestrator MUST NOT pass its contents to story-writer, architect, adversary, implementer, or any agent other than holdout-evaluator (Phase 4). DO NOT include holdout-scenarios.md in any Phase 2/3 agent context.
+
 **Next-action checklist for fresh-context orchestrator:**
 
-1. [ ] Read CLAUDE.md → STATE.md → SESSION-HANDOFF.md → TASK-LIST.md (this file) → .factory/stories/wave-schedule.md (v0.1.0) → .factory/stories/STORY-INDEX.md (v0.3.0)
-2. [ ] Confirm wave-schedule.md at v0.1.0 (11 waves, 43 stories, 264 points) and sprint-state.yaml at v0.1.0 (43 stories)
-3. [ ] Dispatch `vsdd-factory:product-owner` for Step E (holdout-scenarios) per Phase 2 lobster workflow
-4. [ ] product-owner produces `.factory/stories/holdout-scenarios.md` (5-15 hidden scenarios; NOT visible to implementer; test EMERGENT BEHAVIOR across wave boundaries)
-5. [ ] Dispatch consistency-validator + adversary 3-CLEAN cascade per BC-5.39.001 after all story decomposition steps complete
+1. [ ] Read CLAUDE.md → STATE.md → SESSION-HANDOFF.md → TASK-LIST.md (this file) → .factory/stories/STORY-INDEX.md (v0.3.0)
+2. [ ] Confirm holdout-scenarios.md at v0.1.1 (17 scenarios) — DO NOT read contents (restricted)
+3. [ ] Dispatch `vsdd-factory:consistency-validator` for Step F (decomposition-gate) with FRESH CONTEXT — pass UD-007 dep-graph supersession convention; DO NOT pass holdout-scenarios.md contents
+4. [ ] If CRITICAL > 0 in consistency report: route fixes via product-owner (BCs/PRD), architect (architecture), story-writer (stories); re-run validator after fixes
+5. [ ] After CRITICAL=0: dispatch adversarial story-reviewer for Step G per BC-5.39.001 3-CLEAN cascade
 6. [ ] At Phase 2 convergence (streak 3/3), surface to human for Phase 3 gate
 
 | Priority | Task ID | Status | Action Required |
 |----------|---------|--------|-----------------|
-| 1 | #161 | NEXT-ACTION | Phase 2 Step E — product-owner holdout-scenarios burst |
-| 2 | #160 | COMPLETED | Phase 2 Step D — story-writer wave-schedule (efc3001) |
-| 3 | #159 | COMPLETED | Phase 2 Step C — story-writer dependency-graph (90d90fd) |
-| 4 | #157 | COMPLETED | Phase 2 Step B — story-writer create-stories (21 bursts, 43 stories, STORY-INDEX v0.3.0) |
-| 5 | #155 | STEP-D-COMPLETE | Phase 2 (Story Decomposition) — Step D complete; Step E next |
+| 1 | #162 | NEXT-ACTION | Phase 2 Step F — consistency-validator decomposition-gate (fresh context) |
+| 2 | #161 | COMPLETED | Phase 2 Step E — product-owner holdout-scenarios (9b44845+5a3a942) |
+| 3 | #160 | COMPLETED | Phase 2 Step D — story-writer wave-schedule (efc3001) |
+| 4 | #159 | COMPLETED | Phase 2 Step C — story-writer dependency-graph (90d90fd) |
+| 5 | #157 | COMPLETED | Phase 2 Step B — story-writer create-stories (21 bursts, 43 stories, STORY-INDEX v0.3.0) |
+| 6 | #155 | STEP-E-COMPLETE | Phase 2 (Story Decomposition) — Step E complete; Step F next |
 
 ## Task Status
 
