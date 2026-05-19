@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,10 +65,16 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Scope §Phase 2–3 polish skills (#18: `/brain:monthly-perf — pull performance data from LinkedIn Posts API (Community Management) + registered extensions`). |
 | Architecture Module | SS-09: Publishing Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-031 |
 | Source Brief Section | product-brief.md §Scope §Phase 2–3 polish skills (#18); §Scalability Design Principles §5 |
 
 ## Related BCs
 
 - BC-2.16.001 — depends on (token data from ingest log)
 - BC-2.16.002 — composes with (token alert surfaced here too)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-031 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -70,9 +70,15 @@ For hook scripts, `meta-lint.bats` validates: first line is `#!/usr/bin/env bash
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 2 — Hooks: shebang, set -euo pipefail, no bare exit, no eval, has bats file, shellcheck exits 0, shfmt exits 0"). |
 | Architecture Module | SS-18: Meta-Lint and Self-Audit |
-| Stories | [filled by story-writer] |
+| Stories | STORY-023 |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |
 
 ## Related BCs
 
 - BC-2.04.016 — composes with (hook contract defines what meta-lint enforces)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-023 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

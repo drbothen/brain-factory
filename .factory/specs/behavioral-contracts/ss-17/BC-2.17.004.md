@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -60,10 +60,14 @@ Security constraint: hook scripts must never echo tokens, API keys, credential v
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Conventions ("No secrets in stdout/logs. Hook scripts must never echo tokens, API keys, or credential values."). |
 | Architecture Module | SS-17: Structured Event Catalog |
-| Stories | [filled by story-writer] |
+| Stories | STORY-015 |
 | Source Brief Section | product-brief.md CLAUDE.md §Conventions |
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-015 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

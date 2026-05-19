@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -63,5 +63,11 @@ For agent files, `meta-lint.bats` validates: frontmatter present with `name`, `s
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 3 — Agents: frontmatter with name/scope/tool-profile, routing table reference, allowed/denied tools enumerated, kebab-case filename"). |
 | Architecture Module | SS-18: Meta-Lint and Self-Audit |
-| Stories | [filled by story-writer] |
+| Stories | STORY-022 |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-022 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

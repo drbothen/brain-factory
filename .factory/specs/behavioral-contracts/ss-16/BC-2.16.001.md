@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -59,9 +59,15 @@ See BC-2.02.003 for test vectors.
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Scalability Design Principles §5 ("Token budget instrumentation: Every operation reports its token consumption."). |
 | Architecture Module | SS-16: Scale-Aware Architecture |
-| Stories | [filled by story-writer] |
+| Stories | STORY-036 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §5 |
 
 ## Related BCs
 
 - BC-2.02.003 — this BC elaborates the scale dimension of that contract
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-036 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -68,9 +68,15 @@ To prevent accidental ingestion of system files or credential files, `/brain:ing
 |-------|-------|
 | Capability Anchor Justification | CAP-003 ("Source Ingest Pipeline") per brief §Scope §Phase 0/1 primitives (#4) and §Constraints §Technical ("Engine read-only at runtime. State lives exclusively in the target's `.brain/`."). |
 | Architecture Module | SS-03: Source Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-019 |
 | Source Brief Section | product-brief.md §Constraints §Technical |
 
 ## Related BCs
 
 - BC-2.03.001 — composes with (path check is first gate in ingest)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-019 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

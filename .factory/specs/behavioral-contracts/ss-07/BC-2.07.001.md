@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,7 +65,7 @@ Cognitive diversity in adversarial review requires that the `brain:adversary-rev
 |-------|-------|
 | Capability Anchor Justification | CAP-007 ("Adversarial Review and Writescore") per brief §Constraints §Technical ("Cognitive diversity in adversary review. The `brain:adversary-reviewer` agent MUST run in a different model family than the agent that produced the work under review (in brain-factory v0.x: Opus and Sonnet are different families for adversary-review purposes)."). |
 | Architecture Module | SS-07: Adversarial Review and Writescore |
-| Stories | [filled by story-writer] |
+| Stories | STORY-040 |
 | Source Brief Section | product-brief.md §Constraints §Technical; §Value Proposition §Core differentiator #2; §Open Questions #2 (Resolved) |
 
 ## Related BCs
@@ -73,3 +73,9 @@ Cognitive diversity in adversarial review requires that the `brain:adversary-rev
 - BC-2.07.002 — composes with
 - BC-2.07.003 — composes with
 - BC-2.07.004 — composes with
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-040 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

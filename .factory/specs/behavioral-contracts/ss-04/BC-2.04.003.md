@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -81,7 +81,7 @@ modified: []
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#6 `validate-wikilink-integrity.sh`) and §Prior Art ("Nguyen's 6-month practitioner report: documents index-log drift and orphan-page accumulation"). |
 | L2 Domain Invariants | N/A |
 | Architecture Module | SS-04: Hook Enforcement Chain |
-| Stories | [filled by story-writer] |
+| Stories | STORY-008 |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#6); §Prior Art §Real-world practitioner reports |
 
 ## Related BCs
@@ -91,6 +91,10 @@ modified: []
 - BC-2.04.006 — related to (index coherence hook is co-dependent)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-008 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

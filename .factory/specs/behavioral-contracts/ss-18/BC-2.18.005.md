@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -72,7 +72,7 @@ brain-factory ships 8 category bats suites (`meta-lint.bats`, `skills.bats`, `te
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief §Scope §Test architecture ("8 category suites (meta-lint.bats, skills.bats, templates.bats, policies.bats, adversary.bats, quarantine.bats, integration.bats, upgrade.bats) plus 13 per-hook bats files at tests/<hook-name>.bats"). |
 | Architecture Module | SS-18: Meta-Lint and Self-Audit |
-| Stories | [filled by story-writer] |
+| Stories | STORY-023 |
 | Source Brief Section | product-brief.md §Scope §Test architecture (v0.4.20); CLAUDE.md §Meta-Lint Contract; CLAUDE.md §HOOK TESTS; CLAUDE.md §TDD Inner Loop Discipline |
 
 ## Related BCs
@@ -80,6 +80,10 @@ brain-factory ships 8 category bats suites (`meta-lint.bats`, `skills.bats`, `te
 - BC-2.18.001 through BC-2.18.004 — composes with (all meta-lint checks live in meta-lint.bats, one of the 8 category suites)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-023 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-18)
 

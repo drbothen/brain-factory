@@ -1,7 +1,7 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.14"
+version: "0.1.15"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-19T00:00:00
@@ -281,6 +281,10 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 ---
 
 ## Changelog
+
+### v0.1.15 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfill complete. All 95 BC files now cite their canonical implementing story in the Traceability `Stories` field, sourced from the STORY-INDEX v0.3.2 reverse map (95 entries). All 9 BCs with Story Anchor sections updated from [S-TBD] to their canonical story ID. Each BC version bumped by one minor increment with a `## Changelog` entry. No semantic change to any BC contract — metadata backfill only.
 
 ### v0.1.14 (2026-05-19)
 

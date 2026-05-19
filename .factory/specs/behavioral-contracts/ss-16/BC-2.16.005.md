@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,5 +65,11 @@ At 10K-source corpus size, the per-ingest token cost may be higher than at 1K sc
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Success Criteria §v0.9 ship gate ("Token budget at scale: per-ingest cost stays within 3x the 50K-token baseline (i.e., ≤150K input tokens per ingest including chunking overhead at the 10K-source corpus size)."). |
 | Architecture Module | SS-16: Scale-Aware Architecture |
-| Stories | [filled by story-writer] |
+| Stories | STORY-039 |
 | Source Brief Section | product-brief.md §Success Criteria §v0.9 ship gate §Scale test |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-039 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

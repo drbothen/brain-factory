@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,5 +65,11 @@ The primary distribution mechanism for brain-factory is the `drbothen/claude-mp`
 |-------|-------|
 | Capability Anchor Justification | CAP-014 ("Plugin Lifecycle and Upgrade") per brief §Success Criteria §v0.1 ship gate ("`/plugin install brain-factory@claude-mp` succeeds in a fresh Claude session"). |
 | Architecture Module | SS-14: Plugin Lifecycle and Upgrade |
-| Stories | [filled by story-writer] |
+| Stories | STORY-005 |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-005 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

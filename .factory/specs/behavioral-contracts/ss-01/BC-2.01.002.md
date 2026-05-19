@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -74,7 +74,7 @@ The 5-minute init SLA is a tested contract, not an aspiration. The v0.1 ship gat
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #1. This BC specifically covers the performance SLA of the init operation, which is part of the CAP-001 initialization contract. |
 | L2 Domain Invariants | N/A |
 | Architecture Module | SS-01: Brain Initialization and Scaffold |
-| Stories | [filled by story-writer — Phase 2] |
+| Stories | STORY-003 |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate (5-minute init SLA; `assert_under_5_minutes`) |
 
 ## Related BCs
@@ -88,8 +88,14 @@ The 5-minute init SLA is a tested contract, not an aspiration. The v0.1 ship gat
 
 ## Story Anchor
 
-[S-TBD] — [filled by story-writer — Phase 2]
+STORY-003
 
 ## VP Anchors
 
 - VP-014 — Brain init scaffold completeness (bats integration.bats)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-003; Story Anchor updated from [S-TBD] to STORY-003. No semantic change to BC contract.

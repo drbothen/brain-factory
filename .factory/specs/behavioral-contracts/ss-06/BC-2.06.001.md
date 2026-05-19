@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -62,7 +62,7 @@ A source file, once written to `sources/{topic}/{slug}.md`, is immutable. It can
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Value Proposition §Core differentiator #1 ("source-immutability enforced by hooks the agent cannot bypass"). |
 | Architecture Module | SS-06: Source Layer and Immutability |
-| Stories | [filled by story-writer] |
+| Stories | STORY-037 |
 | Source Brief Section | product-brief.md §Value Proposition §Core differentiator #1; §Scalability Design Principles §1 |
 
 ## Related BCs
@@ -71,6 +71,10 @@ A source file, once written to `sources/{topic}/{slug}.md`, is immutable. It can
 - BC-2.02.006 — related to (skill-level duplicate detection)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-037 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -76,7 +76,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#1 `brain-health-check.sh`) and §Scope §Additional v0.x deliverables ("Six-dimensional convergence tracking... User-visible via `/brain:health` and SessionStart hook banner"). |
 | Architecture Module | SS-04: Hook Enforcement Chain |
-| Stories | [filled by story-writer] |
+| Stories | STORY-013 |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#1); §Scope §Additional v0.x deliverables |
 
 ## Related BCs
@@ -85,6 +85,10 @@ modified: []
 - BC-2.01.006 — related to (/brain:health skill surfaces the same dimensions)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-013 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

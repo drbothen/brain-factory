@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -67,5 +67,11 @@ For all tracked repo files, `meta-lint.bats` validates: no file contains `Co-Aut
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 4 — Cross-cutting: no AI attribution, no --no-verify, every CLAUDE_PLUGIN_ROOT ref resolves, every internal markdown link resolves"). |
 | Architecture Module | SS-18: Meta-Lint and Self-Audit |
-| Stories | [filled by story-writer] |
+| Stories | STORY-023 |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-023 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

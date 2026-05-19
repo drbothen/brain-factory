@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -64,5 +64,11 @@ The v0.1 plugin tarball includes 6 GitHub Action YAML templates: `daily-brief.ym
 |-------|-------|
 | Capability Anchor Justification | CAP-013 ("GitHub Action Templates") per brief §Scope §19 GitHub Action templates ("v0.1 core set — author-committed (6)") and §Success Criteria §v0.1 ship gate ("CI workflow runs green on a sample push"). |
 | Architecture Module | SS-13: GitHub Action Templates |
-| Stories | [filled by story-writer] |
+| Stories | STORY-034 |
 | Source Brief Section | product-brief.md §Scope §GH Action templates; §Success Criteria §v0.1 ship gate |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-034 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

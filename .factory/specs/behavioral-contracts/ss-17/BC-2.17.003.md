@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,7 +66,7 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Logging ("No `echo "..."` for user-facing output from hooks — hooks emit JSON on stdout, structured events on stderr."). |
 | Architecture Module | SS-17: Structured Event Catalog |
-| Stories | [filled by story-writer] |
+| Stories | STORY-015 |
 | Source Brief Section | product-brief.md CLAUDE.md §Logging |
 
 ## Related BCs
@@ -75,6 +75,10 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 - BC-2.04.017 — composes with (emission protocol)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-015 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -59,10 +59,16 @@ Every manifest entry includes a `chunks` array from v0.1, even though the chunki
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Scalability Design Principles §6 ("The `manifest.json` schema includes an `embeddings_model` field (default: null in v0.x)") and §7 ("The `manifest.json` schema supports a `chunks: [...]` array from v0.1"). |
 | Architecture Module | SS-06: Source Layer and Immutability |
-| Stories | [filled by story-writer] |
+| Stories | STORY-037 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §6, §7 |
 
 ## Related BCs
 
 - BC-2.01.004 — composes with (init writes schema)
 - BC-2.06.003 — related to (manifest schema)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-037 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

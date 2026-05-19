@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -67,10 +67,16 @@ When the Defuddle-extracted content of a URL exceeds the 50K-token per-chunk thr
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §7 ("Page-chunking readiness: `/brain:ingest-url` detects when source content exceeds the 50K-token threshold... outputs a warning in v0.1"). |
 | Architecture Module | SS-02: URL Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-017 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §7 |
 
 ## Related BCs
 
 - BC-2.02.001 — composes with
 - BC-2.06.002 — related to (manifest chunks array reserved here)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-017 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

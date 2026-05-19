@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,5 +66,11 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-016 ("Scale-Aware Architecture") per brief §Scalability Design Principles §5 ("Operators receive an alert via `/brain:health` if the 30-day trailing average exceeds 2x the baseline."). |
 | Architecture Module | SS-16: Scale-Aware Architecture |
-| Stories | [filled by story-writer] |
+| Stories | STORY-037 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §5 |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-037 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

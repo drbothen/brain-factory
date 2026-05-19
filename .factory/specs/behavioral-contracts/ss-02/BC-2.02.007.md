@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -62,10 +62,16 @@ The ingest pipeline must remain performant as the wiki grows. At 10K pages, an O
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Success Criteria §v0.9 ship gate ("`/brain:ingest-url` retrieval-plus-wiki-write latency stays sub-linear (O(log n) or better) as the wiki grows from 1K to 10K pages"). |
 | Architecture Module | SS-02: URL Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-018 |
 | Source Brief Section | product-brief.md §Success Criteria §v0.9 ship gate §Scale test |
 
 ## Related BCs
 
 - BC-2.02.004 — composes with (manifest-delta design enables sub-linear performance)
 - BC-2.16.003 — related to (GH Action scale requirements)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-018 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

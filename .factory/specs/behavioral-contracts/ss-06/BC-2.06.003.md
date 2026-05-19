@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -58,7 +58,7 @@ Each manifest entry contains `last_ingest` (ISO8601) recording the most recent t
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Scalability Design Principles §1 ("The brain's `manifest.json` records `last_ingest` timestamps per source."). |
 | Architecture Module | SS-06: Source Layer and Immutability |
-| Stories | [filled by story-writer] |
+| Stories | STORY-002 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1 |
 
 ## VP Anchors
@@ -68,3 +68,9 @@ Each manifest entry contains `last_ingest` (ISO8601) recording the most recent t
 ## Related BCs
 
 - BC-2.06.002 — related to (manifest schema)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-002 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

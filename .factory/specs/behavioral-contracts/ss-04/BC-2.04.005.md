@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -77,7 +77,7 @@ Beyond `embedding_status` (BC-2.04.004), wiki pages have additional mandatory fr
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#8 `validate-frontmatter-schema.sh`) and §Scalability Design Principles §3 (wiki/{type}/{slug}.md layout; 6 wiki types). |
 | Architecture Module | SS-04: Hook Enforcement Chain |
-| Stories | [filled by story-writer] |
+| Stories | STORY-009 |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#8); §Scalability Design Principles §3 |
 
 ## Related BCs
@@ -87,6 +87,10 @@ Beyond `embedding_status` (BC-2.04.004), wiki pages have additional mandatory fr
 - BC-2.05.005 — depends on (wiki page type taxonomy defined here)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-009 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

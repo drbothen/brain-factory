@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -72,10 +72,16 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Scope §Phase 2–3 polish skills (#22: `/brain:publish-content <file> — publishing orchestrator supporting LinkedIn Posts API (Community Management)`). |
 | Architecture Module | SS-09: Publishing Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-030 |
 | Source Brief Section | product-brief.md §Scope §Phase 2–3 polish skills (#22); §Success Criteria §v0.5 milestone |
 
 ## Related BCs
 
 - BC-2.09.004 — composes with (state machine enforced)
 - BC-2.09.005 — composes with (directory structure)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-030 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

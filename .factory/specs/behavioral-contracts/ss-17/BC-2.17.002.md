@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,7 +65,7 @@ Each entry in the structured event catalog has a defined schema. The catalog is 
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Logging ("Format: JSONL on stderr with `ts`, `event_type`, `plugin`, `trace`, plus event-specific fields. All `event_type` values must be registered in the structured event catalog BC before the PR merges."). |
 | Architecture Module | SS-17: Structured Event Catalog |
-| Stories | [filled by story-writer] |
+| Stories | STORY-014 |
 | Source Brief Section | product-brief.md CLAUDE.md §Logging |
 
 ## Related BCs
@@ -73,6 +73,10 @@ Each entry in the structured event catalog has a defined schema. The catalog is 
 - BC-2.17.001 — composes with
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-014 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

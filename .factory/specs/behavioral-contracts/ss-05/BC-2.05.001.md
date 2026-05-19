@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -69,10 +69,16 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scope §Phase 0/1 primitives skill #6 (`/brain:lint-wiki`) and §Success Criteria §v0.9 ship gate ("`/brain:lint-wiki` full health pass completes in under 10 minutes on a 10K-page wiki"). |
 | Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
-| Stories | [filled by story-writer] |
+| Stories | STORY-020 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#6); §Success Criteria §v0.9 ship gate; §Scalability Design Principles §2 |
 
 ## Related BCs
 
 - BC-2.05.002 — composes with (O(n) resolution required)
 - BC-2.04.003 — related to (per-write hook checks; lint-wiki is the bulk audit)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-020 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

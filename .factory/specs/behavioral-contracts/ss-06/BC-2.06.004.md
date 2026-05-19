@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -60,9 +60,15 @@ The `sources/` directory uses topic-based subdirectories to prevent a flat singl
 |-------|-------|
 | Capability Anchor Justification | CAP-006 ("Source Layer and Immutability") per brief §Scalability Design Principles §3 ("`sources/` uses `sources/{topic}/` subdirectories (7 default categories: ai, health, psychology, productivity, business, books, podcasts; extensible)") and §Scope §Additional v0.x deliverables ("7 default topic categories scaffolded by `/brain:init`"). |
 | Architecture Module | SS-06: Source Layer and Immutability |
-| Stories | [filled by story-writer] |
+| Stories | STORY-002 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §3; §Scope §Additional v0.x deliverables |
 
 ## Related BCs
 
 - BC-2.01.001 — composes with (init creates these)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-002 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -64,9 +64,15 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Family Positioning ("`--schedule <date>` flag on `/brain:publish-content` (no new skill).") and §Scope §Phase 2–3 polish skills (#22: `flags: --finalize, --schedule`). |
 | Architecture Module | SS-09: Publishing Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-030 |
 | Source Brief Section | product-brief.md §Family Positioning §wclaude absorption; §Scope §Phase 2–3 polish skills (#22) |
 
 ## Related BCs
 
 - BC-2.09.001 — composes with
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-030 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

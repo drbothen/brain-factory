@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -60,5 +60,11 @@ The engine/target split is a fundamental architectural constraint: the plugin fi
 |-------|-------|
 | Capability Anchor Justification | CAP-014 ("Plugin Lifecycle and Upgrade") per brief §Constraints §Technical ("Engine read-only at runtime. Plugin files are never modified by a running brain operation. State lives exclusively in the target's `.brain/`.") and plugin-plan.md §2 ("engine/target split rule 1"). |
 | Architecture Module | SS-14: Plugin Lifecycle and Upgrade |
-| Stories | [filled by story-writer] |
+| Stories | STORY-001 |
 | Source Brief Section | product-brief.md §Constraints §Technical |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-001 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

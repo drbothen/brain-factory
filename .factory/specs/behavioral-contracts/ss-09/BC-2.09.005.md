@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -60,10 +60,16 @@ The brain's content lifecycle directory structure uses platform-specific subdire
 |-------|-------|
 | Capability Anchor Justification | CAP-009 ("Publishing Pipeline") per brief §Family Positioning ("`drafts/{platform}/`, `to-publish/{platform}/`, `published/{platform}/` directory structure: adopted in the target brain's content layer as a brief-introduced extension beyond phased-build-plan §A.2's simpler `published/` baseline"). |
 | Architecture Module | SS-09: Publishing Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-027 |
 | Source Brief Section | product-brief.md §Family Positioning §wclaude absorption |
 
 ## Related BCs
 
 - BC-2.01.001 — composes with (init scaffolds these)
 - BC-2.09.004 — depends on (state machine uses these directories)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-027 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

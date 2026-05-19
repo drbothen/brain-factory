@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -71,7 +71,7 @@ After the source file is written, `/brain:ingest-url` triggers the wiki page gen
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Success Criteria §v0.1 ship gate ("`/brain:ingest-url` in the test brain produces 5+ wiki pages with cross-references and adversary-review PASS"). |
 | Architecture Module | SS-02: URL Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-017 |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate; §Scope §Phase 0/1 primitives (#3) |
 
 ## Related BCs
@@ -79,3 +79,9 @@ After the source file is written, `/brain:ingest-url` triggers the wiki page gen
 - BC-2.02.001 — depends on (source write triggers this)
 - BC-2.04.003 — composes with (wikilink integrity validated on each page write)
 - BC-2.04.004 — composes with (schema validation on each page write)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-017 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

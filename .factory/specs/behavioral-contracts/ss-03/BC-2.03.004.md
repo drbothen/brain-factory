@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,9 +66,15 @@ When wiki page generation produces a mix of successes and failures (e.g., 8 of 1
 |-------|-------|
 | Capability Anchor Justification | CAP-003 ("Source Ingest Pipeline") per CLAUDE.md §Error handling ("Partial-failure fan-out (e.g., batch wiki page generation): propagate per-item results; do not swallow and return empty."). |
 | Architecture Module | SS-03: Source Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-019 |
 | Source Brief Section | CLAUDE.md §Error handling |
 
 ## Related BCs
 
 - BC-2.03.001 — composes with
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-019 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

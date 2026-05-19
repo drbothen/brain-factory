@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -63,10 +63,16 @@ The quarantine pattern corpus is stored in `scripts/quarantine.mjs` at the plugi
 |-------|-------|
 | Capability Anchor Justification | CAP-010 ("Prompt-Injection Quarantine") per brief §Scope §Additional v0.x deliverables ("Prompt-injection corpus patterns in `scripts/quarantine.mjs`"). |
 | Architecture Module | SS-10: Prompt-Injection Quarantine |
-| Stories | [filled by story-writer] |
+| Stories | STORY-006 |
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables |
 
 ## Related BCs
 
 - BC-2.04.001 — depends on (hook uses this corpus)
 - BC-2.10.001 — depends on (skill uses this corpus)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-006 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

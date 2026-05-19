@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -77,7 +77,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#3 `enforce-kebab-case.sh`) and CLAUDE.md §Conventions ("Filenames are kebab-case, lowercase, no spaces. Wiki filenames are IMMUTABLE after creation"). |
 | Architecture Module | SS-04: Hook Enforcement Chain |
-| Stories | [filled by story-writer] |
+| Stories | STORY-012 |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#3); CLAUDE.md brain-factory-002 |
 
 ## Related BCs
@@ -86,6 +86,10 @@ modified: []
 - BC-2.05.003 — related to (rename-page skill is the correct path for slug changes)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-012 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

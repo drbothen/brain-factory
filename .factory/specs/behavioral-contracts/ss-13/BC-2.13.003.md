@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -57,5 +57,11 @@ Any GH Action template that calls an external API (LinkedIn, Readwise, Raindrop)
 |-------|-------|
 | Capability Anchor Justification | CAP-013 ("GitHub Action Templates") per brief §Scalability Design Principles §4 ("Rate-limit handling (LinkedIn Posts API, Readwise, Raindrop) is explicit: 429 responses trigger exponential backoff with `retry-after` header respect, not hard failures."). |
 | Architecture Module | SS-13: GitHub Action Templates |
-| Stories | [filled by story-writer] |
+| Stories | STORY-035 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §4 |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-035 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

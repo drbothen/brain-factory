@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -75,7 +75,7 @@ The `embedding_status` frontmatter field is mandatory in all wiki pages from v0.
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scalability Design Principles §6 ("Vector-indexing interface reservation") — every wiki page template written by init must include `embedding_status: pending` to establish the non-breaking v1.0+ interface. |
 | L2 Domain Invariants | N/A |
 | Architecture Module | SS-01: Brain Initialization and Scaffold |
-| Stories | [filled by story-writer — Phase 2] |
+| Stories | STORY-002 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §6; §Success Criteria §v0.1 ship gate (`validate-frontmatter-schema.sh` enforcement test) |
 
 ## Related BCs
@@ -90,13 +90,17 @@ The `embedding_status` frontmatter field is mandatory in all wiki pages from v0.
 
 ## Story Anchor
 
-[S-TBD]
+STORY-002
 
 ## VP Anchors
 
 - VP-014 — Brain init scaffold completeness (bats integration.bats)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-002; Story Anchor updated from [S-TBD] to STORY-002. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

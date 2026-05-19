@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -76,7 +76,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#13 `validate-publish-state.sh`) and §Family Positioning (wclaude absorption: "Frontmatter state machine (draft → ready → published): absorbed into `/brain:publish-content` + new `validate-publish-state.sh` hook"). |
 | Architecture Module | SS-04: Hook Enforcement Chain |
-| Stories | [filled by story-writer] |
+| Stories | STORY-011 |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#13); §Family Positioning §wclaude absorption |
 
 ## Related BCs
@@ -85,6 +85,10 @@ modified: []
 - BC-2.09.004 — depends on (publishing skill uses this state machine)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-011 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

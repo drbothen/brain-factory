@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,5 +65,11 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-015 ("Governance and Policies") per brief §Scope §Additional v0.x deliverables ("10 baseline policies in `.brain/policies.yaml`") and plugin-plan.md §10.2. |
 | Architecture Module | SS-15: Governance and Policies |
-| Stories | [filled by story-writer] |
+| Stories | STORY-042 |
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-042 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

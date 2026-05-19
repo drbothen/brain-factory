@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -63,7 +63,7 @@ The wiki layer is organized by TYPE, not by topic. The 6 valid wiki type directo
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scalability Design Principles §3 ("wiki/{type}/{slug}.md; 6 wiki types per plan.md §3.4: concepts, people, frameworks, syntheses, observations, questions"). |
 | Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
-| Stories | [filled by story-writer] |
+| Stories | STORY-020 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §3 |
 
 ## Related BCs
@@ -71,6 +71,10 @@ The wiki layer is organized by TYPE, not by topic. The 6 valid wiki type directo
 - BC-2.04.007 — depends on (hook enforces this taxonomy at write time)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-020 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

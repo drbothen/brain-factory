@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -59,9 +59,15 @@ This BC defines the error-case branch of BC-2.05.003: the rename-page skill perf
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scope §Phase 0/1 primitives (#12). |
 | Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
-| Stories | [filled by story-writer] |
+| Stories | STORY-021 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#12) |
 
 ## Related BCs
 
 - BC-2.05.003 — composes with (error branch)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-021 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

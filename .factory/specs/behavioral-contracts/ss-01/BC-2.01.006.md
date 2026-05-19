@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -76,7 +76,7 @@ removal_reason: null
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #2 (`/brain:health`) and §Scope §Additional v0.x deliverables ("Six-dimensional convergence tracking in `.brain/STATE.md`"). |
 | L2 Domain Invariants | N/A |
 | Architecture Module | SS-01: Brain Initialization and Scaffold |
-| Stories | [filled by story-writer] |
+| Stories | STORY-004 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives skill #2; §Scalability Design Principles §5 (token budget alert) |
 
 ## Related BCs
@@ -90,8 +90,14 @@ removal_reason: null
 
 ## Story Anchor
 
-[S-TBD]
+STORY-004
 
 ## VP Anchors
 
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-004; Story Anchor updated from [S-TBD] to STORY-004. No semantic change to BC contract.

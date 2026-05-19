@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -59,9 +59,15 @@ Wikilink resolution in `/brain:lint-wiki` must be implemented using index-first 
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scalability Design Principles §2 ("No quadratic hot paths: `/brain:lint-wiki` completes wikilink integrity checks via index-first lookup (O(n) scan of `index.md`, not O(n²) cross-product)."). |
 | Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
-| Stories | [filled by story-writer] |
+| Stories | STORY-020 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §2 |
 
 ## Related BCs
 
 - BC-2.05.001 — composes with
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-020 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

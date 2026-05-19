@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -61,7 +61,7 @@ The structured event catalog is a machine-readable registry of all event types e
 |-------|-------|
 | Capability Anchor Justification | CAP-017 ("Structured Event Catalog") per brief CLAUDE.md §Structured event emission ("Every `hook-event:emit` site must appear as a row in the structured event catalog BC before the PR merges. New emission sites added without a corresponding catalog row are a P1 finding in adversarial review."). |
 | Architecture Module | SS-17: Structured Event Catalog |
-| Stories | [filled by story-writer] |
+| Stories | STORY-014 |
 | Source Brief Section | product-brief.md CLAUDE.md §Structured event emission |
 
 ## Related BCs
@@ -70,6 +70,10 @@ The structured event catalog is a machine-readable registry of all event types e
 - BC-2.04.017 — depends on (emit sites defined in hook contract)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-014 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

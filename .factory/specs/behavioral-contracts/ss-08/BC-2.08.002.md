@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,7 +66,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-008 ("Content Brief and Writing") per brief §Scope §Phase 0/1 primitives skill #10 (`/brain:write <brief-path> — produce a full piece in the author's voice`). |
 | Architecture Module | SS-08: Content Brief and Writing |
-| Stories | [filled by story-writer] |
+| Stories | STORY-029 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#10) |
 
 ## Related BCs
@@ -74,3 +74,9 @@ modified: []
 - BC-2.08.001 — depends on
 - BC-2.08.003 — composes with (flags)
 - BC-2.04.008 — composes with (voice hook fires)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-029 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

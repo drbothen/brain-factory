@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -60,10 +60,16 @@ The quarantine hook registration in `hooks.json.template` uses `matcher: WebFetc
 |-------|-------|
 | Capability Anchor Justification | CAP-010 ("Prompt-Injection Quarantine") per brief §Constraints §Technical ("Prompt-injection quarantine non-optional. Every ingest pipeline MUST run `/brain:quarantine-check` before content reaches a Claude session with tool access. This is the most important rule in the entire system.") and brief §Problem Statement ("The PreToolUse hook on WebFetch is invoked by the Claude Code harness, not by the agent. The agent cannot bypass it."). |
 | Architecture Module | SS-10: Prompt-Injection Quarantine |
-| Stories | [filled by story-writer] |
+| Stories | STORY-006 |
 | Source Brief Section | product-brief.md §Problem Statement; §Constraints §Technical |
 
 ## Related BCs
 
 - BC-2.04.001 — composes with (quarantine-fetch.sh is defined there)
 - BC-2.14.005 — depends on (hooks.json.template registers this)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-006 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

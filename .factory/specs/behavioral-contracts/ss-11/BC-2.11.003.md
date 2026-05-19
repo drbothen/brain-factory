@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,5 +65,11 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-011 ("Knowledge Synthesis and Connection") per brief §Scope §Phase 0/1 primitives skill #5 (`/brain:process-inbox — classify and route inbox notes`). |
 | Architecture Module | SS-11: Knowledge Synthesis and Connection |
-| Stories | [filled by story-writer] |
+| Stories | STORY-026 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#5) |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-026 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

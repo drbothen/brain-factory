@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -67,10 +67,16 @@ Source immutability applies not just at the file-system level (via the hook) but
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §1 (incremental ingest; manifest-delta; source immutability). |
 | Architecture Module | SS-02: URL Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-016 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1; §Scope §Phase 0/1 primitives (#3) |
 
 ## Related BCs
 
 - BC-2.02.001 — composes with (this check is the first gate in BC-2.02.001)
 - BC-2.04.002 — related to (immutability also enforced at hook level after write)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-016 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

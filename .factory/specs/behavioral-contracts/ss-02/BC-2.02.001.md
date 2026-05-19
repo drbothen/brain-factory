@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -81,7 +81,7 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scope §Phase 0/1 primitives skill #3 (`/brain:ingest-url`). This BC defines the complete contract for URL ingestion — the primary knowledge-acquisition pathway. |
 | Architecture Module | SS-02: URL Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-016 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#3); §Scalability Design Principles §1, §5, §7 |
 
 ## Related BCs
@@ -92,3 +92,9 @@ modified: []
 - BC-2.04.001 — depends on (quarantine fires first)
 - BC-2.04.002 — depends on (immutability hook fires after write)
 - BC-2.06.001 — depends on (source immutability invariant)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-016 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

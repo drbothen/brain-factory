@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,7 +65,7 @@ modified: ["v1.2"]
 |-------|-------|
 | Capability Anchor Justification | CAP-018 ("Meta-Lint and Self-Audit") per brief CLAUDE.md §Meta-Lint Contract ("Surface 1 — Skills: frontmatter, canonical 6-section structure, Iron Law ≤ 200 chars, Red Flags ≥ 1 bullet, numbered Procedure, no `.claude/templates/` paths"). |
 | Architecture Module | SS-18: Meta-Lint and Self-Audit |
-| Stories | [filled by story-writer] |
+| Stories | STORY-022 |
 | Source Brief Section | product-brief.md CLAUDE.md §Meta-Lint Contract |
 
 ## Related BCs
@@ -76,6 +76,10 @@ modified: ["v1.2"]
 - BC-2.18.005 — depends on (meta-lint.bats is one of the 8 category bats suites in the per-hook + category test model)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-022 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-18)
 

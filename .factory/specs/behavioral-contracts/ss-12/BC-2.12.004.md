@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -60,8 +60,14 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-012 ("Lobster Runtime") per brief §Success Criteria §v0.1 ship gate ("`bin/lobster-run` executes a sample workflow YAML headlessly") and §Scope §bin/lobster-run. |
 | Architecture Module | SS-12: Lobster Runtime |
-| Stories | [filled by story-writer] |
+| Stories | STORY-033 |
 | Source Brief Section | product-brief.md §Success Criteria §v0.1 ship gate; §Scope §bin/lobster-run |
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-033 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ## Related BCs
 

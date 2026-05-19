@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,7 +66,7 @@ Every invocation of `/brain:ingest-url` writes a JSONL record to `.brain/logs/in
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §5 ("Token budget instrumentation: `/brain:ingest-url` writes a JSONL record to `.brain/logs/ingest-tokens.jsonl` on every invocation"). |
 | Architecture Module | SS-02: URL Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-017 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §5 |
 
 ## Related BCs
@@ -74,3 +74,9 @@ Every invocation of `/brain:ingest-url` writes a JSONL record to `.brain/logs/in
 - BC-2.02.001 — composes with
 - BC-2.16.001 — related to (token instrumentation is a scale-aware architecture requirement)
 - BC-2.16.002 — depends on (health alert reads this log)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-017 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

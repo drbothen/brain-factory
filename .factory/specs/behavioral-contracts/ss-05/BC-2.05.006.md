@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -63,7 +63,7 @@ Every wiki page — whether created by ingest, manually, or by any skill — mus
 |-------|-------|
 | Capability Anchor Justification | CAP-005 ("Wiki Layer and Wikilink Integrity") per brief §Scalability Design Principles §6 ("Every wiki page's frontmatter MUST include an `embedding_status` field... `validate-frontmatter-schema.sh` hook enforces presence on `wiki/*` writes"). |
 | Architecture Module | SS-05: Wiki Layer and Wikilink Integrity |
-| Stories | [filled by story-writer] |
+| Stories | STORY-020 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §6 |
 
 ## Related BCs
@@ -72,6 +72,10 @@ Every wiki page — whether created by ingest, manually, or by any skill — mus
 - BC-2.01.004 — composes with (init writes this in templates)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-020 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

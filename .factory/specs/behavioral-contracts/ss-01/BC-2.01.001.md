@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -97,7 +97,7 @@ removal_reason: null
 | Capability Anchor Justification | CAP-001 ("Brain Initialization and Scaffold") per brief §Scope §Phase 0/1 primitives skill #1 (`/brain:init`). This BC defines the complete structural postcondition of the init skill, which is exactly what CAP-001: Brain Initialization and Scaffold covers. |
 | L2 Domain Invariants | N/A (L2 domain spec not yet produced — Phase 1a) |
 | Architecture Module | SS-01: Brain Initialization and Scaffold |
-| Stories | [filled by story-writer — Phase 2] |
+| Stories | STORY-002 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (skill #1), §Success Criteria §v0.1 ship gate |
 
 ## Related BCs
@@ -113,8 +113,14 @@ removal_reason: null
 
 ## Story Anchor
 
-[S-TBD] — [filled by story-writer — Phase 2]
+STORY-002
 
 ## VP Anchors
 
 - VP-014 — Brain init scaffold completeness (bats integration.bats)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-002; Story Anchor updated from [S-TBD] to STORY-002. No semantic change to BC contract.

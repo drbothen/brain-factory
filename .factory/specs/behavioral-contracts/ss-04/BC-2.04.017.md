@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -70,7 +70,7 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 |-------|-------|
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief CLAUDE.md §Logging ("Hooks emit structured events via `hook-event:emit`. Format: JSONL on stderr with `ts`, `event_type`, `plugin`, `trace`, plus event-specific fields. All `event_type` values must be registered in the structured event catalog BC before the PR merges.") and brief §Structured event emission. |
 | Architecture Module | SS-04: Hook Enforcement Chain |
-| Stories | [filled by story-writer] |
+| Stories | STORY-014 |
 | Source Brief Section | product-brief.md CLAUDE.md §Logging; §Structured event emission |
 
 ## Related BCs
@@ -82,6 +82,10 @@ Every hook in the 13-hook set emits structured JSONL events to stderr on every i
 - BC-2.17.004 — composes with (no secrets in emission)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-014 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

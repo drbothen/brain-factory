@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -65,7 +65,7 @@ The voice avoid-list is a 30-entry list of words and phrases that degrade the au
 |-------|-------|
 | Capability Anchor Justification | CAP-008 ("Content Brief and Writing") per brief §Scope §Additional v0.x deliverables ("30-entry voice avoid-list in `rules/voice-avoid-list.txt`"). |
 | Architecture Module | SS-08: Content Brief and Writing |
-| Stories | [filled by story-writer] |
+| Stories | STORY-027 |
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables |
 
 ## Related BCs
@@ -73,6 +73,10 @@ The voice avoid-list is a 30-entry list of words and phrases that degrade the au
 - BC-2.04.008 — depends on (hook enforces the avoid-list)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-027 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

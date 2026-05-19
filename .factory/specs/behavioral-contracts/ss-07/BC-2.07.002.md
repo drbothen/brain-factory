@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,9 +66,15 @@ modified: []
 |-------|-------|
 | Capability Anchor Justification | CAP-007 ("Adversarial Review and Writescore") per brief §Scope §Phase 0/1 primitives (#13: `/brain:adversary-review <path> — fresh-context quality gate with multi-pass writescore revision loop via the four absorbed wclaude validation agents`). |
 | Architecture Module | SS-07: Adversarial Review and Writescore |
-| Stories | [filled by story-writer] |
+| Stories | STORY-040 |
 | Source Brief Section | product-brief.md §Scope §Phase 0/1 primitives (#13); §Family Positioning §wclaude absorption |
 
 ## Related BCs
 
 - BC-2.07.001 — depends on (model family constraint)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-040 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.

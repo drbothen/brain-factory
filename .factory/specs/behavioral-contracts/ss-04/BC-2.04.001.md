@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -98,7 +98,7 @@ Test harness convention: bats tests stub `curl` with a fixture file to control p
 | Capability Anchor Justification | CAP-004 ("Hook Enforcement Chain") per brief §Scope §13 bash hooks (#2 `quarantine-fetch.sh`) and §Constraints §Technical ("Prompt-injection quarantine non-optional. Every ingest pipeline MUST run `/brain:quarantine-check` before content reaches a Claude session with tool access. This is the most important rule in the entire system."). |
 | L2 Domain Invariants | N/A |
 | Architecture Module | SS-04: Hook Enforcement Chain |
-| Stories | [filled by story-writer] |
+| Stories | STORY-006 |
 | Source Brief Section | product-brief.md §Scope §13 bash hooks (#2); §Constraints §Technical; §Value Proposition §Core differentiator #1 |
 
 ## Related BCs
@@ -115,13 +115,17 @@ Test harness convention: bats tests stub `curl` with a fixture file to control p
 
 ## Story Anchor
 
-[S-TBD]
+STORY-006
 
 ## VP Anchors
 
 - VP-011 — Quarantine on every WebFetch (bats quarantine.bats)
 
 ## Changelog
+
+### v1.3 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-006; Story Anchor updated from [S-TBD] to STORY-006 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
 
 ### v1.2 (2026-05-18)
 

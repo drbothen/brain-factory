@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.1"
+version: "1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -66,10 +66,16 @@ At 10K sources, a full corpus re-read on each ingest would cost millions of toke
 |-------|-------|
 | Capability Anchor Justification | CAP-002 ("URL Ingest Pipeline") per brief §Scalability Design Principles §1 ("Incremental ingest: `/brain:ingest-url` and `/brain:ingest-source` operate on the manifest delta. They never read the entire `sources/` tree on each invocation."). |
 | Architecture Module | SS-02: URL Ingest Pipeline |
-| Stories | [filled by story-writer] |
+| Stories | STORY-016 |
 | Source Brief Section | product-brief.md §Scalability Design Principles §1 |
 
 ## Related BCs
 
 - BC-2.02.001 — composes with
 - BC-2.06.003 — depends on (manifest records timestamps)
+
+## Changelog
+
+### v1.2 (2026-05-19)
+
+**BACKFILL (F-PHASE2-ADV-PASS1-C04):** Bidirectional traceability backfilled: Stories field now cites STORY-016 per STORY-INDEX v0.3.2 reverse map. No semantic change to BC contract.
