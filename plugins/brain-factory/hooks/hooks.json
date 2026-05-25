@@ -1,1 +1,67 @@
-{}
+{
+  "hooks": [
+    {
+      "type": "PreToolUse",
+      "matcher": "WebFetch",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/quarantine-fetch.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/enforce-kebab-case.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-ai-attribution.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-immutability.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-wikilink-integrity.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-index-log-coherence.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-frontmatter-schema.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-page-type-policy.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-voice-avoid-list.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-id-citation.sh"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-publish-state.sh"
+    },
+    {
+      "type": "PostSession",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/flush-state-and-commit.sh"
+    },
+    {
+      "type": "PostSession",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/brain-health-check.sh"
+    }
+  ]
+}
