@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-19
+last_updated: 2026-05-25
 convergence_trajectory:
   - pass: 1
     findings: 17
@@ -41,15 +41,15 @@ phase_2_status: STEP-G-CONVERGED-PHASE-2-CLOSURE-PENDING-HUMAN-APPROVAL — Pass
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-session_stage: phase-2-step-g-converged-phase-2-closure-pending
-session_continuity: FRESH-CONTEXT-READY — Phase 2 Step G CONVERGED at Pass 6 (PASS 0C+0I+0S — third consecutive PASS — BC-5.39.001 3-CLEAN streak 3/3); Phase 2 closure / human approval gate is next pipeline step
+session_stage: phase-2-closure-pending-human-approval-post-uncertainty-removal
+session_continuity: FRESH-CONTEXT-READY — Phase 2 Step G CONVERGED at Pass 6 + uncertainty removal complete at commit 5a64927 (70 files, 11 implementation-blocking issues fixed); next session presents Phase 2 closure gate to human and awaits Phase 3 authorization
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
-canonical_prd: .factory/specs/prd/index.md (v0.1.13, commit 02c681f)
+canonical_prd: .factory/specs/prd/index.md (v0.1.14, commit 5a64927)
 canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.15, commit 82ec4f5)
-canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.23, commit d7582d4) + 17 ADRs + 18 SS-NN (SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2) + VP-INDEX v0.1.7 + 27 VPs
-canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.1, commit f6725b9)
+canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.24, commit 5a64927) + 17 ADRs + 18 SS-NN (SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2) + VP-INDEX v0.1.8 + 27 VPs
+canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.2, commit 5a64927)
 canonical_error_taxonomy: .factory/specs/prd/error-taxonomy.md (v0.1.2, commit 39d6fba)
 canonical_story_index: .factory/stories/STORY-INDEX.md (v0.3.3, commit f160696)
 canonical_dependency_graph: .factory/stories/dependency-graph.md (v0.1.1, commit f160696)
@@ -71,7 +71,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-2-step-g-pass-4-closed-pass-5-pending
+status: phase-2-closure-pending-human-approval-uncertainty-removal-complete
 ---
 
 # brain-factory Pipeline STATE
@@ -80,21 +80,22 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 2 Step G CONVERGED — Phase 2 CLOSURE HUMAN APPROVAL GATE PENDING
+## TOP OF STACK — Phase 2 CONVERGED + Uncertainty Removal COMPLETE — Phase 2 CLOSURE HUMAN APPROVAL GATE PENDING
 
-**Status:** Phase 2 Step G CONVERGED. Pass 6 PASS (0C+0I+0S). THIRD CONSECUTIVE PASS IN PHASE 2 CASCADE. BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED. Adversarial cascade CLOSED at Pass 6 commit 543c588. **Phase 2 closure / human approval gate is the next pipeline step.**
+**Status:** Phase 2 Step G CONVERGED (Pass 6 PASS, BC-5.39.001 3-CLEAN streak 3/3) + **uncertainty removal COMPLETE at commit 5a64927** (70 files changed, 11 implementation-blocking issues fixed, all 43 stories self-contained). **Phase 2 closure / human approval gate is the next pipeline step.** Fresh-context orchestrator: present closure gate to human and await Phase 3 authorization.
 
 Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+2S) → Pass 4=1(0C+0I+1S) → Pass 5=0(0C+0I+0S) → Pass 6=0(0C+0I+0S) — shorthand: `17→7→4→1→0→0`. CRITICAL: `4→0→0→0→0→0` (eliminated at Pass 2). IMPORTANT: `8→3→2→0→0→0` (eliminated at Pass 4). SUGGESTION: `5→4→2→1→0→0` (eliminated at Pass 5). Floor held at Pass 6.
 
-**Phase 2 deliverables at convergence:**
-- 43 stories across 9 epics (95/95 BC coverage)
+**Phase 2 deliverables at closure (including post-convergence uncertainty removal):**
+- 43 stories across 9 epics (95/95 BC coverage) — all stories updated at commit 5a64927 with correct technology, version pins, self-contained context
 - dependency-graph.md v0.1.1 (68 edges, 13 topo layers, acyclic)
 - wave-schedule.md v0.1.4 (11 waves, 264 points, critical path 13 stories)
 - sprint-state.yaml v0.1.1 (machine-readable wave-tracking)
 - holdout-scenarios.md v0.1.4 (17 scenarios — 10 must-pass + 7 nice-to-pass; access_control: restricted)
 - 26 unique adversary findings VERIFIED-CLOSED across 8 fix-bursts (Pass 1-5)
 - 2 deferred: I07 per UD-008, P3-S02 per Pass 3 state-mgr decision
-- All spec versions at convergence: brief v0.4.20, PRD v0.1.13, BC-INDEX v0.1.15, ARCH-INDEX v0.1.23, VP-INDEX v0.1.7, STORY-INDEX v0.3.3
+- **Uncertainty removal (commit 5a64927):** 5 ADRs updated, 8 VPs cascaded, 3 SS designs cascaded, 2 BCs cascaded, 4 PRD supplements updated, ARCH-INDEX v0.1.24, VP-INDEX v0.1.8 — 11 implementation-blocking issues fixed
+- Post-uncertainty-removal spec versions: brief v0.4.20, PRD v0.1.14, BC-INDEX v0.1.15, ARCH-INDEX v0.1.24, VP-INDEX v0.1.8, STORY-INDEX v0.3.3, nfr-catalog v0.1.2, interface-defs v0.2.0, test-vectors v0.2.0
 
 **Surface to human:** Phase 2 closure requires human approval per CLAUDE.md Pipeline Authority before Phase 3 (TDD Implementation) dispatch.
 
@@ -111,9 +112,9 @@ Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+
 **Next action for fresh-context orchestrator:**
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md`.
-2. Verify HEAD via `git log --oneline -1` shows Phase 2 Step G FINAL CONVERGED state-mgr subject. Verify clean tree via `git status --short`.
+2. Verify HEAD via `git log --oneline -1` shows uncertainty removal commit 5a64927 as the most recent (or the state-manager closure commit on top of it). Verify clean tree via `git status --short`.
 3. **Surface Phase 2 closure to human for the human approval gate.** Phase 3 (TDD Implementation) dispatch awaits human authorization per CLAUDE.md Pipeline Authority.
-4. Present Phase 3 pre-dispatch checklist (see Phase 2 CLOSURE section below) to human for review.
+4. Present Phase 3 pre-dispatch checklist (see SESSION-HANDOFF.md §Phase 3 Readiness Checklist) to human for review.
 5. Phase 3 first wave: Wave 1 (STORY-001 + STORY-014 + STORY-027 + STORY-038) ready for per-story TDD dispatch once human authorizes Phase 3.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
