@@ -27,7 +27,7 @@ setup() {
 
 # AC-001 / BC-2.14.004 postcondition 1-2 — RED GATE (empty {} fails these field checks)
 @test "BC_2_14_004: plugin.json has required top-level fields" {
-  run jq -e '.name and .version and .description and .author and .license and .keywords and .skills and .agents and .hooks' "$PLUGIN_JSON"
+  run jq -e '.name and .displayName and .version and .description and .author and .license and .keywords and .skills and .agents and .hooks' "$PLUGIN_JSON"
   [ "$status" -eq 0 ]
 }
 
