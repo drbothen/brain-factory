@@ -295,7 +295,7 @@ Dispatch STORY-001 + STORY-014 + STORY-027 + STORY-038 via `vsdd-factory:deliver
 | 17 | 9843c70 | state-manager | Pass 5 closure — streak 2/3 — decay floor 17→7→4→1→0 |
 | 18 | 543c588 | state-manager | Pass 6 report persisted — PASS (0C+0I+0S) — streak 2/3 → 3/3 CONVERGED |
 | 19 | 9698390 | state-manager | Phase 2 Step G FINAL — CONVERGED — Phase 2 closure HUMAN APPROVAL GATE |
-| 20 | (this commit) | state-manager | Phase 2 CLOSED — prerequisites complete — DTU + CI/CD + toolchain verified — Phase 3 ready |
+| 20 | fd6fa6c | state-manager | Phase 2 CLOSED — prerequisites complete — DTU + CI/CD + toolchain verified — Phase 3 ready |
 
 ---
 
