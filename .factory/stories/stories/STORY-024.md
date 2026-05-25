@@ -175,8 +175,8 @@ From `architecture/subsystems/SS-11-knowledge-synthesis.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yq` | 4.x+ | Frontmatter parsing in SKILL.md compliance check |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Frontmatter parsing in SKILL.md compliance check; note: on Ubuntu, apt install yq installs the WRONG tool. Use snap install yq. |
 | `date` | GNU/BSD | `YYYY-MM-DD` timestamp in output filename |
 | `grep` | POSIX | Log window filtering by date prefix |
 
@@ -187,7 +187,7 @@ From `architecture/subsystems/SS-11-knowledge-synthesis.md`:
 | `plugins/brain-factory/skills/connect/SKILL.md` | Create | Connection discovery skill with meta-lint-compliant structure |
 | `plugins/brain-factory/tests/skills.bats` | Modify | Add 4 failing then passing connect test blocks |
 
-Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json.template`,
+Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json`,
 any prior STORY-NNN.md, any other existing bats files or skill files.
 
 ## Previous Story Intelligence

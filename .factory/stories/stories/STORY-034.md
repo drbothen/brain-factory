@@ -86,9 +86,9 @@ path (`/Users/` or `/home/`), or a hardcoded vault path. Tokens use
 `${{ secrets.LINKEDIN_ACCESS_TOKEN }}` or equivalent secret references.
 (traces to BC-2.13.001 postcondition 1; VP-023 property 5)
 
-**AC-006** — Each template invokes skills using `scripts/run-skill.mjs` (Node 20+
+**AC-006** — Each template invokes skills using `scripts/run-skill.mjs` (Node 22+
 required). The template's job step checks `node --version` and fails clearly if Node
-< 20. This is expressed as a `- name: Check Node version` step in each template before
+< 22. This is expressed as a `- name: Check Node version` step in each template before
 any skill invocation step.
 (traces to BC-2.13.001 postcondition 2; edge case EC-001)
 
@@ -232,11 +232,27 @@ From `architecture/subsystems/SS-13-github-action-templates.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yamllint` | 1.x+ | VP-023 YAML validity assertion |
-| `yq` | 4.x+ | Template YAML structural assertions |
-| `node` | 20+ | Template `run-skill.mjs` invocation (CLAUDE.md §Toolchain) |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yamllint` | 1.x+ (latest: 1.38.0; Python 3.10+ required) | VP-023 YAML validity assertion |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Template YAML structural assertions |
+| `node` | 22+ (Node 20 EOL April 2026) | Template `run-skill.mjs` invocation (CLAUDE.md §Toolchain) |
 | `cp` | POSIX | Template copy in install-actions |
+
+### CI Runner Tool Availability (ubuntu-latest = Ubuntu 24.04)
+
+Pre-installed: bash 5.2, jq 1.7, Node 22, yq 4.53 (mikefarah)
+NOT pre-installed (must install in workflow): shellcheck, shfmt, yamllint
+
+Add this setup step to each GH Action template:
+```yaml
+- name: Install tools
+  run: |
+    sudo apt-get update && sudo apt-get install -y shellcheck
+    sudo snap install shfmt
+    pip install yamllint
+```
+
+Note: STORY-033 delivers `scripts/run-skill.mjs` (the headless skill runner). The GH Action templates invoke it as `node scripts/run-skill.mjs <skill-name> [args]`. It requires Node 22+ and exits with the skill's exit code.
 
 ## File Structure Requirements
 

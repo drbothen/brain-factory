@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -19,11 +19,11 @@ modified: []
 
 ## Description
 
-The quarantine hook registration in `hooks.json.template` uses `matcher: WebFetch` without conditions. This ensures the hook fires on EVERY WebFetch call — not only calls initiated by ingest skills. A skill body that calls WebFetch directly, a manual operator action, or any future skill cannot bypass the quarantine check. The hook contract (exit 2 = block) is absolute.
+The quarantine hook registration in `hooks.json` uses `matcher: WebFetch` without conditions. This ensures the hook fires on EVERY WebFetch call — not only calls initiated by ingest skills. A skill body that calls WebFetch directly, a manual operator action, or any future skill cannot bypass the quarantine check. The hook contract (exit 2 = block) is absolute.
 
 ## Preconditions
 
-1. `hooks.json.template` registers `quarantine-fetch.sh` with `matcher: WebFetch` and `event: PreToolUse`.
+1. `hooks.json` registers `quarantine-fetch.sh` with `matcher: WebFetch` and `event: PreToolUse`.
 2. Claude Code harness is operating normally.
 
 ## Postconditions
@@ -52,7 +52,7 @@ The quarantine hook registration in `hooks.json.template` uses `matcher: WebFetc
 
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
-| VP-011 | hooks.json.template registers quarantine on WebFetch | bats integration.bats (hook registration check) |
+| VP-011 | hooks.json registers quarantine on WebFetch | bats integration.bats (hook registration check) |
 
 ## Traceability
 
@@ -66,9 +66,13 @@ The quarantine hook registration in `hooks.json.template` uses `matcher: WebFetc
 ## Related BCs
 
 - BC-2.04.001 — composes with (quarantine-fetch.sh is defined there)
-- BC-2.14.005 — depends on (hooks.json.template registers this)
+- BC-2.14.005 — depends on (hooks.json registers this)
 
 ## Changelog
+
+### v1.3 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** Both occurrences of `hooks.json.template` updated to `hooks.json` (filename rename per ADR-003 v2.0): §Description and §Preconditions. [audit-trail]
 
 ### v1.2 (2026-05-19)
 

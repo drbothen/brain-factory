@@ -1,14 +1,14 @@
 ---
 document_type: prd-supplement
 supplement_type: interface-definitions
-version: "0.1.0"
+version: "0.2.0"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-25T00:00:00
 phase: phase-1b
 traces_to: prd/index.md
 created: 2026-05-15
-last_updated: 2026-05-16
+last_updated: 2026-05-25
 ---
 
 # brain-factory Interface Definitions
@@ -62,40 +62,106 @@ Canonical signatures from `SKILL.md` `argument-hint` frontmatter. These are disp
 
 ## 2. Hook stdin/stdout JSON Schemas
 
-### Universal Hook Input Schema (PreToolUse and PostToolUse)
+### PreToolUse Input Schema
 
 ```json
 {
-  "tool": "<tool-name>",
-  "input": { "<tool-input-fields>" },
-  "output": { "<tool-output-fields>" }
+  "session_id": "abc123",
+  "transcript_path": "/path/to/transcript.jsonl",
+  "cwd": "/current/working/directory",
+  "permission_mode": "default|plan|acceptEdits|auto|dontAsk|bypassPermissions",
+  "effort": {"level": "low|medium|high|xhigh|max"},
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash|Edit|Write|Read|Glob|Grep|Agent|WebFetch|WebSearch|mcp__*",
+  "tool_input": {
+    // Tool-specific fields — see per-tool table below
+  },
+  "tool_use_id": "unique-id-123"
 }
 ```
 
-For PreToolUse hooks, `output` is absent. For PostToolUse hooks, `output` contains the tool's result.
+### PostToolUse Input Schema
 
-### Universal Hook Output Schema (Verdict)
+PostToolUse payloads extend the PreToolUse shape with `tool_result`:
 
 ```json
 {
-  "verdict": "allow|advise|block",
-  "code": "E-SCOPE-NNN",
-  "message": "<human-readable message>",
-  "trace": "<uuid-v4>"
+  "session_id": "...",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "...",
+  "tool_input": { ... },
+  "tool_use_id": "...",
+  "tool_result": {
+    "type": "text|image|error",
+    "text": "command output or file content",
+    "exit_code": 0
+  }
 }
 ```
 
-- `verdict` is required.
-- `code` and `message` are required when `verdict` is `advise` or `block`.
-- `trace` is always required.
+All fields from PreToolUse (`session_id`, `transcript_path`, `cwd`, `permission_mode`, `effort`) are also present. `tool_result` is absent in PreToolUse.
+
+### Per-Tool `tool_input` Fields
+
+| Tool | `tool_input` fields |
+|------|---------------------|
+| `Write` | `file_path`, `content` |
+| `Edit` | `file_path`, `old_string`, `new_string`, `replace_all` |
+| `Read` | `file_path` |
+| `Bash` | `command`, `description`, `timeout`, `run_in_background` |
+| `WebFetch` | `url` |
+| `WebSearch` | `query` |
+| `Glob` | `pattern` |
+| `Grep` | `pattern`, `path` |
+
+### Universal Hook Output Schema
+
+```json
+{
+  "continue": true,
+  "suppressOutput": false,
+  "systemMessage": "Warning or advisory message shown to user",
+  "decision": "block",
+  "reason": "Why the hook blocked the operation",
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "additionalContext": "Context for Claude model",
+    "permissionDecision": "deny|allow|ask|defer",
+    "permissionDecisionReason": "Explanation"
+  }
+}
+```
+
+All fields are optional. brain-factory hooks embed their error codes and trace inside `hookSpecificOutput`:
+
+```json
+{
+  "hookSpecificOutput": {
+    "code": "E-WIKI-005",
+    "trace": "<uuid-v4>",
+    "details": { ... }
+  }
+}
+```
+
+### brain-factory Tri-State Verdict Mapping
+
+| brain-factory verdict | Exit code | stdout shape |
+|-----------------------|-----------|-------------|
+| **allow** | `0` | `{}` or `{"continue": true}` (no `decision` field) |
+| **advise** | `0` | `{"systemMessage": "Advisory: ...", "continue": true}` |
+| **block** (preferred) | `0` | `{"decision": "block", "reason": "..."}` |
+| **block** (error path) | `2` | stderr message (no JSON required) |
 
 ### Exit Code Semantics Table
 
-| Exit Code | Verdict | Meaning | Claude Code Action |
-|-----------|---------|---------|-------------------|
-| 0 | `allow` | Operation is clean; proceed | Allow the tool call to complete |
-| 1 | `advise` | Advisory issue detected; log and continue | Allow the tool call; surface advisory to operator |
-| 2 | `block` | Operation blocked; abort | Abort the tool call; surface block reason to operator |
+| Exit Code | Meaning | Claude Code Action |
+|-----------|---------|-------------------|
+| `0` | Success | stdout parsed as JSON; if `"decision": "block"` present, operation is blocked; otherwise allowed |
+| `2` | Blocking error | stderr shown to user; operation aborted |
+| Other non-zero (including `1`) | Non-blocking error | stderr written to debug log only — NOT shown to user; operation proceeds |
+
+CRITICAL: Exit code `1` is NOT an advisory channel. Advisory messages must use exit `0` with `"systemMessage"` in the stdout JSON. A hook exiting `1` to send a warning will silently drop the message.
 
 ---
 
@@ -104,25 +170,40 @@ For PreToolUse hooks, `output` is absent. For PostToolUse hooks, `output` contai
 ```json
 {
   "name": "brain-factory",
+  "displayName": "Brain Factory",
   "version": "<semver>",
-  "description": "<plugin description>",
-  "author": "Josh Magady",
+  "description": "LLM-maintained second brain plugin",
+  "author": {"name": "Josh Magady"},
   "license": "MIT",
-  "skills": [
-    { "name": "brain:<skill-name>", "path": "${CLAUDE_PLUGIN_ROOT}/skills/<dir>/SKILL.md" }
-  ],
-  "agents": [
-    { "name": "brain:<agent-name>", "path": "${CLAUDE_PLUGIN_ROOT}/agents/<dir>/AGENT.md" }
-  ]
+  "keywords": ["second-brain", "obsidian", "knowledge-management"],
+  "skills": "./skills/",
+  "agents": ["./agents/"],
+  "hooks": "hooks/hooks.json"
 }
 ```
 
-- `skills` array: exactly 26 entries at v0.9.
-- `agents` array: exactly 14 entries at v0.9.
+Discovery rules:
+- **Skills** are auto-discovered from the plugin root `skills/` directory (always scanned). The `"skills"` field adds one or more additional directories to scan. Skills do NOT require explicit enumeration.
+- **Agents** field is a list of directories. It REPLACES the default agent discovery path — Claude Code scans only those directories. Use `["./agents/"]` to restore default-style discovery from a plugin-relative path.
+- **Hooks** field points to the hooks manifest file. The value is a path relative to `${CLAUDE_PLUGIN_ROOT}`.
+- No glob patterns are supported in any field value.
+- `author` must be an object with a `name` field, not a bare string.
 
 ---
 
-## 4. `hooks.json.template` Schema
+## 4. `hooks.json` Schema
+
+The file is `hooks/hooks.json` (referenced from `plugin.json` as `"hooks": "hooks/hooks.json"`). Claude Code substitutes path variables at runtime — no template preprocessing step is needed.
+
+### Available Path Variables
+
+| Variable | Resolves to |
+|----------|-------------|
+| `${CLAUDE_PLUGIN_ROOT}` | Plugin installation directory (where `plugin.json` lives) |
+| `${CLAUDE_PLUGIN_DATA}` | Persistent data directory — survives plugin updates |
+| `${CLAUDE_PROJECT_DIR}` | Project root directory for the active project |
+
+### Schema
 
 ```json
 {
@@ -224,13 +305,48 @@ policies:
 
 ---
 
+## Changelog
+
+### 0.2.0 — 2026-05-25
+
+API corrections verified against Claude Code runtime in May 2026. All changes in this version are corrections of wrong assumptions in 0.1.0, not design decisions.
+
+**§2 Hook stdin/stdout JSON Schemas — breaking corrections:**
+
+- Replaced the wrong universal input schema `{"tool": ..., "input": ..., "output": ...}` with the correct Claude Code hook payload shapes for PreToolUse and PostToolUse. The correct top-level fields are `session_id`, `transcript_path`, `cwd`, `permission_mode`, `effort`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_use_id`.
+- Added per-tool `tool_input` fields table documenting the shape Claude Code sends for Write, Edit, Read, Bash, WebFetch, WebSearch, Glob, and Grep.
+- Replaced the wrong output schema `{"verdict": "allow|advise|block", "code": ..., "message": ..., "trace": ...}` with the correct Claude Code hook output shape (`continue`, `suppressOutput`, `systemMessage`, `decision`, `reason`, `hookSpecificOutput`). brain-factory error codes and traces are now correctly placed inside `hookSpecificOutput`.
+- Added explicit tri-state verdict mapping table showing the exit-code and stdout combination for each of brain-factory's three verdict states.
+- Corrected exit code semantics: exit `1` is NOT an advisory channel. Exit `1` (and all non-zero except `2`) causes stderr to be written to the debug log only — not shown to the user, and the operation proceeds. Advisory messages must use exit `0` + `"systemMessage"` in stdout JSON. Exit `2` is the blocking error path (stderr shown to user, operation aborted). Exit `0` with `"decision": "block"` is the preferred block path.
+
+**§3 plugin.json Schema — breaking corrections:**
+
+- `author` must be an object `{"name": "..."}`, not a bare string.
+- Added `displayName`, `keywords`, and `hooks` fields.
+- `skills` field is a directory path string (not an array of explicit skill objects). Skills are auto-discovered from the plugin root `skills/` directory automatically; this field adds additional directories.
+- `agents` field is an array of directory paths (not an array of explicit agent objects). It replaces default discovery when present.
+- Removed explicit enumeration constraint (was "exactly 26 entries"). Discovery is automatic.
+
+**§4 hooks.json — naming and schema corrections:**
+
+- Renamed from `hooks.json.template` to `hooks.json`. Claude Code substitutes `${CLAUDE_PLUGIN_ROOT}` and other path variables at runtime — there is no template file.
+- Added Available Path Variables table documenting `${CLAUDE_PLUGIN_ROOT}`, `${CLAUDE_PLUGIN_DATA}`, and `${CLAUDE_PROJECT_DIR}`.
+
+**§5 manifest.json — no changes.**
+
+---
+
 ## Self-Audit Checklist
 
 - [x] All 26 skills have argument-hint signatures — verified.
 - [x] All 13 hooks have event/matcher definitions — verified.
-- [x] Exit code semantics table complete — verified.
-- [x] JSON schemas are complete (plugin.json, hooks.json.template, manifest.json, policies.yaml) — verified.
+- [x] Exit code semantics table complete and corrected (exit 1 is NOT advisory) — verified.
+- [x] JSON schemas are complete and corrected (plugin.json, hooks.json, manifest.json, policies.yaml) — verified.
 - [x] Flag interaction rules defined for all skills with flags — verified.
+- [x] Hook input/output schemas match verified May 2026 Claude Code API — verified.
+- [x] Per-tool `tool_input` fields table present — verified.
+- [x] Path variable table for hooks.json present — verified.
+- [x] Changelog entry written for 0.2.0 with breaking-change rationale — verified.
 - [x] Three-file gate run before commit:
   ```bash
   for f in .factory/specs/product-brief.md .factory/SESSION-HANDOFF.md .factory/specs/prd/prd-supplements/interface-definitions.md; do

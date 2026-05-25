@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-14
 title: "Plugin Lifecycle and Upgrade"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -16,7 +16,7 @@ created: 2026-05-15
 
 ## Responsibility
 
-Manages plugin install, upgrade, and migration. Validates the plugin manifest (plugin.json, hooks.json.template). Keeps engine files read-only at runtime, with all mutable state in the brain vault's `.brain/`.
+Manages plugin install, upgrade, and migration. Validates the plugin manifest (plugin.json, hooks.json). Keeps engine files read-only at runtime, with all mutable state in the brain vault's `.brain/`.
 
 ## BC Inventory
 
@@ -26,7 +26,7 @@ Manages plugin install, upgrade, and migration. Validates the plugin manifest (p
 | BC-2.14.002 | `/brain:upgrade-brain` upgrades plugin and migrates `.brain/` state | P1 |
 | BC-2.14.003 | Engine files are read-only at runtime; state lives in `.brain/` | P0 |
 | BC-2.14.004 | `plugin.json` valid JSON with semver version and all agents/skills registered | P0 |
-| BC-2.14.005 | `hooks.json.template` references all 13 hooks via `${CLAUDE_PLUGIN_ROOT}` | P0 |
+| BC-2.14.005 | `hooks.json` references all 13 hooks via `${CLAUDE_PLUGIN_ROOT}` | P0 |
 
 ## Interfaces
 
@@ -40,7 +40,7 @@ Manages plugin install, upgrade, and migration. Validates the plugin manifest (p
 
 `plugins/brain-factory/.claude-plugin/plugin.json` declares skills, agents, and the hook template reference. Validated in `tests/upgrade.bats` via `jq` schema check (required fields present, `version` matches semver regex, `hooks` field points to the template).
 
-`hooks.json.template` lists all 13 hooks across 4 tool-event types. Validated by counting hook entries and asserting the count equals 13 (or the expected count for the installed version).
+`hooks.json` lists all 13 hooks across 4 tool-event types. Validated by counting hook entries and asserting the count equals 13 (or the expected count for the installed version).
 
 ### Upgrade migration
 
@@ -60,14 +60,18 @@ The hook chain does not write to `${CLAUDE_PLUGIN_ROOT}`. Skills read templates 
 ## Dependencies
 
 - SS-01 (Brain Init): first use after install is `/brain:init`
-- SS-04 (Hook Chain): hooks.json.template registration
+- SS-04 (Hook Chain): hooks.json registration
 - All subsystems: plugin manifest registers their skills and agents
 
 ## Test Surface
 
-- `tests/upgrade.bats` — plugin.json JSON schema valid; hooks.json.template contains all 13 hooks; upgrade-brain runs migration idempotently
+- `tests/upgrade.bats` — plugin.json JSON schema valid; hooks.json contains all 13 hooks; upgrade-brain runs migration idempotently
 
 ## Changelog
+
+### v1.2 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** All 5 occurrences of `hooks.json.template` updated to `hooks.json` (filename rename per ADR-003 v2.0): §Responsibility, BC-2.14.005 inventory title, §Key Design plugin manifest structure (2 occurrences), §Dependencies SS-04 description, §Test Surface. [audit-trail]
 
 ### v1.1 (2026-05-16)
 
@@ -78,5 +82,5 @@ The hook chain does not write to `${CLAUDE_PLUGIN_ROOT}`. Skills read templates 
 ### v1.0 (2026-05-15)
 
 Original Phase 1c subsystem design — plugin lifecycle phases (install, upgrade, downgrade,
-uninstall), `plugin.json` and `hooks.json.template` manifest schema, `/brain:upgrade-brain`
+uninstall), `plugin.json` and `hooks.json` manifest schema, `/brain:upgrade-brain`
 migration skill.

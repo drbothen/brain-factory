@@ -284,12 +284,12 @@ From `architecture/subsystems/SS-07-adversarial-review.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 3.2+ | macOS compat |
-| `jq` | 1.6+ | Verdict JSON schema validation |
-| `yq` | 4.x+ | `.brain/STATE.md` streak reads/writes; policies.yaml max_iterations |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.8+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.x+ | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions |
+| `jq` | 1.7+ (latest: 1.8.1) | Verdict JSON schema validation |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | `.brain/STATE.md` streak reads/writes; policies.yaml max_iterations. **Ubuntu note:** `apt install yq` installs the WRONG tool (kislyuk/yq, Python-based). Use `snap install yq`. |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 

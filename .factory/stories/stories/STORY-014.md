@@ -197,8 +197,7 @@ produces no diff.
    emit_verdict() { ... } # writes "$1" → stdout
    ```
    - `ts` via `date -u +"%Y-%m-%dT%H:%M:%SZ"` (ISO 8601)
-   - `trace` shared per invocation via `${HOOK_TRACE_ID:-$(uuidgen)}` (set once by the
-     sourcing hook before calling emit_event for the first time)
+   - `trace` shared per invocation via `${HOOK_TRACE_ID:-$(uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid 2>/dev/null || od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')}` (set once by the sourcing hook before calling emit_event for the first time; the fallback chain handles Linux CI environments where uuidgen is absent)
    - `hook_name` derived from `${BASH_SOURCE[1]##*/}` (basename of the calling script)
    - Credential masking: if any key matches `*_token|*_key|*_secret|*_password` (case
      insensitive), value is replaced with `[REDACTED]`
@@ -256,17 +255,93 @@ From `architecture/subsystems/SS-17-structured-event-catalog.md` and ADR-016:
 - No Node.js, no Python, no jq dependency inside the emit helper itself (it must be
   bootstrappable without jq for edge-case fallback).
 
+**uuidgen portability:** Available on macOS by default but NOT pre-installed on GitHub
+Actions ubuntu-latest. Portable fallback chain (implement in hook-event-emit.sh):
+```bash
+uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid 2>/dev/null || od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}'
+```
+
+## Hook I/O Protocol Reference (from ADR-002 v2.0)
+
+This section is inlined for self-containedness — the implementing agent does not need to
+read ADR-002 to understand the hook I/O contract. This is the authoritative reference for
+the `emit_verdict` output schema that `hook-event-emit.sh` must produce.
+
+### stdin (PreToolUse)
+
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<string>",
+  "cwd": "<string>",
+  "permission_mode": "default|plan|acceptEdits|auto|dontAsk|bypassPermissions",
+  "effort": {"level": "low|medium|high|xhigh|max"},
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Write|Edit|Read|Bash|WebFetch|...",
+  "tool_input": { },
+  "tool_use_id": "<string>"
+}
+```
+
+### PostToolUse adds `tool_result`
+
+```json
+"tool_result": {"type": "text|image|error", "text": "...", "exit_code": 0}
+```
+
+### Per-tool `tool_input` fields
+
+| Tool | Fields |
+|------|--------|
+| Write | `file_path`, `content` |
+| Edit | `file_path`, `old_string`, `new_string`, `replace_all` |
+| Read | `file_path` |
+| Bash | `command`, `description`, `timeout` |
+| WebFetch | `url` |
+
+### stdout (hook verdict) — native Claude Code schema
+
+```json
+{
+  "continue": true,
+  "systemMessage": "Advisory shown to user (exit 0 only)",
+  "decision": "block",
+  "reason": "Why blocked",
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse|PostToolUse",
+    "code": "E-SCOPE-NNN",
+    "trace": "<uuid>",
+    "details": {}
+  }
+}
+```
+
+`emit_verdict` in `hook-event-emit.sh` must produce this native schema. The old
+`{"verdict":"allow|advise|block",...}` format is deprecated — do NOT use it.
+
+### Exit codes
+
+| Exit | Meaning | Claude Code action |
+|------|---------|-------------------|
+| 0 | Success | stdout parsed as JSON; if `decision:"block"`, operation blocked |
+| 2 | Blocking error | stderr shown to user; operation aborted |
+| Other (incl. 1) | Non-blocking error | stderr to debug log only; operation proceeds |
+
+**CRITICAL:** Exit 1 is NOT an advisory channel. Advisory output → exit 0 + `systemMessage`.
+Block output → exit 0 + `decision:"block"` (preferred) OR exit 2 + stderr message.
+Hooks that exit 1 to signal advisories are WRONG and will be silently ignored by Claude Code.
+
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `jq` | 1.6+ | Catalog validation in tests |
-| `date` | GNU coreutils | ISO 8601 timestamp generation |
-| `uuidgen` | system utility | trace field UUID generation |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system /bin/bash is 3.2 due to GPLv3 licensing. Operators must install via `brew install bash` and ensure PATH resolves `/usr/bin/env bash` to the Homebrew version) | CLAUDE.md §Conventions; ADR-001 |
+| `jq` | 1.7+ (latest: 1.8.1; jq 1.6 `leaf_paths` and `recurse_down` removed in 1.7) | Catalog validation in tests |
+| `date` | GNU coreutils (macOS: `date -u` works on both BSD and GNU date for UTC output) | ISO 8601 timestamp generation |
+| `uuidgen` | system utility (macOS: available by default; Linux/CI: may not be pre-installed — see portability note in Architecture Compliance Rules) | trace field UUID generation |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1; `-i 2 -d` flags stable across 3.x) | CLAUDE.md §Conventions |
 
 No Node.js required for the shim itself.
 
@@ -280,7 +355,7 @@ No Node.js required for the shim itself.
 | `plugins/brain-factory/tests/meta-lint.bats` | Extend | VP-008 catalog completeness assertions |
 
 Files NOT to modify: individual hook scripts (they call the shim; STORY-006..STORY-013
-implement them), `hooks.json.template`, `plugin.json`, any file under `.factory/`.
+implement them), `hooks/hooks.json`, `plugin.json`, any file under `.factory/`.
 
 ## Previous Story Intelligence
 
@@ -326,3 +401,9 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - SS-17: `architecture/subsystems/SS-17-structured-event-catalog.md`
 - SS-04: `architecture/subsystems/SS-04-hook-enforcement-chain.md`
 - ADR-016: `architecture/adr/ADR-016-hook-helper-architecture.md`
+
+## Changelog
+
+| Date | Change | Reason |
+|------|--------|--------|
+| 2026-05-25 | Added Hook I/O Protocol Reference section (inlined from ADR-002 v2.0): stdin schema, PostToolUse `tool_result`, per-tool `tool_input` fields, stdout native verdict schema, exit code semantics; clarified that exit 1 is NOT an advisory channel; updated `emit_verdict` to produce native Claude Code schema not deprecated `verdict:allow/advise/block` format; updated Library table: bash 5.0+ with macOS note, shellcheck 0.10+, shfmt 3.7+, jq 1.7+, added uuidgen portability note; added uuidgen portable fallback chain to Forbidden dependencies section and Task 3 implementation notes | Uncertainty removal: hook I/O schema inlined so implementer has no ambiguity about verdict format; version pins corrected; uuidgen portability gap closed |

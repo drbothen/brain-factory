@@ -241,12 +241,14 @@ From `architecture/subsystems/SS-02-url-ingest-pipeline.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions |
-| `jq` | 1.6+ | JSONL validation; token record write |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions |
+| `jq` | 1.7+ (latest: 1.8.1) | JSONL validation; token record write |
 | `wc` | POSIX | 50K-token word-count heuristic |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
+
+> **`date +%s%N` portability:** macOS `date` does NOT support `%N` (nanoseconds). For the JSONL `duration_seconds` field, use second-resolution `date +%s` (POSIX, always safe). If sub-second precision is needed, use `$EPOCHREALTIME` (bash 5.0+ builtin, microsecond precision) or `perl -MTime::HiRes -e 'printf("%.9f\n", Time::HiRes::time())'`. Never use `date +%s%N` in portable scripts — it silently produces wrong output on macOS (the `%N` is treated as a literal `N`).
 
 No Node.js for the token logging or 50K-check logic (only `wc -w`).
 

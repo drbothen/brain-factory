@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-004
 title: "Wikilink resolution correctness"
 level: L3
-version: "1.2"
+version: "1.3"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -45,7 +45,7 @@ bats (skills.bats and `tests/validate-wikilink-integrity.bats`) — two layers:
 **Layer 2 — hook integration test:**
 ```bash
 @test "validate-wikilink-integrity.sh: broken wikilink → E-WIKI-001" {
-  local payload='{"tool":"Write","input":{"path":"wiki/concepts/test.md","content":"...[[broken-link]]..."},"output":{}}'
+  local payload='{"tool_name":"Write","tool_input":{"path":"wiki/concepts/test.md","content":"...[[broken-link]]..."}}'
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-wikilink-integrity.sh"
   assert_failure 2
   assert_output --partial '"code":"E-WIKI-001"'
@@ -79,6 +79,10 @@ bats (skills.bats and `tests/validate-wikilink-integrity.bats`) — two layers:
 proposed — pending Phase 3 implementation
 
 ## Changelog
+
+### v1.3 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** §Verification Mechanism Layer 2 fixture payload updated: `"tool":"Write"` → `"tool_name":"Write"`, `"input":{...}` → `"tool_input":{...}`, `"output":{}` removed (PostToolUse `tool_result` field absent in hook integration test pattern). [audit-trail]
 
 ### v1.2 (2026-05-18)
 

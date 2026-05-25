@@ -105,12 +105,12 @@ unrecoverable (per E-HEALTH-001). It does NOT crash with an unhandled bash error
 (no `set -e` unexpected exit on missing file reads). Structured JSON is always emitted.
 (traces to BC-2.01.006 edge case EC-002; VP-024 health-callable test)
 
-**AC-010** — `brain-health-check.sh` hook (registered in `hooks.json.template` under
+**AC-010** — `brain-health-check.sh` hook (registered in `hooks.json` under
 `SessionStart`) invokes the health skill and displays a human-readable summary on
 session start. The hook is a wrapper over `skills/health/run.sh` — it does NOT
 re-implement the six-dimensional logic.
 (traces to BC-2.01.006 postcondition 2 and the hook's SessionStart registration in
-BC-2.14.005 / hooks.json.template)
+BC-2.14.005 / hooks.json)
 
 ## Tasks
 
@@ -217,12 +217,12 @@ From `architecture/subsystems/SS-01-brain-init-scaffold.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | phased-build-plan.md §1 |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `jq` | 1.6+ | JSON output validation in bats |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | phased-build-plan.md §1 |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `jq` | 1.7+ (latest: 1.8.1) | JSON output validation in bats |
 | `awk` | POSIX | Token budget computation in run.sh |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ | CLAUDE.md §Conventions |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 

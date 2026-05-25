@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-026
 title: "Event catalog: JSON schema validity and emit-site completeness"
 level: L3
-version: "1.3"
+version: "1.4"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -80,9 +80,9 @@ bats (meta-lint.bats + per-hook .bats files) — catalog cross-reference and sep
 
 @test "all hooks: stdout is valid single JSON on allow code path" {
   local representative_payloads=(
-    '{"tool":"Write","input":{"path":"wiki/concepts/ok.md"},"output":{}}'
-    '{"tool":"Bash","input":{"command":"git status"}}'
-    '{"tool":"WebFetch","input":{"url":"https://example.com"}}'
+    '{"tool_name":"Write","tool_input":{"path":"wiki/concepts/ok.md"}}'
+    '{"tool_name":"Bash","tool_input":{"command":"git status"}}'
+    '{"tool_name":"WebFetch","tool_input":{"url":"https://example.com"}}'
   )
   while IFS= read -r hook_script; do
     local hook_name; hook_name="$(basename "$hook_script" .sh)"
@@ -96,7 +96,7 @@ bats (meta-lint.bats + per-hook .bats files) — catalog cross-reference and sep
 @test "all hooks: stderr contains at least 1 JSONL line per invocation (BC-2.17.003 EC-003 / NFR-011)" {
   while IFS= read -r hook_script; do
     local hook_name; hook_name="$(basename "$hook_script" .sh)"
-    local payload='{"tool":"Write","input":{"path":"wiki/concepts/test.md"},"output":{}}'
+    local payload='{"tool_name":"Write","tool_input":{"path":"wiki/concepts/test.md"}}'
     local stderr_output; stderr_output="$(echo "$payload" | "$hook_script" 2>&1 >/dev/null || true)"
     local line_count; line_count="$(echo "$stderr_output" | grep -c '{' || echo 0)"
     assert [ "$line_count" -ge 1 ] \
@@ -107,11 +107,11 @@ bats (meta-lint.bats + per-hook .bats files) — catalog cross-reference and sep
 @test "all hooks: no verdict content appears on stderr (separation enforced)" {
   while IFS= read -r hook_script; do
     local hook_name; hook_name="$(basename "$hook_script" .sh)"
-    local payload='{"tool":"Write","input":{"path":"wiki/concepts/test.md"},"output":{}}'
+    local payload='{"tool_name":"Write","tool_input":{"path":"wiki/concepts/test.md"}}'
     local stderr_output; stderr_output="$(echo "$payload" | "$hook_script" 2>&1 >/dev/null || true)"
-    # Verdict fields must not appear in stderr
-    if echo "$stderr_output" | grep -q '"verdict"'; then
-      fail "hook $hook_name: verdict JSON found on stderr (should be on stdout only)"
+    # Verdict envelope fields must not appear in stderr
+    if echo "$stderr_output" | grep -qE '"continue"|"decision"|"hookSpecificOutput"'; then
+      fail "hook $hook_name: verdict envelope JSON found on stderr (should be on stdout only)"
     fi
   done < <(find "${PLUGIN_ROOT}/hooks" -name "*.sh" ! -path "*/lib/*")
 }
@@ -131,9 +131,7 @@ bats (meta-lint.bats + per-hook .bats files) — catalog cross-reference and sep
   `event-catalog.json` — the emit-site cross-reference loop catches this (SS-17 requires
   past-tense event_type values; `hook.started` is past-tense but must still appear in the
   catalog — an unregistered past-tense value is equally a violation)
-- A hook emits a debug JSONL line on stderr that also writes the `"verdict"` key (e.g., a
-  developer logs the verdict for debugging) — the verdict-in-stderr test catches this separation
-  violation
+- A hook emits a debug JSONL line on stderr that also writes verdict envelope keys (`"continue"`, `"decision"`, `"hookSpecificOutput"`) — the verdict-in-stderr test catches this separation violation
 - `event-catalog.json` exists but is malformed JSON (unclosed bracket) — the `jq empty`
   test on the catalog file itself catches this before any downstream test depends on it
 - A hook produces zero JSONL lines on stderr when the allow path is taken (hook omits the
@@ -145,6 +143,10 @@ proposed — pending Phase 3 implementation of hook-event-emit.sh, event-catalog
 and meta-lint.bats extension to cover event catalog cross-reference
 
 ## Changelog
+
+### v1.4 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** §Verification Mechanism updated all stale stdin fixtures: `"tool"` → `"tool_name"`, `"input":{...}` → `"tool_input":{...}`, `"output":{}` removed (5 fixture strings across 3 bats tests). Verdict-in-stderr grep updated from `'"verdict"'` to `'"continue"|"decision"|"hookSpecificOutput"'` (new envelope field names). §Counterexamples updated to cite new envelope field names. [audit-trail]
 
 ### v1.3 (2026-05-18)
 

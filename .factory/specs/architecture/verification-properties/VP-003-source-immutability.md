@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-003
 title: "Source immutability enforcement"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -17,7 +17,7 @@ status: proposed
 
 ## Property Statement
 
-For any path P that exists as a key in `manifest.json`, a PostToolUse hook invocation with `input.path = P` and a Write tool will produce: exit code 2, verdict `block`, code `E-SOURCE-001`. For any path P not in manifest.json, the same invocation will produce: exit code 0, verdict `allow`.
+For any path P that exists as a key in `manifest.json`, a PostToolUse hook invocation with `tool_input.path = P` and a Write tool will produce: exit code 2, decision `block`, code `E-SOURCE-001`. For any path P not in manifest.json, the same invocation will produce: exit code 0, `continue: true`.
 
 ## Verification Mechanism
 
@@ -26,21 +26,21 @@ bats (`tests/validate-source-immutability.bats`) with fixture manifest.json:
 ```bash
 @test "validate-source-immutability.sh: existing source path → E-SOURCE-001" {
   # manifest.json fixture has "sources/ai/existing-article.md" as a key
-  local payload='{"tool":"Write","input":{"path":"sources/ai/existing-article.md","content":"..."},"output":{}}'
+  local payload='{"tool_name":"Write","tool_input":{"path":"sources/ai/existing-article.md","content":"..."}}'
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-immutability.sh"
   assert_failure 2
   assert_output --partial '"code":"E-SOURCE-001"'
 }
 
 @test "validate-source-immutability.sh: new source path → allow" {
-  local payload='{"tool":"Write","input":{"path":"sources/ai/new-article.md","content":"..."},"output":{}}'
+  local payload='{"tool_name":"Write","tool_input":{"path":"sources/ai/new-article.md","content":"..."}}'
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-immutability.sh"
   assert_success
-  assert_output --partial '"verdict":"allow"'
+  assert_output --partial '"continue":true'
 }
 
 @test "validate-source-immutability.sh: path not in sources/ → allow (no-op)" {
-  local payload='{"tool":"Write","input":{"path":"wiki/concepts/test.md","content":"..."},"output":{}}'
+  local payload='{"tool_name":"Write","tool_input":{"path":"wiki/concepts/test.md","content":"..."}}'
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-immutability.sh"
   assert_success
 }
@@ -56,7 +56,7 @@ bats (`tests/validate-source-immutability.bats`) with fixture manifest.json:
 ## Counterexamples
 
 - A second write to `sources/ai/existing-article.md` exits 0 (overwrite permitted — violates BC-2.06.001)
-- The hook exits 1 (advisory) instead of 2 (block) on an existing source path (wrong severity)
+- The hook exits 1 on an existing source path (exit 1 = debug log only, not a block; exit 2 is required)
 - The hook does not check the `sources/` prefix and blocks all Write tool calls regardless of path
 
 ## Status
@@ -64,6 +64,10 @@ bats (`tests/validate-source-immutability.bats`) with fixture manifest.json:
 proposed — pending Phase 3 implementation
 
 ## Changelog
+
+### v1.2 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** §Property Statement updated `input.path` → `tool_input.path`, `verdict block` → `decision block`, `verdict allow` → `continue: true`. §Verification Mechanism fixture payloads updated: `"tool":"Write"` → `"tool_name":"Write"`, `"input":{...}` → `"tool_input":{...}`, `"output":{}` removed (PostToolUse `tool_result` absent in fixture per interface spec), `'"verdict":"allow"'` → `'"continue":true'`. §Counterexamples updated exit 1 advisory semantics (exit 1 = debug log only). [audit-trail]
 
 ### v1.1 (2026-05-18)
 

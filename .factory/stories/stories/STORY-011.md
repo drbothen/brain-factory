@@ -214,19 +214,107 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md` and ADR-002:
 5. `manifest.json` is read from `.brain/manifest.json` relative to the vault root, NOT
    from `${CLAUDE_PLUGIN_ROOT}`. The vault root is distinct from the plugin root.
 
+### Prior-state retrieval for publish state transitions
+
+PostToolUse fires AFTER the Write/Edit completes. The file on disk now has the NEW content.
+To detect the PRIOR state for transition validation:
+
+1. **For Edit tool**: The `tool_input.old_string` field contains the text that was replaced.
+   Parse the old frontmatter from `old_string` to extract the prior `status:` value.
+2. **For Write tool** (full file replacement): Use `git show HEAD:<file>` to read the
+   committed version before the write. If the file is not tracked in git (new file),
+   treat as "no prior state" (creation).
+3. **Fallback**: If neither method works, check the `tool_result` for error indicators.
+
+Portable git-based prior-state extraction:
+
+```bash
+prior_content="$(git show HEAD:"$file_path" 2>/dev/null)" || prior_content=""
+if [ -z "$prior_content" ]; then
+  # New file — no prior state; treat as creation
+  prior_status=""
+else
+  prior_status="$(printf '%s' "$prior_content" | yq eval '.status' -)"
+fi
+new_status="$(jq -r '.tool_input.content' <<< "$stdin_json" | yq eval '.status' -)"
+```
+
 **Forbidden dependencies:** Both scripts must use pure bash + jq + POSIX utilities.
-No Node.js, no yq, no Python.
+No Node.js, no yq, no Python. Exception: `validate-publish-state.sh` may use `yq`
+(mikefarah/yq, Go-based v4.x+) for frontmatter YAML parsing from `old_string` and file
+content — this is the only hook in this story that needs it.
+
+## Hook I/O Protocol Reference (ADR-002 v2.0)
+
+This section inlines the hook I/O contract so this story is self-contained.
+
+### stdin — Claude Code delivers this JSON
+
+**PostToolUse** (both hooks in this story are PostToolUse):
+
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<path>",
+  "cwd": "<path>",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write|Edit|...",
+  "tool_input": {"file_path": "<path>", "content": "<string>"},
+  "tool_use_id": "<string>",
+  "tool_result": {"type": "text|image|error", "text": "...", "exit_code": 0}
+}
+```
+
+### Per-tool `tool_input` fields
+
+| Tool | Fields |
+|------|--------|
+| Write | `file_path`, `content` |
+| Edit | `file_path`, `old_string`, `new_string`, `replace_all` |
+
+### stdout — hook verdict JSON
+
+```json
+{
+  "continue": true,
+  "systemMessage": "Advisory (exit 0 only)",
+  "decision": "block",
+  "reason": "Why blocked",
+  "hookSpecificOutput": {"code": "E-SCOPE-NNN", "trace": "<uuid>", "details": {}}
+}
+```
+
+Tri-state mapping:
+- **allow**: exit 0, `{"continue": true}`
+- **advise**: exit 0, `{"continue": true, "systemMessage": "..."}`
+- **block**: exit 0, `{"decision": "block", "reason": "..."}` OR exit 2 + stderr
+
+### Exit codes
+
+| Exit | Meaning |
+|------|---------|
+| 0 | Success (stdout parsed as JSON) |
+| 2 | Blocking error (stderr shown to user) |
+| Other (1) | Non-blocking (stderr to debug log ONLY) |
+
+**CRITICAL:** Exit 1 is NOT advisory. Use exit 0 + `systemMessage` for advisories.
+
+### Extracting file path
+
+```bash
+file_path="$(jq -r '.tool_input.file_path' <<< "$stdin_json")"
+```
 
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `jq` | 1.6+ | ADR-002 §hook-stdin-parsing |
-| `yq` | 4.x+ | Frontmatter extraction from markdown file content |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
+| `jq` | 1.7+ (latest: 1.8.1) | ADR-002 §hook-stdin-parsing |
+| `yq` | 4.x+ (mikefarah/yq, Go-based — NOT kislyuk/yq Python-based) | Frontmatter extraction from markdown file content |
 | `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 

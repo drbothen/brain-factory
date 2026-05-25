@@ -115,10 +115,10 @@ back and E-INGEST-008 is emitted.
 ### Out-of-Vault Path Rejection (BC-2.03.003)
 
 **AC-009** — Before any file read, `/brain:ingest-source` resolves the provided path to an
-absolute path using `realpath` (handling `..` traversal and symlinks). If the resolved path
-is NOT prefixed by the brain vault root (`git rev-parse --show-toplevel`), the skill exits
-2 with E-INGEST-009: "Path '<resolved-path>' is outside the brain vault. Only vault-relative
-paths are allowed." No file is read.
+absolute path using `readlink -f` (handling `..` traversal and symlinks). If the resolved
+path is NOT prefixed by the brain vault root (`git rev-parse --show-toplevel`), the skill
+exits 2 with E-INGEST-009: "Path '<resolved-path>' is outside the brain vault. Only
+vault-relative paths are allowed." No file is read.
 (traces to BC-2.03.003 postcondition 1 on out-of-vault path; invariants 1–2)
 
 **AC-010** — System directories (`/etc/`, `/usr/`, `/var/`, `/sys/`, `/proc/`) are ALWAYS
@@ -127,8 +127,8 @@ configurable policy.
 (traces to BC-2.03.003 invariant 2)
 
 **AC-011** — A symlink inside the vault that resolves to a path outside the vault is
-rejected (resolved path check, not raw path check). `realpath` is used to follow symlinks
-before the vault-root comparison.
+rejected (resolved path check, not raw path check). `readlink -f` is used to follow
+symlinks before the vault-root comparison.
 (traces to BC-2.03.003 edge case EC-001)
 
 **AC-012** — An operator-defined allowlist in `.brain/policies.yaml` (key:
@@ -174,7 +174,7 @@ investigate the hook rejections.
 2. **[failing test — Red Gate]** Add failing bats tests to `tests/skills.bats`:
    - Valid markdown file at a vault path → source written; manifest updated; exit 0.
    - Path outside vault (`/etc/passwd`) → E-INGEST-009; exit 2; no file read.
-   - `..` traversal outside vault → E-INGEST-009; exit 2 (realpath resolution).
+   - `..` traversal outside vault → E-INGEST-009; exit 2 (readlink -f resolution).
    - Symlink inside vault resolving outside vault → E-INGEST-009; exit 2.
    - File not found → E-INGEST-011; exit 2.
    - Already-ingested slug → E-INGEST-001; exit 2; no file read.
@@ -193,7 +193,7 @@ investigate the hook rejections.
    Run bats — confirm all new tests fail.
 
 4. **[impl]** Implement `skills/ingest-source/SKILL.md` (full skill body):
-   - Path validation: `realpath`, vault-root check, allowlist check, system-dir hard block.
+   - Path validation: `readlink -f`, vault-root check, allowlist check, system-dir hard block.
    - File type detection: markdown/text → direct read; PDF → `pdftotext`; image → error.
    - Duplicate guard against manifest (same as URL ingest, checking slug instead of URL).
    - Source write to `sources/{topic}/{slug}.md` with correct frontmatter (using `path`).
@@ -217,8 +217,8 @@ investigate the hook rejections.
 |-------|----------------|----------|--------|
 | Valid markdown at vault path | Source written; manifest entry with `path` field; 5+ wiki pages; exit 0 | happy-path | BC-2.03.001 |
 | Path to `/etc/passwd` | E-INGEST-009; exit 2; no read | error | BC-2.03.003 |
-| `../../outside-vault/file.md` | E-INGEST-009; exit 2 (realpath resolves to outside vault) | error | BC-2.03.003 |
-| Symlink in vault → outside vault | E-INGEST-009; exit 2 (realpath follows symlink) | error | BC-2.03.003 EC-001 |
+| `../../outside-vault/file.md` | E-INGEST-009; exit 2 (readlink -f resolves to outside vault) | error | BC-2.03.003 |
+| Symlink in vault → outside vault | E-INGEST-009; exit 2 (readlink -f follows symlink) | error | BC-2.03.003 EC-001 |
 | File not found | E-INGEST-011; exit 2 | error | BC-2.03.001 |
 | Already-ingested slug | E-INGEST-001; exit 2; no read | error | BC-2.03.001 EC-003 |
 | PDF file; pdftotext available | Extracted text used as source content; exit 0 | edge-case | BC-2.03.001 EC-002 |
@@ -247,9 +247,12 @@ investigate the hook rejections.
 
 From `architecture/subsystems/SS-03-source-ingest-pipeline.md`:
 
-1. Path validation uses `realpath` to follow symlinks and resolve `..` before comparing
+1. Path validation uses `readlink -f` to follow symlinks and resolve `..` before comparing
    to vault root. Raw string comparison of the input path is NOT sufficient.
    (BC-2.03.003 invariant 1)
+   **Use `readlink -f` instead of `realpath`** — `readlink -f` is available on macOS 12.3+
+   (Monterey and later, including Sequoia) AND all Linux distributions. Do NOT use `realpath`
+   (not available on macOS without GNU coreutils). Do NOT use `grealpath`.
 2. The vault root is determined via `git rev-parse --show-toplevel` — NOT from a hardcoded
    path or config variable. This ensures the vault root is always correct even when the
    brain is in a subdirectory.
@@ -269,25 +272,26 @@ From `architecture/subsystems/SS-03-source-ingest-pipeline.md`:
 - No Defuddle invocation in this skill. Local files are read directly.
 - No `find` or `ls` of `sources/` during ingest (manifest-delta constraint, same as SS-02).
 - No `set +e` anywhere in the skill body or helpers.
-- `realpath` is required (not `readlink` alone, which is less portable on macOS).
+- Do NOT use `realpath` — it is not available on macOS without GNU coreutils installation.
+  Use `readlink -f` which is portable across macOS 12.3+ and Linux.
 
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `realpath` | GNU coreutils | Path resolution (BC-2.03.003 invariant 1) |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
+| `readlink -f` | macOS 12.3+ and Linux (built-in) | Path resolution (BC-2.03.003 invariant 1) — use instead of `realpath` |
 | `git rev-parse --show-toplevel` | Any git version | Vault root detection |
 | `pdftotext` | poppler-utils (optional) | PDF text extraction (AC-003) |
-| `jq` | 1.6+ | Manifest manipulation; fan-out envelope JSON |
+| `jq` | 1.7+ (latest: 1.8.1) | Manifest manipulation; fan-out envelope JSON |
 | `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
-Note: `realpath` is a GNU coreutils tool. On macOS it requires `brew install coreutils`
-(or use `grealpath`). The skill must handle both `realpath` and `grealpath` portably —
-detect which is available and use it. This is a CLAUDE.md platform concern (macOS is the
-operator platform per `OS Version: Darwin 25.3.0`).
+Note: `readlink -f` is the portable path-resolution tool for this skill. It is available
+on macOS 12.3+ (Monterey and later, including Sequoia 25.x) and all Linux distributions
+natively. No Homebrew installation required. Do NOT use `realpath` (GNU coreutils only)
+or `grealpath` (Homebrew alias). The operator platform is macOS Darwin 25.x per project env.
 
 ## File Structure Requirements
 

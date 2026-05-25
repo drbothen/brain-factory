@@ -4,7 +4,7 @@ id: ADR-017
 title: "Plugin lifecycle phases: install, upgrade, downgrade, uninstall"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -27,7 +27,7 @@ brain-factory operators install, upgrade, and potentially downgrade the plugin. 
 `/plugin install brain-factory@claude-mp` in a fresh Claude session:
 1. Claude Code downloads the plugin tarball from claude-mp
 2. Expands to `~/.claude/plugins/.../brain-factory/<version>/`
-3. Registers skills, agents, and hooks from plugin.json and hooks.json.template
+3. Registers skills, agents, and hooks from plugin.json and hooks.json
 4. No modifications to any brain vault at install time — install is engine-only
 
 First use (after install): operator runs `/brain:init` in their brain vault directory. This is the only step that creates `.brain/` state.
@@ -107,13 +107,19 @@ The hook chain cannot write to the plugin installation path because hooks run in
 **Neutral:**
 - The `/plugin install` and `/plugin remove` mechanics are handled by Claude Code; brain-factory controls only what happens to `.brain/` state before and after
 
+## Changelog
+
+### v1.1 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** Both occurrences of `hooks.json.template` updated to `hooks.json` (filename rename per ADR-003 v2.0): §Install (BC-2.14.001) step 3 and §References BC-2.14.005. [audit-trail]
+
 ## References
 
 - BC-2.14.001 (install succeeds in fresh Claude session)
 - BC-2.14.002 (upgrade-brain migrates .brain/ state)
 - BC-2.14.003 (engine files read-only at runtime)
 - BC-2.14.004 (plugin.json valid JSON with semver)
-- BC-2.14.005 (hooks.json.template references all 13 hooks)
+- BC-2.14.005 (hooks.json references all 13 hooks)
 - BC-2.01.001..BC-2.01.006 (brain:init behavior)
 - NFR-024 (upgrade idempotent)
-- ADR-003 (plugin.json + hooks.json.template packaging)
+- ADR-003 (plugin.json + hooks.json packaging)

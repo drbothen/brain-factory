@@ -210,8 +210,8 @@ From `architecture/subsystems/SS-08-content-brief-writing.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yq` | 4.x+ | Frontmatter field extraction in bats assertions |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Frontmatter field extraction in bats assertions |
 | `grep` / `find` | POSIX | Companion file existence assertions |
 | `date` | GNU/BSD | `created` timestamp in draft frontmatter |
 
@@ -223,7 +223,7 @@ From `architecture/subsystems/SS-08-content-brief-writing.md`:
 | `plugins/brain-factory/tests/skills.bats` | Modify | Add 6 failing-then-passing write test blocks |
 
 Files NOT to modify: any file under `.factory/`, any hook script, `plugin.json`,
-`hooks.json.template`, any prior story file.
+`hooks.json`, any prior story file.
 
 ## Previous Story Intelligence
 

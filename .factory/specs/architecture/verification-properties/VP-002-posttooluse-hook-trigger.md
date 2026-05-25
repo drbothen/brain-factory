@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-002
 title: "PostToolUse hook trigger on wiki writes"
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -17,7 +17,7 @@ status: proposed
 
 ## Property Statement
 
-Every Write or Edit tool call that writes to the `wiki/` directory triggers all 7 registered PostToolUse hooks (in the order registered in hooks.json.template): validate-source-immutability, validate-wikilink-integrity, validate-index-log-coherence, validate-frontmatter-schema, validate-page-type-policy, validate-voice-avoid-list, validate-source-id-citation, validate-publish-state. No hook is skippable by a skill.
+Every Write or Edit tool call that writes to the `wiki/` directory triggers all 7 registered PostToolUse hooks (in the order registered in hooks.json): validate-source-immutability, validate-wikilink-integrity, validate-index-log-coherence, validate-frontmatter-schema, validate-page-type-policy, validate-voice-avoid-list, validate-source-id-citation, validate-publish-state. No hook is skippable by a skill.
 
 ## Verification Mechanism
 
@@ -45,13 +45,19 @@ The property also verifies the negative: a write to `sources/` triggers only val
 ## Assumed Prerequisites
 
 - Plugin installed in temp vault
-- hooks.json.template registered in Claude Code
+- hooks.json registered in Claude Code
 - `.brain/logs/` writable and JSONL-capturing
 
 ## Counterexamples
 
 - A PostToolUse hook fires on a wiki write but one of the 8 hooks is silently skipped (missing from JSONL log)
 - A skill can write to `wiki/` without triggering the wikilink-integrity hook (bypass scenario — would violate KD-001)
+
+## Changelog
+
+### v1.1 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** Both occurrences of `hooks.json.template` updated to `hooks.json` (filename rename per ADR-003 v2.0): §Property Statement and §Assumed Prerequisites. [audit-trail]
 
 ## Status
 

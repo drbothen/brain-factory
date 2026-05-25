@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-021
 title: "Quarantine check skill activation and corpus location resolution"
 level: L3
-version: "1.2"
+version: "1.3"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -162,6 +162,10 @@ EOF
 proposed — pending Phase 3 implementation of quarantine-check skill and quarantine.bats
 
 ## Changelog
+
+### v1.3 (2026-05-25)
+
+**CASCADE REVIEW (ADR-002/ADR-003 v2.0 — hook protocol update):** VP-021 reviewed for stale protocol references. The `"verdict":"clean"` and `"verdict":"blocked"` fields in the Property Statement and bats fixtures are the `/brain:quarantine-check` SKILL output schema (BC-2.10.001), not the hook verdict envelope protocol. They are intentionally preserved — the skill returns its own structured report; the ADR-002 verdict-envelope change applies only to hooks, not to skill return values. No body modifications required. [audit-trail]
 
 ### v1.2 (2026-05-16)
 

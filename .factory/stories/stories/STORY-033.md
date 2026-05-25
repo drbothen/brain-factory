@@ -85,9 +85,10 @@ interactive mode.
 (traces to BC-2.12.004 postcondition 2)
 
 **AC-005** — `scripts/run-skill.mjs` exists at `${CLAUDE_PLUGIN_ROOT}/scripts/run-skill.mjs`,
-requires Node 20+, and is the entry point lobster-run uses for each skill invocation
+requires Node 22+, and is the entry point lobster-run uses for each skill invocation
 (both headless and interactive). The file must be executable and parseable by
-`node --check scripts/run-skill.mjs`.
+`node --check scripts/run-skill.mjs`. `run-skill.mjs` accepts `<skill-name> [args...]`
+as positional arguments and exits with the skill's exit code (0/1/2).
 (traces to BC-2.12.004 postcondition 1; SS-12 §Step execution §headless)
 
 ### Workflow YAML files (BC-2.12.003)
@@ -118,9 +119,9 @@ modification timestamps do not change after a dry-run execution.
 ## Tasks
 
 1. **[stub]** Create `plugins/brain-factory/scripts/run-skill.mjs` with a minimal
-   Node 20+ shebang (`#!/usr/bin/env node`) and a stub body that prints the skill name
+   Node 22+ shebang (`#!/usr/bin/env node`) and a stub body that prints the skill name
    and arguments to stdout then exits 0. Add `'use strict';` and check
-   `process.versions.node` major >= 20 (exit 1 with error if below 20).
+   `process.versions.node` major >= 22 (exit 1 with error if below 22).
 
 2. **[stub — workflow files]** Create all six workflow YAML files in
    `plugins/brain-factory/workflows/` with correct schema structure (`name`, `description`,
@@ -137,7 +138,7 @@ modification timestamps do not change after a dry-run execution.
    - `"lobster-run: all 6 workflow files pass yq parse"` (BC-2.12.003 postcondition 2)
    - `"lobster-run: workflow files use .yaml not .lobster extension"` (BC-2.12.003 invariant 2)
    - `"scripts/run-skill.mjs: parseable by node --check"` (BC-2.12.004 postcondition 1)
-   - `"scripts/run-skill.mjs: requires Node 20+"` (BC-2.12.004)
+   - `"scripts/run-skill.mjs: requires Node 22+"` (BC-2.12.004)
    Run bats — confirm all 9 tests fail (Red Gate confirmed).
 
 4. **[impl]** Extend `bin/lobster-run` with headless guarantees:
@@ -193,23 +194,23 @@ From `architecture/subsystems/SS-12-lobster-runtime.md`:
 - `bin/lobster-run` must NOT call `read` (bash builtin) without a TTY guard.
 - Workflow YAML files must NOT reference `.claude/templates/...` paths; use
   `${CLAUDE_PLUGIN_ROOT}/templates/...` per CLAUDE.md §Conventions.
-- `scripts/run-skill.mjs` must NOT be a compiled binary — it is a Node 20+ JS file.
+- `scripts/run-skill.mjs` must NOT be a compiled binary — it is a Node 22+ JS file.
 
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 3.2+ | macOS compat |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yq` | 4.x+ | Workflow YAML parsing and validation |
-| `node` | 20+ | `scripts/run-skill.mjs` runtime (CLAUDE.md §Toolchain) |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | macOS compat; lobster-run targets 5.0+ |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Workflow YAML parsing and validation |
+| `node` | 22+ (Node 20 EOL April 2026) | `scripts/run-skill.mjs` runtime (CLAUDE.md §Toolchain) |
 | `timeout` | GNU coreutils or macOS | VP-022 headless hang detection |
 
 ## File Structure Requirements
 
 | Path | Action | Notes |
 |------|--------|-------|
-| `plugins/brain-factory/scripts/run-skill.mjs` | Create | Node 20+ headless skill runner |
+| `plugins/brain-factory/scripts/run-skill.mjs` | Create | Node 22+ headless skill runner |
 | `plugins/brain-factory/workflows/ingest-url.yaml` | Create | Workflow: URL ingest pipeline |
 | `plugins/brain-factory/workflows/ingest-source.yaml` | Create | Workflow: local source ingest |
 | `plugins/brain-factory/workflows/brief-to-publish.yaml` | Create | Workflow: brief → write → publish |
@@ -250,7 +251,7 @@ Within 20% of a 200K-token context window (~40K). No split required.
 - GH Action template installation — STORY-034.
 - Rate-limit retry handling — STORY-035.
 - `scripts/run-skill.mjs` full implementation (scheduling, timeout handling) — this
-  story delivers a working stub that passes Node 20+ checks; full robustness is in
+  story delivers a working stub that passes Node 22+ checks; full robustness is in
   STORY-034 context.
 
 ## Anchors

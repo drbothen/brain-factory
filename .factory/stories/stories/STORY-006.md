@@ -35,7 +35,7 @@ input-hash: ""
 
 ## Goal
 
-Implement the complete prompt-injection quarantine layer: the Node 20+ pattern corpus
+Implement the complete prompt-injection quarantine layer: the Node 22+ pattern corpus
 (`scripts/quarantine.mjs`), the PreToolUse hook that fires on every WebFetch call
 (`quarantine-fetch.sh`), and the explicit skill wrapper (`/brain:quarantine-check`). This
 is the most important enforcement layer in the system — content never reaches a Claude
@@ -88,7 +88,7 @@ content from https://malicious.com. Content quarantined.","trace":"<uuid>"}`.
 exits 2 and stdout contains `"code":"E-QUARANTINE-002"`. The hook is fail-closed.
 (traces to BC-2.04.001 invariant 2; BC-2.04.001 edge case EC-003)
 
-**AC-006** — When Node 20+ is absent from PATH (simulated via `PATH=''`),
+**AC-006** — When Node 22+ is absent from PATH (simulated via `PATH=''`),
 `quarantine-fetch.sh` exits 2 and stdout contains `"code":"E-QUARANTINE-003"`.
 (traces to BC-2.04.001 edge case EC-004; invariant 3)
 
@@ -181,7 +181,7 @@ exit 0. No partial content is forwarded to the quarantine.mjs check.
    - Read stdin JSON payload with `jq`; extract `.tool_input.url` (the PreToolUse-WebFetch
      payload shape per BC-2.04.001 precondition 2 — field is `tool_input.url`, NOT
      `input.url`; there is NO `content` field because the fetch has not occurred yet)
-   - Check Node 20+ in PATH; exit 2 with E-QUARANTINE-003 if absent
+   - Check Node 22+ in PATH; exit 2 with E-QUARANTINE-003 if absent
    - Check `${CLAUDE_PLUGIN_ROOT}/scripts/quarantine.mjs` exists; exit 2 with
      E-QUARANTINE-002 if absent
    - Fetch a 2KB preview of the URL via `curl --max-filesize 2048 --max-time 5 -s "$url"`
@@ -220,7 +220,7 @@ hook stdin payloads; the hook fetches its own preview.
 | `{"tool_name":"WebFetch","tool_input":{"url":"https://example.com","prompt":"summarize"}}` | `tests/fixtures/curl-empty-preview.txt` (empty body) | exit 0; `{"verdict":"allow","message":"Content clean.","trace":"<uuid>"}` | edge-case | BC-2.04.001@v1.2 EC-001 |
 | `{"tool_name":"WebFetch","tool_input":{"url":"https://timeout.example.com","prompt":"summarize"}}` | `tests/fixtures/curl-shim-exit-28.sh` (curl exits 28) | exit 2; `{"verdict":"block","code":"E-QUARANTINE-004","message":"Preview fetch failed; cannot safely proceed.","trace":"<uuid>"}` | edge-case | BC-2.04.001@v1.2 EC-007; E-QUARANTINE-004@v0.1.1 |
 | `{"tool_name":"WebFetch","tool_input":{"url":"https://example.com","prompt":"summarize"}}` with `scripts/quarantine.mjs` absent | N/A (script missing check fires before curl) | exit 2; `{"verdict":"block","code":"E-QUARANTINE-002","message":"Quarantine corpus missing at ${CLAUDE_PLUGIN_ROOT}/scripts/quarantine.mjs. Cannot safely proceed.","trace":"<uuid>"}` | edge-case | BC-2.04.001@v1.2 EC-003 |
-| Same as above, Node absent in PATH | N/A (Node check fires before curl) | exit 2; `{"verdict":"block","code":"E-QUARANTINE-003","message":"Node 20+ required for quarantine check. Install Node from nodejs.org.","trace":"<uuid>"}` | edge-case | BC-2.04.001@v1.2 EC-004 |
+| Same as above, Node absent in PATH | N/A (Node check fires before curl) | exit 2; `{"verdict":"block","code":"E-QUARANTINE-003","message":"Node 22+ required for quarantine check. Install Node from nodejs.org.","trace":"<uuid>"}` | edge-case | BC-2.04.001@v1.2 EC-004 |
 | `node scripts/quarantine.mjs --check` with clean content on stdin | N/A (quarantine.mjs unit test) | exit 0; `{"verdict":"clean"}` | happy-path | BC-2.10.001 |
 | `node scripts/quarantine.mjs --check` with injection pattern on stdin | N/A (quarantine.mjs unit test) | exit 2; `{"verdict":"blocked","code":"E-QUARANTINE-001"}` | error | BC-2.10.001 |
 
@@ -249,7 +249,7 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md`,
    can prevent injection content from ever reaching the session (SS-10 §Key Design §Why
    PreToolUse?). Implementers must not revert to PostToolUse under any "MVP" framing.
 2. The hook contract is: JSON on stdin → JSON verdict on stdout → JSONL events on stderr →
-   exit 0/1/2. Stdout must ONLY contain the JSON verdict object (no prose, no debug text).
+   exit 0/2. Stdout must ONLY contain the JSON verdict object (no prose, no debug text).
 3. Every hook uses `hooks/lib/hook-event-emit.sh` for structured JSONL emission on stderr
    (ADR-016). Do NOT write JSONL events directly with `echo` in the hook body.
 4. `scripts/quarantine.mjs` is a single source of truth for patterns. Both the hook and
@@ -262,19 +262,105 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md`,
    `.claude/templates/...`.
 
 **Forbidden dependencies:** `quarantine-fetch.sh` must NOT call `npm install`, must NOT
-import any Node modules that are not built into Node 20+. `scripts/quarantine.mjs` uses
+import any Node modules that are not built into Node 22+. `scripts/quarantine.mjs` uses
 only built-in ES module syntax with no external npm dependencies.
+
+## Hook I/O Protocol Reference (ADR-002 v2.0)
+
+This section inlines the hook I/O contract so this story is self-contained.
+
+### stdin — Claude Code delivers this JSON on stdin
+
+**PreToolUse:**
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<path>",
+  "cwd": "<path>",
+  "permission_mode": "default|plan|acceptEdits|auto|dontAsk|bypassPermissions",
+  "effort": {"level": "low|medium|high|xhigh|max"},
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Write|Edit|Read|Bash|WebFetch|WebSearch|Glob|Grep|Agent|mcp__*",
+  "tool_input": { /* see per-tool fields below */ },
+  "tool_use_id": "<string>"
+}
+```
+
+**PostToolUse** — same as above plus:
+```json
+"hook_event_name": "PostToolUse",
+"tool_result": {"type": "text|image|error", "text": "...", "exit_code": 0}
+```
+
+### Per-tool `tool_input` fields
+
+| Tool | Fields |
+|------|--------|
+| Write | `file_path` (string), `content` (string) |
+| Edit | `file_path` (string), `old_string`, `new_string`, `replace_all` (bool) |
+| Read | `file_path` (string) |
+| Bash | `command` (string), `description`, `timeout`, `run_in_background` |
+| WebFetch | `url` (string) |
+
+### stdout — hook writes this JSON to stdout
+
+```json
+{
+  "continue": true,
+  "systemMessage": "Advisory shown to user (only on exit 0)",
+  "decision": "block",
+  "reason": "Why the operation was blocked",
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse|PostToolUse",
+    "code": "E-SCOPE-NNN",
+    "trace": "<uuid-v4>",
+    "details": { /* hook-specific data */ }
+  }
+}
+```
+
+brain-factory tri-state mapping:
+- **allow**: exit 0, stdout `{"continue": true}` (no `decision` field)
+- **advise**: exit 0, stdout `{"continue": true, "systemMessage": "Advisory: ..."}` + `hookSpecificOutput` with code
+- **block**: exit 0, stdout `{"decision": "block", "reason": "..."}` + `hookSpecificOutput` with code. OR exit 2 with stderr message.
+
+### Exit codes
+
+| Exit | Meaning | Claude Code action |
+|------|---------|-------------------|
+| 0 | Success | stdout parsed as JSON; if `decision:"block"` → blocked |
+| 2 | Blocking error | stderr shown to user; operation aborted |
+| Other (1, etc.) | Non-blocking error | stderr to debug log ONLY (NOT shown to user) |
+
+**CRITICAL:** Exit 1 is NOT an advisory channel — stderr goes to debug log, not to user. Use exit 0 + `systemMessage` for advisories.
+
+### Extracting the file path from stdin
+
+For PostToolUse hooks on Write|Edit, extract the file path with:
+```bash
+file_path="$(jq -r '.tool_input.file_path' <<< "$stdin_json")"
+```
+
+For the tool name:
+```bash
+tool_name="$(jq -r '.tool_name' <<< "$stdin_json")"
+```
+
+For the URL on WebFetch PreToolUse:
+```bash
+url="$(jq -r '.tool_input.url' <<< "$stdin_json")"
+```
 
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `node` | 20+ | CLAUDE.md §Toolchain; BC-2.04.001 precondition 3 |
-| `jq` | 1.6+ | ADR-002 §hook-stdin-parsing |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
+| `node` | 22+ (Node 20 EOL April 2026) | CLAUDE.md §Toolchain; BC-2.04.001 precondition 3 |
+| `jq` | 1.7+ (latest: 1.8.1) | ADR-002 §hook-stdin-parsing |
 | `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) (`-i 2`) | CLAUDE.md §Conventions |
 | `uuidgen` | system utility | BC-2.04.001 postconditions (trace field) |
 
 No npm packages. `scripts/quarantine.mjs` uses ES module syntax only (no CommonJS `require`).

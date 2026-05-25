@@ -37,7 +37,7 @@ The primary distribution mechanism for brain-factory is the `drbothen/claude-mp`
 ## Invariants
 
 1. The tarball is the only distribution mechanism in v0.x (no `npm install`, no `pip install`).
-2. The tarball contains: plugin.json, hooks.json.template, all 13 hook scripts, all 26 skill SKILL.md files, all 14 agent AGENT.md files, all templates, all workflows, all scripts.
+2. The tarball contains: plugin.json, hooks.json, all 13 hook scripts, all 26 skill SKILL.md files, all 14 agent AGENT.md files, all templates, all workflows, all scripts.
 3. Planning docs do NOT ship in the published tarball.
 
 ## Edge Cases

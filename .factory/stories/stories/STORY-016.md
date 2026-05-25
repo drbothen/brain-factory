@@ -66,15 +66,19 @@ occurs, and so that re-running the same URL is blocked rather than creating dupl
 
 **AC-001** — `scripts/defuddle-fetch.mjs` exists at
 `plugins/brain-factory/scripts/defuddle-fetch.mjs`. Running
-`node scripts/defuddle-fetch.mjs https://example.com` (with Node 20+) exits 0 and writes
-cleaned markdown to stdout. The script uses the Defuddle CLI to extract the main content
-of the page, stripping navigation, ads, and boilerplate (targeting 70-90% token reduction
-over raw HTML).
+`node scripts/defuddle-fetch.mjs https://example.com` (with Node 22+) exits 0 and writes
+cleaned markdown to stdout. The script uses the `defuddle` package (by kepano/Steph Ango,
+CEO of Obsidian; v0.18.1 as of April 2026) to extract the main content of the page,
+stripping navigation, ads, and boilerplate (targeting 70-90% token reduction over raw
+HTML). Import pattern: `import { Defuddle } from 'defuddle/node'` with `linkedom` as the
+DOM dependency. Installation: `npm install defuddle linkedom`.
+CLI alternative: `npx defuddle parse <url> --markdown` (the `defuddle-cli` package is
+deprecated and merged into the main `defuddle` package).
 (traces to BC-2.02.001 precondition 2; invariant 1)
 
-**AC-002** — When Node 20+ is NOT available in PATH, `/brain:ingest-url` exits 2 and
-emits E-INGEST-005: "Node 20+ required for Defuddle. Install from nodejs.org." No fetch
-is attempted.
+**AC-002** — When Node 22+ is NOT available in PATH, `/brain:ingest-url` exits 2 and
+emits E-INGEST-005: "Node 22+ required for Defuddle. Install from nodejs.org." No fetch
+is attempted. (Note: Node 20 reached EOL April 30, 2026; the project minimum is Node 22.)
 (traces to BC-2.02.001 edge case EC-006)
 
 **AC-003** — When the URL returns a non-200 HTTP status, `/brain:ingest-url` exits 2 and
@@ -148,14 +152,14 @@ write is rolled back (deleted if it was created) and the skill exits 2 with E-IN
 ## Tasks
 
 1. **[stub]** Create stub `scripts/defuddle-fetch.mjs` in
-   `plugins/brain-factory/scripts/`: minimal Node 20+ script that exits 1 (stub). Create
+   `plugins/brain-factory/scripts/`: minimal Node 22+ script that exits 1 (stub). Create
    stub `hooks/lib/manifest-write.sh`: bash library that sources `hook-event-emit.sh` and
    exits 1 (stub).
 
 2. **[failing test — Red Gate]** Add failing bats tests in `tests/skills.bats` and
    `tests/integration.bats`:
    - `defuddle-fetch.mjs` called with mock URL → outputs cleaned markdown (mock Defuddle).
-   - E-INGEST-005 emitted when Node 20+ not in PATH.
+   - E-INGEST-005 emitted when Node 22+ not in PATH.
    - E-INGEST-001 emitted for duplicate URL; Defuddle NOT called.
    - E-INGEST-002 emitted on non-200 HTTP status.
    - E-INGEST-003 emitted on empty Defuddle output.
@@ -165,15 +169,18 @@ write is rolled back (deleted if it was created) and the skill exits 2 with E-IN
    - Manifest write failure → source file rolled back; E-INGEST-008 emitted.
    Run bats — confirm all new tests fail (Red Gate confirmed).
 
-3. **[impl]** Implement `scripts/defuddle-fetch.mjs`: thin wrapper calling the
-   `@defuddle/node` package (or `defuddle` CLI). Input: URL as first positional arg.
+3. **[impl]** Implement `scripts/defuddle-fetch.mjs`: thin wrapper using the `defuddle`
+   package (v0.18.1+). Import pattern: `import { Defuddle } from 'defuddle/node'`. The
+   `defuddle/node` subpath requires `linkedom` as a peer dependency for DOM parsing —
+   install both: `npm install defuddle linkedom`. Input: URL as first positional arg.
    Output: cleaned markdown to stdout. Error: non-zero exit with error message on
    non-200, unreachable host, or empty output. Node check: `process.version` against
-   `v20` minimum.
+   `v22` minimum (Node 20 reached EOL April 30, 2026). Do NOT use `defuddle-cli` (deprecated;
+   merged into main `defuddle` package).
 
 4. **[impl]** Implement the `/brain:ingest-url` skill body through the source-write step
    in `skills/ingest-url/SKILL.md`:
-   - Node 20+ check (AC-002).
+   - Node 22+ check (AC-002).
    - Duplicate guard against manifest.json (AC-007, AC-008).
    - Call `scripts/defuddle-fetch.mjs` (AC-001, AC-003, AC-004).
    - Write source file to `sources/{topic}/{slug}.md` with correct frontmatter (AC-005).
@@ -203,7 +210,7 @@ write is rolled back (deleted if it was created) and the skill exits 2 with E-IN
 | `ingest-url` with URL already in manifest | E-INGEST-001; exit 2; no Defuddle call | error | BC-2.02.006 |
 | `ingest-url` with non-200 response (mock) | E-INGEST-002; exit 2; no source file | error | BC-2.02.001 EC-002 |
 | `ingest-url` with empty Defuddle output (mock) | E-INGEST-003; exit 2; no source file | error | BC-2.02.001 EC-003 |
-| `ingest-url` with Node 20+ absent (mock) | E-INGEST-005; exit 2 | error | BC-2.02.001 EC-006 |
+| `ingest-url` with Node 22+ absent (mock) | E-INGEST-005; exit 2 | error | BC-2.02.001 EC-006 |
 | `manifest-write.sh` with write failure (mock) | E-INGEST-008; exit 2; source file rolled back | error | BC-2.02.004 EC-002 |
 | Ingest with 10K manifest entries | Only manifest.json read; no sources/ scan | edge-case | BC-2.02.004 invariant 1 |
 | URL with different query string vs existing | Treated as new URL; ingest proceeds | edge-case | BC-2.02.006 EC-001 |
@@ -246,19 +253,20 @@ From `architecture/subsystems/SS-02-url-ingest-pipeline.md` and ADR-010:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `node` | 20.x+ | CLAUDE.md §Project Identity; BC-2.02.001 precondition 2 |
-| `@defuddle/node` (or `defuddle` npm pkg) | latest stable | SS-02 key design |
-| `jq` | 1.6+ | manifest.json manipulation |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system /bin/bash is 3.2 due to GPLv3 licensing. Operators must install via `brew install bash` and ensure PATH resolves `/usr/bin/env bash` to the Homebrew version) | CLAUDE.md §Conventions; ADR-001 |
+| `node` | 22+ (Node 20 reached EOL April 30, 2026; current LTS: Node 24) | CLAUDE.md §Project Identity; BC-2.02.001 precondition 2 |
+| `defuddle` | 0.18.1+ (by kepano/Steph Ango; `defuddle-cli` is deprecated — use main `defuddle` package; import via `import { Defuddle } from 'defuddle/node'`; requires `linkedom` as peer dep) | SS-02 key design; AC-001 |
+| `linkedom` | latest stable (peer dep for `defuddle/node` subpath import) | defuddle/node DOM requirement |
+| `jq` | 1.7+ (latest: 1.8.1; jq 1.6 `leaf_paths` and `recurse_down` removed in 1.7) | manifest.json manipulation |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1; `-i 2 -d` flags stable across 3.x) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 
 | Path | Action | Notes |
 |------|--------|-------|
-| `plugins/brain-factory/scripts/defuddle-fetch.mjs` | Create | Node 20+ Defuddle CLI wrapper |
+| `plugins/brain-factory/scripts/defuddle-fetch.mjs` | Create | Node 22+ Defuddle wrapper using `defuddle` package v0.18.1+ |
 | `plugins/brain-factory/hooks/lib/manifest-write.sh` | Create | Shared atomic manifest append helper |
 | `plugins/brain-factory/skills/ingest-url/SKILL.md` | Create | Skill body through source-write step (wiki generation stub for STORY-017) |
 | `plugins/brain-factory/tests/skills.bats` | Extend | Duplicate guard + error-path assertions |
@@ -266,7 +274,7 @@ From `architecture/subsystems/SS-02-url-ingest-pipeline.md` and ADR-010:
 | `plugins/brain-factory/tests/fixtures/ingest-url-happy.json` | Create | Happy-path bats fixture |
 | `plugins/brain-factory/tests/fixtures/ingest-url-duplicate.json` | Create | Duplicate-URL bats fixture |
 
-Files NOT to modify: any file under `.factory/`, `hooks.json.template`, `plugin.json`,
+Files NOT to modify: any file under `.factory/`, `hooks/hooks.json`, `plugin.json`,
 any prior STORY-NNN.md, `scripts/event-catalog.json` (STORY-014 owns catalog entries;
 only ask STORY-014 to pre-populate the events emitted here).
 
@@ -315,3 +323,9 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - VP-012: `architecture/verification-properties/VP-012-manifest-atomicity.md`
 - SS-02: `architecture/subsystems/SS-02-url-ingest-pipeline.md`
 - ADR-010: `architecture/adr/ADR-010-manifest-delta-architecture.md`
+
+## Changelog
+
+| Date | Change | Reason |
+|------|--------|--------|
+| 2026-05-25 | Fixed Defuddle package: replaced `@defuddle/node` (incorrect) with `defuddle` v0.18.1+ by kepano/Steph Ango; noted `defuddle-cli` is deprecated and merged into main package; updated import pattern to `import { Defuddle } from 'defuddle/node'`; added `linkedom` as required peer dependency; updated Node version 20+ → 22+ throughout (Node 20 EOL April 30, 2026); updated E-INGEST-005 message; updated Library table with corrected tool names, versions, and notes; updated bash 5.0+ with macOS note; shellcheck 0.10+; jq 1.7+; shfmt 3.7+ | Uncertainty removal: defuddle package name was incorrect (`@defuddle/node` does not exist); Node 20 is EOL; version pins corrected |

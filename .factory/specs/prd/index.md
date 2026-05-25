@@ -1,15 +1,15 @@
 ---
 document_type: prd
 level: L3
-version: "0.1.13"
+version: "0.1.14"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-19T00:00:00
+timestamp: 2026-05-25T00:00:00
 phase: phase-1b
 artifact_type: prd
 inherits_from: product-brief.md@v0.4.20
 created: 2026-05-15
-last_updated: 2026-05-19
+last_updated: 2026-05-25
 traces_to: product-brief.md
 supplements:
   - prd-supplements/interface-definitions.md
@@ -257,7 +257,7 @@ The plugin eliminates this burden by centralizing the methodology as versioned a
 | BC-2.14.002 | `/brain:upgrade-brain` upgrades the plugin and migrates `.brain/` state if needed | P1 |
 | BC-2.14.003 | Engine files are read-only at runtime; state lives exclusively in target's `.brain/` | P0 |
 | BC-2.14.004 | `plugin.json` is valid JSON with semver version and all agents/skills registered | P0 |
-| BC-2.14.005 | `hooks.json.template` references all 13 hooks via `${CLAUDE_PLUGIN_ROOT}` | P0 |
+| BC-2.14.005 | `hooks.json` references all 13 hooks via `${CLAUDE_PLUGIN_ROOT}` | P0 |
 
 > Full contracts: `../behavioral-contracts/ss-14/`
 
@@ -314,7 +314,7 @@ The plugin eliminates this burden by centralizing the methodology as versioned a
 > **Supplement:** Full interface definitions are in `prd-supplements/interface-definitions.md`.
 > This section provides a summary reference only.
 
-26 skills expose argument-hint signatures via `SKILL.md` frontmatter. 13 hooks expose stdin JSON schemas and stdout JSON verdict schemas. 14 agents expose scope and tool-profile contracts. See `prd-supplements/interface-definitions.md` for complete definitions including: all skill argument-hint signatures, all hook stdin/stdout JSON schemas, exit-code semantics table, `plugin.json` schema, `hooks.json.template` schema, `manifest.json` schema, `.brain/policies.yaml` schema, and flag interaction rules (mutually exclusive, overrides).
+26 skills expose argument-hint signatures via `SKILL.md` frontmatter. 13 hooks expose stdin JSON schemas and stdout JSON verdict schemas. 14 agents expose scope and tool-profile contracts. See `prd-supplements/interface-definitions.md` for complete definitions including: all skill argument-hint signatures, all hook stdin/stdout JSON schemas, exit-code semantics table, `plugin.json` schema, `hooks.json` schema, `manifest.json` schema, `.brain/policies.yaml` schema, and flag interaction rules (mutually exclusive, overrides).
 
 ## 4. Non-Functional Requirements
 
@@ -367,7 +367,7 @@ Golden test data for hook bats suites and skill end-to-end tests. Includes: hook
 | BC ID | Contribution |
 |-------|-------------|
 | BC-2.04.016 | Every hook reads JSON stdin / writes JSON stdout / exits 0/1/2 — identical contract for WASM port |
-| BC-2.14.005 | hooks.json.template uses `${CLAUDE_PLUGIN_ROOT}` — wire-compatible with factory-dispatcher |
+| BC-2.14.005 | hooks.json uses `${CLAUDE_PLUGIN_ROOT}` — wire-compatible with factory-dispatcher |
 | BC-2.17.003 | Stderr/stdout separation preserved — WASM port can inherit same I/O contract |
 
 ### 6.4 KD-004 — Scale-Aware Architecture from v0.1
@@ -558,11 +558,15 @@ Per CLAUDE.md Canonical Principle Self-Audit Checklist:
 
   Incremental scope: applied before any PRD burst that updates a section header containing a count claim. The header text MUST be reconciled with body count before commit. Canonical-baseline scope: Pass 17 F-PASS17-I3(b) sibling-sweep from ARCH-INDEX v0.1.19. Canonical-baseline sweep at codification: PRD section headers carrying number claims include "21 total" scopes in §5 Error Taxonomy and counts embedded in body prose; no PRD section headers carry a standalone count-claim `(N total ...)` format in the heading text itself that would require body reconciliation. PRD is clean at codification. (Mirrored from ARCH-INDEX discipline #23 per F-PASS6-O1-arch / F-PASS6-O1-PO sibling-sweep precedent.) [audit-trail]
 
-- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-19`; most recent Changelog entry: v0.1.13 (2026-05-19). **PASS.**
+- [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be ≥ YYYY-MM-DD. Current: `last_updated: 2026-05-25`; most recent Changelog entry: v0.1.14 (2026-05-25). **PASS.**
 
 ---
 
 ## Changelog
+
+### v0.1.14 (2026-05-25)
+
+**CASCADE (ADR-002 v2.0 / ADR-003 v2.0):** Three `hooks.json.template` references replaced with `hooks.json`: (1) BC-2.14.005 title in §2.14 BC index table, (2) BC-2.14.005 row in §6.3 KD-003 differentiator traceability table, (3) `hooks.json.template` schema reference in §3 Interface Definition summary. ADR-003 v2.0 renamed the canonical hook registration file from `hooks.json.template` to `hooks.json`; these PRD references were stale.
 
 ### v0.1.13 (2026-05-19)
 

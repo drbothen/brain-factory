@@ -1,10 +1,10 @@
 ---
 document_type: prd-supplement
 supplement_type: nfr-catalog
-version: "0.1.1"
+version: "0.1.2"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-15T00:00:00
+timestamp: 2026-05-25T00:00:00
 phase: phase-1b
 traces_to: prd/index.md
 created: 2026-05-15
@@ -28,7 +28,7 @@ NFRs are cross-cutting concerns that apply across subsystems. Each NFR has a num
 | NFR-010 | Observability | Token cost visibility | 30-day trailing average computable from `.brain/logs/ingest-tokens.jsonl` at any time | `/brain:health` token alert; `/brain:monthly-perf` report |
 | NFR-011 | Observability | Hook event completeness | Every hook invocation produces ≥ 1 JSONL event on stderr | bats `tests/<hook-name>.bats` stderr capture assertion |
 | NFR-012 | Security | No credential leakage | 0 credential values (API keys, tokens) in any hook stdout/stderr/log | bats `tests/<hook-name>.bats` grep assertion on known-test-key pattern |
-| NFR-013 | Security | Quarantine coverage | 100% of WebFetch calls pass through quarantine-fetch.sh | hooks.json.template registration + bats integration |
+| NFR-013 | Security | Quarantine coverage | 100% of WebFetch calls pass through quarantine-fetch.sh | hooks.json registration + bats integration |
 | NFR-014 | Portability | Cross-platform support | Hooks run on macOS + Linux strong; Git Bash + WSL2 partial (Windows-native = v1.0) | v0.9 ship gate: ≥ 1 operator on each of {macOS, Linux, Windows-via-Git-Bash-or-WSL2} |
 | NFR-015 | Portability | Node 20+ compatibility | All Node scripts (`defuddle-fetch.mjs`, `run-skill.mjs`, `quarantine.mjs`) run on Node 20.x LTS | CI matrix: node-version: ['20'] |
 | NFR-016 | Reliability | Hook fail-closed guarantee | If hook crashes or gets malformed stdin, it exits 2 (never exits 0 on error) | bats `tests/<hook-name>.bats` (inject error conditions; assert exit 2) |
@@ -60,6 +60,10 @@ NFRs are cross-cutting concerns that apply across subsystems. Each NFR has a num
 ---
 
 ## Changelog
+
+### v0.1.2 (2026-05-25)
+
+**CASCADE (ADR-002 v2.0 / ADR-003 v2.0):** NFR-013 Validation Method updated: `hooks.json.template registration` → `hooks.json registration`, reflecting that ADR-003 v2.0 renamed `hooks.json.template` to `hooks.json` as the canonical hook registration file.
 
 ### v0.1.1 (2026-05-18)
 

@@ -200,8 +200,8 @@ From `architecture/subsystems/SS-11-knowledge-synthesis.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yq` | 4.x+ | Frontmatter field extraction and writing |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Frontmatter field extraction and writing; note: on Ubuntu, apt install yq installs the WRONG tool. Use snap install yq. |
 | `find` / `ls` | POSIX | Listing inbox/*.md files |
 | `mv` | POSIX | Moving processed notes to inbox/processed/ |
 | `mkdir -p` | POSIX | Creating inbox/processed/ if absent |
@@ -213,7 +213,7 @@ From `architecture/subsystems/SS-11-knowledge-synthesis.md`:
 | `plugins/brain-factory/skills/process-inbox/SKILL.md` | Create | Inbox classification skill with meta-lint-compliant structure |
 | `plugins/brain-factory/tests/skills.bats` | Modify | Add 5 failing then passing process-inbox test blocks |
 
-Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json.template`,
+Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json`,
 any prior STORY-NNN.md, any other existing bats files or skill files.
 
 ## Previous Story Intelligence

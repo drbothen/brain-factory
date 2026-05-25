@@ -184,8 +184,8 @@ From `architecture/subsystems/SS-08-content-brief-writing.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yq` | 4.x+ | Frontmatter field extraction in bats assertions (VP-019) |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Frontmatter field extraction in bats assertions (VP-019); note: on Ubuntu, apt install yq installs the WRONG tool. Use snap install yq. |
 | `grep` | POSIX | Wiki page search and wikilink extraction |
 | `awk` | POSIX | PROOF section extraction for slug validation loop |
 | `date` | GNU/BSD | `created` timestamp in brief frontmatter |
@@ -198,7 +198,7 @@ From `architecture/subsystems/SS-08-content-brief-writing.md`:
 | `plugins/brain-factory/tests/skills.bats` | Modify | Add 4 failing-then-passing brief test blocks |
 
 Files NOT to modify: any file under `.factory/`, any hook script, `plugin.json`,
-`hooks.json.template`, any prior story file, any other existing bats file.
+`hooks.json`, any prior story file, any other existing bats file.
 
 ## Previous Story Intelligence
 

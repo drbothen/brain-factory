@@ -201,12 +201,12 @@ From `architecture/subsystems/SS-05-wiki-layer.md` (rename atomicity section):
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
 | `git` | any modern | rename atomicity; rollback via `git checkout .` |
 | `sed` | BSD/GNU compatible | backlink substitution |
-| `jq` | 1.6+ | JSON summary construction |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
+| `jq` | 1.7+ (latest: 1.8.1) | JSON summary construction |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 
@@ -217,7 +217,7 @@ From `architecture/subsystems/SS-05-wiki-layer.md` (rename atomicity section):
 | `plugins/brain-factory/tests/fixtures/wiki-rename-setup.json` | Create | Pre-rename wiki state with 5 backlinks |
 | `plugins/brain-factory/tests/fixtures/wiki-rename-zero-backlinks.json` | Create | Wiki state with 0 backlinks to old slug |
 
-Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json.template`,
+Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json`,
 any prior STORY-NNN.md, existing hook scripts.
 
 ## Previous Story Intelligence

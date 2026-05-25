@@ -338,7 +338,7 @@ Each criterion is measurable and tested; none are aspirational.
 - `plugin.json` valid, version 0.1.0. (`llm-second-brain-phased-build-plan.md` §5.11)
 - All 13 hook scripts present, executable, and shellcheck-clean. (Adjusted from `llm-second-brain-phased-build-plan.md` §5.11's 12 hooks: wclaude absorption adds `validate-publish-state.sh`; see §"13 bash hooks" for full list.)
 - **All 13** skills present as `SKILL.md` files (the Phase 0/1 primitives — exact match, not minimum). (`llm-second-brain-phased-build-plan.md` §5.11)
-- `hooks.json.template` valid JSON; references all hooks via `${CLAUDE_PLUGIN_ROOT}`. (`llm-second-brain-phased-build-plan.md` §5.11)
+- `hooks.json` valid JSON; references all hooks via `${CLAUDE_PLUGIN_ROOT}`. (`llm-second-brain-phased-build-plan.md` §5.11; note: plan uses the name `hooks.json.template` but Claude Code convention is `hooks.json` per ADR-003 v2.0)
 - `claude --plugin-dir ./plugins/brain-factory` loads without error. (`llm-second-brain-phased-build-plan.md` §5.11)
 - `/brain:init` in a fresh directory produces a working brain (folder structure, CLAUDE.md, .brain/, .github/workflows/) in under 5 minutes. **The 5-minute claim is a tested SLA: the v0.1 ship gate adds an explicit timer assertion (`assert_under_5_minutes`) to the local-dev test script in `plugins/brain-factory/tests/local-dev-test.sh`, supplementing phased-build-plan §5.11's exit criteria. This is a new addition to the gate, not a re-citation.** (`llm-second-brain-phased-build-plan.md` §5.10, §6.5; `README.md`)
 - `/brain:ingest-url` in the test brain produces 5+ wiki pages with cross-references and adversary-review PASS. (`llm-second-brain-phased-build-plan.md` §5.11)
@@ -404,7 +404,7 @@ v1.0 is a hard roadmap commitment — not contingent on any optional migration t
 
 - All **13** WASM hooks compile and pass parity test against bash equivalents (`diff_count = 0`). (Adjusted from `llm-second-brain-phased-build-plan.md` §8.3's 12 hooks: wclaude absorption adds `validate-publish-state.sh` to the migration scope; see §"13 bash hooks".)
 - Vendored dispatcher binaries in tarball; SHA-verified at build time. (`llm-second-brain-phased-build-plan.md` §8.3)
-- `hooks.json.template` wires Claude Code → factory-dispatcher → WASM plugins. (`llm-second-brain-phased-build-plan.md` §8.3)
+- `hooks.json` wires Claude Code → factory-dispatcher → WASM plugins. (`llm-second-brain-phased-build-plan.md` §8.3; plan uses `hooks.json.template` name but Claude Code convention is `hooks.json` per ADR-003 v2.0)
 - At least one week of operation under WASM hooks with zero false positives or false negatives versus the bash baseline. (`llm-second-brain-phased-build-plan.md` §8.3)
 - Cross-platform parity: WASM hooks behave identically on macOS, Linux, and Windows-native without Git Bash. (`llm-second-brain-phased-build-plan.md` §8.3)
 - v1.0.0 tagged; CHANGELOG documents the bash-to-WASM migration; bash hook scripts removed from tarball. (`llm-second-brain-phased-build-plan.md` §8.3)

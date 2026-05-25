@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-10
 title: "Prompt-Injection Quarantine"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-16T00:00:00
 phase: phase-1c
@@ -28,7 +28,7 @@ Intercepts every WebFetch call (PreToolUse) and scrubs content for prompt-inject
 
 ## Interfaces
 
-**Inbound:** Claude Code PreToolUse event for WebFetch tool; stdin JSON with `tool: WebFetch` and `input.url`
+**Inbound:** Claude Code PreToolUse event for WebFetch tool; stdin JSON with `tool_name: "WebFetch"` and `tool_input.url`
 
 **Outbound:** exit 0 (clean) or exit 2 (block) with E-QUARANTINE-001; `/brain:quarantine-check` returns structured report
 
@@ -50,16 +50,16 @@ The corpus is maintained and versioned as a plugin artifact. New patterns are ad
 
 ### `quarantine-fetch.sh` (PreToolUse, WebFetch)
 
-This hook fires BEFORE the WebFetch executes. Since it is PreToolUse, the `output` field is absent from stdin. The hook:
-1. Extracts the URL from `input.url`
+This hook fires BEFORE the WebFetch executes. Since it is PreToolUse, the `tool_result` field is absent from stdin. The hook:
+1. Extracts the URL from `tool_input.url`
 2. Fetches a shallow preview of the URL (first 2KB) via `curl --max-filesize 2048 -s`
 3. Pipes the preview through `node scripts/quarantine.mjs --check` which returns exit 0 (clean) or exit 2 (pattern matched) with the matching pattern name
-4. If pattern matched: emit block verdict E-QUARANTINE-001, exit 2
-5. If clean: emit allow verdict, exit 0
+4. If pattern matched: emit block verdict `{"continue":false,"decision":"block","reason":"E-QUARANTINE-001: ...","hookSpecificOutput":{"code":"E-QUARANTINE-001","trace":"..."}}`, exit 2
+5. If clean: emit allow verdict `{"continue":true}`, exit 0
 
 **Why PreToolUse?** The hook must run BEFORE WebFetch executes. If the hook were PostToolUse, the content would already have been fetched and potentially used in context. PreToolUse is the only event that can prevent the fetch from completing.
 
-**Why cannot be bypassed (BC-2.10.002)?** The hooks.json.template registers `quarantine-fetch.sh` on the `WebFetch` matcher. Claude Code's hook dispatch is at the harness level — it fires regardless of which skill triggered the WebFetch. The agent cannot skip the hook by calling WebFetch "directly"; the PreToolUse hook intercepts every invocation.
+**Why cannot be bypassed (BC-2.10.002)?** The hooks.json registers `quarantine-fetch.sh` on the `WebFetch` matcher. Claude Code's hook dispatch is at the harness level — it fires regardless of which skill triggered the WebFetch. The agent cannot skip the hook by calling WebFetch "directly"; the PreToolUse hook intercepts every invocation.
 
 ### `/brain:quarantine-check` (skill)
 
@@ -79,6 +79,10 @@ Provides an explicit operator-invocable check on a local file or URL, returning 
 - `tests/quarantine.bats` — positive: clean URL preview → exit 0; negative: injected content → E-QUARANTINE-001 exit 2; edge: curl timeout → exit 2 (fail-closed per NFR-016)
 
 ## Changelog
+
+### v1.2 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** §Interfaces updated `tool: WebFetch` → `tool_name: "WebFetch"`, `input.url` → `tool_input.url`. §Key Design `quarantine-fetch.sh` updated: `output` field absent → `tool_result` field absent; `input.url` → `tool_input.url`; block and allow verdict envelopes updated to new format `{"continue":false,"decision":"block","reason":"...","hookSpecificOutput":{...}}` and `{"continue":true}`. `hooks.json.template` → `hooks.json` (2 occurrences in §Key Design). [audit-trail]
 
 ### v1.1 (2026-05-16)
 

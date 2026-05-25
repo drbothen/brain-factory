@@ -290,9 +290,9 @@ From `architecture/subsystems/SS-18-meta-lint-self-audit.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | Hook validation; must be in CI PATH |
-| `shfmt` | 3.7+ (`-i 2`) | Hook validation; must be in CI PATH |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | Hook validation; must be in CI PATH |
+| `shfmt` | 3.7+ (latest: 3.13.1) | Hook validation; must be in CI PATH |
 | `git` | any modern | `git grep` for cross-cutting checks |
 | `grep` | POSIX + `-P` for Perl regex | Word-boundary bare-exit detection |
 
@@ -309,7 +309,7 @@ From `architecture/subsystems/SS-18-meta-lint-self-audit.md`:
 | `plugins/brain-factory/tests/fixtures/meta-lint/hook-with-exit-in-comment.sh` | Create | "Do not exit" in comment; no bare exit statement |
 | `plugins/brain-factory/tests/fixtures/meta-lint/invalid-crosscutting-ai-attribution.md` | Create | File containing `Co-Authored-By: Claude` |
 
-Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json.template`,
+Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json`,
 any prior STORY-NNN.md, any existing hook scripts in `plugins/brain-factory/hooks/`.
 
 ## Previous Story Intelligence

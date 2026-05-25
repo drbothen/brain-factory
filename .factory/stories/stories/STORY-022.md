@@ -242,8 +242,8 @@ From `architecture/subsystems/SS-18-meta-lint-self-audit.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yq` | 4.x+ | Frontmatter field extraction (`name`, `scope`, etc.) |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Frontmatter field extraction (`name`, `scope`, etc.); note: on Ubuntu, apt install yq installs the WRONG tool. Use snap install yq. |
 | `grep` | POSIX | Section heading detection; substring search |
 | `wc` | POSIX | Iron Law length check |
 | `awk` | POSIX | Section body extraction |
@@ -261,7 +261,7 @@ From `architecture/subsystems/SS-18-meta-lint-self-audit.md`:
 | `plugins/brain-factory/tests/fixtures/meta-lint/invalid-agent-no-routing/AGENT.md` | Create | AGENT.md missing routing table reference |
 | `plugins/brain-factory/tests/fixtures/meta-lint/invalid-agent-empty-tools/AGENT.md` | Create | AGENT.md with empty tool lists |
 
-Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json.template`,
+Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json`,
 any prior STORY-NNN.md, any existing bats files.
 
 ## Previous Story Intelligence

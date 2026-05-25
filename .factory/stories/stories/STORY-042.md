@@ -227,11 +227,11 @@ From `architecture/subsystems/SS-15-governance-policies.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 3.2+ | macOS compat |
-| `yq` | 4.x+ | policies.yaml validation and field reads |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.8+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.x+ | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | policies.yaml validation and field reads. **Ubuntu note:** `apt install yq` installs the WRONG tool (kislyuk/yq, Python-based). Use `snap install yq`. |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 

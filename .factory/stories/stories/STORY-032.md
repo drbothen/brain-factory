@@ -66,7 +66,7 @@ complete successfully. In `--dry-run` mode the output order must satisfy: for ev
 (traces to BC-2.12.001 postcondition 1)
 
 **AC-002** — Skill invocations use the brain-factory skill namespace: each step's `skill`
-field is invoked as `node scripts/run-skill.mjs <skill-name> <args>` (Node 20+ is
+field is invoked as `node scripts/run-skill.mjs <skill-name> <args>` (Node 22+ is
 required). In `--dry-run` mode the command is printed but not executed.
 (traces to BC-2.12.001 postcondition 2)
 
@@ -184,7 +184,7 @@ From `architecture/subsystems/SS-12-lobster-runtime.md`:
    first; subsequent steps execute only after all their dependencies succeed.
 
 2. `bin/lobster-run` is a pure bash interpreter — no Node, no Python, no Rust in the
-   runtime itself. Only child skill invocations use Node 20+.
+   runtime itself. Only child skill invocations use Node 22+.
 
 3. Step result envelope written to `.brain/logs/lobster-YYYY-MM-DD.jsonl` per the
    defined schema: `{"step_id": "...", "exit_code": N, "verdict": "...", "duration_ms": N}`.
@@ -205,11 +205,11 @@ From `architecture/subsystems/SS-12-lobster-runtime.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 3.2+ | POSIX compat; macOS ships 3.2 |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `yq` | 4.x+ | YAML parsing in bin/lobster-run |
-| `jq` | 1.6+ | JSON plugin.json manifest check |
-| `node` | 20+ | Invoked by child skill steps (not by lobster-run itself) |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | POSIX compat; macOS system bash is 3.2 but lobster-run targets 5.0+ |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | YAML parsing in bin/lobster-run |
+| `jq` | 1.7+ (latest: 1.8.1) | JSON plugin.json manifest check |
+| `node` | 22+ (Node 20 EOL April 2026) | Invoked by child skill steps (not by lobster-run itself) |
 
 ## File Structure Requirements
 
@@ -232,7 +232,7 @@ STORY-001 establishes `plugin.json` format. The lobster-run skill registration c
 must use the same `jq` path as STORY-001 uses for manifest queries. Verify the
 `plugin.json` `skills` array key before implementing the skill-lookup.
 
-Note on `scripts/run-skill.mjs`: this is the Node 20+ headless skill runner referenced
+Note on `scripts/run-skill.mjs`: this is the Node 22+ headless skill runner referenced
 in SS-12. It is established by EPIC-07 (this story is the first consumer). If
 `scripts/run-skill.mjs` does not yet exist when this story's bats tests run in dry-run
 mode, the static check test must assert only the invocation command string, not actual

@@ -257,12 +257,16 @@ From `architecture/subsystems/SS-05-wiki-layer.md` and ADR-008:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `jq` | 1.6+ | JSON report construction |
-| `yq` | 4.x+ | Frontmatter parsing (embedding_status field) |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
+| `jq` | 1.7+ (latest: 1.8.1) | JSON report construction |
+| `yq` | 4.x+ (mikefarah/yq, NOT kislyuk/yq; latest: 4.53.2) | Frontmatter parsing (embedding_status field) |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
+
+> **yq disambiguation:** `yq` = mikefarah/yq (Go-based). On Ubuntu, `apt install yq` installs the WRONG tool (kislyuk/yq). Use `snap install yq` or install from GitHub releases. The `yq eval` syntax used in this story is mikefarah/yq 4.x syntax.
+
+> **Bash associative arrays:** `wikilink-resolve.sh` uses `declare -A` for the in-memory slug index. Associative arrays require bash 4.0+. The project minimum is bash 5.0+, so this is safe. Do NOT attempt to run this script with macOS system bash 3.2 — it will fail with "syntax error near unexpected token" on `declare -A`.
 
 ## File Structure Requirements
 
@@ -276,7 +280,7 @@ From `architecture/subsystems/SS-05-wiki-layer.md` and ADR-008:
 | `plugins/brain-factory/tests/fixtures/wiki-broken-link.json` | Create | Single broken wikilink fixture |
 | `plugins/brain-factory/tests/fixtures/wiki-invalid-type.json` | Create | Page in non-canonical type directory |
 
-Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json.template`,
+Files NOT to modify: any file under `.factory/`, `plugin.json`, `hooks.json`,
 any prior STORY-NNN.md, existing hook scripts in `plugins/brain-factory/hooks/`.
 
 ## Previous Story Intelligence

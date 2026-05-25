@@ -1,16 +1,16 @@
 ---
 document_type: arch-index
 level: L3
-version: "0.1.23"
+version: "0.1.24"
 status: draft
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-18T00:00:00
+timestamp: 2026-05-25T00:00:00
 phase: phase-1c
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.10
 deployment_topology: single-service
 created: 2026-05-15
-last_updated: 2026-05-18
+last_updated: 2026-05-25
 ---
 
 # Architecture Index: brain-factory
@@ -59,8 +59,8 @@ The `timestamp:` field tracks the most recent meaningful content edit (distinct 
 |----------|------|---------|
 | ARCH-INDEX.md (this) | `architecture/ARCH-INDEX.md` | Canonical sharding index over all architecture artifacts |
 | ADR-001 | `architecture/adr/ADR-001-bash-bats-stack.md` | Toolchain choice: bash + bats for v0.x |
-| ADR-002 | `architecture/adr/ADR-002-hook-chain-contract.md` | Hook stdin/stdout/exit-code canonical contract |
-| ADR-003 | `architecture/adr/ADR-003-plugin-packaging.md` | Plugin manifest: plugin.json + hooks.json.template |
+| ADR-002 | `architecture/adr/ADR-002-hook-chain-contract.md` | Hook stdin/stdout/exit-code canonical contract (v2.0: correct field names, native output schema, exit-1 semantics) |
+| ADR-003 | `architecture/adr/ADR-003-plugin-packaging.md` | Plugin manifest: plugin.json + hooks.json (v2.0: correct file name, directory paths not globs, path variables) |
 | ADR-004 | `architecture/adr/ADR-004-sharded-factory-layout.md` | Sharded .factory/ layout for specs and BCs |
 | ADR-005 | `architecture/adr/ADR-005-single-tenant-scale.md` | Single-tenant power-user architecture; no multi-brain |
 | ADR-006 | `architecture/adr/ADR-006-lobster-runtime.md` | Lobster: bash workflow orchestrator in v0.x |
@@ -165,7 +165,7 @@ graph TD
     SKILLS["Skills Layer\n26 SKILL.md files\n/brain:init, /brain:ingest-url,\n/brain:write, etc."]
     HOOKS["Hook Chain\n13 bash hooks\nPreToolUse / PostToolUse / SessionStart / Stop"]
     LOBSTER["Lobster Runtime\nbin/lobster-run\n6 workflow YAML files"]
-    MANIFEST_ENGINE["Plugin Manifest\nplugin.json\nhooks.json.template"]
+    MANIFEST_ENGINE["Plugin Manifest\nplugin.json\nhooks.json"]
     GH_ACTIONS["GH Action Templates\n19 templates\n(15 author + 4 community-optional)"]
     AGENTS["Specialist Agents\n14 AGENT.md files"]
     HELPERS["Shared Hook Helpers\nhooks/lib/hook-event-emit.sh\nhooks/lib/api-retry.sh\nhooks/lib/manifest-write.sh"]
@@ -241,8 +241,8 @@ graph TD
 | ADR-ID | Title | Status | Supersedes | Superseded By |
 |--------|-------|--------|------------|---------------|
 | ADR-001 | Bash + bats + markdown stack for v0.x | accepted | — | — |
-| ADR-002 | Hook chain canonical contract (exit 0/1/2; JSON I/O) | accepted | — | — |
-| ADR-003 | Plugin packaging via plugin.json + hooks.json.template | accepted | — | — |
+| ADR-002 | Hook chain canonical contract (exit 0/2; JSON I/O; native Claude Code schema) | accepted | — | — |
+| ADR-003 | Plugin packaging via plugin.json + hooks.json | accepted | — | — |
 | ADR-004 | Sharded .factory/ layout | accepted | — | — |
 | ADR-005 | Single-tenant power-user architecture | accepted | — | — |
 | ADR-006 | Lobster runtime as bash workflow orchestrator | accepted | — | — |
@@ -305,7 +305,7 @@ Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when
 | CAP-011 | skills/connect/SKILL.md, skills/synthesize/SKILL.md, skills/process-inbox/SKILL.md | SS-11 | Knowledge synthesis |
 | CAP-012 | bin/lobster-run, workflows/*.yaml | SS-12 | Lobster runtime |
 | CAP-013 | templates/github-action-templates/*.yml | SS-13 | GH Actions |
-| CAP-014 | .claude-plugin/plugin.json, hooks/hooks.json.template, skills/upgrade-brain/SKILL.md | SS-14 | Plugin lifecycle |
+| CAP-014 | .claude-plugin/plugin.json, hooks/hooks.json, skills/upgrade-brain/SKILL.md | SS-14 | Plugin lifecycle |
 | CAP-015 | skills/policy-add/SKILL.md, skills/policy-registry-validate/SKILL.md, templates/policies.yaml | SS-15 | Governance |
 | CAP-016 | bin/lobster-run (token instrumentation), scripts/gen-test-corpus.sh, .brain/logs/ | SS-16 | Scale observability |
 | CAP-017 | scripts/event-catalog.json, hooks/lib/hook-event-emit.sh | SS-17 | Event catalog |

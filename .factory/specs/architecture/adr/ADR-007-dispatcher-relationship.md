@@ -4,7 +4,7 @@ id: ADR-007
 title: "factory-dispatcher relationship: v0.x bare bash; v1.0 WASM dispatcher migration"
 status: accepted
 level: L3
-version: "1.0"
+version: "1.1"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-15T00:00:00
 phase: phase-1c
@@ -26,7 +26,7 @@ The phased-build-plan.md makes an explicit architectural decision: brain-factory
 
 ### v0.x architecture (current)
 
-Claude Code invokes each hook script directly via the `command` field in hooks.json.template. No `factory-dispatcher` binary is involved. The hook I/O protocol (JSON-in / JSON-out / exit 0/1/2) is identical to the WASM hook ABI, so the protocol is already dispatcher-compatible even though the dispatch mechanism is not the shared dispatcher yet.
+Claude Code invokes each hook script directly via the `command` field in hooks.json. No `factory-dispatcher` binary is involved. The hook I/O protocol (JSON-in / JSON-out / exit 0/1/2) is identical to the WASM hook ABI, so the protocol is already dispatcher-compatible even though the dispatch mechanism is not the shared dispatcher yet.
 
 This is not a stopgap — it is the production enforcement layer for v0.x through v0.9.
 
@@ -57,11 +57,17 @@ The vsdd-dispatcher-extraction-plan.md describes how vsdd-factory would extract 
 - Parity test corpus gives high confidence in migration correctness
 
 **Negative:**
-- hooks.json.template has no per-platform variant in v0.x — Windows-native users must use Git Bash or WSL2
+- hooks.json has no per-platform variant in v0.x — Windows-native users must use Git Bash or WSL2
 - bash startup overhead (~50–80ms per hook invocation on cold start) counts against the 100ms p99 budget (NFR-001); measured on the CI environment and optimized if needed
 
 **Neutral:**
 - The factory-dispatcher relationship is a v1.0 concern; it has no impact on v0.x architecture decisions
+
+## Changelog
+
+### v1.1 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** Both occurrences of `hooks.json.template` updated to `hooks.json` (filename rename per ADR-003 v2.0): §Decision v0.x architecture paragraph and §Consequences Negative bullet. Hook I/O protocol compatibility note retained — the stdin field rename (`tool`, `input` → `tool_name`, `tool_input`) and verdict envelope change are additive protocol refinements that preserve dispatcher-ABI compatibility. [audit-trail]
 
 ## References
 

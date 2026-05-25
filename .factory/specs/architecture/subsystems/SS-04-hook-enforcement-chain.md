@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-04
 title: "Hook Enforcement Chain"
 level: L3
-version: "1.2"
+version: "1.3"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-18T00:00:00
 phase: phase-1c
@@ -16,7 +16,7 @@ created: 2026-05-15
 
 ## Responsibility
 
-The core governance infrastructure: 13 bash hook scripts registered in hooks.json.template that fire at tool events (PreToolUse, PostToolUse, SessionStart, Stop). Each hook implements the canonical contract: JSON stdin → JSON verdict stdout → JSONL events stderr → exit 0/1/2.
+The core governance infrastructure: 13 bash hook scripts registered in hooks.json that fire at tool events (PreToolUse, PostToolUse, SessionStart, Stop). Each hook implements the canonical contract: JSON stdin → JSON verdict stdout → JSONL events stderr → exit 0/1/2.
 
 ## BC Inventory
 
@@ -53,9 +53,9 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 
 ## Interfaces
 
-**Inbound:** Claude Code harness delivers stdin JSON per Universal Hook Input Schema (interface-definitions.md §2)
+**Inbound:** Claude Code harness delivers stdin JSON per Universal Hook Input Schema (interface-definitions.md §2); fields: `tool_name`, `tool_input`, `tool_result`
 
-**Outbound:** stdout JSON verdict; stderr JSONL events; exit code 0/1/2
+**Outbound:** stdout JSON verdict `{"continue":true|false,"decision":"block","reason":"...","hookSpecificOutput":{...}}`; advisory = exit 0 + systemMessage; stderr JSONL events; exit code 0/2 (exit 1 = debug log only, NOT advisory)
 
 **Shared helpers (four files):**
 - `hooks/lib/hook-event-emit.sh` (ADR-016 — event emission + verdict)
@@ -85,6 +85,10 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 PostToolUse hooks fire on every Write/Edit. At 10K page ingest, this means 10K+ hook invocations. Hooks must be fast (NFR-001: 100ms p99). The O(n) wikilink resolution (grep -F on wiki/index.md) is the bottleneck; profiled and optimized in Phase 3 if needed.
 
 ## Changelog
+
+### v1.3 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** §Responsibility updated `hooks.json.template` → `hooks.json` (filename rename per ADR-003 v2.0). §Interfaces Inbound updated to cite `tool_name`, `tool_input`, `tool_result` field names; Outbound updated to the new verdict envelope `{"continue":...,"decision":"block","reason":"...","hookSpecificOutput":{...}}` and clarified exit 1 semantics (debug log only; advisory = exit 0 + systemMessage). [audit-trail]
 
 ### v1.2 (2026-05-18)
 

@@ -247,18 +247,116 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md`,
 - `tests/meta-lint.bats` must use only bash, bats, grep, awk, jq. No Node.js test runners.
 - Test fixture files must be plain JSON (valid, minimal). No templating.
 
+## Hook I/O Protocol Reference (ADR-002 v2.0)
+
+This section inlines the hook I/O contract so this story is self-contained. This is
+especially important for STORY-015 since the meta-lint and hook-contracts suites must
+validate the correct contract across all 13 hooks.
+
+### stdin — Claude Code delivers this JSON
+
+**PostToolUse** (Write/Edit hooks):
+
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<path>",
+  "cwd": "<path>",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write|Edit|...",
+  "tool_input": {"file_path": "<path>", "content": "<string>"},
+  "tool_use_id": "<string>",
+  "tool_result": {"type": "text|image|error", "text": "...", "exit_code": 0}
+}
+```
+
+**PreToolUse** (Write/Edit/Bash hooks — no `tool_result`):
+
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<path>",
+  "cwd": "<path>",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Write|Edit|Bash",
+  "tool_input": {"file_path": "<path>", "content": "<string>"},
+  "tool_use_id": "<string>"
+}
+```
+
+**Stop / SessionStart** (lifecycle hooks — no tool fields):
+
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<path>",
+  "cwd": "<path>",
+  "hook_event_name": "Stop|SessionStart"
+}
+```
+
+### Per-tool `tool_input` fields
+
+| Tool | Fields |
+|------|--------|
+| Write | `file_path`, `content` |
+| Edit | `file_path`, `old_string`, `new_string`, `replace_all` |
+| Bash | `command`, `description`, `timeout` |
+
+### stdout — hook verdict JSON
+
+```json
+{
+  "continue": true,
+  "systemMessage": "Advisory (exit 0 only)",
+  "decision": "block",
+  "reason": "Why blocked",
+  "hookSpecificOutput": {"code": "E-SCOPE-NNN", "trace": "<uuid>", "details": {}}
+}
+```
+
+Tri-state mapping:
+- **allow**: exit 0, `{"continue": true}`
+- **advise**: exit 0, `{"continue": true, "systemMessage": "..."}`
+- **block**: exit 0, `{"decision": "block", "reason": "..."}` OR exit 2 + stderr
+
+### Exit codes
+
+| Exit | Meaning |
+|------|---------|
+| 0 | Success (stdout parsed as JSON) |
+| 2 | Blocking error (stderr shown to user) |
+| Other (1) | Non-blocking (stderr to debug log ONLY) |
+
+**CRITICAL:** Exit 1 is NOT advisory. Use exit 0 + `systemMessage` for advisories.
+Stop/SessionStart hooks MUST NOT exit 2.
+
+### Canonical field access patterns
+
+```bash
+# Extract file path (PostToolUse / PreToolUse Write|Edit):
+file_path="$(jq -r '.tool_input.file_path' <<< "$stdin_json")"
+# Extract tool name:
+tool_name="$(jq -r '.tool_name' <<< "$stdin_json")"
+# Extract bash command (PreToolUse Bash):
+command="$(jq -r '.tool_input.command' <<< "$stdin_json")"
+```
+
+The **canonical sample fixtures** for latency tests (`tests/fixtures/<hook-name>-sample.json`)
+must use `.tool_input.file_path` (not `.input.path` or `.input.file_path`) per ADR-002 v2.0.
+
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions |
 | `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `jq` | 1.6+ | JSON validation in test assertions |
+| `jq` | 1.7+ (latest: 1.8.1) | JSON validation in test assertions |
 | `grep` | POSIX | Static analysis assertions |
 | `awk` | POSIX | Pattern extraction in meta-lint |
 | `time` / `SECONDS` | bash builtin | Latency measurement |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
 No Node.js, no Python in test files.
 

@@ -204,11 +204,11 @@ From `architecture/subsystems/SS-16-scale-aware-architecture.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 3.2+ | macOS compat |
-| `jq` | 1.6+ | JSONL record construction and validation |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.8+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.x+ | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions |
+| `jq` | 1.7+ (latest: 1.8.1) | JSONL record construction and validation |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 | `date` (GNU or BSD) | any | ISO 8601 timestamp; BSD `date -u` and GNU `date -u` both support `+%Y-%m-%dT%H:%M:%SZ` |
 
 ## File Structure Requirements

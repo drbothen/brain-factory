@@ -160,7 +160,7 @@ no `.claude/templates/` hardcoding.
    shebang (`#!/usr/bin/env bash`), `set -euo pipefail`, JSON stdin read, and stub body
    that exits 0 unconditionally.
 
-2. **[stub]** Create `plugins/brain-factory/scripts/linkedin-post.mjs` (Node 20+) with
+2. **[stub]** Create `plugins/brain-factory/scripts/linkedin-post.mjs` (Node 22+) with
    stub that accepts `--file`, `--access-token`, `--api-base` args and exits 0 with a
    mock post ID.
 
@@ -278,14 +278,46 @@ From `architecture/subsystems/SS-09-publishing-pipeline.md`:
 - `validate-publish-state.sh`: must NOT read `wiki/` or `sources/`.
 - `publish-content` skill: must NOT post to any platform other than LinkedIn in v0.1.
 
+## LinkedIn API Reference (verified May 2026)
+
+The Community Management API (Posts API) is the correct API for posting content.
+
+**Endpoint:** `POST https://api.linkedin.com/rest/posts`
+
+**Required headers:**
+- `Authorization: Bearer {token}`
+- `X-Restli-Protocol-Version: 2.0.0`
+- `Linkedin-Version: {YYYYMM}` (e.g., `202605`) — MANDATORY as of 2025
+- `Content-Type: application/json`
+
+**OAuth scope:** `w_member_social` (personal posting)
+NOTE: `r_member_social` is a CLOSED permission — no new access requests accepted.
+
+**Request body (text post):**
+```json
+{
+  "author": "urn:li:person:{id}",
+  "commentary": "Post text",
+  "visibility": "PUBLIC",
+  "distribution": {"feedDistribution": "MAIN_FEED"},
+  "lifecycleState": "PUBLISHED"
+}
+```
+
+**Response:** `201 Created`. Post ID in `x-restli-id` header (NOT response body).
+
+**Rate limits (dev tier):** 500 req/day per app, 100 req/day per member. HTTP 429 on exceed.
+
+**Token expiry:** 60-day access tokens, 365-day refresh tokens.
+
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `node` | 20+ | `scripts/linkedin-post.mjs` runtime (CLAUDE.md §Toolchain) |
-| `jq` | 1.6+ | JSON stdin parsing in hook |
-| `yq` | 4.x+ | Frontmatter extraction in hook |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `node` | 22+ (Node 20 EOL April 2026) | `scripts/linkedin-post.mjs` runtime (CLAUDE.md §Toolchain) |
+| `jq` | 1.7+ (latest: 1.8.1) | JSON stdin parsing in hook |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Frontmatter extraction in hook |
 | `awk` | POSIX | Fallback frontmatter extraction |
 | `scripts/lib/api-retry.sh` | (this repo) | Exponential backoff wrapper (ADR-016) |
 | `date` | GNU/BSD | ISO8601 validation and `published_at` timestamp |
@@ -295,7 +327,7 @@ From `architecture/subsystems/SS-09-publishing-pipeline.md`:
 | Path | Action | Notes |
 |------|--------|-------|
 | `plugins/brain-factory/hooks/validate-publish-state.sh` | Create | PostToolUse state machine enforcement hook |
-| `plugins/brain-factory/scripts/linkedin-post.mjs` | Create | Node 20+ LinkedIn Posts API caller |
+| `plugins/brain-factory/scripts/linkedin-post.mjs` | Create | Node 22+ LinkedIn Posts API caller |
 | `plugins/brain-factory/skills/publish-content/SKILL.md` | Create | Publish orchestration skill |
 | `plugins/brain-factory/tests/validate-publish-state.bats` | Create | Per-hook bats suite for validate-publish-state.sh: 4 state machine VP-020 test cases (≥ 3 @test blocks) |
 | `plugins/brain-factory/tests/skills.bats` | Modify | Add 8 failing-then-passing publish skill tests |

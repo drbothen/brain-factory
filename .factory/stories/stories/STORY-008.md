@@ -135,9 +135,14 @@ BC-2.04.017 event catalog compliance)
 2. **[impl]** Implement `plugins/brain-factory/hooks/validate-wikilink-integrity.sh`
    per BC-2.04.003:
    - `#!/usr/bin/env bash` + `set -euo pipefail`
-   - Extract the file path from stdin JSON payload and read the written file content
-   - Extract all `[[slug]]` patterns using `grep -oP '\[\[\K[^\]]+(?=\]\])'` (or `awk`
-     pattern per ADR-008 §wikilink-extraction)
+   - Extract the file path from stdin JSON payload using `.tool_input.file_path` and read the written file content
+   - Extract all `[[slug]]` patterns using the portable approach (macOS BSD grep lacks the `-P` flag; `grep -oP` is GNU-only and MUST NOT be used):
+     ```bash
+     # Portable wikilink extraction (works on macOS BSD grep and GNU grep):
+     grep -o '\[\[[^]]*\]\]' "$file" | sed 's/^\[\[//;s/\]\]$//'
+     # OR using awk (fully POSIX):
+     awk '{while(match($0,/\[\[[^\]]+\]\]/)){s=substr($0,RSTART+2,RLENGTH-4);print s;$0=substr($0,RSTART+RLENGTH)}}' "$file"
+     ```
    - If no wikilinks found: exit 0 immediately
    - Check `wiki/index.md` is readable; exit 2 with E-WIKI-002 if absent
    - For each slug, grep `wiki/index.md` for the slug (index-first O(n) lookup)
@@ -204,21 +209,105 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md`, ADR-002, and ADR
    NOT in `${CLAUDE_PLUGIN_ROOT}`. Paths must be resolved relative to the vault root.
 6. The `broken_slugs` field in E-WIKI-001 stdout is an array (even if only one broken
    slug). Emit ALL broken slugs in one response — do not exit on first failure.
+7. Wikilink extraction MUST use portable `grep -o` + `sed` or `awk` — DO NOT use
+   `grep -oP` (GNU-only; macOS BSD grep lacks the `-P` PCRE flag). See the portable
+   alternatives in Task 2 above.
 
 **Forbidden dependencies:** Both hook scripts must NOT depend on Node.js, npm, or any
 non-standard tool beyond bash, jq, awk, and grep. Pure bash + POSIX utilities only.
+
+## Hook I/O Protocol Reference (ADR-002 v2.0)
+
+This section inlines the hook I/O contract so this story is self-contained.
+
+### stdin — Claude Code delivers this JSON on stdin
+
+**PreToolUse:**
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<path>",
+  "cwd": "<path>",
+  "permission_mode": "default|plan|acceptEdits|auto|dontAsk|bypassPermissions",
+  "effort": {"level": "low|medium|high|xhigh|max"},
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Write|Edit|Read|Bash|WebFetch|WebSearch|Glob|Grep|Agent|mcp__*",
+  "tool_input": { /* see per-tool fields below */ },
+  "tool_use_id": "<string>"
+}
+```
+
+**PostToolUse** — same as above plus:
+```json
+"hook_event_name": "PostToolUse",
+"tool_result": {"type": "text|image|error", "text": "...", "exit_code": 0}
+```
+
+### Per-tool `tool_input` fields
+
+| Tool | Fields |
+|------|--------|
+| Write | `file_path` (string), `content` (string) |
+| Edit | `file_path` (string), `old_string`, `new_string`, `replace_all` (bool) |
+| Read | `file_path` (string) |
+| Bash | `command` (string), `description`, `timeout`, `run_in_background` |
+| WebFetch | `url` (string) |
+
+### stdout — hook writes this JSON to stdout
+
+```json
+{
+  "continue": true,
+  "systemMessage": "Advisory shown to user (only on exit 0)",
+  "decision": "block",
+  "reason": "Why the operation was blocked",
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse|PostToolUse",
+    "code": "E-SCOPE-NNN",
+    "trace": "<uuid-v4>",
+    "details": { /* hook-specific data */ }
+  }
+}
+```
+
+brain-factory tri-state mapping:
+- **allow**: exit 0, stdout `{"continue": true}` (no `decision` field)
+- **advise**: exit 0, stdout `{"continue": true, "systemMessage": "Advisory: ..."}` + `hookSpecificOutput` with code
+- **block**: exit 0, stdout `{"decision": "block", "reason": "..."}` + `hookSpecificOutput` with code. OR exit 2 with stderr message.
+
+### Exit codes
+
+| Exit | Meaning | Claude Code action |
+|------|---------|-------------------|
+| 0 | Success | stdout parsed as JSON; if `decision:"block"` → blocked |
+| 2 | Blocking error | stderr shown to user; operation aborted |
+| Other (1, etc.) | Non-blocking error | stderr to debug log ONLY (NOT shown to user) |
+
+**CRITICAL:** Exit 1 is NOT an advisory channel — stderr goes to debug log, not to user. Use exit 0 + `systemMessage` for advisories.
+
+### Extracting the file path from stdin
+
+For PostToolUse hooks on Write|Edit, extract the file path with:
+```bash
+file_path="$(jq -r '.tool_input.file_path' <<< "$stdin_json")"
+```
+
+For the tool name:
+```bash
+tool_name="$(jq -r '.tool_name' <<< "$stdin_json")"
+```
 
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `jq` | 1.6+ | ADR-002 §hook-stdin-parsing |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
+| `jq` | 1.7+ (latest: 1.8.1) | ADR-002 §hook-stdin-parsing |
 | `awk` | POSIX | BC-2.04.003 precondition 3; ADR-008 §wikilink-extraction |
-| `grep` | POSIX | wikilink pattern extraction |
+| `grep` | POSIX (BSD or GNU; use `-o` only — NOT `-P`) | wikilink pattern extraction |
 | `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) (`-i 2`) | CLAUDE.md §Conventions |
 
 No Node.js required.
 

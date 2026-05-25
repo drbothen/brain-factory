@@ -193,10 +193,10 @@ From `architecture/subsystems/SS-09-publishing-pipeline.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `node` | 20+ | LinkedIn engagement API call (may reuse `scripts/linkedin-post.mjs` pattern) |
-| `jq` | 1.6+ | JSONL report generation and parsing in bats assertions |
-| `yq` | 4.x+ | Extract `linkedin_post_id` from published file frontmatter |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `node` | 22+ (Node 20 EOL April 2026) | LinkedIn engagement API call (may reuse `scripts/linkedin-post.mjs` pattern) |
+| `jq` | 1.7+ (latest: 1.8.1) | JSONL report generation and parsing in bats assertions |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Extract `linkedin_post_id` from published file frontmatter |
 | `date` | GNU/BSD | Current month `YYYY-MM` for report filename |
 | `scripts/lib/api-retry.sh` | (this repo, from STORY-030) | Rate-limit backoff |
 

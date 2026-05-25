@@ -1,14 +1,14 @@
 ---
 document_type: vp-index
 level: L3
-version: "0.1.7"
+version: "0.1.8"
 status: draft
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-18T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 created: 2026-05-15
-last_updated: 2026-05-18
+last_updated: 2026-05-25
 ---
 
 # Verification Property Index: brain-factory
@@ -111,6 +111,10 @@ it but the body and index table did not reflect it; VP-012 extended with Group 2
 - [x] **last_updated freshness check:** Before commit, verify `last_updated` frontmatter date >= MAX(date in any Changelog entry). If a new Changelog entry dated YYYY-MM-DD is added, `last_updated` MUST be >= YYYY-MM-DD. (Added F-PASS6-O1-arch — mirrors ARCH-INDEX freshness discipline established in F-PASS5.) Incremental scope: check VP-INDEX on every burst. Canonical-baseline scope: one-time audit at Pass 6 codification time — VP-INDEX confirmed clean at that point. (Dual-scope declaration added F-PASS11-C2.)
 
 ## Changelog
+
+### v0.1.8 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** VP-INDEX version bumped to reflect VP file version bumps across this burst. 8 VP files updated: VP-002 v1.0→v1.1, VP-003 v1.1→v1.2, VP-004 v1.2→v1.3, VP-005 v1.1→v1.2, VP-009 v1.0→v1.1, VP-011 v1.0→v1.1, VP-021 v1.2→v1.3, VP-026 v1.3→v1.4. Changes: `hooks.json.template` → `hooks.json` (filename rename), stdin field names updated (`"tool"` → `"tool_name"`, `"input":{...}` → `"tool_input":{...}`, `"output":{}` removed from PostToolUse/PreToolUse fixtures), verdict assertions updated (`"verdict":"allow"` → `"continue":true`, `"verdict":"block"` → `"decision":"block"` + `"continue":false`), exit 1 semantics clarified (debug log only; advisory = exit 0 + systemMessage). VP-INDEX table and coverage matrix unchanged (no new VPs, no VP retirements). [audit-trail]
 
 ### v0.1.7 (2026-05-18)
 

@@ -4,9 +4,9 @@ id: ADR-016
 title: "Hook helper architecture: hook-event-emit.sh, api-retry.sh, manifest-write.sh"
 status: accepted
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
-timestamp: 2026-05-16T00:00:00
+timestamp: 2026-05-25T00:00:00
 phase: phase-1c
 traces_to: ../ARCH-INDEX.md
 supersedes: null
@@ -76,28 +76,57 @@ emit_event() {
 }
 ```
 
-**3. JSON verdict emission to stdout:**
+**3. JSON verdict emission to stdout (Claude Code native schema):**
+
+Claude Code expects its own schema at the top level (ADR-002 v2.0). The `emit_verdict` function produces this schema. brain-factory-internal fields (E-SCOPE-NNN codes, traces) are placed inside `hookSpecificOutput`.
+
 ```bash
 emit_verdict() {
-  local verdict="$1"   # allow|advise|block
-  local code="$2"      # E-SCOPE-NNN or empty for allow
-  local message="$3"   # human-readable or empty for allow
-  local trace="$4"     # uuid
-  if [[ "$verdict" == "allow" ]]; then
-    printf '{"verdict":"allow","trace":"%s"}\n' "$trace"
-    return 0
-  fi
-  if [[ -z "$code" || -z "$message" ]]; then
-    # Malformed verdict — emit internal error and block
-    printf '{"verdict":"block","code":"E-HOOK-001","message":"emit_verdict called with missing code or message","trace":"%s"}\n' "$trace"
-    exit 2
-  fi
-  printf '{"verdict":"%s","code":"%s","message":"%s","trace":"%s"}\n' \
-    "$verdict" "$code" "$message" "$trace"
+  local verdict="$1"     # allow|advise|block
+  local code="$2"        # E-SCOPE-NNN or empty for allow/advise with no code
+  local message="$3"     # human-readable or empty for allow
+  local trace="$4"       # uuid
+  local hook_event="$5"  # hook_event_name from stdin (e.g., "PreToolUse")
+
+  case "$verdict" in
+    allow)
+      printf '{"continue":true,"hookSpecificOutput":{"hookEventName":"%s","trace":"%s"}}\n' \
+        "$hook_event" "$trace"
+      ;;
+    advise)
+      # Advisory: exit 0 + systemMessage (shown to operator)
+      if [[ -z "$code" || -z "$message" ]]; then
+        # Malformed advisory — emit internal error and block instead
+        printf '{"continue":false,"decision":"block","reason":"emit_verdict called with missing code or message for advise","hookSpecificOutput":{"hookEventName":"%s","permissionDecision":"deny","permissionDecisionReason":"malformed advisory","trace":"%s"}}\n' \
+          "$hook_event" "$trace"
+        exit 2
+      fi
+      printf '{"continue":true,"systemMessage":"%s: %s","hookSpecificOutput":{"hookEventName":"%s","additionalContext":"%s","trace":"%s"}}\n' \
+        "$code" "$message" "$hook_event" "$message" "$trace"
+      ;;
+    block)
+      if [[ -z "$code" || -z "$message" ]]; then
+        # Malformed block — emit internal error
+        printf '{"continue":false,"decision":"block","reason":"emit_verdict called with missing code or message for block","hookSpecificOutput":{"hookEventName":"%s","permissionDecision":"deny","permissionDecisionReason":"malformed block","trace":"%s"}}\n' \
+          "$hook_event" "$trace"
+        exit 2
+      fi
+      printf '{"continue":false,"decision":"block","reason":"%s: %s","hookSpecificOutput":{"hookEventName":"%s","permissionDecision":"deny","permissionDecisionReason":"%s","trace":"%s"}}\n' \
+        "$code" "$message" "$hook_event" "$message" "$trace"
+      ;;
+    *)
+      # Unknown verdict — block with internal error
+      printf '{"continue":false,"decision":"block","reason":"emit_verdict called with unknown verdict: %s","hookSpecificOutput":{"hookEventName":"%s","permissionDecision":"deny","permissionDecisionReason":"unknown verdict","trace":"%s"}}\n' \
+        "$verdict" "$hook_event" "$trace"
+      exit 2
+      ;;
+  esac
 }
 ```
 
-The hook script's main body calls `TRACE=$(generate_trace)` once at startup, then uses `$TRACE` in all `emit_event` and `emit_verdict` calls.
+**Function signature change from v1.1:** `emit_verdict` now takes a fifth argument: `hook_event` (the `hook_event_name` parsed from stdin, e.g., `"PreToolUse"`). This is required by Claude Code's native output schema (`hookSpecificOutput.hookEventName`).
+
+The hook script's main body calls `TRACE=$(generate_trace)` once at startup and parses `HOOK_EVENT` from stdin, then uses both in all `emit_event` and `emit_verdict` calls.
 
 ### api-retry.sh
 
@@ -147,25 +176,51 @@ NFR-018 (manifest atomicity) is satisfied by this helper.
 
 ### Hook stdin parsing
 
-Each hook script parses stdin into local variables at startup:
+Each hook script parses stdin into local variables at startup using the correct Claude Code field names (ADR-002 v2.0):
+
 ```bash
 INPUT="$(cat)"
-TOOL="$(printf '%s' "$INPUT" | jq -r '.tool')"
-INPUT_PATH="$(printf '%s' "$INPUT" | jq -r '.input.path // empty')"
+TOOL_NAME="$(printf '%s' "$INPUT" | jq -r '.tool_name')"
+HOOK_EVENT="$(printf '%s' "$INPUT" | jq -r '.hook_event_name // empty')"
+INPUT_PATH="$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // empty')"
+INPUT_URL="$(printf '%s' "$INPUT" | jq -r '.tool_input.url // empty')"
+INPUT_COMMAND="$(printf '%s' "$INPUT" | jq -r '.tool_input.command // empty')"
+# PostToolUse hooks additionally parse:
+TOOL_RESULT_TEXT="$(printf '%s' "$INPUT" | jq -r '.tool_result.text // empty')"
+TOOL_RESULT_EXIT="$(printf '%s' "$INPUT" | jq -r '.tool_result.exit_code // empty')"
 ```
-Hooks that don't need a specific field simply don't parse it. jq parse failure → the hook exits 2 (fail-closed per NFR-016): `TOOL="$(printf '%s' "$INPUT" | jq -r '.tool')" || { emit_verdict block "E-HOOK-002" "malformed stdin" "$TRACE"; exit 2; }`.
+
+**Field name changes from v1.1 (corrections required in all 13 hook scripts):**
+
+| v1.1 (wrong) | v1.2 (correct) |
+|---|---|
+| `.tool` | `.tool_name` |
+| `.input.path` | `.tool_input.file_path` |
+| `.input.url` | `.tool_input.url` |
+| `.input.command` | `.tool_input.command` |
+| `.output` | `.tool_result` |
+
+Hooks that don't need a specific field simply don't parse it. jq parse failure → the hook exits 2 (fail-closed per NFR-016):
+
+```bash
+TOOL_NAME="$(printf '%s' "$INPUT" | jq -r '.tool_name')" \
+  || { emit_verdict block "E-HOOK-002" "malformed stdin" "$TRACE" "$HOOK_EVENT"; exit 2; }
+```
 
 ## Consequences
 
 **Positive:**
 - Shared helpers eliminate logic duplication across 13 hook scripts
-- emit_verdict prevents malformed verdicts (missing code/message) from reaching Claude Code
+- emit_verdict produces the correct Claude Code native schema — malformed internal calls are caught and converted to a blocking error
+- Advisory messages (exit 0 + systemMessage) are now correctly routed to the operator; debug-only errors (exit non-zero, non-2) go to the log
 - api-retry.sh centralizes rate-limit handling — not duplicated in 19 GH Action templates
 - manifest-write.sh makes atomic writes a one-liner for any script that touches manifest.json
 
 **Negative:**
 - shellcheck must be configured to understand `source "${CLAUDE_PLUGIN_ROOT}/..."` — this requires `# shellcheck source=...` annotations in each hook script
 - The uuidgen fallback chain adds ~5 lines of platform detection to hook-event-emit.sh
+- v1.1 hook scripts using `.tool`, `.input.path`, `.output` field names must be updated to `.tool_name`, `.tool_input.file_path`, `.tool_result`
+- emit_verdict signature now has a fifth `hook_event` parameter — all 13 hook callsites must be updated
 
 **Neutral:**
 - The helpers are part of the plugin tarball (included in hooks/lib/)
@@ -207,6 +262,18 @@ start; the GH Actions context has no equivalent resolver.
 - ADR-014 (error taxonomy enforcement — emit_verdict with E-SCOPE-NNN codes)
 
 ## Changelog
+
+### v1.2 (2026-05-25)
+
+**Cascade fix from ADR-002 v2.0 schema corrections.** ADR-016 defines the canonical `emit_verdict` function and stdin parsing patterns that all 13 hook scripts implement. These must be consistent with the verified Claude Code API.
+
+1. **`emit_verdict` function rewritten:** The v1.1 implementation emitted the custom brain-factory envelope `{"verdict":"...","code":"...","message":"...","trace":"..."}`. v1.2 emits Claude Code's native schema: `{"continue":true/false,"decision":"block","reason":"...","systemMessage":"...","hookSpecificOutput":{...}}`. brain-factory-internal fields (E-SCOPE-NNN codes, traces) move inside `hookSpecificOutput`.
+
+2. **Advisory semantics corrected:** v1.1 `emit_verdict advise` implied exit 1. v1.2 `emit_verdict advise` produces exit 0 + `systemMessage` (shown to operator). Exit 1 is non-blocking (debug log only) and is no longer a supported verdict path.
+
+3. **`emit_verdict` signature extended:** Fifth parameter `hook_event` added (required by `hookSpecificOutput.hookEventName`). All 13 hook callsites must be updated.
+
+4. **stdin field names corrected:** `.tool` → `.tool_name`; `.input.path` → `.tool_input.file_path`; `.output` → `.tool_result`. Field-name correction table added.
 
 ### v1.1 (2026-05-16)
 

@@ -234,17 +234,76 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md` and ADR-002:
 - `flush-state-and-commit.sh`: no `git push`, no force flags, no remote operations.
 - Both scripts: pure bash + git/yq/jq. No Node.js, no Python.
 
+## Hook I/O Protocol Reference (ADR-002 v2.0)
+
+This section inlines the hook I/O contract so this story is self-contained.
+
+### stdin — Claude Code delivers this JSON
+
+**Stop event** (`flush-state-and-commit.sh`) and **SessionStart event** (`brain-health-check.sh`):
+
+```json
+{
+  "session_id": "<string>",
+  "transcript_path": "<path>",
+  "cwd": "<path>",
+  "hook_event_name": "Stop|SessionStart"
+}
+```
+
+Note: Stop and SessionStart events carry no `tool_name` or `tool_input` — they are
+session lifecycle events, not tool-call events. The stdin JSON is minimal.
+
+### stdout — hook verdict JSON
+
+```json
+{
+  "continue": true,
+  "systemMessage": "Advisory (exit 0 only)",
+  "decision": "block",
+  "reason": "Why blocked",
+  "hookSpecificOutput": {"code": "E-SCOPE-NNN", "trace": "<uuid>", "details": {}}
+}
+```
+
+Tri-state mapping:
+- **allow**: exit 0, `{"continue": true}`
+- **advise**: exit 0, `{"continue": true, "systemMessage": "..."}`
+- **block**: exit 0, `{"decision": "block", "reason": "..."}` OR exit 2 + stderr
+
+### Exit codes
+
+| Exit | Meaning |
+|------|---------|
+| 0 | Success (stdout parsed as JSON) |
+| 2 | Blocking error (stderr shown to user) |
+| Other (1) | Non-blocking (stderr to debug log ONLY) |
+
+**CRITICAL for lifecycle hooks:** Stop and SessionStart hooks MUST NOT exit 2. Blocking
+a session open or close is architecturally forbidden (BC-2.04.013 invariant 2,
+BC-2.04.014 invariant 1). Exit 1 is NOT advisory — use exit 0 + `systemMessage`.
+
+## yq Disambiguation
+
+`yq` in this story refers to **mikefarah/yq** (Go-based, v4.x+). NOT kislyuk/yq (Python-based).
+
+- On Ubuntu, `sudo apt install yq` may install the WRONG yq (kislyuk). Use `snap install yq`
+  or download from GitHub releases: `https://github.com/mikefarah/yq/releases`
+- Verify: `yq --version` should show `yq (https://github.com/mikefarah/yq/) version v4.x.x`
+- Both `yq eval '.key' file.yaml` and `yq '.key' file.yaml` are valid (`eval` is the
+  optional default command in v4.x)
+
 ## Library and Framework Requirements
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | CLAUDE.md §Conventions; ADR-001 |
-| `jq` | 1.6+ | ADR-002 §hook-stdin-parsing |
-| `yq` | 4.x+ | STATE.md YAML parsing for health-check |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
+| `jq` | 1.7+ (latest: 1.8.1) | ADR-002 §hook-stdin-parsing |
+| `yq` | 4.x+ (mikefarah/yq, Go-based — NOT kislyuk/yq Python-based) | STATE.md YAML parsing for health-check |
 | `git` | 2.x+ | flush-state-and-commit.sh git operations |
 | `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ (`-i 2`) | CLAUDE.md §Conventions |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 

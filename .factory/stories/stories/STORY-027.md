@@ -95,7 +95,10 @@ it), re-running `/brain:init` does NOT overwrite it with the default list.
    Procedure body for new steps is empty at this point (later tasks fill them).
 
 2. **[stub]** Create `plugins/brain-factory/rules/voice-avoid-list.txt` in the plugin
-   template with exactly 30 entries. Seed entries (do not expand):
+   template with exactly 30 entries. This file is the CANONICAL source of the 30-entry
+   voice-avoid-list. STORY-010 (Wave 3) implements the `validate-voice-avoid-list.sh`
+   hook that reads this file — STORY-010 does NOT recreate the list.
+   Seed entries (do not expand):
    "utilize", "leverage", "synergy", "game-changer", "paradigm shift", "deep dive",
    "holistic", "circle back", "bandwidth", "move the needle", "low-hanging fruit",
    "best practices", "thought leader", "disruptive", "scalable", "ecosystem",
@@ -172,7 +175,10 @@ From `architecture/subsystems/SS-08-content-brief-writing.md` and
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system /bin/bash is 3.2 due to GPLv3 licensing. Operators must install via `brew install bash` and ensure PATH resolves `/usr/bin/env bash` to the Homebrew version) | CLAUDE.md §Conventions |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions (any bash added to init skill must pass) |
+| `shfmt` | 3.7+ (latest: 3.13.1; `-i 2 -d` flags stable across 3.x) | CLAUDE.md §Conventions |
 | `mkdir` / `cp` | POSIX | Directory creation and file copy |
 | `wc` | POSIX | Line count assertion in test |
 
@@ -224,3 +230,9 @@ Well within 20% of a 200K-token context window (~40K). No split required.
 - SS-09: `architecture/subsystems/SS-09-publishing-pipeline.md`
 - VP-020: `architecture/verification-properties/VP-020-publish-state-machine.md`
 - STORY-001: `stories/stories/STORY-001.md` (init skill — predecessor)
+
+## Changelog
+
+| Date | Change | Reason |
+|------|--------|--------|
+| 2026-05-25 | Added canonical source note to Task 2: `plugins/brain-factory/rules/voice-avoid-list.txt` is the CANONICAL source of the 30-entry list; STORY-010 reads it but does not recreate it; updated Library table to add bash 5.0+ with macOS note, shellcheck 0.10+, shfmt 3.7+, bats-core 1.13.0 | Uncertainty removal: clarified ownership of voice-avoid-list to prevent STORY-010 from reimplementing it; version pins standardized |

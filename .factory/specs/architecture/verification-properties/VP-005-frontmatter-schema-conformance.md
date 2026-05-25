@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-005
 title: "Frontmatter schema conformance"
 level: L3
-version: "1.1"
+version: "1.2"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -27,7 +27,7 @@ bats (`tests/validate-frontmatter-schema.bats`) with fixture payloads:
 @test "validate-frontmatter-schema.sh: missing embedding_status → E-SCHEMA-001" {
   # Wiki page content without embedding_status
   local content='---\ntitle: "Test Concept"\ntype: concept\ncreated: 2026-01-01\n---\n# Test'
-  local payload="{\"tool\":\"Write\",\"input\":{\"path\":\"wiki/concepts/test.md\",\"content\":\"$content\"},\"output\":{}}"
+  local payload="{\"tool_name\":\"Write\",\"tool_input\":{\"path\":\"wiki/concepts/test.md\",\"content\":\"$content\"}}"
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-frontmatter-schema.sh"
   assert_failure 2
   assert_output --partial '"code":"E-SCHEMA-001"'
@@ -35,14 +35,14 @@ bats (`tests/validate-frontmatter-schema.bats`) with fixture payloads:
 
 @test "validate-frontmatter-schema.sh: complete frontmatter → allow" {
   local content='---\ntitle: "Test"\ntype: concept\ncreated: 2026-01-01\nembedding_status: pending\n---\n# Test'
-  local payload="{\"tool\":\"Write\",\"input\":{\"path\":\"wiki/concepts/test.md\",\"content\":\"$content\"},\"output\":{}}"
+  local payload="{\"tool_name\":\"Write\",\"tool_input\":{\"path\":\"wiki/concepts/test.md\",\"content\":\"$content\"}}"
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-frontmatter-schema.sh"
   assert_success
 }
 
 @test "validate-frontmatter-schema.sh: file not in wiki/ → no-op allow" {
   # Files outside wiki/ are not subject to wiki frontmatter schema
-  echo '{"tool":"Write","input":{"path":"scripts/gen.sh","content":"#!/bin/bash"},"output":{}}' \
+  echo '{"tool_name":"Write","tool_input":{"path":"scripts/gen.sh","content":"#!/bin/bash"}}' \
     | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-frontmatter-schema.sh"
   assert_success
 }
@@ -63,6 +63,10 @@ bats (`tests/validate-frontmatter-schema.bats`) with fixture payloads:
 proposed — pending Phase 3 implementation
 
 ## Changelog
+
+### v1.2 (2026-05-25)
+
+**CASCADE (ADR-002/ADR-003 v2.0 — hook protocol update):** §Verification Mechanism all 3 fixture payloads updated: `"tool":"Write"` → `"tool_name":"Write"`, `"input":{...}` → `"tool_input":{...}`, `"output":{}` removed from all payloads. [audit-trail]
 
 ### v1.1 (2026-05-18)
 

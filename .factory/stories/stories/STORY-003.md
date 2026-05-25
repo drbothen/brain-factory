@@ -64,9 +64,9 @@ No files are created or overwritten. This is a hard-fail, not idempotent re-scaf
 (SS-01 §Architectural Decisions §Already-initialized brain).
 (traces to BC-2.01.003 postconditions 1–4; BC-2.01.003 invariant 2)
 
-**AC-003** — When Node 20+ is not in PATH (`node --version` fails or returns < 20), the
+**AC-003** — When Node 22+ is not in PATH (`node --version` fails or returns < 22), the
 skill exits 2 and emits:
-`{"level":"error","code":"E-INIT-003","message":"Node 20+ is required. Install from nodejs.org or via nvm.","trace":"<uuid>"}`.
+`{"level":"error","code":"E-INIT-003","message":"Node 22+ is required. Install from nodejs.org or via nvm.","trace":"<uuid>"}`.
 No files created.
 (traces to BC-2.01.001 precondition 4; BC-2.01.003 postconditions 1–4)
 
@@ -94,7 +94,7 @@ No files created.
 (traces to BC-2.01.003 edge case EC-002)
 
 **AC-008** — The check order in `run.sh` is: (1) `${CLAUDE_PLUGIN_ROOT}` resolution,
-(2) `jq`/`yq` availability, (3) Node 20+ availability, (4) git-repo check (non-git → E-INIT-001),
+(2) `jq`/`yq` availability, (3) Node 22+ availability, (4) git-repo check (non-git → E-INIT-001),
 (5) bare-repo check (E-INIT-007), (6) `.brain/` exists check (E-INIT-002),
 (7) conflict check (E-INIT-005). No file writes occur before all checks pass.
 (traces to BC-2.01.003 invariant 1)
@@ -136,7 +136,7 @@ if the assertion does not hold.
    # Check order: CLAUDE_PLUGIN_ROOT → jq/yq → node → git → bare → .brain → conflicts
    [[ -d "${CLAUDE_PLUGIN_ROOT:-}" ]] || _die E-INIT-004 "Plugin root not found..."
    command -v jq >/dev/null && command -v yq >/dev/null || _die E-INIT-006 "jq and yq..."
-   node --version 2>/dev/null | grep -qP '^v(2[0-9]|[3-9]\d)' || _die E-INIT-003 "Node 20+..."
+   node --version 2>/dev/null | grep -qP '^v(2[2-9]|[3-9]\d)' || _die E-INIT-003 "Node 22+..."
    git rev-parse --git-dir >/dev/null 2>&1 || _die E-INIT-001 "brain:init requires a git..."
    [[ "$(git rev-parse --is-bare-repository)" != "true" ]] || _die E-INIT-007 "bare repos..."
    [[ ! -d "${BRAIN_ROOT:-$PWD}/.brain" ]] || _die E-INIT-002 "brain already initialized..."
@@ -174,7 +174,7 @@ if the assertion does not hold.
 | `/tmp` (definitely not git) | E-INIT-001; exit 2 | error | BC-2.01.003 |
 | Dir with `.brain/` already | `{"code":"E-INIT-002",...}`; exit 2; no new files | error | BC-2.01.003 |
 | Bare git repo (`git init --bare`) | `{"code":"E-INIT-007",...}`; exit 2 | edge-case | BC-2.01.003 EC-002 |
-| `node` absent from PATH | E-INIT-003; exit 2 | error | BC-2.01.001 precondition 4 |
+| `node` absent from PATH or `< 22` | E-INIT-003; exit 2 | error | BC-2.01.001 precondition 4 |
 | `jq` absent from PATH | E-INIT-006; exit 2 | error | BC-2.01.001 precondition 5 |
 | Dir inside valid git repo (non-bare) | Init proceeds normally | happy-path | BC-2.01.003 EC-001 |
 | `ls briefs/` after init | Includes `research/` | happy-path | BC-2.01.005 postcondition 1 |
@@ -216,12 +216,16 @@ From `architecture/subsystems/SS-01-brain-init-scaffold.md`:
 
 ## Library and Framework Requirements
 
-Same as STORY-002. Additionally:
+Same as STORY-002 (bash 5.0+, bats-core 1.10+, jq 1.7+, yq 4.x+ mikefarah/yq, shellcheck 0.10+, shfmt 3.7+). Additionally:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `node` | 20+ (checked at runtime) | BC-2.01.001 precondition 4 |
+| `node` | 22+ (Node 20 EOL April 2026; LTS: 24) | BC-2.01.001 precondition 4 |
 | `uuidgen` (with fallback) | any | `_die` trace field |
+
+> **yq disambiguation:** `yq` = mikefarah/yq (Go-based). On Ubuntu, `apt install yq` installs the WRONG tool (kislyuk/yq). Use `snap install yq` or install from GitHub releases.
+
+> **uuidgen portability:** `uuidgen` is available on macOS by default but NOT pre-installed on GitHub Actions ubuntu-latest. The `_die` helper uses the fallback chain defined in Architecture Compliance Rules: `uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid 2>/dev/null || od -x /dev/urandom | head -1 | awk '{print $2$3"-"$4"-"$5"-"$6"-"$7$8$9}'`.
 
 ## File Structure Requirements
 

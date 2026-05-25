@@ -114,11 +114,32 @@ A bats fixture test parses a sample `scale-test.jsonl` line and asserts `peak_rs
 is a non-negative integer.
 (traces to BC-2.16.004 postcondition 2; SS-16 Key Design "scale-test JSONL")
 
-**AC-008** — When `/usr/bin/time -v` is unavailable (macOS `time` lacks `-v`), the
-workflow falls back to `gtime -v` (GNU time via Homebrew). A CI check at workflow start
-verifies either `command -v gtime` or `command -v /usr/bin/time` is available; if
-neither, the memory measurement step is SKIPPED (not errored) with a warning.
+**AC-008** — When `/usr/bin/time -v` is unavailable (macOS `/usr/bin/time` uses `-l` not
+`-v`, and reports bytes not kilobytes), the workflow falls back to `gtime -v` (GNU time
+via Homebrew). A CI check at workflow start verifies either `command -v gtime` or detects
+Linux (`uname -s == Linux`) and uses `/usr/bin/time -v`; if running on macOS without
+`gtime`, the memory measurement step is SKIPPED (not errored) with a warning.
 macOS CI runners should use `brew install gnu-time` in the workflow setup step.
+
+**Platform note for memory measurement:**
+- **Linux (GitHub Actions ubuntu-latest):** `/usr/bin/time -v` reports "Maximum resident set size" in kilobytes
+- **macOS:** `/usr/bin/time -l` (lowercase L) reports "maximum resident set size" in BYTES (despite some documentation claiming kilobytes)
+
+Portable wrapper for bats tests (task 5):
+
+```bash
+measure_rss_kb() {
+  local cmd="$1"
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    /usr/bin/time -l $cmd 2>&1 | awk '/maximum resident set size/ {print int($1/1024)}'
+  else
+    /usr/bin/time -v $cmd 2>&1 | awk '/Maximum resident set size/ {print $6}'
+  fi
+}
+```
+
+For CI (GitHub Actions ubuntu-latest): `/usr/bin/time -v` works directly. The CI workflow
+does not need the macOS path.
 (traces to BC-2.16.004 invariant 2; production-grade default per CLAUDE.md §Canonical Principle)
 
 ### Per-ingest token cost at 10K corpus (BC-2.16.005)
@@ -195,9 +216,12 @@ without re-running the full scale corpus.
 
 5. **[impl — memory bats test]** Implement the 1K-page RSS test:
    - Call `gen-test-corpus.sh --sources 200 --wiki-ratio 5 --seed 42 /tmp/mem-test`.
-   - Run `/usr/bin/time -v bash ${PLUGIN_ROOT}/skills/lint-wiki/run.sh 2>&1 | grep "Maximum resident"`.
-   - Parse the RSS value; assert < 200000 (KB) = 200MB.
-   - Fall back to `gtime -v` on macOS.
+   - Use the portable `measure_rss_kb` wrapper defined in AC-008 to run
+     `bash ${PLUGIN_ROOT}/skills/lint-wiki/run.sh` and capture peak RSS.
+   - Parse the RSS value (already in KB from wrapper); assert < 200000 (KB) = 200MB.
+   - On Linux: wrapper uses `/usr/bin/time -v` and extracts kilobytes directly.
+   - On macOS: wrapper uses `/usr/bin/time -l`, reads bytes, divides by 1024 for KB.
+   - If neither measurement method is available, call `skip "RSS measurement unavailable on this platform"`.
 
 6. **[impl — scale-test.yml]** Fill in the complete `scale-test.yml` workflow with
    correct step implementation. API-calling steps source `api-retry.sh`.
@@ -240,6 +264,11 @@ From `architecture/subsystems/SS-16-scale-aware-architecture.md`:
    The measurement isolates the process under test via PID — not total runner memory.
    `scale-test.yml` must run the measurement in a dedicated step, not as a side-effect
    of another step.
+   **Platform portability:** `/usr/bin/time -v` is Linux-only. macOS `/usr/bin/time` uses
+   `-l` (lowercase L) and reports bytes (not kilobytes). For the scale-test.yml CI workflow
+   targeting GitHub Actions ubuntu-latest, `/usr/bin/time -v` works directly. For local
+   macOS development, use `gtime -v` (Homebrew `gnu-time`). The bats memory test (task 5)
+   must use the portable wrapper pattern described in AC-008.
 
 2. The `scale-test-{YYYY-MM-DD}.jsonl` log is the source-of-truth for the memory
    measurement. The GitHub Actions run summary may duplicate the value for readability,
@@ -272,16 +301,40 @@ From `architecture/subsystems/SS-16-scale-aware-architecture.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 3.2+ | macOS compat |
-| `jq` | 1.6+ | JSONL parsing for cost assertion |
-| `yq` | 4.x+ | Manifest schema checks |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions; ADR-001 |
+| `jq` | 1.7+ (latest: 1.8.1) | JSONL parsing for cost assertion |
+| `yq` | 4.x+ (mikefarah/yq, Go-based — NOT kislyuk/yq Python-based) | Manifest schema checks |
 | `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.8+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.x+ | CLAUDE.md §Conventions |
-| `/usr/bin/time -v` | any (Linux) | RSS measurement; or `gtime -v` on macOS |
-| `gnu-time` (gtime) | Homebrew | macOS fallback for `/usr/bin/time -v` |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
+| `/usr/bin/time -v` | any (Linux only) | RSS measurement (kilobytes); use `gtime -v` on macOS |
+| `/usr/bin/time -l` | macOS built-in | RSS measurement on macOS (reports BYTES, not KB) |
+| `gnu-time` (gtime) | Homebrew `brew install gnu-time` | macOS portable fallback for `/usr/bin/time -v` behaviour |
 | `scripts/lib/api-retry.sh` | (this repo, STORY-035) | Rate-limit backoff for API-calling workflow steps |
 | `scripts/gen-test-corpus.sh` | (this repo, STORY-038) | 10K corpus pre-loading |
+
+### High-resolution timing portability
+
+macOS `date` does NOT support `%N` (nanosecond format specifier). For timing measurements
+in bats tests and workflow steps, use one of these portable alternatives:
+
+- **`perl -MTime::HiRes -e 'printf("%.9f\n", Time::HiRes::time())'`** — works on both macOS and Linux; perl is pre-installed on both
+- **`$EPOCHREALTIME`** bash variable — microsecond precision; bash 5.0+ only (not available with macOS system bash 3.2)
+- **`date +%s%N`** — works on Linux (GitHub Actions) only; NOT portable to macOS
+
+For CI (GitHub Actions ubuntu-latest): `date +%s%N` works directly. For the bats latency
+proxy tests that run locally on macOS: use the `perl` method or `$EPOCHREALTIME` (requires
+Homebrew bash 5.0+).
+
+### yq Disambiguation
+
+`yq` in this story refers to **mikefarah/yq** (Go-based, v4.x+). NOT kislyuk/yq (Python-based).
+
+- On Ubuntu, `sudo apt install yq` may install the WRONG yq (kislyuk). Use `snap install yq`
+  or download from GitHub releases: `https://github.com/mikefarah/yq/releases`
+- Verify: `yq --version` should show `yq (https://github.com/mikefarah/yq/) version v4.x.x`
+- Both `yq eval '.key' file.yaml` and `yq '.key' file.yaml` are valid (`eval` is the
+  optional default command in v4.x)
 
 ## File Structure Requirements
 

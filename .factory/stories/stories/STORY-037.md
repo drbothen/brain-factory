@@ -252,12 +252,12 @@ From `architecture/verification-properties/VP-003-source-immutability.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 3.2+ | macOS compat |
-| `jq` | 1.6+ | JSONL aggregation + manifest schema checks |
-| `yq` | 4.x+ | Reading `max_ingest_tokens_per_chunk` from policies.yaml |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.8+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.x+ | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | CLAUDE.md §Conventions |
+| `jq` | 1.7+ (latest: 1.8.1) | JSONL aggregation + manifest schema checks |
+| `yq` | 4.x+ (mikefarah/yq; latest: 4.53.2) | Reading `max_ingest_tokens_per_chunk` from policies.yaml. **Ubuntu note:** `apt install yq` installs the WRONG tool (kislyuk/yq, Python-based). Use `snap install yq`. |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 | `date` (GNU or BSD) | any | Rolling 30-day window calculation |
 
 ## File Structure Requirements

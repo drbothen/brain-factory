@@ -94,8 +94,9 @@ available to all contributors without separate installation.
 
 **AC-005** — The random number generator used to produce varied content per source is
 implemented entirely within the script (a simple linear congruential generator (LCG) in
-bash), NOT via shell `$RANDOM`. This ensures byte-identical output on macOS bash 5+ and
-Linux bash 4+ with the same seed.
+bash), NOT via shell `$RANDOM`. This ensures byte-identical output across macOS bash 5+
+and Linux bash 5+ (and is additionally portable to bash 3.2+ and 4.x+ at the arithmetic
+level, but the project minimum is 5.0+).
 (traces to BC-2.16.006 invariant 1; edge case EC-003)
 
 **AC-006** — Generated source files are valid source-layer markdown: correct frontmatter
@@ -225,9 +226,24 @@ From `architecture/subsystems/SS-16-scale-aware-architecture.md`:
    constants). This specific LCG is documented in BC-2.16.006 EC-003 as the cross-platform
    determinism strategy. Do NOT use `/dev/urandom`, `$RANDOM`, or Python's `random` module.
 
-3. ADR-012 defines the CLI interface for this script. The implementer must cross-check
-   ADR-012 before finalizing flag names and defaults. If ADR-012 conflicts with this story,
-   ADR-012 wins (architecture is source of truth; story scope is bounded by architecture).
+3. ADR-012 defines the CLI interface for this script (inlined below for self-containedness —
+   the implementer does NOT need to read ADR-012 separately). If the ADR file and this
+   inline differ, this inline is a summary; ADR-012 wins on specifics:
+
+   **ADR-012 CLI Interface Reference:**
+   ```
+   Usage: scripts/gen-test-corpus.sh [OPTIONS] <output-dir>
+
+   Options:
+     --sources N       Number of source files (default: 100)
+     --seed N          Deterministic seed (default: 42)
+     --topics LIST     Comma-separated categories (default: ai,health,psychology,productivity,business,books,podcasts)
+     --avg-words N     Average words per source (default: 3000)
+     --wiki-ratio N    Wiki pages per source (default: 5)
+     --format FORMAT   brain-vault (default) | json-manifest-only
+
+   Exit codes: 0 success; 1 advisory/error; 2 generation failed
+   ```
 
 4. `gen-test-corpus.sh` is a SCRIPT, not a hook. It does NOT accept JSON on stdin and
    does NOT emit JSONL events. It is a standalone tool invoked by CI and by developers.
@@ -244,6 +260,12 @@ From `architecture/subsystems/SS-16-scale-aware-architecture.md`:
 - No `$RANDOM` (platform-dependent; not reproducible across macOS/Linux).
 - No Python or Node.js — the script must be pure bash + jq (per CLAUDE.md §Conventions:
   "no compiled binaries in v0.x — pure bash + markdown").
+
+**uuidgen portability note:** `gen-test-corpus.sh` does NOT require `uuidgen` (the LCG
+handles all randomness). If any UUID-like identifier is needed (e.g., for slug uniqueness),
+use the LCG output formatted as hex, not `uuidgen`. Rationale: `uuidgen` is available on
+macOS by default but NOT pre-installed on GitHub Actions ubuntu-latest. The LCG is the
+portable, reproducible alternative.
 - No external file wordlist — the wordlist must be embedded in the script.
 - Generated sources must NOT have `embedding_status` field (that field belongs to wiki
   pages, not source files). Using the wrong field in source frontmatter is a schema error.
@@ -252,17 +274,20 @@ From `architecture/subsystems/SS-16-scale-aware-architecture.md`:
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 4.0+ | Integer arithmetic for LCG (`(( ... ))` syntax); note macOS ships bash 3.2; use `#!/usr/bin/env bash` and document `brew install bash` for macOS contributors if bash 4 features are used |
-| `jq` | 1.6+ | Manifest JSON construction (`jq -n`) |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system /bin/bash is 3.2 due to GPLv3 licensing. Operators must install via `brew install bash` and ensure PATH resolves `/usr/bin/env bash` to the Homebrew version) | CLAUDE.md §Conventions; project minimum |
+| `jq` | 1.7+ (latest: 1.8.1; jq 1.6 `leaf_paths` and `recurse_down` removed in 1.7) | Manifest JSON construction (`jq -n`) |
 | `yq` | 4.x+ | Frontmatter validation in bats tests |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `shellcheck` | 0.8+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.x+ | CLAUDE.md §Conventions |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1; `-i 2 -d` flags stable across 3.x) | CLAUDE.md §Conventions |
 
-Note on bash version: the LCG uses `(( ... & 0xFFFFFFFF ))`. On macOS bash 3.2, integer
-arithmetic is 64-bit but bitwise AND works correctly. Test on both bash 3.2 and bash 5
-to confirm identical output. If any difference exists, document it in the script header
-and require bash 4+ explicitly.
+Note on bash version and LCG portability: the LCG uses `(( ... & 0xFFFFFFFF ))`.
+The LCG arithmetic is portable to bash 3.2+ through 5.x+ on 64-bit platforms — the
+`(( ))` arithmetic and bitwise AND work identically across versions on 64-bit hardware
+(verified by research). However, the project minimum is bash 5.0+ for other features
+(nameref, improved arrays, etc.). The portability note is therefore informational only:
+the script targets bash 5.0+ but the LCG itself will not cause reproducibility issues
+if run on bash 3.2 or 4.x in a testing context.
 
 ## File Structure Requirements
 
@@ -314,3 +339,9 @@ Within 20% of a 200K-token context window (~40K). No split required.
 - STORY-001: `stories/stories/STORY-001.md` (init manifest schema — context)
 - STORY-018: `stories/stories/STORY-018.md` (VP-027 skip annotation — to remove)
 - STORY-039: `stories/stories/STORY-039.md` (scale gate — blocked by this story)
+
+## Changelog
+
+| Date | Change | Reason |
+|------|--------|--------|
+| 2026-05-25 | Updated bash version 4.0+ → 5.0+ with macOS Homebrew note (project minimum is 5.0+); added portability note clarifying that LCG arithmetic is portable to bash 3.2+ but project requires 5.0+; updated AC-005 to reflect 5.0+ as baseline; shellcheck 0.8+ → 0.10+; shfmt 3.x+ → 3.7+ with latest pin; jq 1.6+ → 1.7+; inlined ADR-012 CLI interface reference in Architecture Compliance Rules rule 3 so implementer does not need to read the ADR separately; added uuidgen portability note to Forbidden dependencies (gen-test-corpus.sh does not use uuidgen — uses LCG instead) | Uncertainty removal: bash version inconsistency corrected; version pins standardized; ADR-012 CLI inlined for self-containedness |

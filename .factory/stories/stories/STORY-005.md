@@ -208,12 +208,12 @@ From `architecture/subsystems/SS-14-plugin-lifecycle.md` and `architecture/adr/A
 
 | Tool | Version | Constraint Source |
 |------|---------|-------------------|
-| `bash` | 5.x+ | phased-build-plan.md §1 |
-| `node` | 20+ | Scripts are Node ESM; phased-build-plan.md §1 |
-| `bats-core` | 1.10+ | CLAUDE.md §Build & Test |
-| `jq` | 1.6+ | Manifest version check in migration scripts |
-| `shellcheck` | 0.9+ | CLAUDE.md §Conventions |
-| `shfmt` | 3.7+ | CLAUDE.md §Conventions |
+| `bash` | 5.0+ (macOS: requires Homebrew bash; system bash is 3.2) | phased-build-plan.md §1 |
+| `node` | 22+ (Node 20 EOL April 2026; LTS: 24) | Scripts are Node ESM; phased-build-plan.md §1 |
+| `bats-core` | 1.10+ (latest: 1.13.0) | CLAUDE.md §Build & Test |
+| `jq` | 1.7+ (latest: 1.8.1) | Manifest version check in migration scripts |
+| `shellcheck` | 0.10+ (latest: 0.11.0) | CLAUDE.md §Conventions |
+| `shfmt` | 3.7+ (latest: 3.13.1) | CLAUDE.md §Conventions |
 
 ## File Structure Requirements
 

@@ -173,7 +173,7 @@ last_updated: 2026-05-19
 | BC-2.14.002 | `/brain:upgrade-brain` upgrades the plugin and migrates `.brain/` state if needed | SS-14 | CAP-014 | P1 | active | ss-14/BC-2.14.002.md |
 | BC-2.14.003 | Engine files are read-only at runtime; state lives exclusively in target's `.brain/` | SS-14 | CAP-014 | P0 | active | ss-14/BC-2.14.003.md |
 | BC-2.14.004 | `plugin.json` is valid JSON with semver version and all agents/skills registered | SS-14 | CAP-014 | P0 | active | ss-14/BC-2.14.004.md |
-| BC-2.14.005 | `hooks.json.template` references all 13 hooks via `${CLAUDE_PLUGIN_ROOT}` | SS-14 | CAP-014 | P0 | active | ss-14/BC-2.14.005.md |
+| BC-2.14.005 | `hooks.json` references all 13 hooks via `${CLAUDE_PLUGIN_ROOT}` | SS-14 | CAP-014 | P0 | active | ss-14/BC-2.14.005.md |
 
 ## ss-15: Governance and Policies (CAP-015)
 
