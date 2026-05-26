@@ -21,7 +21,7 @@ total_points: 264
 current_wave: 2
 created: 2026-05-19
 last_updated: 2026-05-26
-completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038]
+completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038, STORY-016]
 waves:
   - id: 1
     name: "Wave 1: Plugin Foundation"
@@ -76,7 +76,7 @@ waves:
     terminal_nodes: []
     stories:
       - id: STORY-016
-        status: in_progress
+        status: completed
         points: 8
         priority: P0
         epic: EPIC-03

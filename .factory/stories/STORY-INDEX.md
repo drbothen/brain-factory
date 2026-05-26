@@ -111,7 +111,7 @@ inputs:
 
 | Story ID | Title | Status | Points | Priority | BCs | Depends On |
 |----------|-------|--------|--------|----------|-----|------------|
-| STORY-016 | Defuddle fetch wrapper, duplicate guard, and atomic manifest-write helper | draft | 8 | P0 | BC-2.02.001, BC-2.02.004, BC-2.02.006 | — |
+| STORY-016 | Defuddle fetch wrapper, duplicate guard, and atomic manifest-write helper | completed | 8 | P0 | BC-2.02.001, BC-2.02.004, BC-2.02.006 | PR #5 merged 7e94ec0 (2026-05-26) |
 | STORY-017 | Wiki page generation pipeline, token JSONL logging, and 50K-token chunk warning | draft | 8 | P0 | BC-2.02.002, BC-2.02.003, BC-2.02.005 | — |
 | STORY-018 | Sub-linear ingest latency gate: bats scale assertion at 1K and 10K pages | draft | 5 | P1 | BC-2.02.007 | — |
 | STORY-019 | Local source ingest: path validation, manifest delta, wiki generation, and partial-failure fan-out | draft | 8 | P0 | BC-2.03.001, BC-2.03.002, BC-2.03.003, BC-2.03.004 | — |
