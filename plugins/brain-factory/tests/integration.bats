@@ -179,6 +179,7 @@ _run_init_publishing_scaffold() {
   [ "$status" -eq 0 ]
   [ -f "$out_dir/.brain/manifest.json" ]
   [ ! -d "$out_dir/sources" ]
+  [ ! -d "$out_dir/wiki" ]
   rm -rf "$out_dir"
 }
 
@@ -205,4 +206,24 @@ _run_init_publishing_scaffold() {
   run shfmt -d -i 2 "${PLUGIN_DIR}/scripts/gen-test-corpus.sh"
   [ "$status" -eq 0 ]
   [ -z "$output" ]
+}
+
+# AC-003: LCG seed advances — sources have varied content
+@test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
+  local out_dir
+  out_dir="$(mktemp -d)"
+  "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 2 --seed 42 --avg-words 50 "$out_dir"
+  local first second
+  first="$(find "$out_dir/sources" -name '*.md' | sort | head -1)"
+  second="$(find "$out_dir/sources" -name '*.md' | sort | head -2 | tail -1)"
+  # Bodies should differ between sources
+  local body1 body2
+  body1="$(sed '1,/^---$/d; 1,/^---$/d' "$first")"
+  body2="$(sed '1,/^---$/d; 1,/^---$/d' "$second")"
+  [ "$body1" != "$body2" ]
+  # First source body should have more than 5 unique words (LCG progresses, not stuck)
+  local unique
+  unique="$(printf '%s' "$body1" | tr ' ' '\n' | sort -u | wc -l | tr -d ' ')"
+  [ "$unique" -gt 5 ]
+  rm -rf "$out_dir"
 }
