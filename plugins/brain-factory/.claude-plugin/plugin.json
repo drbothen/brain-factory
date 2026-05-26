@@ -1,0 +1,12 @@
+{
+  "name": "brain-factory",
+  "displayName": "Brain Factory",
+  "version": "0.1.0",
+  "description": "LLM-maintained second brain plugin for Claude Code",
+  "author": {"name": "Josh Magady"},
+  "license": "MIT",
+  "keywords": ["second-brain", "obsidian", "knowledge-management", "rag", "agents"],
+  "skills": "./skills/",
+  "agents": ["./agents/"],
+  "hooks": "hooks/hooks.json"
+}
