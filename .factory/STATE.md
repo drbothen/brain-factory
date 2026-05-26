@@ -3,6 +3,7 @@ artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-25
+wave_1_progress: "1/4 stories completed"
 convergence_trajectory:
   - pass: 1
     findings: 17
@@ -32,7 +33,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-2-closed-phase-3-prerequisites-complete
+phase: phase-3-wave-1-in-progress
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -41,13 +42,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: READY — Prerequisites complete. Wave 1 pending dispatch.
+phase_3_status: IN PROGRESS — Wave 1 active. STORY-001 COMPLETED (PR #1 merged 92c618a). Next: STORY-014 (critical path).
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-ready-awaiting-wave-1-dispatch
-session_continuity: FRESH-CONTEXT-READY — Phase 2 CLOSED (human approved) + Phase 3 prerequisites complete; DTU assessment written (DTU_REQUIRED=true, LinkedIn Posts API mock needed); CI/CD ci.yml created + develop branch pushed; toolchain verified (bats 1.13.0, shellcheck 0.11.0, shfmt 3.13.1, jq 1.6, yq 4.52.2); next action: Phase 3 Wave 1 dispatch (STORY-001, STORY-014, STORY-027, STORY-038)
+session_stage: phase-3-wave-1-in-progress
+session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 1 in progress. STORY-001 COMPLETED (PR #1 merged 92c618a, 12 adversary passes, 3-CLEAN at passes 10-12, 7/7 ACs verified). BC-2.14.003/004/005 promoted active per POL-14. Deferred BC content findings logged for wave-gate. Next: STORY-014 (critical path, depends_on none). Wave 1 progress: 1/4 stories complete.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -76,7 +77,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-2-closed-phase-3-ready
+status: phase-3-wave-1-in-progress
 ---
 
 # brain-factory Pipeline STATE
@@ -85,14 +86,22 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 2 CLOSED — Phase 3 Prerequisites COMPLETE — Wave 1 Ready for Dispatch
+## TOP OF STACK — Phase 3 Wave 1 IN PROGRESS — STORY-001 DELIVERED — Next: STORY-014
 
-**Status:** Phase 2 CLOSED (human approved). Phase 3 prerequisites complete. Phase 3 Wave 1 is the next pipeline step.
+**Status:** Phase 3 Wave 1 active. STORY-001 delivered. Wave 1 progress: 1/4 stories complete. Critical path next story: STORY-014 (no blocking dependencies).
 
-**Phase 3 prerequisites remediated:**
-- DTU assessment written (`dtu-assessment.md`): DTU_REQUIRED=true — LinkedIn Posts API needs a lightweight bash HTTP mock for integration testing (2 story points, ships with VP-020 story). Readwise, Raindrop, and Defuddle do NOT need DTU.
-- CI/CD: `.github/workflows/ci.yml` created — 2 jobs (lint + test), SHA-pinned actions/checkout, pinned tool versions, graceful no-op when no hooks/tests exist. `develop` branch created and pushed to origin.
-- Toolchain verified: bats 1.13.0, shellcheck 0.11.0, shfmt 3.13.1, jq 1.6, yq 4.52.2 — all present on operator machine.
+**STORY-001 delivery summary (2026-05-25):**
+- Red Gate: 6 failing tests → 32 total tests after implementation + adversary fixes
+- Implementation: plugin.json, hooks.json (nested-object format), 13 hook stubs, 26 skill stubs, 14 agent stubs
+- Adversary convergence: 12 passes, 3 fix cycles, BC-5.39.001 3-CLEAN at passes 10-12
+- Demo evidence: 7/7 ACs verified
+- PR #1 merged to develop (squash-merge, commit 92c618a), CI passed (lint + test both green)
+- BC-2.14.003/004/005 promoted `draft` → `active` per POL-14
+
+**Deferred BC-content findings (for Wave 1 gate review):**
+- BC-2.14.004 postconditions 3-4: "array" language doesn't match auto-discovery implementation
+- BC-2.14.005 precondition 1: path says `${CLAUDE_PLUGIN_ROOT}/hooks.json` should be `hooks/hooks.json`
+- BC-2.14.005 test vector: `jq '.hooks | length'` returns 4 not 13 with nested format
 
 Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+2S) → Pass 4=1(0C+0I+1S) → Pass 5=0(0C+0I+0S) → Pass 6=0(0C+0I+0S) — shorthand: `17→7→4→1→0→0`. CRITICAL: `4→0→0→0→0→0` (eliminated at Pass 2). IMPORTANT: `8→3→2→0→0→0` (eliminated at Pass 4). SUGGESTION: `5→4→2→1→0→0` (eliminated at Pass 5). Floor held at Pass 6.
 
@@ -122,9 +131,10 @@ Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+
 **Next action for fresh-context orchestrator:**
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md`.
-2. Verify HEAD via `git log --oneline -1` shows Phase 2 closure + prerequisites commit as the most recent. Verify clean tree via `git status --short`.
-3. **Dispatch Phase 3 Wave 1.** Phase 2 is CLOSED (human approved). Phase 3 prerequisites are complete. Dispatch Wave 1 per-story TDD (STORY-001 + STORY-014 + STORY-027 + STORY-038) via `vsdd-factory:deliver-story` per the Agent Routing Table.
-4. DTU note: LinkedIn Posts API mock (2 SP) must ship with VP-020 story. See `.factory/specs/dtu-assessment.md` for full DTU scope.
+2. Verify HEAD via `git log --oneline -1` shows STORY-001 post-merge state update as most recent. Verify clean tree via `git status --short`.
+3. **Dispatch STORY-014** (Structured event catalog — critical path, Wave 1 position 2, no blocking deps) via `vsdd-factory:deliver-story`.
+4. Wave 1 remaining: STORY-014 + STORY-027 + STORY-038. Wave gate runs after all 4 complete.
+5. DTU note: LinkedIn Posts API mock (2 SP) must ship with VP-020 story. See `.factory/specs/dtu-assessment.md` for full DTU scope.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
 
@@ -223,7 +233,7 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 cd /Users/jmagady/Dev/brain-factory
 git log --oneline -2                # expect HEAD ~ "Phase 2 CLOSED — prerequisites complete"; HEAD^ ~ "uncertainty removal complete"
 git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
-grep -nE '^phase_3_status:' .factory/STATE.md  # expect READY — Prerequisites complete. Wave 1 pending dispatch.
+grep -nE '^phase_3_status:' .factory/STATE.md  # expect IN PROGRESS — Wave 1 active. STORY-001 COMPLETED.
 grep -nE '^dtu_required:' .factory/STATE.md    # expect true
 ```
 

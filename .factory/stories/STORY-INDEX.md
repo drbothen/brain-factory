@@ -1,14 +1,14 @@
 ---
 artifact_type: story-index
-version: "0.3.3"
+version: "0.3.4"
 created: 2026-05-18
-last_updated: 2026-05-19
+last_updated: 2026-05-25
 authored_by: vsdd-factory:story-writer
 total_stories: 43
 total_points: 264
 total_epics: 9
 total_bcs_covered: 95
-phase: phase-2-story-decomposition-step-b
+phase: phase-3-tdd-implementation
 epics_completed: [EPIC-01, EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-06, EPIC-07, EPIC-08, EPIC-09]
 epics_pending: []
 inputs:
@@ -24,13 +24,18 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. All stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 1 story completed (STORY-001). 42 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.3.4 — 2026-05-25 (STORY-001 delivery / POL-14 BC promotion)
+
+- **STORY-001 status:** `draft` → `completed` (PR #1 merged to develop, commit 92c618a). BC-2.14.003, BC-2.14.004, BC-2.14.005 promoted `draft` → `active` per POL-14.
+- **Phase field:** updated to `phase-3-tdd-implementation` (Phase 2 closed; Phase 3 active).
 
 ### v0.3.3 — 2026-05-19 (F-PHASE2-ADV-PASS2-I03+S04)
 
@@ -60,7 +65,7 @@ inputs:
 
 | Story ID | Title | Status | Points | Priority | BCs | Depends On |
 |----------|-------|--------|--------|----------|-----|------------|
-| STORY-001 | Plugin repo structure, plugin.json manifest, and hooks.json.template | draft | 5 | P0 | BC-2.14.003, BC-2.14.004, BC-2.14.005 | — |
+| STORY-001 | Plugin repo structure, plugin.json manifest, and hooks.json.template | completed | 5 | P0 | BC-2.14.003, BC-2.14.004, BC-2.14.005 | — |
 | STORY-002 | /brain:init core scaffold — directory structure, templates, manifest.json, policies.yaml | draft | 8 | P0 | BC-2.01.001, BC-2.01.004, BC-2.06.003, BC-2.06.004 | — |
 | STORY-003 | /brain:init error handling, SLA assertion, and briefs/research/ scaffold | draft | 5 | P0 | BC-2.01.002, BC-2.01.003, BC-2.01.005 | — |
 | STORY-004 | /brain:health six-dimensional convergence skill | draft | 5 | P1 | BC-2.01.006 | — |

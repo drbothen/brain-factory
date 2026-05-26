@@ -18,20 +18,20 @@ phase: phase-2-story-decomposition-step-d
 total_waves: 11
 total_stories: 43
 total_points: 264
-current_wave: 0
+current_wave: 1
 created: 2026-05-19
-last_updated: 2026-05-19
+last_updated: 2026-05-25
 waves:
   - id: 1
     name: "Wave 1: Plugin Foundation"
-    status: pending
+    status: in_progress
     target_story_count: 4
     target_points: 21
     critical_path_stories: [STORY-001, STORY-014]
     terminal_nodes: []
     stories:
       - id: STORY-001
-        status: pending
+        status: completed
         points: 5
         priority: P0
         epic: EPIC-01

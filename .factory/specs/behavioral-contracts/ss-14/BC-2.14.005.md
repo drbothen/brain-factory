@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.3"
-status: draft
+version: "1.4"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -72,6 +72,10 @@ modified: []
 - BC-2.10.002 — depends on (quarantine hook registration here)
 
 ## Changelog
+
+### v1.4 (2026-05-25)
+
+**POL-14 auto-promotion:** STORY-001 PR #1 merged to develop (92c618a). Status promoted `draft` → `active` per POL-14.
 
 ### v1.3 (2026-05-25)
 
