@@ -127,8 +127,8 @@ setup() {
   [ "$status" -eq 0 ]
 }
 
-@test "BC_2_14_005: enforce-kebab-case is PreToolUse" {
-  run jq -e '.hooks.PreToolUse[] | select(.hooks[]?.command | endswith("enforce-kebab-case.sh"))' "$HOOKS_JSON"
+@test "BC_2_14_005: enforce-kebab-case is PreToolUse with Write|Edit matcher" {
+  run jq -e '.hooks.PreToolUse[] | select(.matcher == "Write\\|Edit") | .hooks[] | select(.command | endswith("enforce-kebab-case.sh"))' "$HOOKS_JSON"
   [ "$status" -eq 0 ]
 }
 
