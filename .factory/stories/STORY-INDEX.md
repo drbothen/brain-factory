@@ -1,6 +1,6 @@
 ---
 artifact_type: story-index
-version: "0.3.5"
+version: "0.3.6"
 created: 2026-05-18
 last_updated: 2026-05-25
 authored_by: vsdd-factory:story-writer
@@ -24,13 +24,19 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 2 stories completed (STORY-001, STORY-014). 41 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 3 stories completed (STORY-001, STORY-014, STORY-027). 40 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.3.6 — 2026-05-25 (STORY-027 delivery / POL-14 BC promotion)
+
+- **STORY-027 status:** `draft` → `completed` (PR #3 merged to develop, commit 00ebfa7). BC-2.08.004, BC-2.09.005 promoted `draft` → `active` per POL-14.
+- **Adversary convergence:** 5 passes, 0 fix cycles, 3-CLEAN achieved.
+- **Wave 1 progress:** 3/4 stories complete (13/21 points). Next: STORY-038 (gen-test-corpus.sh, final Wave 1 story).
 
 ### v0.3.5 — 2026-05-25 (STORY-014 delivery / POL-14 BC promotion)
 
@@ -131,7 +137,7 @@ inputs:
 
 | Story ID | Title | Status | Points | Priority | BCs | Depends On |
 |----------|-------|--------|--------|----------|-----|------------|
-| STORY-027 | Content brief scaffold — publishing directories + voice avoid-list file | draft | 3 | P1 | BC-2.08.004, BC-2.09.005 | — |
+| STORY-027 | Content brief scaffold — publishing directories + voice avoid-list file | completed | 3 | P1 | BC-2.08.004, BC-2.09.005 | — |
 | STORY-028 | /brain:brief skill — ONE THING / PROOF / TRANSFORMATION content brief | draft | 5 | P0 | BC-2.08.001 | — |
 | STORY-029 | /brain:write skill — full piece in author's voice + companion posts + hero prompt | draft | 8 | P0 | BC-2.08.002, BC-2.08.003 | — |
 | STORY-030 | /brain:publish-content — state machine, LinkedIn API, scheduling, and finalize flow | draft | 8 | P0 | BC-2.09.001, BC-2.09.002, BC-2.09.003, BC-2.09.004 | — |
