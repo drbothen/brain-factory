@@ -103,3 +103,10 @@ setup() {
   run shellcheck "${PLUGIN_DIR}/hooks/lib/hook-event-emit.sh"
   [ "$status" -eq 0 ]
 }
+
+# BC_2_04_017: shfmt normalization check on hook-event-emit.sh
+@test "BC_2_04_017: hook-event-emit.sh passes shfmt" {
+  run shfmt -d -i 2 "${PLUGIN_DIR}/hooks/lib/hook-event-emit.sh"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
