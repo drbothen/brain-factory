@@ -161,8 +161,13 @@ _run_init_publishing_scaffold() {
   echo "existing" > "$out_dir/sources/ai/existing.md"
   run "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 5 --seed 42 "$out_dir"
   [ "$status" -eq 1 ]
-  # Existing file preserved
+  # Conflict message must name the conflicting path
+  [[ "$output" == *"sources"* ]] || [[ "$output" == *"conflict"* ]] || [[ "$output" == *"already exists"* ]] || [[ "$output" == *"existing"* ]]
+  # Existing file preserved (not overwritten or deleted)
   [ -f "$out_dir/sources/ai/existing.md" ]
+  local preserved_content
+  preserved_content="$(cat "$out_dir/sources/ai/existing.md")"
+  [ "$preserved_content" = "existing" ]
   rm -rf "$out_dir"
 }
 
