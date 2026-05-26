@@ -194,5 +194,40 @@
     "severity": "error",
     "fields": ["hook_name", "code", "reason"],
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.helper.missing\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"00000000-0000-0000-0000-000000000000\",\"code\":\"E-HOOK-002\",\"reason\":\"hook-event-emit.sh not found at expected path\"}"
+  },
+  {
+    "event_type": "ingest.url.started",
+    "hook_name": "ingest-url",
+    "severity": "info",
+    "fields": ["url", "topic"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.url.started\",\"hook_name\":\"ingest-url\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com/article\",\"topic\":\"ai\"}"
+  },
+  {
+    "event_type": "ingest.url.source_written",
+    "hook_name": "ingest-url",
+    "severity": "info",
+    "fields": ["url", "topic", "slug", "file_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.url.source_written\",\"hook_name\":\"ingest-url\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com/article\",\"topic\":\"ai\",\"slug\":\"article\",\"file_path\":\"sources/ai/article.md\"}"
+  },
+  {
+    "event_type": "ingest.url.manifest_updated",
+    "hook_name": "manifest-write.sh",
+    "severity": "info",
+    "fields": ["source_id", "url", "topic", "manifest_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.url.manifest_updated\",\"hook_name\":\"manifest-write.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"source_id\":\"article\",\"url\":\"https://example.com/article\",\"topic\":\"ai\",\"manifest_path\":\".brain/manifest.json\"}"
+  },
+  {
+    "event_type": "ingest.url.rejected_duplicate",
+    "hook_name": "ingest-url",
+    "severity": "warn",
+    "fields": ["url", "existing_slug"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.url.rejected_duplicate\",\"hook_name\":\"ingest-url\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com/article\",\"existing_slug\":\"article\"}"
+  },
+  {
+    "event_type": "ingest.source.manifest_updated",
+    "hook_name": "manifest-write.sh",
+    "severity": "info",
+    "fields": ["source_id", "url", "topic", "manifest_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.source.manifest_updated\",\"hook_name\":\"manifest-write.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"source_id\":\"article\",\"url\":\"https://example.com/article\",\"topic\":\"ai\",\"manifest_path\":\".brain/manifest.json\"}"
   }
 ]

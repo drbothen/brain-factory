@@ -1,5 +1,5 @@
 {
-  "url": "https://example.com/article",
+  "url": "https://mock-200/article",
   "topic": "test-topic",
   "expected_slug": "article",
   "expected_exit": 0
