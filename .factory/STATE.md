@@ -4,7 +4,7 @@ project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-26
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
-wave_2_progress: "1/3 stories completed (8/24 points) — IN PROGRESS"
+wave_2_progress: "2/3 stories completed (16/24 points) — IN PROGRESS"
 convergence_trajectory:
   - pass: 1
     findings: 17
@@ -43,13 +43,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed, human authorized Wave 2). Wave 2 started 2026-05-26. STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). Wave 1: 4/4 stories (21/21 points). Wave 2: 1/3 stories (8/24 points) — IN PROGRESS. Next: STORY-002 + STORY-006 (parallel dispatch).
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed, human authorized Wave 2). Wave 2 started 2026-05-26. STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). Wave 1: 4/4 stories (21/21 points). Wave 2: 2/3 stories (16/24 points) — IN PROGRESS. Next: STORY-006 (last Wave 2 story).
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
 session_stage: phase-3-wave-2-in-progress
-session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 2 IN PROGRESS. Wave 1 COMPLETE. STORY-016 COMPLETED (PR #5 merged 7e94ec0, 2026-05-26) — Defuddle fetch wrapper + atomic manifest-write + SSRF guard, 54 bats tests, 6-pass adversary cascade 3-CLEAN at passes 4-5-6. BCs active: BC-2.14.003/004/005 + BC-2.04.017 + BC-2.17.001/002 + BC-2.08.004/009.005 + BC-2.16.006 + BC-2.02.001/004/006 (10 total active). STORY-002 (/brain:init core scaffold, 8pts) NOW IN PROGRESS (dispatched 2026-05-26). STORY-006 (quarantine corpus, 8pts) pending parallel dispatch. Deferred: BC-2.02.001 Node 20+ → Node 22+ amendment flagged for wave gate scope.
+session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 2 IN PROGRESS. Wave 1 COMPLETE. STORY-002 COMPLETED (PR #6 merged 1665a92, 2026-05-26) — /brain:init core scaffold, run.sh (175 lines, 26 dirs + 14 template files + manifest.json), SKILL.md (full 6-section), 55 Red Gate tests → 61 total, 4-pass adversary cascade 3-CLEAN at passes 2-3-4. BCs active: BC-2.14.003/004/005 + BC-2.04.017 + BC-2.17.001/002 + BC-2.08.004/009.005 + BC-2.16.006 + BC-2.02.001/004/006 + BC-2.01.001/004 + BC-2.06.003/004 (14 total active). Wave 2: 2/3 stories (16/24 points). Next: STORY-006 (quarantine corpus, 8pts — last Wave 2 story). Deferred: test file naming spec drift (init.bats vs integration.bats) — wave gate scope.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -87,9 +87,17 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 2 IN PROGRESS — STORY-016 COMPLETE, next: STORY-002 + STORY-006 (parallel)
+## TOP OF STACK — Phase 3 Wave 2 IN PROGRESS — STORY-002 COMPLETE, next: STORY-006 (last Wave 2 story)
 
-**Status:** Phase 3 Wave 2 IN PROGRESS. Wave 1 COMPLETE. STORY-016 COMPLETE (PR #5 merged 7e94ec0). Wave 2: 1/3 stories done (8/24 points). Next: STORY-002 (/brain:init core scaffold, 8pts) and STORY-006 (quarantine corpus, 8pts) — dispatch in parallel, no inter-dependency.
+**Status:** Phase 3 Wave 2 IN PROGRESS. Wave 1 COMPLETE. STORY-002 COMPLETE (PR #6 merged 1665a92). Wave 2: 2/3 stories done (16/24 points). Next: STORY-006 (quarantine corpus + quarantine-fetch.sh hook + /brain:quarantine-check skill, 8pts) — last Wave 2 story, no other pending parallel stories.
+
+**STORY-002 delivery summary (2026-05-26):**
+- Red Gate: 55 failing tests → 61 total after implementation
+- Implementation: run.sh (175 lines, scaffold 26 dirs + 14 template files + manifest.json), SKILL.md (full 6-section), 14 templates
+- Adversary convergence: 4 passes, 3-CLEAN at passes 2-3-4 (BC-5.39.001 achieved)
+- PR #6 merged to develop (squash-merge, commit 1665a92), CI green
+- BC-2.01.001/BC-2.01.004/BC-2.06.003/BC-2.06.004 promoted `draft` → `active` per POL-14
+- Deferred: test file naming spec drift (init.bats vs integration.bats) — wave gate scope
 
 **STORY-016 delivery summary (2026-05-26):**
 - Red Gate: 54 bats tests (Defuddle wrapper, duplicate guard, atomic manifest-write, SSRF guard)
@@ -163,8 +171,8 @@ Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md`.
 2. Verify HEAD via `git log --oneline -1` shows Wave 2 start state update as most recent. Verify clean tree via `git status --short`.
-3. **Wave 2 IN PROGRESS** — STORY-016 COMPLETE (PR #5 merged 7e94ec0). Next: dispatch STORY-002 and STORY-006 in parallel.
-4. Use `vsdd-factory:deliver-story` for both STORY-002 (/brain:init core scaffold) and STORY-006 (quarantine corpus) — no inter-dependency, safe to run in parallel.
+3. **Wave 2 IN PROGRESS** — STORY-016 COMPLETE (PR #5 merged 7e94ec0). STORY-002 COMPLETE (PR #6 merged 1665a92). Next: dispatch STORY-006 (last Wave 2 story).
+4. Use `vsdd-factory:deliver-story` for STORY-006 (quarantine corpus + quarantine-fetch.sh + /brain:quarantine-check skill, 8pts).
 5. DTU note: LinkedIn Posts API mock (2 SP) must ship with VP-020 story. See `.factory/specs/dtu-assessment.md` for full DTU scope.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
