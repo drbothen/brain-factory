@@ -90,3 +90,114 @@ _run_init_publishing_scaffold() {
   count="$(wc -l < "$AVOID_LIST_TEMPLATE" | tr -d ' ')"
   [ "$count" -eq 30 ]
 }
+
+# ---------------------------------------------------------------------------
+# STORY-038: gen-test-corpus.sh tests
+# Traces to: BC-2.16.006
+# ---------------------------------------------------------------------------
+
+# AC-002: generates source files + manifest
+@test "BC_2_16_006: gen-test-corpus.sh --sources 10 --seed 42 creates 10 sources + manifest" {
+  local out_dir
+  out_dir="$(mktemp -d)"
+  run "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 10 --seed 42 "$out_dir"
+  [ "$status" -eq 0 ]
+  # 10 source files exist
+  local source_count
+  source_count="$(find "$out_dir/sources" -name '*.md' | wc -l | tr -d ' ')"
+  [ "$source_count" -eq 10 ]
+  # manifest exists with entries
+  [ -f "$out_dir/.brain/manifest.json" ]
+  local manifest_count
+  manifest_count="$(jq '.sources | length' "$out_dir/.brain/manifest.json")"
+  [ "$manifest_count" -eq 9 ]  # N-1 pre-populated
+  rm -rf "$out_dir"
+}
+
+# AC-003: same seed produces identical output
+@test "BC_2_16_006: same seed produces byte-identical output (reproducibility)" {
+  local dir1 dir2
+  dir1="$(mktemp -d)"
+  dir2="$(mktemp -d)"
+  "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 5 --seed 42 "$dir1"
+  "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 5 --seed 42 "$dir2"
+  # Compare source files only (exclude manifest timestamps)
+  run diff -r "$dir1/sources" "$dir2/sources"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+  rm -rf "$dir1" "$dir2"
+}
+
+# AC-006: generated sources have valid frontmatter
+@test "BC_2_16_006: generated sources have valid source frontmatter" {
+  local out_dir
+  out_dir="$(mktemp -d)"
+  "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 3 --seed 42 "$out_dir"
+  # Check first source file has type: source
+  local first_source
+  first_source="$(find "$out_dir/sources" -name '*.md' | head -1)"
+  [ -n "$first_source" ]
+  local type_val
+  type_val="$(sed -n '/^---$/,/^---$/p' "$first_source" | grep '^type:' | awk '{print $2}')"
+  [ "$type_val" = "source" ]
+  rm -rf "$out_dir"
+}
+
+# AC-008: --sources 0 exits 1
+@test "BC_2_16_006: --sources 0 exits 1 with usage error" {
+  local out_dir
+  out_dir="$(mktemp -d)"
+  run "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 0 --seed 42 "$out_dir"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"must be"* ]] || [[ "$output" == *"≥ 1"* ]] || [[ "$output" == *">= 1"* ]]
+  rm -rf "$out_dir"
+}
+
+# AC-007: existing output dir exits 1
+@test "BC_2_16_006: existing source files in output dir causes exit 1" {
+  local out_dir
+  out_dir="$(mktemp -d)"
+  mkdir -p "$out_dir/sources/ai"
+  echo "existing" > "$out_dir/sources/ai/existing.md"
+  run "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 5 --seed 42 "$out_dir"
+  [ "$status" -eq 1 ]
+  # Existing file preserved
+  [ -f "$out_dir/sources/ai/existing.md" ]
+  rm -rf "$out_dir"
+}
+
+# AC-009: --format json-manifest-only
+@test "BC_2_16_006: --format json-manifest-only writes manifest without sources dir" {
+  local out_dir
+  out_dir="$(mktemp -d)"
+  run "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 10 --seed 42 --format json-manifest-only "$out_dir"
+  [ "$status" -eq 0 ]
+  [ -f "$out_dir/.brain/manifest.json" ]
+  [ ! -d "$out_dir/sources" ]
+  rm -rf "$out_dir"
+}
+
+# AC-002: wiki pages at default ratio
+@test "BC_2_16_006: wiki pages present at default --wiki-ratio 5" {
+  local out_dir
+  out_dir="$(mktemp -d)"
+  "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 2 --seed 42 "$out_dir"
+  # 2 sources × 5 ratio = 10 wiki pages
+  local wiki_count
+  wiki_count="$(find "$out_dir/wiki" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "$wiki_count" -eq 10 ]
+  rm -rf "$out_dir"
+}
+
+# AC-010: shellcheck clean
+@test "BC_2_16_006: gen-test-corpus.sh passes shellcheck" {
+  run shellcheck "${PLUGIN_DIR}/scripts/gen-test-corpus.sh"
+  [ "$status" -eq 0 ]
+}
+
+# AC-010: shfmt clean
+@test "BC_2_16_006: gen-test-corpus.sh passes shfmt" {
+  run shfmt -d -i 2 "${PLUGIN_DIR}/scripts/gen-test-corpus.sh"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
