@@ -81,3 +81,27 @@ setup() {
   echo "$stderr_output" | jq -e '.file_path == "/tmp/test.md"' >/dev/null
   echo "$stderr_output" | jq -e '.severity == "warn"' >/dev/null
 }
+
+# AC-003: missing helper guard pattern emits hook.helper.missing and exits 2
+@test "BC_2_04_017_EC001: missing helper emits fallback JSONL and exits 2" {
+  local tmp_hook
+  tmp_hook="$(mktemp)"
+  cat >"$tmp_hook" <<'HOOK'
+#!/usr/bin/env bash
+set -euo pipefail
+HELPER="/nonexistent/path/hook-event-emit.sh"
+if [ ! -f "$HELPER" ]; then
+  printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000","reason":"hook-event-emit.sh not found"}\n' \
+    "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "${BASH_SOURCE[0]##*/}" >&2
+  exit 2
+fi
+source "$HELPER"
+HOOK
+  chmod +x "$tmp_hook"
+
+  run bash "$tmp_hook" 2>&1
+  [ "$status" -eq 2 ]
+  echo "$output" | grep -q "hook.helper.missing"
+
+  rm -f "$tmp_hook"
+}

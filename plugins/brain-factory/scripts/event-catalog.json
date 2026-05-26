@@ -187,5 +187,12 @@
     "severity": "warn",
     "fields": ["reason"],
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.skipped\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"reason\":\"Brain vault directory not found\"}"
+  },
+  {
+    "event_type": "hook.helper.missing",
+    "hook_name": "(any hook)",
+    "severity": "error",
+    "fields": ["hook_name", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.helper.missing\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"00000000-0000-0000-0000-000000000000\",\"reason\":\"hook-event-emit.sh not found at expected path\"}"
   }
 ]
