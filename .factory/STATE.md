@@ -3,7 +3,7 @@ artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-25
-wave_1_progress: "1/4 stories completed"
+wave_1_progress: "2/4 stories completed (10/21 points)"
 convergence_trajectory:
   - pass: 1
     findings: 17
@@ -42,13 +42,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 active. STORY-001 COMPLETED (PR #1 merged 92c618a). Next: STORY-014 (critical path).
+phase_3_status: IN PROGRESS — Wave 1 active. STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). Next: STORY-027 + STORY-038 (both unblocked).
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
 session_stage: phase-3-wave-1-in-progress
-session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 1 in progress. STORY-001 COMPLETED (PR #1 merged 92c618a, 12 adversary passes, 3-CLEAN at passes 10-12, 7/7 ACs verified). BC-2.14.003/004/005 promoted active per POL-14. Deferred BC content findings logged for wave-gate. Next: STORY-014 (critical path, depends_on none). Wave 1 progress: 1/4 stories complete.
+session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 1 in progress. STORY-001 COMPLETED (PR #1 merged 92c618a, 12 adversary passes, 3-CLEAN at passes 10-12, 7/7 ACs verified). STORY-014 COMPLETED (PR #2 merged 1a1874f, 9 adversary passes, 3-CLEAN at passes 7-9, 20 bats tests). BC-2.04.017/2.17.001/2.17.002 promoted active per POL-14. Wave 1 progress: 2/4 stories complete (10/21 points). Next: STORY-027 (content brief dirs) + STORY-038 (gen-test-corpus.sh) — both depend only on STORY-001.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -57,12 +57,12 @@ canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.15, co
 canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.24, commit 5a64927) + 17 ADRs + 18 SS-NN (SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2) + VP-INDEX v0.1.8 + 27 VPs
 canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.2, commit 5a64927)
 canonical_error_taxonomy: .factory/specs/prd/error-taxonomy.md (v0.1.2, commit 39d6fba)
-canonical_story_index: .factory/stories/STORY-INDEX.md (v0.3.3, commit f160696)
+canonical_story_index: .factory/stories/STORY-INDEX.md (v0.3.5, post-STORY-014 delivery)
 canonical_dependency_graph: .factory/stories/dependency-graph.md (v0.1.1, commit f160696)
 canonical_holdout_scenarios: .factory/stories/holdout-scenarios.md (v0.1.4, commit 7b1ae9d)
 total_stories_drafted: 43
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.3.3"
+current_story_index_version: "0.3.5"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
@@ -86,9 +86,17 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 1 IN PROGRESS — STORY-001 DELIVERED — Next: STORY-014
+## TOP OF STACK — Phase 3 Wave 1 IN PROGRESS — STORY-001 + STORY-014 DELIVERED — Next: STORY-027 + STORY-038
 
-**Status:** Phase 3 Wave 1 active. STORY-001 delivered. Wave 1 progress: 1/4 stories complete. Critical path next story: STORY-014 (no blocking dependencies).
+**Status:** Phase 3 Wave 1 active. STORY-001 and STORY-014 delivered. Wave 1 progress: 2/4 stories complete (10/21 points). Next: STORY-027 (content brief dirs, 3 pts) + STORY-038 (gen-test-corpus.sh, 8 pts) — both depend only on STORY-001 (complete).
+
+**STORY-014 delivery summary (2026-05-25):**
+- Red Gate: 20 bats tests (10 hook-event-emit.bats + 10 meta-lint.bats)
+- Implementation: hook-event-emit.sh (_json_escape, emit_event → stderr JSONL, emit_verdict → stdout), event-catalog.json (28 entries: 27 hook events + hook.helper.missing)
+- Adversary convergence: 9 passes, 7 fix commits, BC-5.39.001 3-CLEAN at passes 7-9
+- PR #2 merged to develop (squash-merge, commit 1a1874f), CI passed (lint + test both green)
+- CI workflow updated: shellcheck + shfmt now installed in test job
+- BC-2.04.017/2.17.001/2.17.002 promoted `draft` → `active` per POL-14
 
 **STORY-001 delivery summary (2026-05-25):**
 - Red Gate: 6 failing tests → 32 total tests after implementation + adversary fixes
@@ -131,9 +139,9 @@ Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+
 **Next action for fresh-context orchestrator:**
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md`.
-2. Verify HEAD via `git log --oneline -1` shows STORY-001 post-merge state update as most recent. Verify clean tree via `git status --short`.
-3. **Dispatch STORY-014** (Structured event catalog — critical path, Wave 1 position 2, no blocking deps) via `vsdd-factory:deliver-story`.
-4. Wave 1 remaining: STORY-014 + STORY-027 + STORY-038. Wave gate runs after all 4 complete.
+2. Verify HEAD via `git log --oneline -1` shows STORY-014 post-merge state update as most recent. Verify clean tree via `git status --short`.
+3. **Dispatch STORY-027** (content brief scaffold — Wave 1 position 3, 3 pts, depends only on STORY-001) and **STORY-038** (gen-test-corpus.sh — Wave 1 position 4, 8 pts, depends only on STORY-001) in parallel via `vsdd-factory:deliver-story`.
+4. Wave 1 remaining: STORY-027 + STORY-038. Wave gate runs after all 4 complete.
 5. DTU note: LinkedIn Posts API mock (2 SP) must ship with VP-020 story. See `.factory/specs/dtu-assessment.md` for full DTU scope.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**

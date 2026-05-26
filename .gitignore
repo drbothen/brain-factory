@@ -34,6 +34,9 @@ Cargo.lock
 .obsidian/cache
 .obsidian/plugins/*/data.json
 
+# Worktrees (per-story git worktrees — not committed, local only)
+.worktrees/
+
 # Brain runtime state (this repo is the plugin, not a brain vault — but defense in depth)
 .brain/logs/*.jsonl
 .brain/cycles/*/health-*.md

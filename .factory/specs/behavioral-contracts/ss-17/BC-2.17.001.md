@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.3"
-status: draft
+version: "1.4"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -70,6 +70,10 @@ The structured event catalog is a machine-readable registry of all event types e
 - BC-2.04.017 — depends on (emit sites defined in hook contract)
 
 ## Changelog
+
+### v1.4 (2026-05-25)
+
+**POL-14 PROMOTION:** `status: draft` → `status: active`. STORY-014 delivered — PR #2 merged to develop (commit 1a1874f), CI green. Contract implementation verified by adversary at 3-CLEAN (passes 7–9). No semantic change to contract.
 
 ### v1.3 (2026-05-19)
 

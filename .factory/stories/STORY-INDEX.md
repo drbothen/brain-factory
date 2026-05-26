@@ -1,6 +1,6 @@
 ---
 artifact_type: story-index
-version: "0.3.4"
+version: "0.3.5"
 created: 2026-05-18
 last_updated: 2026-05-25
 authored_by: vsdd-factory:story-writer
@@ -24,13 +24,18 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 1 story completed (STORY-001). 42 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 2 stories completed (STORY-001, STORY-014). 41 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.3.5 — 2026-05-25 (STORY-014 delivery / POL-14 BC promotion)
+
+- **STORY-014 status:** `draft` → `completed` (PR #2 merged to develop, commit 1a1874f). BC-2.04.017, BC-2.17.001, BC-2.17.002 promoted `draft` → `active` per POL-14.
+- **Wave 1 progress:** 2/4 stories complete (10/21 points). Next: STORY-027 and STORY-038 (both depend only on STORY-001, which is complete).
 
 ### v0.3.4 — 2026-05-25 (STORY-001 delivery / POL-14 BC promotion)
 
@@ -85,7 +90,7 @@ inputs:
 | STORY-011 | validate-source-id-citation.sh and validate-publish-state.sh: citation integrity and publish state machine | draft | 5 | P0 | BC-2.04.009, BC-2.04.010 | — |
 | STORY-012 | enforce-kebab-case.sh and block-ai-attribution.sh: filename naming gate and AI attribution block | draft | 3 | P0 | BC-2.04.011, BC-2.04.012 | — |
 | STORY-013 | flush-state-and-commit.sh and brain-health-check.sh: session Stop commit and SessionStart health banner | draft | 3 | P1 | BC-2.04.013, BC-2.04.014 | — |
-| STORY-014 | Structured event catalog: scripts/event-catalog.json, hook-event-emit.sh shim, and BC-2.04.017 universal emission | draft | 5 | P0 | BC-2.04.017, BC-2.17.001, BC-2.17.002 | — |
+| STORY-014 | Structured event catalog: scripts/event-catalog.json, hook-event-emit.sh shim, and BC-2.04.017 universal emission | completed | 5 | P0 | BC-2.04.017, BC-2.17.001, BC-2.17.002 | — |
 | STORY-015 | Hook contract meta-lint expansion: performance budget, canonical I/O, fail-closed, and stream/credential enforcement | draft | 5 | P0 | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 | — |
 
 ---
