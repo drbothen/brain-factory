@@ -28,13 +28,13 @@ Never write a source file or update the manifest without first checking manifest
 
 1. **Node 22+ check.** Verify `node --version` returns v22 or higher. If not, exit with E-INGEST-005: "Node 22+ required for Defuddle. Install from nodejs.org."
 
-2. **Read manifest and run duplicate guard.** Run `jq -r --arg url "$URL" '.sources[] | select(.url == $url) | .source_id' "${BRAIN_DIR}/.brain/manifest.json"`. If a slug is returned, emit `ingest.url.rejected_duplicate` via `hook-event-emit.sh` with fields `url` and `source_id`, then exit with E-INGEST-001: "URL already ingested as <slug>. Sources are immutable." If no duplicate found, emit `ingest.url.started` via `hook-event-emit.sh` with field `url`.
+2. **Read manifest and run duplicate guard.** Run `jq -r --arg url "$URL" '.sources[] | select(.url == $url) | .source_id' "${BRAIN_DIR}/.brain/manifest.json"`. If a slug is returned, emit `ingest.url.rejected_duplicate` via `hook-event-emit.sh` with fields `url` and `existing_slug`, then exit with E-INGEST-001: "URL already ingested as <slug>. Sources are immutable." If no duplicate found, emit `ingest.url.started` via `hook-event-emit.sh` with fields `url` and `topic`.
 
 3. **Fetch and clean with Defuddle.** Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/defuddle-fetch.mjs" "$URL"`. On non-zero exit, propagate the error (E-INGEST-002 for non-200 HTTP or network error, E-INGEST-003 for empty content, E-INGEST-012 for invalid/unsupported URL scheme — only http:// and https:// are permitted). On success, capture cleaned markdown from stdout; extract title from stderr JSON metadata (`{"title":"..."}`).
 
 4. **Derive slug.** Normalize the URL path to kebab-case: strip scheme+host, strip query string, convert non-alphanumeric to hyphens, lowercase, trim leading/trailing hyphens.
 
-5. **Write source file.** Create `${BRAIN_DIR}/sources/${TOPIC}/${SLUG}.md` with YAML frontmatter: `title`, `url`, `ingested_at` (ISO 8601 UTC), `source_id` (the slug), `topic`, `embedding_status: pending`. Append Defuddle output as the body. Emit `ingest.url.source_written` via `hook-event-emit.sh` with fields `source_id`, `url`, `topic`, and `path`.
+5. **Write source file.** Create `${BRAIN_DIR}/sources/${TOPIC}/${SLUG}.md` with YAML frontmatter: `title`, `url`, `ingested_at` (ISO 8601 UTC), `source_id` (the slug), `topic`, `embedding_status: pending`. Append Defuddle output as the body. Emit `ingest.url.source_written` via `hook-event-emit.sh` with fields `url`, `topic`, `slug`, and `file_path`.
 
 6. **Atomic manifest update.** Export `BRAIN_DIR` and source `${CLAUDE_PLUGIN_ROOT}/hooks/lib/manifest-write.sh`. Call `manifest_write '{"source_id":"<slug>","url":"<url>","topic":"<topic>","ingested_at":"<ts>","last_ingest":"<ts>","chunks":[],"embeddings_model":null}' "${BRAIN_DIR}/.brain/manifest.json"`. On failure (E-INGEST-008), delete the source file written in step 5 and exit with the error.
 
@@ -44,7 +44,7 @@ Never write a source file or update the manifest without first checking manifest
 
 ## Quality Bar
 
-- All 50 tests in `plugins/brain-factory/tests/ingest-url.bats` pass.
+- All 54 tests in `plugins/brain-factory/tests/ingest-url.bats` pass.
 - `manifest-write.sh` is shellcheck-clean and shfmt-normalized.
 - No `find` or `ls` call on `sources/` during ingest.
 - Source file contains all 6 required frontmatter fields.

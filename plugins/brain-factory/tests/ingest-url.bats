@@ -72,6 +72,7 @@ if (url.includes('mock-empty')) {
 }
 
 if (url.includes('mock-200')) {
+  process.stderr.write(JSON.stringify({title: 'Mocked Article'}) + '\n');
   process.stdout.write('# Mocked Article\n\nThis is the cleaned content from Defuddle.\n\nParagraph with real substance.\n');
   process.exit(0);
 }
@@ -163,11 +164,11 @@ _write_source_file() {
 
   cat >"$dest" <<FRONTMATTER
 ---
-title: ${title}
-url: ${url}
-ingested_at: ${ingested_at}
-source_id: ${slug}
-topic: ${topic}
+title: "${title}"
+url: "${url}"
+ingested_at: "${ingested_at}"
+source_id: "${slug}"
+topic: "${topic}"
 embedding_status: pending
 ---
 
@@ -267,8 +268,31 @@ _ingest_pipeline() {
   stderr_content="$(node "$mock_fetch" "https://mock-200/article" 2>&1 1>/dev/null)"
 
   [ -n "$stdout_content" ]
-  # Markdown on stdout, nothing on stderr for success
-  [ -z "$stderr_content" ]
+  # stderr must contain title JSON metadata on success (matches real defuddle-fetch.mjs behaviour)
+  [[ "$stderr_content" == *"title"* ]]
+}
+
+# ===========================================================================
+# BC-2.02.001 EC-012: URL scheme validation (SSRF guard)
+# defuddle-fetch.mjs must reject non-http/https schemes before any fetch.
+# These tests exercise the REAL script — scheme check is pre-network and deterministic.
+# ===========================================================================
+@test "BC_2_02_001: defuddle-fetch.mjs rejects file:// URL with E-INGEST-012" {
+  run bash -c "node '${DEFUDDLE_FETCH}' 'file:///etc/passwd' 2>&1"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-012"* ]] || [[ "$output" == *"Only HTTP"* ]]
+}
+
+@test "BC_2_02_001: defuddle-fetch.mjs rejects ftp:// URL with E-INGEST-012" {
+  run bash -c "node '${DEFUDDLE_FETCH}' 'ftp://example.com/file' 2>&1"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-012"* ]] || [[ "$output" == *"Only HTTP"* ]]
+}
+
+@test "BC_2_02_001: defuddle-fetch.mjs rejects data: URL with E-INGEST-012" {
+  run bash -c "node '${DEFUDDLE_FETCH}' 'data:text/html,<h1>test</h1>' 2>&1"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-012"* ]] || [[ "$output" == *"Only HTTP"* ]]
 }
 
 # ===========================================================================
