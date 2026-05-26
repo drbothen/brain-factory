@@ -222,8 +222,9 @@ _run_init_publishing_scaffold() {
   second="$(find "$out_dir/sources" -name '*.md' | sort | head -2 | tail -1)"
   # Bodies should differ between sources
   local body1 body2
-  body1="$(sed '1,/^---$/d; 1,/^---$/d' "$first")"
-  body2="$(sed '1,/^---$/d; 1,/^---$/d' "$second")"
+  # Extract body after second --- (portable across BSD sed/GNU sed)
+  body1="$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2' "$first")"
+  body2="$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2' "$second")"
   [ "$body1" != "$body2" ]
   # First source body should have more than 5 unique words (LCG progresses, not stuck)
   local unique
