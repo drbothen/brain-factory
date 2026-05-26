@@ -8,20 +8,26 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 # LCG PRNG (Numerical Recipes: m=2^32, a=1664525, c=1013904223)
 # $RANDOM must NOT be used — this is the only source of randomness.
+#
+# Design note: lcg_next() and lcg_range() mutate the global lcg_seed directly
+# and store the result in lcg_result. Callers MUST NOT call these via $(...)
+# subshells — subshells fork the process, so mutations to lcg_seed are lost
+# and every call would return the same value. Use the global output variables:
+#   lcg_next  → result in $lcg_seed
+#   lcg_range → result in $lcg_result (lcg_seed also advanced)
 # ---------------------------------------------------------------------------
 lcg_seed=42
+lcg_result=0
 
 lcg_next() {
   lcg_seed=$(((1664525 * lcg_seed + 1013904223) & 0xFFFFFFFF))
-  echo "$lcg_seed"
 }
 
 lcg_range() {
-  # Usage: lcg_range <max>  — returns a value in [0, max)
+  # Usage: lcg_range <max>  — stores value in [0, max) in $lcg_result
   local max="$1"
-  local val
-  val="$(lcg_next)"
-  echo $((val % max))
+  lcg_next
+  lcg_result=$((lcg_seed % max))
 }
 
 # ---------------------------------------------------------------------------
@@ -163,18 +169,23 @@ WIKI_TYPE_COUNT="${#WIKI_TYPES[@]}"
 # Helpers
 # ---------------------------------------------------------------------------
 
-# Generate approximately AVG_WORDS words of content using the LCG
+# Generate approximately AVG_WORDS words of content using the LCG.
+# Result is stored in the global _generated_content variable.
+# MUST NOT be called via $(...) — that forks a subshell and loses lcg_seed state.
+_generated_content=""
+
 generate_content() {
-  local word_count="$AVG_WORDS"
-  local words=()
-  local i=0
-  while [[ $i -lt word_count ]]; do
-    local idx
-    idx="$(lcg_range "$WORDLIST_LEN")"
-    words+=("${WORDLIST[$idx]}")
-    i=$((i + 1))
+  local word_count="$1"
+  _generated_content=""
+  local i
+  for ((i = 0; i < word_count; i++)); do
+    lcg_range "$WORDLIST_LEN"
+    if ((i == 0)); then
+      _generated_content="${WORDLIST[$lcg_result]}"
+    else
+      _generated_content="${_generated_content} ${WORDLIST[$lcg_result]}"
+    fi
   done
-  echo "${words[*]}"
 }
 
 # Zero-pad a number to 3 digits
@@ -202,8 +213,7 @@ generate_sources() {
     mkdir -p "$src_dir"
     local src_file="$src_dir/$slug.md"
 
-    local content
-    content="$(generate_content)"
+    generate_content "$AVG_WORDS"
 
     cat >"$src_file" <<FRONTMATTER
 ---
@@ -214,7 +224,7 @@ created_at: "2026-01-01T00:00:00Z"
 immutability_hash: ""
 ---
 
-$content
+$_generated_content
 FRONTMATTER
 
     i=$((i + 1))
@@ -223,6 +233,7 @@ FRONTMATTER
 
 # ---------------------------------------------------------------------------
 # Generate manifest.json (N-1 entries; last source omitted)
+# Uses a single jq invocation instead of O(n^2) iterative string-append.
 # ---------------------------------------------------------------------------
 generate_manifest() {
   local n="$1"   # total source count
@@ -230,8 +241,10 @@ generate_manifest() {
 
   mkdir -p "$out/.brain"
 
-  # Build jq args: N-1 entries (indices 1..N-1)
-  local jq_sources='{}'
+  # Build entries as JSONL, then merge in one jq call (O(n) not O(n^2))
+  local entries_file
+  entries_file="$(mktemp)"
+
   local i=1
   while [[ $i -le $((n - 1)) ]]; do
     local topic_idx
@@ -239,23 +252,32 @@ generate_manifest() {
     local topic="${TOPIC_ARRAY[$topic_idx]}"
     local slug
     slug="source-$(zpad3 "$i")"
-    local key="sources/$topic/$slug.md"
+    local key="sources/${topic}/${slug}.md"
 
-    jq_sources="$(
-      echo "$jq_sources" | jq \
-        --arg k "$key" \
-        --arg slug "$slug" \
-        --arg topic "$topic" \
-        '. + {($k): {"slug": $slug, "topic": $topic, "ingested_at": "2026-01-01T00:00:00Z", "chunks": [], "embeddings_model": null}}'
-    )"
+    printf '{"key":"%s","slug":"%s","topic":"%s"}\n' \
+      "$key" "$slug" "$topic" >>"$entries_file"
 
     i=$((i + 1))
   done
 
-  jq -n \
-    --argjson sources "$jq_sources" \
-    '{"brain_version": "0.1.0", "sources": $sources}' \
-    >"$out/.brain/manifest.json"
+  jq -n --slurpfile entries "$entries_file" '
+    {
+      brain_version: "0.1.0",
+      sources: (
+        [$entries[] | {
+          (.key): {
+            slug: .slug,
+            topic: .topic,
+            ingested_at: "2026-01-01T00:00:00Z",
+            chunks: [],
+            embeddings_model: null
+          }
+        }] | add // {}
+      )
+    }
+  ' >"$out/.brain/manifest.json"
+
+  rm -f "$entries_file"
 }
 
 # ---------------------------------------------------------------------------
