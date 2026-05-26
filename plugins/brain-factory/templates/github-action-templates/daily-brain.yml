@@ -1,0 +1,11 @@
+# Stub: STORY-002 — full implementation in EPIC-07
+name: Daily Brain
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+jobs:
+  stub:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "stub"

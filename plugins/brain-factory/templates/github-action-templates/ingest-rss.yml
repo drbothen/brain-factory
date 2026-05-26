@@ -1,0 +1,11 @@
+# Stub: STORY-002 — full implementation in EPIC-07
+name: Ingest RSS
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+jobs:
+  stub:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "stub"

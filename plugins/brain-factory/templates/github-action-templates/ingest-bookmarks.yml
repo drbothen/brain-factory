@@ -1,0 +1,9 @@
+# Stub: STORY-002 — full implementation in EPIC-07
+name: Ingest Bookmarks
+on:
+  workflow_dispatch:
+jobs:
+  stub:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "stub"
