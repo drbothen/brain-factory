@@ -48,6 +48,11 @@ WORDLIST=(
 WORDLIST_LEN="${#WORDLIST[@]}"
 
 # ---------------------------------------------------------------------------
+# Script-level temp file tracker (cleaned up by EXIT trap in main)
+# ---------------------------------------------------------------------------
+_ENTRIES_FILE=""
+
+# ---------------------------------------------------------------------------
 # Defaults
 # ---------------------------------------------------------------------------
 SOURCES=100
@@ -242,8 +247,9 @@ generate_manifest() {
   mkdir -p "$out/.brain"
 
   # Build entries as JSONL, then merge in one jq call (O(n) not O(n^2))
-  local entries_file
-  entries_file="$(mktemp)"
+  # Use the script-level _ENTRIES_FILE so the script-level EXIT trap can clean up.
+  _ENTRIES_FILE="$(mktemp)"
+  local entries_file="$_ENTRIES_FILE"
 
   local i=1
   while [[ $i -le $((n - 1)) ]]; do
@@ -317,6 +323,8 @@ WIKIFM
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+trap 'rm -f "$_ENTRIES_FILE"' EXIT
+
 mkdir -p "$OUTPUT_DIR"
 
 if [[ "$FORMAT" == "json-manifest-only" ]]; then

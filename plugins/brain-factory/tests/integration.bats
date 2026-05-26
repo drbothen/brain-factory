@@ -121,10 +121,14 @@ _run_init_publishing_scaffold() {
   dir2="$(mktemp -d)"
   "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 5 --seed 42 "$dir1"
   "${PLUGIN_DIR}/scripts/gen-test-corpus.sh" --sources 5 --seed 42 "$dir2"
-  # Compare source files only (exclude manifest timestamps)
+  # Compare source files (exclude manifest timestamps)
   run diff -r "$dir1/sources" "$dir2/sources"
   [ "$status" -eq 0 ]
   [ -z "$output" ]
+  run diff -r "$dir1/wiki" "$dir2/wiki"
+  [ "$status" -eq 0 ]
+  run diff "$dir1/.brain/manifest.json" "$dir2/.brain/manifest.json"
+  [ "$status" -eq 0 ]
   rm -rf "$dir1" "$dir2"
 }
 
@@ -138,7 +142,7 @@ _run_init_publishing_scaffold() {
   first_source="$(find "$out_dir/sources" -name '*.md' | head -1)"
   [ -n "$first_source" ]
   local type_val
-  type_val="$(sed -n '/^---$/,/^---$/p' "$first_source" | grep '^type:' | awk '{print $2}')"
+  type_val="$(yq eval '.type' "$first_source")"
   [ "$type_val" = "source" ]
   rm -rf "$out_dir"
 }
