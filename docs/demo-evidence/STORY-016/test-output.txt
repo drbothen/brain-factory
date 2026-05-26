@@ -1,0 +1,55 @@
+1..54
+ok 1 BC_2_02_001: defuddle-fetch.mjs outputs cleaned markdown on exit 0 (happy path)
+ok 2 BC_2_02_001: defuddle-fetch.mjs contains Defuddle import and Node version check
+ok 3 BC_2_02_001: defuddle-fetch.mjs produces markdown to stdout for valid URL
+ok 4 BC_2_02_001: defuddle-fetch.mjs rejects file:// URL with E-INGEST-012
+ok 5 BC_2_02_001: defuddle-fetch.mjs rejects ftp:// URL with E-INGEST-012
+ok 6 BC_2_02_001: defuddle-fetch.mjs rejects data: URL with E-INGEST-012
+ok 7 BC_2_02_001_EC006: Node absent emits E-INGEST-005 and exits 2
+ok 8 BC_2_02_001_EC006: E-INGEST-005 message mentions Node 22+
+ok 9 BC_2_02_001_EC006: defuddle-fetch.mjs does not emit E-INGEST-005 on sufficient Node version
+ok 10 BC_2_02_001_EC002: non-200 HTTP response emits E-INGEST-002 and exits 2
+ok 11 BC_2_02_001_EC002: E-INGEST-002 message mentions HTTP status and URL
+ok 12 BC_2_02_001_EC002: no source file written on non-200 response
+ok 13 BC_2_02_001_EC003: empty Defuddle output emits E-INGEST-003 and exits 2
+ok 14 BC_2_02_001_EC003: E-INGEST-003 message mentions page may not be extractable
+ok 15 BC_2_02_001_EC003: no source file written when Defuddle returns empty
+ok 16 BC_2_02_001: successful ingest creates source file at sources/{topic}/{slug}.md
+ok 17 BC_2_02_001: source file has title frontmatter field
+ok 18 BC_2_02_001: source file has url frontmatter field matching ingested URL
+ok 19 BC_2_02_001: source file has ingested_at frontmatter in ISO 8601 format
+ok 20 BC_2_02_001: source file has source_id frontmatter matching the slug
+ok 21 BC_2_02_001: source file has topic frontmatter field
+ok 22 BC_2_02_001: source file has embedding_status: pending frontmatter field
+ok 23 BC_2_02_006: duplicate URL in manifest exits 2 with E-INGEST-001
+ok 24 BC_2_02_006: E-INGEST-001 message names the existing slug
+ok 25 BC_2_02_006: ingest-url with fixture duplicate URL exits 2 (fixture test)
+ok 26 BC_2_02_006: defuddle-fetch.mjs is NOT called for a duplicate URL
+ok 27 BC_2_02_006_EC001: URL with different query string is treated as new URL
+ok 28 BC_2_02_006_EC001: ingest proceeds for URL with additional query string
+ok 29 BC_2_02_004: manifest-write.sh sources successfully (library exists)
+ok 30 BC_2_02_004: manifest_write function returns 0 on valid entry and writable manifest
+ok 31 BC_2_02_004: manifest_write appends entry to manifest.json sources array
+ok 32 BC_2_02_004: manifest_write does NOT leave .tmp file behind after success (atomic)
+ok 33 BC_2_02_004: manifest_write fails with E-INGEST-008 when BRAIN_DIR is unset
+ok 34 BC_2_02_004: manifest entry has source_id field after ingest
+ok 35 BC_2_02_004: manifest entry has url field matching ingested URL
+ok 36 BC_2_02_004: manifest entry has topic field
+ok 37 BC_2_02_004: manifest entry has ingested_at field in ISO 8601 format
+ok 38 BC_2_02_004: manifest entry has last_ingest field in ISO 8601 format
+ok 39 BC_2_02_004: manifest entry has chunks array (empty on first ingest)
+ok 40 BC_2_02_004: manifest entry has embeddings_model field (null on first ingest)
+ok 41 BC_2_02_004: second ingest does not modify first entry (existing entries unchanged)
+ok 42 BC_2_02_004: duplicate guard reads manifest.json only — not sources/ dir
+ok 43 BC_2_02_004: manifest-only read — 10 orphan sources do not affect duplicate detection
+ok 44 BC_2_02_004_EC002: manifest write failure emits E-INGEST-008
+ok 45 BC_2_02_004_EC002: source file is deleted when manifest write fails (rollback)
+ok 46 BC_2_02_004_EC002: manifest.json is NOT corrupted when write fails
+ok 47 BC_2_02_004_EC002: _ingest_pipeline rollback deletes source file on manifest write failure
+ok 48 BC_2_02_004: manifest-write.sh passes shellcheck
+ok 49 BC_2_02_004: manifest-write.sh passes shfmt normalization
+ok 50 VP_012: manifest_write uses atomic .tmp+mv pattern (no partial writes)
+ok 51 VP_012: manifest.json contains the written entry and is valid JSON after manifest_write
+ok 52 VP_015: manifest-write.sh sources hook-event-emit.sh
+ok 53 VP_015: manifest_write emits ingest.url.manifest_updated or ingest.source.manifest_updated event
+ok 54 BC_2_02_001: happy-path fixture URL produces source file with expected slug

@@ -67,10 +67,14 @@ setup() {
   for sh_file in "${PLUGIN_DIR}/hooks/"*.sh "${PLUGIN_DIR}/hooks/lib/"*.sh; do
     [ -f "$sh_file" ] || continue
     # Extract event_type from lines like: emit_event "some.event.type" ...
-    # Skip lines that begin with # (comments)
+    # Skip lines that begin with # (comments).
+    # Skip variable references like emit_event "$event_type" — these are
+    # dynamic dispatch patterns; the caller is responsible for passing a
+    # catalog-registered type (verified at call sites, not here).
     local site
     site="$(grep -h 'emit_event ' "$sh_file" | grep -v '^\s*#' | \
-      grep -o 'emit_event "[^"]*"' | sed 's/emit_event "//;s/"//' || true)"
+      grep -o 'emit_event "[^"]*"' | sed 's/emit_event "//;s/"//' | \
+      grep -v '^\$' || true)"
     if [ -n "$site" ]; then
       emit_sites="${emit_sites}${site}"$'\n'
     fi

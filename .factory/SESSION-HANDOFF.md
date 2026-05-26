@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-2-closure-pending-human-approval
-session_stage: phase-2-closure-pending-human-approval-post-uncertainty-removal
+session_phase: phase-3-tdd-implementation-wave-2-ready
+session_stage: phase-3-wave-1-complete-gated-wave-2-dispatch-ready
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,16 +94,22 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-2-closure-pending-human-approval-uncertainty-removal-complete
+status: phase-3-active-wave-1-complete-gated-wave-2-ready
+phase_2_status: CLOSED — human approved; Phase 3 authorized
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE + GATE PASSED; Wave 2 dispatch ready
+wave_1_status: COMPLETE — 4/4 stories (STORY-001 + STORY-014 + STORY-027 + STORY-038); all PRs merged (#1-#4); 68 bats tests; 7 BCs active; gate PASSED
+wave_2_stories: [STORY-002, STORY-006, STORY-016]
+wave_2_points: 24
+wave_2_status: READY — all dependencies satisfied; awaiting dispatch
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d / Phase 2 (closure pending)
+# SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d / Phase 2 CLOSED / Phase 3 IN PROGRESS — Wave 1 COMPLETE + GATED — Wave 2 READY
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-25):** Phase 2 CONVERGED + uncertainty removal COMPLETE. The next action is to present the Phase 2 closure gate to the human and await Phase 3 authorization. Do NOT dispatch any agents until human approves Phase 3.
+**Current state (as of 2026-05-26):** Phase 2 CLOSED (human approved). Phase 3 IN PROGRESS — Wave 1 COMPLETE + integration gate PASSED. Wave 2 (STORY-002 + STORY-006 + STORY-016, 24 points) is ready for dispatch. Dispatch Wave 2 per-story delivery (worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge).
 
 ### Step 1 — Read documents in this exact order
 
@@ -117,101 +123,112 @@ status: phase-2-closure-pending-human-approval-uncertainty-removal-complete
 ### Step 2 — Verify git state before dispatching any agent
 
 ```
-git log --oneline -3
+git log --oneline origin/develop -5
 ```
-Expected: HEAD ~ "factory(specs+stories): uncertainty removal" (5a64927) OR state-manager closure commit on top; HEAD~1 ~ "Phase 2 Step G FINAL CONVERGED"
+Expected: 4 story merge commits from Wave 1 (PRs #1-#4 for STORY-001, STORY-014, STORY-027, STORY-038)
+
+```
+git branch -a
+```
+Expected: `develop` + `main` branches present; no leftover feature branches from Wave 1
 
 ```
 git status --short
 ```
 Expected: empty (clean tree)
 
-### Step 3 — What just happened; Phase 2 closure is next-action
+### Step 3 — What just happened; Wave 2 dispatch is next-action
 
-**3a. DONE — Phase 2 Pass 6 adversary persist (commit 543c588):**
-Pass 6 adversary report persisted. Verdict: PASS. 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION. THIRD CONSECUTIVE PASS IN PHASE 2 CASCADE. Streak advances 2/3 → 3/3. BC-5.39.001 3-CLEAN literal streak ACHIEVED. Zero findings. Adversarial cascade CLOSED. All 26 unique findings from Passes 1-5 VERIFIED-CLOSED. I07 and P3-S02 remain DEFERRED per prior decisions.
+**3a. DONE — Phase 2 CLOSED (human approved):**
+Human approved Phase 2 closure gate. Phase 3 TDD implementation authorized. Wave 1 dispatch followed immediately.
 
-**3b. NO-ARCHITECT-BURST — Pass 6 PASS verdict, zero findings.**
+**3b. DONE — Wave 1 complete (4/4 stories, PRs #1-#4 merged):**
+STORY-001 (plugin scaffold), STORY-014 (hook runner), STORY-027 (validate-frontmatter-schema hook), STORY-038 (ingest-url skill) all delivered. Per-story delivery: worktree → stubs → failing bats tests → TDD green → adversary 3-CLEAN → demo → PR → merge. 68 bats tests across Wave 1. 7 BCs promoted draft → active (POL-14 auto-promotion).
 
-**3c. NO-PO-BURST — Pass 6 PASS verdict, zero findings.**
+**3c. DONE — Wave 1 integration gate PASSED:**
+Wave 1 integration gate: 68/68 tests passing, adversary PASS (0C+0H+4M+1L), security APPROVE (0C+0H+3M+5L). 7 MEDIUM deferred findings are non-blocking — documented in Wave 2 deferred findings list below. Gate authorized Wave 2 dispatch.
 
-**3d. DONE — Phase 2 Step G FINAL state-mgr commit (commit ab88737):**
-STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Pass 5 closure SHA-pending row back-filled to 9843c70. Streak 3/3 CONVERGED recorded. Decay `17→7→4→1→0→0` documented. Phase 2 step_g_status set to CONVERGED at 543c588.
-
-**3e. DONE — Uncertainty removal (commit 5a64927):**
-70 files changed (+2137/-626). 11 implementation-blocking issues fixed across all 43 stories, 5 ADRs, 8 VPs, 3 SS designs, 2 BCs, 4 PRD supplements. Critical fixes: hook stdin/stdout field names corrected (tool→tool_name, input→tool_input, output→tool_result; verdict envelope→Claude Code native decision/continue/systemMessage); plugin.json auto-discovery documented; `@defuddle/node`→`defuddle` v0.18.1+`linkedom`; Node 20 EOL→Node 22+; macOS portability fixes (realpath, grep -P, /usr/bin/time -v, date +%s%N). All stories now self-contained with Hook I/O Protocol Reference, per-tool field tables, and correct version pins.
-
-**3f. TOP-OF-STACK — Phase 2 closure / human approval gate:**
-Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md. Surfaces Phase 2 closure to human. Presents Phase 3 pre-dispatch checklist (see §Phase 3 Readiness Checklist below). Awaits human authorization before dispatching Phase 3 TDD agents. Phase 3 first wave: Wave 1 (STORY-001 + STORY-014 + STORY-027 + STORY-038).
+**3d. TOP-OF-STACK — Wave 2 dispatch ready:**
+Fresh session reads STATE.md → SESSION-HANDOFF.md. Dispatches Wave 2 per-story delivery. Wave 2 stories: STORY-016 (critical path — Defuddle fetch wrapper), STORY-002 (/brain:init core), STORY-006 (quarantine corpus). All dependencies satisfied. Start with STORY-016 (critical path) or STORY-002 — implementer's choice based on wave_position.
 
 ### Step 4 — Key constraints to carry forward
 
-- **No catalog freeze:** Per UD-002, new disciplines discovered in any pass should still be codified. The cascade continues indefinitely.
-- **No convergence shortcuts:** "Stable discipline catalog" does not count as convergence. Only literal 3/3 streak counts.
-- **Chat-only adversary protocol:** Every adversary dispatch uses chat-only output per F-PASS12-O1. Adversary must NOT be instructed to Write or Commit files.
+- **Per-story delivery discipline:** Each story: `feature/<story-id>` worktree → stubs → failing bats Red Gate tests → TDD green → adversary 3-CLEAN (BC-5.39.001) → demo-recorder → PR → merge.
+- **Holdout scenarios restricted:** `.factory/stories/holdout-scenarios.md` MUST NOT be passed to any Phase 3 agent. Information asymmetry is non-negotiable.
+- **Chat-only adversary protocol:** Adversary dispatch is chat-only (F-PASS12-O1). Adversary must NOT be instructed to Write or Commit files.
 - **Single-commit-per-burst:** Per TD-VSDD-053. One logical agent role = one commit.
 - **No AI attribution:** No `Co-Authored-By: Claude`, no robot emoji per CLAUDE.md hard rule.
+- **Deferred BC findings:** 6 BC-content findings deferred from Wave 1 per-story adversary reviews (see deferred findings list below). Address in Wave 2 or as a spec-layer fix-burst before Wave 2 adversary pass — do NOT silently carry into implementation.
 
 ---
 
-## Phase 3 Readiness Checklist (Present to Human for Phase 2 Closure Gate)
+## Phase 3 Status — Wave 1 COMPLETE + GATED; Wave 2 READY
 
-All items must be reviewed by the human before Phase 3 TDD dispatch is authorized.
+### Wave 1 Delivery Summary — COMPLETE
 
-### Phase 2 Deliverables — Complete
+| Story | Points | Status | PR | BCs Active |
+|---|---|---|---|---|
+| STORY-001 (plugin scaffold) | 5 | MERGED | #1 | 2 |
+| STORY-014 (hook runner) | 8 | MERGED | #2 | 2 |
+| STORY-027 (validate-frontmatter-schema) | 8 | MERGED | #3 | 2 |
+| STORY-038 (ingest-url skill) | 8 | MERGED | #4 | 1 |
+| **Wave 1 total** | **29 pts** | **4/4** | **#1-#4** | **7 active** |
 
-| Deliverable | Status | Details |
-|---|---|---|
-| 43 stories across 9 epics | DONE | 95/95 BC coverage; all stories at commit 5a64927 |
-| Dependency graph v0.1.1 | DONE | 68 edges, 13 topo layers, acyclic |
-| Wave schedule v0.1.4 | DONE | 11 waves, 264 points, critical path 13 stories |
-| Sprint state v0.1.1 | DONE | Machine-readable YAML |
-| Holdout scenarios v0.1.4 | DONE | 17 scenarios (10 must-pass, 7 nice-to-pass); access_control: restricted |
-| Adversarial convergence | DONE | 3-CLEAN at Pass 6 — decay 17→7→4→1→0→0 |
-| Uncertainty removal | DONE | commit 5a64927 — 70 files, 11 blockers fixed, all stories self-contained |
+Wave 1 integration gate: PASSED — 68/68 bats tests, adversary PASS (0C+0H+4M+1L), security APPROVE (0C+0H+3M+5L).
 
-### Canonical Spec Versions at Phase 2 Closure
+### Wave 1 Deferred Findings (7 MEDIUM, non-blocking)
 
-| Artifact | Version | Commit |
-|---|---|---|
-| product-brief.md | v0.4.20 | f6725b9 |
-| prd/index.md | v0.1.14 | 5a64927 |
-| BC-INDEX.md | v0.1.15 | 82ec4f5 |
-| ARCH-INDEX.md | v0.1.24 | 5a64927 |
-| VP-INDEX.md | v0.1.8 | 5a64927 |
-| nfr-catalog.md | v0.1.2 | 5a64927 |
-| interface-definitions.md | v0.2.0 | 5a64927 |
-| test-vectors.md | v0.2.0 | 5a64927 |
-| STORY-INDEX.md | v0.3.3 | f160696 |
-| dependency-graph.md | v0.1.1 | f160696 |
-| wave-schedule.md | v0.1.4 | 7b1ae9d |
-| holdout-scenarios.md | v0.1.4 | 7b1ae9d |
+From Wave 1 integration gate adversary pass:
 
-### Phase 3 Pre-Dispatch Checklist (Human Reviews Before Authorizing)
+1. `integration.bats` header stale after STORY-038
+2. Temp dir leak on test assertion failure
+3. `init` SKILL.md pre-empts STORY-002 scope (STORY-002 extends existing SKILL.md)
+4. `_json_escape` missing `\b`/`\f` control chars
+5. Credential masking breadth (camelCase + extra suffixes)
+6. Path traversal in `gen-test-corpus.sh`
+7. BC-2.14.004 "array" language vs auto-discovery
 
-- [ ] **DTU assessment:** Check `.factory/specs/dtu-assessment.md` — verify `dtu_required` status and whether DTU clones are needed before Phase 3 implementation begins.
-- [ ] **`develop` branch:** Currently on `main`. Phase 3 requires feature branches (`feature/<story-id>`) targeting `develop`. Confirm `develop` branch should be created before Phase 3 starts.
-- [ ] **Toolchain provisioning:** bats, shellcheck, shfmt, jq, yq must be installed before the first story implements. `make setup` (forthcoming Phase 1d deliverable) or manual install required.
-- [ ] **CI/CD:** Verify GitHub Actions workflow for bats + shellcheck + shfmt is in place before first PR.
-- [ ] **Wave 1 stories confirmed:** STORY-001 (plugin scaffold), STORY-014 (hook runner), STORY-027 (validate-frontmatter-schema hook), STORY-038 (ingest-url skill) — these are the Wave 1 parallel track.
-- [ ] **Holdout scenarios restricted:** `.factory/stories/holdout-scenarios.md` MUST NOT be passed to any Phase 3 agent. Orchestrator must confirm this restriction is active.
+From Wave 1 per-story adversary reviews (BC-content layer):
 
-### Wave 1 First Stories (Phase 3 entry point, once human authorizes)
+- BC-2.14.004 postconditions 3-4 "array" language
+- BC-2.14.005 precondition 1 path mismatch
+- BC-2.14.005 test vector `jq '.hooks | length'` returns 4 not 13
+- BC-2.01.001 reference in STORY-027 AC-003 trace (spec-layer)
+- BC-2.16.006 bash version 4+ vs 5.0+
+- `emit_verdict` pass-through vs ADR-016 (story spec authoritative)
 
-- **STORY-001** — Plugin scaffold (foundational, no dependencies)
-- **STORY-014** — Hook runner (depends on STORY-001)
-- **STORY-027** — validate-frontmatter-schema hook (depends on STORY-001, STORY-014)
-- **STORY-038** — ingest-url skill (depends on STORY-001)
+These are non-blocking for Wave 2 dispatch. Address before Wave 2 adversary pass or as a spec-layer fix-burst.
+
+### Wave 2 Stories — READY FOR DISPATCH
+
+All Wave 2 dependencies satisfied (STORY-001 ✅, STORY-014 ✅).
+
+| Story | Points | Priority | Epic | Depends on | Critical Path |
+|---|---|---|---|---|---|
+| STORY-002 (`/brain:init` core) | 8 | P0 | EPIC-01 | STORY-001 ✅ | No |
+| STORY-006 (quarantine corpus + `quarantine-fetch.sh`) | 8 | P0 | EPIC-02 | STORY-001 ✅, STORY-014 ✅ | No |
+| STORY-016 (Defuddle fetch wrapper + duplicate guard + manifest-write) | 8 | P0 | EPIC-03 | STORY-001 ✅, STORY-014 ✅ | YES — critical path |
+
+Recommended dispatch order: STORY-016 first (critical path), then STORY-002 and STORY-006 in parallel.
+
+### Resume Procedure for Wave 2 Dispatch
+
+1. Read STATE.md → SESSION-HANDOFF.md (this file)
+2. Verify `git log --oneline origin/develop -5` shows PRs #1-#4
+3. Verify `git branch -a` shows `develop` + `main`
+4. Dispatch STORY-016 (critical path) via `vsdd-factory:deliver-story`
+5. After STORY-016 merges, dispatch STORY-002 + STORY-006 in parallel
+6. After all 3 Wave 2 stories merge → run Wave 2 integration gate
 
 ---
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED. Phase 2 Step G CONVERGED at Pass 6 (PASS 0C+0I+0S — third consecutive PASS — BC-5.39.001 3-CLEAN streak 3/3) — adversarial cascade CLOSED. Uncertainty removal COMPLETE at commit 5a64927. Awaiting human approval for Phase 2 closure + Phase 3 TDD dispatch.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED. Phase 2 CLOSED — human approved. Phase 3 IN PROGRESS — Wave 1 COMPLETE + integration gate PASSED (68/68 tests, adversary PASS 0C+0H+4M+1L, security APPROVE 0C+0H+3M+5L). Wave 2 (STORY-002 + STORY-006 + STORY-016, 24 points) ready for dispatch.**
 
-Phase 2 Step G Pass 6 CLOSED on 2026-05-19. Report persisted at 543c588 (PASS — 0C+0I+0S). THIRD CONSECUTIVE PASS IN PHASE 2 CASCADE. No fix-burst (zero findings). Streak advances 2/3 → 3/3. BC-5.39.001 3-CLEAN literal streak ACHIEVED. Phase 2 adversarial cascade CLOSED. Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+2S) → Pass 4=1(0C+0I+1S) → Pass 5=0(0C+0I+0S) → Pass 6=0(0C+0I+0S). Shorthand: `17→7→4→1→0→0`. CRITICAL eliminated at Pass 2 (`4→0→0→0→0→0`). IMPORTANT eliminated at Pass 4 (`8→3→2→0→0→0`). SUGGESTION eliminated at Pass 5 (`5→4→2→1→0→0`). Floor held at Pass 6.
+Phase 3 Wave 1 delivered 4 stories (STORY-001, STORY-014, STORY-027, STORY-038) via PRs #1-#4 on `develop`. 68 bats tests. 7 BCs promoted draft → active (POL-14). Wave 1 integration gate PASSED. 7 MEDIUM deferred findings are non-blocking — documented above in §Wave 1 Deferred Findings.
 
-**Uncertainty removal COMPLETE at commit 5a64927 (2026-05-25):** 70 files changed (+2137/-626). All 43 stories updated with correct Claude Code hook API field names, verified package names, correct Node.js version (22+), macOS-portable bash patterns, and self-contained Hook I/O Protocol Reference sections. 5 ADRs updated (ADR-002 v2.0, ADR-003 v2.0, ADR-016 v1.2, ADR-007 v1.1, ADR-017 v1.1). 8 VPs cascaded (VP-002 through VP-026) + VP-INDEX v0.1.8. 3 subsystem designs cascaded (SS-04, SS-10, SS-14). 2 BCs cascaded (BC-2.14.005 v1.3, BC-2.10.002 v1.3). 4 PRD supplements updated (interface-definitions v0.2.0, test-vectors v0.2.0, nfr-catalog v0.1.2, prd/index v0.1.14). ARCH-INDEX v0.1.24. 11 implementation-blocking issues fixed — see §Uncertainty Removal Issue Log below.
+**Phase 2 CLOSED (human approved):** Phase 2 adversarial cascade CONVERGED at Pass 6 (PASS — 0C+0I+0S — BC-5.39.001 3-CLEAN streak 3/3). Decay: `17→7→4→1→0→0`. Uncertainty removal at commit 5a64927 (70 files, 11 implementation blockers fixed). Human approved Phase 2 closure and authorized Phase 3 TDD dispatch.
 
 The brain-factory product brief (Phase 1a) reached BC-5.39.001 3-CLEAN convergence at Pass 23 on v0.4.15 (802 lines, commit 9ff0504). Phase 1a Stage 5 is CLOSED.
 
@@ -313,7 +330,8 @@ See SESSION-HANDOFF prior versions or `.factory/cycles/v0.1-phase-1a-brief/adver
 - **Phase 1b status:** COMPLETED at commit 7935faa (PRD v0.1.1)
 - **Phase 1c status:** COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89ea4b)
 - **Phase 1d status:** CONVERGED — Pass 42 CLOSED (PASS); 68 fix-bursts; streak 3/3; Phase 2 authorized per UD-005
-- **Phase 2 status:** STEP-G-PASS-5-CLOSED (Pass 5 PASS — 0C+0I+0S; zero findings; streak 2/3 — second consecutive PASS; Pass 6 next-action — convergence candidate)
+- **Phase 2 status:** CLOSED — human approved; adversarial cascade CONVERGED at Pass 6 (PASS); decay 17→7→4→1→0→0; uncertainty removal commit 5a64927
+- **Phase 3 status:** IN PROGRESS — Wave 1 COMPLETE + gate PASSED; Wave 2 ready for dispatch (STORY-002 + STORY-006 + STORY-016)
 - **Holdout scenarios:** `.factory/stories/holdout-scenarios.md` (v0.1.4, commit 7b1ae9d) — ACCESS CONTROL: restricted — holdout-evaluator-only
 - **Dependency graph:** `.factory/stories/dependency-graph.md` (v0.1.1, commit f160696) — CANONICAL for inter-story deps (UD-007)
 - **Five-file gate:** canonical (brief + handoff + prd/index.md + BC-INDEX.md + ARCH-INDEX.md)

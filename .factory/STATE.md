@@ -32,17 +32,19 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-2-step-g-converged-phase-2-closure-pending-human-approval
+phase: phase-3-tdd-implementation-wave-1-complete-wave-2-next
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
 phase_1d_status: "**CONVERGED** — BC-5.39.001 3-CLEAN literal streak 3/3 achieved at Pass 42 (Pass 40 PASS + Pass 41 PASS + Pass 42 PASS); 42 passes complete (39 FAIL + 3 PASS consecutively at end); 68 fix-bursts complete; 24 disciplines codified; 13 sub-checks codified; Phase 1d adversarial spec review cascade CLOSED at commit 44cda58"
-phase_2_status: STEP-G-CONVERGED-PHASE-2-CLOSURE-PENDING-HUMAN-APPROVAL — Pass 6 PASS (0C+0I+0S — zero findings — third consecutive PASS) — streak 3/3 CONVERGED — decay 17→7→4→1→0→0 — BC-5.39.001 3-CLEAN achieved — adversarial cascade CLOSED
+phase_2_status: CLOSED — CONVERGED at Pass 6 + uncertainty removal complete — human approval gate PASSED — Phase 3 authorized
+phase_3_status: "IN-PROGRESS — Wave 1 COMPLETE + INTEGRATION GATE PASSED (68/68 tests + adversary PASS 0C+0H+4M+1L + security APPROVE 0C+0H+3M+5L) — Wave 2 next (STORY-002 + STORY-006 + STORY-016, 24 points)"
+wave_1_status: GATE PASSED — 3/3 checks (full test suite 68/68, adversary PASS, security APPROVE) — 7 non-blocking MEDIUM findings deferred to Wave 2+
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-session_stage: phase-2-closure-pending-human-approval-post-uncertainty-removal
-session_continuity: FRESH-CONTEXT-READY — Phase 2 Step G CONVERGED at Pass 6 + uncertainty removal complete at commit 5a64927 (70 files, 11 implementation-blocking issues fixed); next session presents Phase 2 closure gate to human and awaits Phase 3 authorization
+session_stage: phase-3-wave-1-complete-wave-2-next
+session_continuity: FRESH-CONTEXT-READY — Wave 1 integration gate PASSED (68/68 tests + adversary PASS 0C+0H+4M+1L + security APPROVE 0C+0H+3M+5L); Wave 2 dispatch is next (STORY-002 + STORY-006 + STORY-016, 24 points)
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -71,7 +73,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-2-closure-pending-human-approval-uncertainty-removal-complete
+status: phase-3-wave-1-gate-passed-wave-2-next
 ---
 
 # brain-factory Pipeline STATE
@@ -80,9 +82,9 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 2 CONVERGED + Uncertainty Removal COMPLETE — Phase 2 CLOSURE HUMAN APPROVAL GATE PENDING
+## TOP OF STACK — Phase 3 TDD Implementation — Wave 1 COMPLETE + INTEGRATION GATE PASSED — Wave 2 Next
 
-**Status:** Phase 2 Step G CONVERGED (Pass 6 PASS, BC-5.39.001 3-CLEAN streak 3/3) + **uncertainty removal COMPLETE at commit 5a64927** (70 files changed, 11 implementation-blocking issues fixed, all 43 stories self-contained). **Phase 2 closure / human approval gate is the next pipeline step.** Fresh-context orchestrator: present closure gate to human and await Phase 3 authorization.
+**Status:** Wave 1 integration gate PASSED (3/3 checks). Full test suite 68/68 PASS on develop. Adversarial wave review PASS (0C+0H+4M+1L). Security review APPROVE (0C+0H+3M+5L). Wave 1 gate CLOSED. **Next action: Wave 2 dispatch** (STORY-002 + STORY-006 + STORY-016, 3 stories, 24 points). 7 non-blocking MEDIUM findings deferred to Wave 2+ (integration.bats header, temp dir leaks, init scope overlap, _json_escape control chars, credential masking breadth, path traversal, BC-2.14.004 wording).
 
 Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+2S) → Pass 4=1(0C+0I+1S) → Pass 5=0(0C+0I+0S) → Pass 6=0(0C+0I+0S) — shorthand: `17→7→4→1→0→0`. CRITICAL: `4→0→0→0→0→0` (eliminated at Pass 2). IMPORTANT: `8→3→2→0→0→0` (eliminated at Pass 4). SUGGESTION: `5→4→2→1→0→0` (eliminated at Pass 5). Floor held at Pass 6.
 
@@ -112,10 +114,10 @@ Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+
 **Next action for fresh-context orchestrator:**
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md`.
-2. Verify HEAD via `git log --oneline -1` shows uncertainty removal commit 5a64927 as the most recent (or the state-manager closure commit on top of it). Verify clean tree via `git status --short`.
-3. **Surface Phase 2 closure to human for the human approval gate.** Phase 3 (TDD Implementation) dispatch awaits human authorization per CLAUDE.md Pipeline Authority.
-4. Present Phase 3 pre-dispatch checklist (see SESSION-HANDOFF.md §Phase 3 Readiness Checklist) to human for review.
-5. Phase 3 first wave: Wave 1 (STORY-001 + STORY-014 + STORY-027 + STORY-038) ready for per-story TDD dispatch once human authorizes Phase 3.
+2. Verify HEAD via `git log --oneline -1`. Verify clean tree via `git status --short`.
+3. **Wave 1 gate PASSED.** Phase 3 is active. Wave 2 dispatch is next: STORY-002 + STORY-006 + STORY-016 (3 stories, 24 points).
+4. Review 7 deferred MEDIUM findings from Wave 1 gate (see Phase 3 Wave 1 section above) — determine if any require pre-dispatch remediation before Wave 2.
+5. Dispatch Wave 2 per-story TDD pipeline.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
 
@@ -195,37 +197,37 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 
 **User decision (UD-007 — 2026-05-19):** Dep-graph supersession convention established. `.factory/stories/dependency-graph.md` is the CANONICAL source-of-truth for inter-story dependencies. Per-story frontmatter `dependencies:` and `blocks:` fields are at-creation-time snapshots only. Downstream agents (wave-scheduler, implementer Phase 3, adversary, CI) consult dependency-graph.md, NOT per-story frontmatter. Asymmetry between frontmatter and graph is legitimate per this convention — consistency-validator MUST NOT flag these as defects.
 
-**Top-of-stack action:** **Phase 2 Step G CONVERGED at Pass 6.** BC-5.39.001 3-CLEAN literal streak 3/3 ACHIEVED. Adversarial cascade CLOSED. Phase 2 closure / human approval gate is next. Surface Phase 2 deliverables to human and present Phase 3 pre-dispatch checklist (see Phase 2 CLOSURE section above). Decay trajectory: `17→7→4→1→0→0`. Floor held at Pass 6.
+**Top-of-stack action:** **Wave 1 integration gate PASSED** (2026-05-26). 68/68 tests + adversary PASS (0C+0H+4M+1L) + security APPROVE (0C+0H+3M+5L). Wave 1 gate CLOSED. Wave 2 dispatch next: STORY-002 + STORY-006 + STORY-016 (3 stories, 24 points). 7 non-blocking MEDIUM findings deferred to Wave 2+.
 
 ---
 
 ## Resume procedure for FRESH-CONTEXT ORCHESTRATOR
 
-**Phase 2 Step G CONVERGED. Phase 2 closure / human approval gate is next.** Read these documents IN ORDER:
+**Phase 3 in progress. Wave 1 integration gate PASSED. Wave 2 dispatch is next.** Read these documents IN ORDER:
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md`
 2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (this file — canonical state-discovery entry point)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md`
 4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md`
 
-**Pre-gate verification:**
+**Pre-session verification:**
 
 ```bash
 cd /Users/jmagady/Dev/brain-factory
-git log --oneline -2                # expect HEAD ~ "Phase 2 Step G FINAL CONVERGED"; HEAD^ ~ "Pass 6 report PASS 3/3 CONVERGED"
-git status --short                  # expect only untracked planning notes / .factory/logs/ / .claude/
-grep -nE '^phase_2_step_g_status:' .factory/STATE.md  # expect CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
+git log --oneline -2                # expect HEAD ~ "Wave 1 integration gate PASSED"
+git status --short                  # expect clean or only untracked planning notes / .factory/logs/ / .claude/
+grep -nE '^wave_1_status:' .factory/STATE.md  # expect GATE PASSED
 ```
 
-**Phase 2 closure gate — next action:**
+**Wave 2 dispatch — next action:**
 
-Surface Phase 2 closure to human. Present the Phase 3 pre-dispatch checklist (see Phase 2 CLOSURE section below). Await human authorization before dispatching Phase 3 TDD agents.
+Dispatch Wave 2 stories (STORY-002 + STORY-006 + STORY-016, 24 points) via per-story TDD pipeline. Review the 7 deferred MEDIUM findings from Wave 1 gate before dispatch to determine if any should be addressed first.
 
 ---
 
-## Phase 2 CLOSURE — Human Approval Gate
+## Phase 2 CLOSURE — APPROVED — Phase 3 AUTHORIZED
 
-**Phase 2 Step G CONVERGED at Pass 6 (2026-05-19). Adversarial cascade CLOSED.**
+**Phase 2 Step G CONVERGED at Pass 6 (2026-05-19). Adversarial cascade CLOSED. Human approval gate PASSED. Phase 3 authorized.**
 
 ### Phase 2 Deliverables Summary
 
@@ -254,14 +256,14 @@ Surface Phase 2 closure to human. Present the Phase 3 pre-dispatch checklist (se
 
 ### Phase 3 Pre-Dispatch Checklist
 
-- [ ] Human reviews Phase 2 deliverables (stories, epics, dep-graph, wave-schedule, holdout-scenarios)
-- [ ] Human approves story decomposition (43 stories, 9 epics, 95/95 BC coverage)
-- [ ] Human authorizes Phase 3 dispatch
-- [ ] DTU check: brain-factory has no external third-party services → DTU_REQUIRED: false (verify with architect)
-- [ ] CI/CD verification: ci.yml exists, branch protection on main configured
-- [ ] Per CLAUDE.md Pipeline Authority: orchestrator does NOT self-dispatch Phase 3; human gate required
-- [ ] First wave (Wave 1: STORY-001 + STORY-014 + STORY-027 + STORY-038) identified as Phase 3 entry point
-- [ ] Toolchain preflight (bats, shellcheck, shfmt) confirmed via `vsdd-factory:setup-env`
+- [x] Human reviews Phase 2 deliverables (stories, epics, dep-graph, wave-schedule, holdout-scenarios)
+- [x] Human approves story decomposition (43 stories, 9 epics, 95/95 BC coverage)
+- [x] Human authorizes Phase 3 dispatch
+- [x] DTU check: brain-factory has no external third-party services → DTU_REQUIRED: false
+- [x] CI/CD verification: ci.yml exists, branch protection on main configured
+- [x] Per CLAUDE.md Pipeline Authority: human gate passed
+- [x] First wave (Wave 1: STORY-001 + STORY-014 + STORY-027 + STORY-038) — COMPLETE + GATE PASSED
+- [x] Toolchain preflight (bats, shellcheck, shfmt) confirmed via `vsdd-factory:setup-env`
 
 ### Phase 2 Step G FINAL Burst Cascade Table
 
@@ -285,7 +287,33 @@ Surface Phase 2 closure to human. Present the Phase 3 pre-dispatch checklist (se
 | 16 | 3c7605b | state-manager | Pass 5 report persisted — PASS (0C+0I+0S) — streak 1/3 → 2/3 — SECOND PASS |
 | 17 | 9843c70 | state-manager | Pass 5 closure — streak 2/3 — decay floor 17→7→4→1→0 |
 | 18 | 543c588 | state-manager | Pass 6 report persisted — PASS (0C+0I+0S) — streak 2/3 → 3/3 CONVERGED |
-| 19 | (this commit) | state-manager | Phase 2 Step G FINAL — CONVERGED — Phase 2 closure HUMAN APPROVAL GATE |
+| 19 | 9698390 | state-manager | Phase 2 Step G FINAL — CONVERGED — Phase 2 closure HUMAN APPROVAL GATE |
+| 20 | (this commit) | state-manager | Wave 1 integration gate PASSED — 68/68 tests + adversary PASS (0C+0H+4M+1L) + security APPROVE — Wave 2 ready |
+
+---
+
+## Phase 3 Wave 1 — COMPLETE + INTEGRATION GATE PASSED (2026-05-26)
+
+**Stories:** STORY-001 + STORY-014 + STORY-027 + STORY-038 (Wave 1, 4 stories).
+
+**Integration gate result: PASSED (3/3 checks)**
+
+| Check | Result | Detail |
+|-------|--------|--------|
+| Full test suite | PASS | 68/68 pass on develop |
+| Adversarial wave review | PASS | 0C+0H+4M+1L |
+| Security review | APPROVE | 0C+0H+3M+5L |
+
+**Non-blocking findings deferred to Wave 2+ (7 MEDIUM):**
+1. integration.bats header — test file structural issue
+2. Temp dir leaks — cleanup in error paths
+3. Init scope overlap — minor initialization boundary
+4. `_json_escape` control chars — edge case handling
+5. Credential masking breadth — coverage gap
+6. Path traversal — input validation gap
+7. BC-2.14.004 wording — spec precision issue
+
+**Wave 2 next:** STORY-002 + STORY-006 + STORY-016 (3 stories, 24 points).
 
 ---
 
@@ -469,7 +497,7 @@ Surface Phase 2 closure to human. Present the Phase 3 pre-dispatch checklist (se
 | # | SHA | Agent | Subject |
 |---|-----|-------|---------|
 | 1 | 543c588 | state-manager | Pass 6 report persisted — PASS (0C+0I+0S) — streak 2/3 → 3/3 CONVERGED |
-| 2 | (this commit) | state-manager | Phase 2 Step G FINAL — CONVERGED — Phase 2 closure HUMAN APPROVAL GATE pending |
+| 2 | 9698390 | state-manager | Phase 2 Step G FINAL — CONVERGED — Phase 2 closure HUMAN APPROVAL GATE pending |
 
 ## Phase 2 Step G Pass 6 Dispatch Procedure (COMPLETED — historical reference)
 
@@ -667,7 +695,7 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 
 **Mode:** GREENFIELD (no existing implementation; planning artifacts in `docs/planning/` serve as Phase 0 equivalent).
 
-**Phase:** Phase 2 Story Decomposition — STEP-C-COMPLETE (dependency-graph.md v0.1.0 committed at 90d90fd; 67 edges, 13 topo layers, acyclic; UD-007 dep-graph supersession convention established). Step D (wave-schedule) next-action.
+**Phase:** Phase 3 TDD Implementation — Wave 1 COMPLETE + INTEGRATION GATE PASSED (2026-05-26). Wave 2 dispatch next (STORY-002 + STORY-006 + STORY-016, 24 points).
 
 ## Phase 1a Stage 5 — CLOSED
 
