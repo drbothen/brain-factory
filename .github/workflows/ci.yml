@@ -89,6 +89,23 @@ jobs:
           chmod +x /usr/local/bin/yq
           yq --version
 
+      - name: Install shellcheck
+        run: |
+          set -euo pipefail
+          SHELLCHECK_VERSION="0.10.0"
+          wget -qO- "https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" \
+            | tar -xJf - --strip-components=1 -C /usr/local/bin "shellcheck-v${SHELLCHECK_VERSION}/shellcheck"
+          shellcheck --version
+
+      - name: Install shfmt
+        run: |
+          set -euo pipefail
+          SHFMT_VERSION="3.8.0"
+          wget -qO /usr/local/bin/shfmt \
+            "https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64"
+          chmod +x /usr/local/bin/shfmt
+          shfmt --version
+
       - name: Install bats-core
         run: |
           set -euo pipefail
