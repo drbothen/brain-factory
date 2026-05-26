@@ -1,0 +1,6 @@
+{
+  "url": "https://example.com/article",
+  "topic": "test-topic",
+  "expected_slug": "article",
+  "expected_exit": 0
+}

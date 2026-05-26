@@ -1,0 +1,12 @@
+{
+  "url": "https://example.com/already-ingested",
+  "topic": "test-topic",
+  "existing_manifest_entry": {
+    "source_id": "already-ingested",
+    "url": "https://example.com/already-ingested",
+    "topic": "test-topic",
+    "ingested_at": "2026-01-01T00:00:00Z"
+  },
+  "expected_exit": 2,
+  "expected_error": "E-INGEST-001"
+}
