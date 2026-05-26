@@ -222,14 +222,33 @@ EOF
 
 @test "test_BC_2_04_001_node_absent_exits_2" {
   local payload='{"tool_name":"WebFetch","tool_input":{"url":"https://example.com","prompt":"summarize"}}'
-  # Run with empty PATH (no node available). Keep the curl shim by adding its dir back explicitly.
-  run bash -c "PATH='${CURL_SHIM_DIR}' printf '%s' '${payload}' | PATH='${CURL_SHIM_DIR}' bash '${HOOK_SCRIPT}'"
+  # Build a minimal PATH with only the tools the hook needs — but NOT node.
+  # Node and bash/jq share /opt/homebrew/bin, so we can't just filter dirs.
+  # Instead, create a temp dir with symlinks to required commands only.
+  local no_node_dir
+  no_node_dir="$(mktemp -d)"
+  for cmd in bash jq printf cat date uuidgen tr sed awk; do
+    local real_cmd
+    real_cmd="$(command -v "$cmd" 2>/dev/null)" && ln -sf "$real_cmd" "${no_node_dir}/${cmd}" 2>/dev/null || true
+  done
+  # Add curl shim (returns fixture content, not real HTTP)
+  cp "${CURL_SHIM_DIR}/curl" "${no_node_dir}/curl"
+  run bash -c "export CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}'; export PATH='${no_node_dir}'; export QUARANTINE_TEST_FIXTURE='${FIXTURES_DIR}/curl-clean-preview.txt'; printf '%s' '${payload}' | bash '${HOOK_SCRIPT}'"
+  rm -rf "$no_node_dir"
   [ "$status" -eq 2 ]
 }
 
 @test "test_BC_2_04_001_node_absent_stdout_contains_E_QUARANTINE_003" {
   local payload='{"tool_name":"WebFetch","tool_input":{"url":"https://example.com","prompt":"summarize"}}'
-  run bash -c "PATH='${CURL_SHIM_DIR}' printf '%s' '${payload}' | PATH='${CURL_SHIM_DIR}' bash '${HOOK_SCRIPT}'"
+  local no_node_dir
+  no_node_dir="$(mktemp -d)"
+  for cmd in bash jq printf cat date uuidgen tr sed awk; do
+    local real_cmd
+    real_cmd="$(command -v "$cmd" 2>/dev/null)" && ln -sf "$real_cmd" "${no_node_dir}/${cmd}" 2>/dev/null || true
+  done
+  cp "${CURL_SHIM_DIR}/curl" "${no_node_dir}/curl"
+  run bash -c "export CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}'; export PATH='${no_node_dir}'; export QUARANTINE_TEST_FIXTURE='${FIXTURES_DIR}/curl-clean-preview.txt'; printf '%s' '${payload}' | bash '${HOOK_SCRIPT}'"
+  rm -rf "$no_node_dir"
   [ "$status" -eq 2 ]
   [[ "$output" == *"E-QUARANTINE-003"* ]]
 }
