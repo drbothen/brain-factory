@@ -1,8 +1,8 @@
 ---
 artifact_type: story-index
-version: "0.3.6"
+version: "0.3.7"
 created: 2026-05-18
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 authored_by: vsdd-factory:story-writer
 total_stories: 43
 total_points: 264
@@ -24,13 +24,19 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 3 stories completed (STORY-001, STORY-014, STORY-027). 40 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 4 stories completed (STORY-001, STORY-014, STORY-027, STORY-038). 39 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.3.7 — 2026-05-26 (STORY-038 delivery / POL-14 BC promotion — Wave 1 COMPLETE)
+
+- **STORY-038 status:** `draft` → `completed` (PR #4 merged to develop, commit d18d50f). BC-2.16.006 promoted `draft` → `active` per POL-14.
+- **Delivery summary:** 308-line gen-test-corpus.sh with LCG PRNG (no $RANDOM), O(n) manifest builder, EXIT trap cleanup. 10 bats tests. Adversary: 9 passes, 4 fix commits. CI fix: portable awk body extraction + curl-based shellcheck install.
+- **Wave 1 COMPLETE:** 4/4 stories delivered (21/21 points). Wave 1 integration gate pending.
 
 ### v0.3.6 — 2026-05-25 (STORY-027 delivery / POL-14 BC promotion)
 
@@ -162,7 +168,7 @@ inputs:
 |----------|-------|--------|--------|----------|-----|------------|
 | STORY-036 | Token JSONL instrumentation wired into ingest skills | draft | 5 | P0 | BC-2.16.001 | — |
 | STORY-037 | Token budget alert in /brain:health, source immutability invariant, and manifest chunks schema | draft | 8 | P1 | BC-2.16.002, BC-2.06.001, BC-2.06.002 | — |
-| STORY-038 | scripts/gen-test-corpus.sh — reproducible synthetic corpus generator | draft | 8 | P1 | BC-2.16.006 | — |
+| STORY-038 | scripts/gen-test-corpus.sh — reproducible synthetic corpus generator | completed | 8 | P1 | BC-2.16.006 | — |
 | STORY-039 | Scale validation gate: GH Actions throughput, memory budget, and per-ingest cost at 10K corpus | draft | 13 | P1 | BC-2.16.003, BC-2.16.004, BC-2.16.005 | — |
 
 ---

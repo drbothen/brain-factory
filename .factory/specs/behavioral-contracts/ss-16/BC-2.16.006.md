@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
-status: draft
+version: "1.3"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -74,6 +74,10 @@ modified: []
 | Source Brief Section | product-brief.md §Scope §Additional v0.x deliverables; §Success Criteria §v0.9 ship gate §Scale test |
 
 ## Changelog
+
+### v1.3 (2026-05-26)
+
+**POL-14 promotion:** `status` promoted `draft` → `active` upon STORY-038 PR #4 merge (commit d18d50f).
 
 ### v1.2 (2026-05-19)
 
