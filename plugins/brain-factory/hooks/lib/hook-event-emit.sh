@@ -31,6 +31,7 @@ _json_escape() {
   s="${s//\\/\\\\}"
   s="${s//\"/\\\"}"
   s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
   s="${s//$'\t'/\\t}"
   printf '%s' "$s"
 }
@@ -66,7 +67,7 @@ emit_event() {
   for kv in "$@"; do
     key="${kv%%=*}"
     val="${kv#*=}"
-    # Credential masking — case-insensitive suffix match.
+    # Credential masking — case-insensitive suffix match on raw key (before escaping).
     local key_lower="${key,,}"
     if [[ "$key_lower" == *_token ]] ||
       [[ "$key_lower" == *_key ]] ||
@@ -76,6 +77,8 @@ emit_event() {
     else
       val="$(_json_escape "$val")"
     fi
+    # Escape key after credential pattern matching.
+    key="$(_json_escape "$key")"
     json="${json},\"${key}\":\"${val}\""
   done
 
