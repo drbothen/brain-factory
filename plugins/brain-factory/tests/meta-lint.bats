@@ -43,11 +43,10 @@ setup() {
   [ "$total" -eq "$unique" ]
 }
 
-# AC-013: jq empty on every example field
+# AC-013: all example fields parse as valid JSON strings containing valid JSON
 @test "BC_2_17_002: all example payloads are valid JSON" {
-  jq -e '.[].example' "$CATALOG" | while IFS= read -r example; do
-    echo "$example" | jq empty
-  done
+  run jq -e '.[].example | fromjson' "$CATALOG"
+  [ "$status" -eq 0 ]
 }
 
 # AC-007: severity values are restricted to info|warn|error
