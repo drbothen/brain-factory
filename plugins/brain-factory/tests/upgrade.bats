@@ -112,6 +112,53 @@ setup() {
   done <<< "$paths"
 }
 
+# BC-2.14.005 postcondition 2: correct event types
+@test "BC_2_14_005: hooks.json has correct event type keys" {
+  # Must have exactly these 4 event type keys
+  local keys
+  keys="$(jq -r '.hooks | keys[]' "$HOOKS_JSON" | sort)"
+  local expected
+  expected="$(printf 'PostToolUse\nPreToolUse\nSessionStart\nStop' | sort)"
+  [ "$keys" = "$expected" ]
+}
+
+@test "BC_2_14_005: quarantine-fetch is PreToolUse with WebFetch matcher" {
+  run jq -e '.hooks.PreToolUse[] | select(.matcher == "WebFetch") | .hooks[] | select(.command | endswith("quarantine-fetch.sh"))' "$HOOKS_JSON"
+  [ "$status" -eq 0 ]
+}
+
+@test "BC_2_14_005: enforce-kebab-case is PreToolUse" {
+  run jq -e '.hooks.PreToolUse[] | select(.hooks[]?.command | endswith("enforce-kebab-case.sh"))' "$HOOKS_JSON"
+  [ "$status" -eq 0 ]
+}
+
+@test "BC_2_14_005: block-ai-attribution is PreToolUse with Bash matcher" {
+  run jq -e '.hooks.PreToolUse[] | select(.matcher == "Bash") | .hooks[] | select(.command | endswith("block-ai-attribution.sh"))' "$HOOKS_JSON"
+  [ "$status" -eq 0 ]
+}
+
+@test "BC_2_14_005: 8 PostToolUse validation hooks with Write|Edit matcher" {
+  local count
+  count="$(jq '[.hooks.PostToolUse[] | select(.matcher == "Write\\|Edit") | .hooks[] | .command] | length' "$HOOKS_JSON")"
+  [ "$count" -eq 8 ]
+}
+
+@test "BC_2_14_005: flush-state-and-commit is Stop event" {
+  run jq -e '.hooks.Stop[] | .hooks[] | select(.command | endswith("flush-state-and-commit.sh"))' "$HOOKS_JSON"
+  [ "$status" -eq 0 ]
+}
+
+@test "BC_2_14_005: brain-health-check is SessionStart event" {
+  run jq -e '.hooks.SessionStart[] | .hooks[] | select(.command | endswith("brain-health-check.sh"))' "$HOOKS_JSON"
+  [ "$status" -eq 0 ]
+}
+
+@test "BC_2_14_005: all hook entries have timeout field" {
+  local without_timeout
+  without_timeout="$(jq '[.. | objects | select(.type == "command" and (.timeout == null))] | length' "$HOOKS_JSON")"
+  [ "$without_timeout" -eq 0 ]
+}
+
 # ---------------------------------------------------------------------------
 # Directory structure tests (AC-005 / BC-2.14.003 postcondition 1)
 # These PASS because stubs created the directories already.
