@@ -22,7 +22,7 @@ HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 # test environments that strip PATH to only a shim directory).
 # ---------------------------------------------------------------------------
 if ! command -v node >/dev/null 2>&1; then
-  jq -n \
+  jq -cn \
     --arg code "E-QUARANTINE-003" \
     --arg msg "Node 22+ required for quarantine check. Install Node from nodejs.org." \
     '{"continue":false,"decision":"block","code":$code,"message":$msg,"trace":"00000000-0000-0000-0000-000000000000"}'
@@ -36,7 +36,7 @@ fi
 if [ ! -f "$HELPER" ]; then
   printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
     "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "$HOOK_NAME" >&2
-  jq -n \
+  jq -cn \
     --arg code "E-HOOK-002" \
     --arg msg "Hook helper missing; cannot safely proceed." \
     '{"continue":false,"decision":"block","code":$code,"message":$msg,"trace":"00000000-0000-0000-0000-000000000000"}'
@@ -53,7 +53,7 @@ stdin_json="$(cat)"
 
 # Validate JSON is parseable — fail-closed on malformed stdin.
 if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
-  jq -n \
+  jq -cn \
     --arg code "E-HOOK-003" \
     --arg msg "Malformed JSON on stdin; cannot safely proceed." \
     --arg trace "${HOOK_TRACE_ID}" \
@@ -68,7 +68,7 @@ url="$(printf '%s' "$stdin_json" | jq -r '.tool_input.url // empty')"
 # Validate URL is non-empty — fail-closed on missing URL
 # ---------------------------------------------------------------------------
 if [ -z "$url" ]; then
-  jq -n \
+  jq -cn \
     --arg code "E-QUARANTINE-005" \
     --arg msg "Empty or missing URL in payload; cannot safely proceed." \
     --arg trace "${HOOK_TRACE_ID}" \
@@ -82,7 +82,7 @@ fi
 # ---------------------------------------------------------------------------
 if [ ! -f "$CORPUS" ]; then
   trace="${HOOK_TRACE_ID}"
-  jq -n \
+  jq -cn \
     --arg code "E-QUARANTINE-002" \
     --arg msg "Quarantine corpus missing at ${CLAUDE_PLUGIN_ROOT}/scripts/quarantine.mjs. Cannot safely proceed." \
     --arg trace "$trace" \
@@ -102,7 +102,7 @@ curl_rc=0
 preview="$(curl --proto '=http,https' --max-filesize 2048 --max-time 5 -s "$url")" || curl_rc=$?
 
 if [ "$curl_rc" -ne 0 ]; then
-  jq -n \
+  jq -cn \
     --arg code "E-QUARANTINE-004" \
     --arg msg "Preview fetch failed; cannot safely proceed." \
     --arg trace "$trace" \
@@ -121,14 +121,13 @@ check_output="$(printf '%s' "$preview" | node "$CORPUS" --check)" || check_rc=$?
 if [ "$check_rc" -ne 0 ]; then
   # Pattern matched — extract pattern_matched from the quarantine.mjs JSON output.
   # Use jq for safe extraction (avoids JSON-injection in the verdict output).
+  # jq --arg handles JSON escaping itself; do NOT pre-escape values with _json_escape.
   pattern_matched="$(printf '%s' "$check_output" | jq -r '.pattern_matched // "unknown"')"
-  url_escaped="$(_json_escape "$url")"
-  pattern_escaped="$(_json_escape "$pattern_matched")"
-  jq -n \
+  jq -cn \
     --arg code "E-QUARANTINE-001" \
-    --arg url "$url_escaped" \
-    --arg pattern_matched "$pattern_escaped" \
-    --arg msg "Prompt-injection pattern detected in fetched content from ${url_escaped}. Content quarantined." \
+    --arg url "$url" \
+    --arg pattern_matched "$pattern_matched" \
+    --arg msg "Prompt-injection pattern detected in fetched content from ${url}. Content quarantined." \
     --arg trace "$trace" \
     '{"continue":false,"decision":"block","code":$code,"url":$url,"pattern_matched":$pattern_matched,"message":$msg,"trace":$trace}'
   echo "Quarantine hook blocked: prompt-injection pattern '${pattern_matched}' detected in ${url} — content quarantined" >&2
@@ -139,6 +138,6 @@ fi
 # ---------------------------------------------------------------------------
 # Clean — allow the fetch
 # ---------------------------------------------------------------------------
-jq -n --arg trace "$trace" '{"continue":true,"trace":$trace}'
+jq -cn --arg trace "$trace" '{"continue":true,"trace":$trace}'
 emit_event "quarantine.allowed" "url=${url}"
 exit 0

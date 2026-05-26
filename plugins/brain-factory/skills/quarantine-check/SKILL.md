@@ -5,6 +5,7 @@ argument-hint: "<path-to-file>"
 allowed-tools:
   - Read
   - Bash
+---
 
 ## Iron Law
 
