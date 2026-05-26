@@ -18,9 +18,9 @@ phase: phase-2-story-decomposition-step-d
 total_waves: 11
 total_stories: 43
 total_points: 264
-current_wave: 1
+current_wave: 2
 created: 2026-05-19
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038]
 waves:
   - id: 1
@@ -69,14 +69,14 @@ waves:
         terminal_node: false
   - id: 2
     name: "Wave 2: Core Init Skill + Quarantine + Defuddle"
-    status: pending
+    status: in_progress
     target_story_count: 3
     target_points: 24
     critical_path_stories: [STORY-016]
     terminal_nodes: []
     stories:
       - id: STORY-016
-        status: pending
+        status: in_progress
         points: 8
         priority: P0
         epic: EPIC-03

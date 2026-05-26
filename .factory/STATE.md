@@ -4,6 +4,7 @@ project: brain-factory
 created: 2026-05-15
 last_updated: 2026-05-26
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
+wave_2_progress: "0/3 stories completed (0/24 points) — IN PROGRESS"
 convergence_trajectory:
   - pass: 1
     findings: 17
@@ -33,7 +34,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-1-in-progress
+phase: phase-3-wave-2-in-progress
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -42,13 +43,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 COMPLETE. STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). Wave 1: 4/4 stories (21/21 points). Next: Wave 1 integration gate.
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed, human authorized Wave 2). Wave 2 started 2026-05-26 — STORY-016 in_progress (critical path first). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). Wave 1: 4/4 stories (21/21 points). Wave 2: 0/3 stories (0/24 points) — IN PROGRESS.
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-1-in-progress
-session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 1 COMPLETE. STORY-001 COMPLETED (PR #1 merged 92c618a, 12 adversary passes, 3-CLEAN at passes 10-12, 7/7 ACs verified). STORY-014 COMPLETED (PR #2 merged 1a1874f, 9 adversary passes, 3-CLEAN at passes 7-9, 20 bats tests). STORY-027 COMPLETED (PR #3 merged 00ebfa7, 5 adversary passes, 0 fix cycles, 3-CLEAN achieved, 6 bats integration tests). STORY-038 COMPLETED (PR #4 merged d18d50f, 9 adversary passes, 4 fix commits, 10 bats tests, LCG PRNG). BCs active: BC-2.14.003/004/005 + BC-2.04.017 + BC-2.17.001/002 + BC-2.08.004/009.005 + BC-2.16.006 (7 total active). Wave 1: 4/4 stories complete (21/21 points). Next: Wave 1 integration gate.
+session_stage: phase-3-wave-2-in-progress
+session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 2 IN PROGRESS. Wave 1 COMPLETE (gate passed, human authorized Wave 2 dispatch). Wave 2 stories: STORY-016 (8pts, critical path — Defuddle fetch wrapper + duplicate guard + manifest-write), STORY-002 (8pts), STORY-006 (8pts) — 24 points total. Dispatch order: STORY-016 first, then STORY-002 and STORY-006. BCs active: BC-2.14.003/004/005 + BC-2.04.017 + BC-2.17.001/002 + BC-2.08.004/009.005 + BC-2.16.006 (7 total active). Wave 1 delivery: STORY-001 (PR #1 merged 92c618a), STORY-014 (PR #2 merged 1a1874f), STORY-027 (PR #3 merged 00ebfa7), STORY-038 (PR #4 merged d18d50f).
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -77,7 +78,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-1-in-progress
+status: phase-3-wave-2-in-progress
 ---
 
 # brain-factory Pipeline STATE
@@ -86,9 +87,9 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 1 COMPLETE — All 4 stories delivered — Next: Wave 1 Integration Gate
+## TOP OF STACK — Phase 3 Wave 2 IN PROGRESS — STORY-016 dispatched (critical path)
 
-**Status:** Phase 3 Wave 1 COMPLETE. All 4 stories delivered: STORY-001, STORY-014, STORY-027, STORY-038. Wave 1: 4/4 stories (21/21 points). Next: Wave 1 integration gate (full test suite on develop, adversarial wave review).
+**Status:** Phase 3 Wave 2 IN PROGRESS. Wave 1 gate passed; Wave 2 dispatch authorized by human. STORY-016 dispatched first (critical path — Defuddle fetch wrapper + duplicate guard + manifest-write). Wave 2: 3 stories, 24 points total (STORY-016 8pts, STORY-002 8pts, STORY-006 8pts). Dispatch order: STORY-016 first, then STORY-002 and STORY-006.
 
 **STORY-038 delivery summary (2026-05-26):**
 - Red Gate: 10 bats tests (sources+manifest, reproducibility across sources/wiki/manifest, frontmatter via yq, error cases, content variation, shellcheck, shfmt)
@@ -153,9 +154,9 @@ Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+
 **Next action for fresh-context orchestrator:**
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md`.
-2. Verify HEAD via `git log --oneline -1` shows STORY-038 state update as most recent. Verify clean tree via `git status --short`.
-3. **Run Wave 1 integration gate** — full bats test suite on develop, adversarial wave review via `vsdd-factory:wave-gate`.
-4. Wave 2 (STORY-016, STORY-002, STORY-006) is unblocked after Wave 1 gate passes.
+2. Verify HEAD via `git log --oneline -1` shows Wave 2 start state update as most recent. Verify clean tree via `git status --short`.
+3. **Wave 2 IN PROGRESS** — STORY-016 is dispatched first (critical path). Use `vsdd-factory:deliver-story` for STORY-016.
+4. After STORY-016 PR merges, dispatch STORY-002 and STORY-006 (can run in parallel — no inter-dependency between them).
 5. DTU note: LinkedIn Posts API mock (2 SP) must ship with VP-020 story. See `.factory/specs/dtu-assessment.md` for full DTU scope.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**
