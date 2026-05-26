@@ -57,6 +57,47 @@ setup() {
   [ "$bad" -eq 0 ]
 }
 
+# AC-012: all emit_event call sites have matching catalog entries
+@test "VP_008: all emit_event call sites have matching catalog entries" {
+  local catalog_types
+  catalog_types="$(jq -r '.[].event_type' "${PLUGIN_DIR}/scripts/event-catalog.json")"
+
+  # Collect emit_event call sites from all hook scripts (exclude comment lines)
+  local emit_sites=""
+  local sh_file
+  for sh_file in "${PLUGIN_DIR}/hooks/"*.sh "${PLUGIN_DIR}/hooks/lib/"*.sh; do
+    [ -f "$sh_file" ] || continue
+    # Extract event_type from lines like: emit_event "some.event.type" ...
+    # Skip lines that begin with # (comments)
+    local site
+    site="$(grep -h 'emit_event ' "$sh_file" | grep -v '^\s*#' | \
+      grep -o 'emit_event "[^"]*"' | sed 's/emit_event "//;s/"//' || true)"
+    if [ -n "$site" ]; then
+      emit_sites="${emit_sites}${site}"$'\n'
+    fi
+  done
+
+  # If no emit sites found (all stubs), pass vacuously
+  if [ -z "$(echo "$emit_sites" | tr -d '[:space:]')" ]; then
+    return 0
+  fi
+
+  # Check each emit site has a catalog entry
+  local missing=""
+  while IFS= read -r event_type; do
+    [ -z "$event_type" ] && continue
+    if ! echo "$catalog_types" | grep -qxF "$event_type"; then
+      missing="${missing}${event_type}"$'\n'
+    fi
+  done <<< "$emit_sites"
+
+  if [ -n "$missing" ]; then
+    echo "Unregistered emit_event types:" >&2
+    echo "$missing" >&2
+    return 1
+  fi
+}
+
 # AC-014: shellcheck on hook-event-emit.sh
 @test "BC_2_04_017: hook-event-emit.sh passes shellcheck" {
   run shellcheck "${PLUGIN_DIR}/hooks/lib/hook-event-emit.sh"
