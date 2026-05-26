@@ -1,1 +1,191 @@
-[]
+[
+  {
+    "event_type": "quarantine.blocked",
+    "hook_name": "quarantine-fetch.sh",
+    "severity": "error",
+    "fields": ["url", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"quarantine.blocked\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com\",\"reason\":\"Domain not in allowlist\"}"
+  },
+  {
+    "event_type": "quarantine.allowed",
+    "hook_name": "quarantine-fetch.sh",
+    "severity": "info",
+    "fields": ["url"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"quarantine.allowed\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com\"}"
+  },
+  {
+    "event_type": "source.immutability.violated",
+    "hook_name": "validate-source-immutability.sh",
+    "severity": "error",
+    "fields": ["file_path", "expected_hash", "actual_hash"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.immutability.violated\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"sources/article.md\",\"expected_hash\":\"abc123\",\"actual_hash\":\"def456\"}"
+  },
+  {
+    "event_type": "source.immutability.accepted",
+    "hook_name": "validate-source-immutability.sh",
+    "severity": "info",
+    "fields": ["file_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.immutability.accepted\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"sources/article.md\"}"
+  },
+  {
+    "event_type": "wiki.wikilink.broken",
+    "hook_name": "validate-wikilink-integrity.sh",
+    "severity": "error",
+    "fields": ["file_path", "broken_link", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.wikilink.broken\",\"hook_name\":\"validate-wikilink-integrity.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"broken_link\":\"[[Missing Page]]\",\"reason\":\"Target page does not exist\"}"
+  },
+  {
+    "event_type": "wiki.wikilink.validated",
+    "hook_name": "validate-wikilink-integrity.sh",
+    "severity": "info",
+    "fields": ["file_path", "link_count"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.wikilink.validated\",\"hook_name\":\"validate-wikilink-integrity.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"link_count\":\"3\"}"
+  },
+  {
+    "event_type": "wiki.index_log.coherence_violated",
+    "hook_name": "validate-index-log-coherence.sh",
+    "severity": "error",
+    "fields": ["file_path", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.index_log.coherence_violated\",\"hook_name\":\"validate-index-log-coherence.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/index.md\",\"reason\":\"Entry references deleted page\"}"
+  },
+  {
+    "event_type": "wiki.index_log.coherence_accepted",
+    "hook_name": "validate-index-log-coherence.sh",
+    "severity": "info",
+    "fields": ["file_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.index_log.coherence_accepted\",\"hook_name\":\"validate-index-log-coherence.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/index.md\"}"
+  },
+  {
+    "event_type": "frontmatter.schema.rejected",
+    "hook_name": "validate-frontmatter-schema.sh",
+    "severity": "error",
+    "fields": ["file_path", "missing_fields", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"frontmatter.schema.rejected\",\"hook_name\":\"validate-frontmatter-schema.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"missing_fields\":\"title,created\",\"reason\":\"Required frontmatter fields absent\"}"
+  },
+  {
+    "event_type": "frontmatter.schema.accepted",
+    "hook_name": "validate-frontmatter-schema.sh",
+    "severity": "info",
+    "fields": ["file_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"frontmatter.schema.accepted\",\"hook_name\":\"validate-frontmatter-schema.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\"}"
+  },
+  {
+    "event_type": "wiki.page_type.rejected",
+    "hook_name": "validate-page-type-policy.sh",
+    "severity": "error",
+    "fields": ["file_path", "page_type", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.rejected\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"page_type\":\"unknown\",\"reason\":\"page_type must be one of: concept, reference, log\"}"
+  },
+  {
+    "event_type": "wiki.page_type.accepted",
+    "hook_name": "validate-page-type-policy.sh",
+    "severity": "info",
+    "fields": ["file_path", "page_type"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.accepted\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"page_type\":\"concept\"}"
+  },
+  {
+    "event_type": "voice.avoid_list.matched",
+    "hook_name": "validate-voice-avoid-list.sh",
+    "severity": "warn",
+    "fields": ["file_path", "matched_term", "line_number"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.matched\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"matched_term\":\"utilize\",\"line_number\":\"12\"}"
+  },
+  {
+    "event_type": "voice.avoid_list.passed",
+    "hook_name": "validate-voice-avoid-list.sh",
+    "severity": "info",
+    "fields": ["file_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.passed\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\"}"
+  },
+  {
+    "event_type": "source.citation.unresolved",
+    "hook_name": "validate-source-id-citation.sh",
+    "severity": "error",
+    "fields": ["file_path", "citation_id", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.citation.unresolved\",\"hook_name\":\"validate-source-id-citation.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"citation_id\":\"SRC-999\",\"reason\":\"Source ID not found in sources index\"}"
+  },
+  {
+    "event_type": "source.citation.resolved",
+    "hook_name": "validate-source-id-citation.sh",
+    "severity": "info",
+    "fields": ["file_path", "citation_count"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.citation.resolved\",\"hook_name\":\"validate-source-id-citation.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"citation_count\":\"2\"}"
+  },
+  {
+    "event_type": "publish.state.transition_rejected",
+    "hook_name": "validate-publish-state.sh",
+    "severity": "error",
+    "fields": ["file_path", "from_state", "to_state", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"publish.state.transition_rejected\",\"hook_name\":\"validate-publish-state.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"from_state\":\"draft\",\"to_state\":\"published\",\"reason\":\"Required review approval missing\"}"
+  },
+  {
+    "event_type": "publish.state.transition_accepted",
+    "hook_name": "validate-publish-state.sh",
+    "severity": "info",
+    "fields": ["file_path", "from_state", "to_state"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"publish.state.transition_accepted\",\"hook_name\":\"validate-publish-state.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"from_state\":\"draft\",\"to_state\":\"published\"}"
+  },
+  {
+    "event_type": "naming.kebab_case.rejected",
+    "hook_name": "enforce-kebab-case.sh",
+    "severity": "error",
+    "fields": ["file_path", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"naming.kebab_case.rejected\",\"hook_name\":\"enforce-kebab-case.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/My Page.md\",\"reason\":\"Filename contains uppercase letters or spaces\"}"
+  },
+  {
+    "event_type": "naming.kebab_case.accepted",
+    "hook_name": "enforce-kebab-case.sh",
+    "severity": "info",
+    "fields": ["file_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"naming.kebab_case.accepted\",\"hook_name\":\"enforce-kebab-case.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/my-page.md\"}"
+  },
+  {
+    "event_type": "attribution.token.blocked",
+    "hook_name": "block-ai-attribution.sh",
+    "severity": "error",
+    "fields": ["file_path", "matched_token", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"attribution.token.blocked\",\"hook_name\":\"block-ai-attribution.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"matched_token\":\"Co-Authored-By\",\"reason\":\"AI attribution token found in content\"}"
+  },
+  {
+    "event_type": "attribution.token.cleared",
+    "hook_name": "block-ai-attribution.sh",
+    "severity": "info",
+    "fields": ["file_path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"attribution.token.cleared\",\"hook_name\":\"block-ai-attribution.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\"}"
+  },
+  {
+    "event_type": "session.state.committed",
+    "hook_name": "flush-state-and-commit.sh",
+    "severity": "info",
+    "fields": ["commit_sha", "files_committed"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.committed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"commit_sha\":\"abc1234\",\"files_committed\":\"3\"}"
+  },
+  {
+    "event_type": "session.state.flushed",
+    "hook_name": "flush-state-and-commit.sh",
+    "severity": "info",
+    "fields": ["files_staged"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.flushed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"files_staged\":\"2\"}"
+  },
+  {
+    "event_type": "session.state.commit_failed",
+    "hook_name": "flush-state-and-commit.sh",
+    "severity": "error",
+    "fields": ["reason", "exit_code"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.commit_failed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"reason\":\"Git commit rejected by pre-commit hook\",\"exit_code\":\"1\"}"
+  },
+  {
+    "event_type": "brain.health.checked",
+    "hook_name": "brain-health-check.sh",
+    "severity": "info",
+    "fields": ["checks_run", "checks_passed"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.checked\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"checks_run\":\"5\",\"checks_passed\":\"5\"}"
+  },
+  {
+    "event_type": "brain.health.skipped",
+    "hook_name": "brain-health-check.sh",
+    "severity": "warn",
+    "fields": ["reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.skipped\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"reason\":\"Brain vault directory not found\"}"
+  }
+]
