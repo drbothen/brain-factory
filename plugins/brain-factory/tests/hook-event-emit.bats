@@ -91,7 +91,7 @@ setup() {
 set -euo pipefail
 HELPER="/nonexistent/path/hook-event-emit.sh"
 if [ ! -f "$HELPER" ]; then
-  printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000","reason":"hook-event-emit.sh not found"}\n' \
+  printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
     "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "${BASH_SOURCE[0]##*/}" >&2
   exit 2
 fi
@@ -102,6 +102,7 @@ HOOK
   run bash "$tmp_hook" 2>&1
   [ "$status" -eq 2 ]
   echo "$output" | grep -q "hook.helper.missing"
+  echo "$output" | grep -q "E-HOOK-002"
 
   rm -f "$tmp_hook"
 }

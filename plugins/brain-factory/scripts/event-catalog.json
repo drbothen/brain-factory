@@ -192,7 +192,7 @@
     "event_type": "hook.helper.missing",
     "hook_name": "(any hook)",
     "severity": "error",
-    "fields": ["hook_name", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.helper.missing\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"00000000-0000-0000-0000-000000000000\",\"reason\":\"hook-event-emit.sh not found at expected path\"}"
+    "fields": ["hook_name", "code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.helper.missing\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"00000000-0000-0000-0000-000000000000\",\"code\":\"E-HOOK-002\",\"reason\":\"hook-event-emit.sh not found at expected path\"}"
   }
 ]
