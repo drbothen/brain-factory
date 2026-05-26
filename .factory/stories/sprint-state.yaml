@@ -85,7 +85,7 @@ waves:
         critical_path: true
         terminal_node: false
       - id: STORY-002
-        status: pending
+        status: in_progress
         points: 8
         priority: P0
         epic: EPIC-01

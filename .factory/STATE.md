@@ -49,7 +49,7 @@ dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
 session_stage: phase-3-wave-2-in-progress
-session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 2 IN PROGRESS. Wave 1 COMPLETE. STORY-016 COMPLETED (PR #5 merged 7e94ec0, 2026-05-26) — Defuddle fetch wrapper + atomic manifest-write + SSRF guard, 54 bats tests, 6-pass adversary cascade 3-CLEAN at passes 4-5-6. BCs active: BC-2.14.003/004/005 + BC-2.04.017 + BC-2.17.001/002 + BC-2.08.004/009.005 + BC-2.16.006 + BC-2.02.001/004/006 (10 total active). Next dispatch: STORY-002 (/brain:init core scaffold, 8pts) and STORY-006 (quarantine corpus, 8pts) — parallel, no inter-dependency. Deferred: BC-2.02.001 Node 20+ → Node 22+ amendment flagged for wave gate scope.
+session_continuity: FRESH-CONTEXT-READY — Phase 3 Wave 2 IN PROGRESS. Wave 1 COMPLETE. STORY-016 COMPLETED (PR #5 merged 7e94ec0, 2026-05-26) — Defuddle fetch wrapper + atomic manifest-write + SSRF guard, 54 bats tests, 6-pass adversary cascade 3-CLEAN at passes 4-5-6. BCs active: BC-2.14.003/004/005 + BC-2.04.017 + BC-2.17.001/002 + BC-2.08.004/009.005 + BC-2.16.006 + BC-2.02.001/004/006 (10 total active). STORY-002 (/brain:init core scaffold, 8pts) NOW IN PROGRESS (dispatched 2026-05-26). STORY-006 (quarantine corpus, 8pts) pending parallel dispatch. Deferred: BC-2.02.001 Node 20+ → Node 22+ amendment flagged for wave gate scope.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
