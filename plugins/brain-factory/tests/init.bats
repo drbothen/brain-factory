@@ -410,6 +410,31 @@ teardown() {
 # Lint quality / BC-2.01.001 architecture compliance
 # ---------------------------------------------------------------------------
 
+@test "BC_2_01_001: init prints success confirmation with brain root path" {
+  run bash "$RUN_SH"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Brain initialized"* ]]
+  [[ "$output" == *"${BRAIN_DIR}"* ]]
+}
+
+# ---------------------------------------------------------------------------
+# BC-2.01.001 EC-004: missing CLAUDE_PLUGIN_ROOT exits 2 with structured error
+# ---------------------------------------------------------------------------
+
+@test "BC_2_01_001: missing CLAUDE_PLUGIN_ROOT exits 2" {
+  run env -u CLAUDE_PLUGIN_ROOT bash "$RUN_SH"
+  [ "$status" -eq 2 ]
+}
+
+@test "BC_2_01_001: missing CLAUDE_PLUGIN_ROOT emits E-INIT-004 error code" {
+  run env -u CLAUDE_PLUGIN_ROOT bash "$RUN_SH"
+  [[ "$output" == *"E-INIT-004"* ]]
+}
+
+# ---------------------------------------------------------------------------
+# Lint quality / BC-2.01.001 architecture compliance
+# ---------------------------------------------------------------------------
+
 @test "BC_2_01_001: run.sh passes shellcheck" {
   run shellcheck "${RUN_SH}"
   [ "$status" -eq 0 ]

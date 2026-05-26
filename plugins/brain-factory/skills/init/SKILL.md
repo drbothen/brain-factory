@@ -8,7 +8,7 @@ allowed-tools:
 
 ## Iron Law
 
-Never overwrite files the operator has customized — guard every write with an existence check.
+Never overwrite an operator-customized voice-avoid-list — guard it with an existence check; all other init writes target fresh directories only (reinit protection lands in STORY-003).
 
 ## Red Flags
 
@@ -22,8 +22,8 @@ Never overwrite files the operator has customized — guard every write with an 
 
 ## Procedure
 
-1. Set `BRAIN_ROOT="${BRAIN_ROOT:-$PWD}"` and verify `CLAUDE_PLUGIN_ROOT` is set; exit 1 if missing.
-2. Create all required directories with `mkdir -p`: source topic dirs, wiki type dirs, briefs dirs, inbox, `.brain/logs`, `.github/workflows`, `rules`, and publishing dirs.
+1. Set `BRAIN_ROOT="${BRAIN_ROOT:-$PWD}"` and verify `CLAUDE_PLUGIN_ROOT` is set and is a valid directory; emit JSON error `{"level":"error","code":"E-INIT-004","message":"Plugin root not found — reinstall brain-factory."}` to stderr and exit 2 if missing or invalid.
+2. Create all required directories with `mkdir -p`: source topic dirs, wiki type dirs, briefs dirs, inbox, `.brain/logs`, `.github/workflows`, and `rules`. Publishing dirs (`drafts/linkedin`, `to-publish/linkedin`, `published/linkedin`) are created by STORY-027, not by init.
 3. Copy `CLAUDE.md` from `${CLAUDE_PLUGIN_ROOT}/templates/claude-md-template.md` to `${BRAIN_ROOT}/CLAUDE.md`.
 4. Copy `.brain/STATE.md` from `${CLAUDE_PLUGIN_ROOT}/templates/state-md-template.md`.
 5. Copy `.brain/policies.yaml` from `${CLAUDE_PLUGIN_ROOT}/templates/policies.yaml`.
@@ -45,4 +45,4 @@ Never overwrite files the operator has customized — guard every write with an 
 
 ## Output
 
-A shell script (`run.sh`) executes the scaffold. On success it exits 0. On missing `CLAUDE_PLUGIN_ROOT` it prints an error to stderr and exits 1.
+A shell script (`run.sh`) executes the scaffold. On success it prints "Brain initialized at ${BRAIN_ROOT}" and exits 0. On missing or invalid `CLAUDE_PLUGIN_ROOT` it emits a structured JSON error envelope (code E-INIT-004) to stderr and exits 2 (block).

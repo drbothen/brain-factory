@@ -13,9 +13,9 @@ BRAIN_ROOT="${BRAIN_ROOT:-$PWD}"
 # Validate required env
 # ---------------------------------------------------------------------------
 
-if [[ -z "${CLAUDE_PLUGIN_ROOT:-}" ]]; then
-  echo "ERROR: CLAUDE_PLUGIN_ROOT is not set" >&2
-  exit 1
+if [[ -z "${CLAUDE_PLUGIN_ROOT:-}" ]] || [[ ! -d "${CLAUDE_PLUGIN_ROOT}" ]]; then
+  echo '{"level":"error","code":"E-INIT-004","message":"Plugin root not found — reinstall brain-factory."}' >&2
+  exit 2
 fi
 
 # ---------------------------------------------------------------------------
@@ -44,10 +44,7 @@ mkdir -p \
   "${BRAIN_ROOT}/briefs/decisions" \
   "${BRAIN_ROOT}/.brain/logs" \
   "${BRAIN_ROOT}/.github/workflows" \
-  "${BRAIN_ROOT}/rules" \
-  "${BRAIN_ROOT}/drafts/linkedin" \
-  "${BRAIN_ROOT}/to-publish/linkedin" \
-  "${BRAIN_ROOT}/published/linkedin"
+  "${BRAIN_ROOT}/rules"
 
 # ---------------------------------------------------------------------------
 # AC-002/AC-007: Copy CLAUDE.md from template
@@ -174,4 +171,5 @@ cat >"${BRAIN_ROOT}/.brain/manifest.json" <<EOF
 }
 EOF
 
+echo "Brain initialized at ${BRAIN_ROOT}"
 exit 0
