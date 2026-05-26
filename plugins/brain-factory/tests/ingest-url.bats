@@ -246,10 +246,13 @@ _ingest_pipeline() {
   [[ "$output" == *"#"* ]] || [[ "$output" == *"content"* ]] || [[ "$output" == *"Mocked"* ]]
 }
 
-# Test the actual stub script exits 1 (confirms stub is in place, Red Gate)
-@test "BC_2_02_001: defuddle-fetch.mjs stub exits non-zero (Red Gate confirmation)" {
-  run node "$DEFUDDLE_FETCH" "https://example.com/article"
-  [ "$status" -ne 0 ]
+# Structural test: verify the real script contains the required Defuddle import and
+# Node version check. This replaces the brittle live-network Red Gate test (which
+# non-deterministically passes or fails depending on whether example.com returns 200).
+@test "BC_2_02_001: defuddle-fetch.mjs contains Defuddle import and Node version check" {
+  [ -f "$DEFUDDLE_FETCH" ]
+  grep -q "Defuddle" "$DEFUDDLE_FETCH"
+  grep -q "process.versions.node" "$DEFUDDLE_FETCH"
 }
 
 # The REAL script must: exist, be executable, and produce markdown on stdout
@@ -604,11 +607,14 @@ _ingest_pipeline() {
 @test "BC_2_02_004: manifest_write fails with E-INGEST-008 when BRAIN_DIR is unset" {
   printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local entry='{"source_id":"test","url":"https://example.com","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
-  # Do NOT set BRAIN_DIR in the subshell — manifest_write must detect this and exit non-zero
+  # Capture the manifest path in a local variable before entering the subshell,
+  # making the outer-shell expansion explicit and unambiguous.
+  # BRAIN_DIR itself is unset in the subshell — manifest_write must detect this.
+  local mpath="${BRAIN_DIR}/.brain/manifest.json"
   run bash -c "
     source '${MANIFEST_WRITE_LIB}'
     unset BRAIN_DIR
-    manifest_write '${entry}' '${BRAIN_DIR}/.brain/manifest.json'
+    manifest_write '${entry}' '${mpath}'
   "
   [ "$status" -ne 0 ]
   [[ "$output" == *"E-INGEST-008"* ]]
@@ -883,6 +889,37 @@ EOMD
   " 2>&1 || true)"
   chmod 644 "${BRAIN_DIR}/.brain/manifest.json"
   [[ "$stderr_out" == *"E-INGEST-008"* ]]
+}
+
+@test "BC_2_02_004_EC002: _ingest_pipeline rollback deletes source file on manifest write failure" {
+  # This test exercises the full rollback path through _ingest_pipeline.
+  # When manifest_write fails, _ingest_pipeline must delete the source file.
+  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+
+  local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
+  _mock_defuddle_fetch "$mock_fetch"
+
+  # Make manifest read-only BEFORE running pipeline to trigger write failure
+  chmod 444 "${BRAIN_DIR}/.brain/manifest.json"
+
+  local url="https://mock-200/rollback-pipeline-test"
+  local topic="ai"
+  local slug
+  slug="$(_slug_from_url "$url")"
+
+  # Run pipeline — should fail at manifest write
+  _ingest_pipeline "$BRAIN_DIR" "$topic" "$url" "$mock_fetch" || true
+
+  # Restore permissions for cleanup
+  chmod 644 "${BRAIN_DIR}/.brain/manifest.json"
+
+  # Source file MUST NOT exist — _ingest_pipeline rollback must have deleted it
+  [ ! -f "${BRAIN_DIR}/sources/${topic}/${slug}.md" ]
+
+  # Manifest must remain unchanged (no entry added)
+  local count
+  count="$(jq '.sources | length' "${BRAIN_DIR}/.brain/manifest.json")"
+  [ "$count" -eq 0 ]
 }
 
 # ===========================================================================

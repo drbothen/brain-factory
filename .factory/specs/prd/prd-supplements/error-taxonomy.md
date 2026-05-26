@@ -75,8 +75,9 @@ Message format uses `<placeholder>` for dynamic values.
 | E-INGEST-009 | broken | 2 | `/brain:ingest-source` | `Path '<resolved-path>' is outside the brain vault. Only vault-relative paths are allowed.` |
 | E-INGEST-010 | broken | 2 | `/brain:ingest-source` | `Image files cannot be ingested as text sources. Provide a markdown or text file.` |
 | E-INGEST-011 | broken | 2 | `/brain:ingest-source` | `File not found: <path>.` |
+| E-INGEST-012 | broken | 2 | `/brain:ingest-url` | `Only HTTP and HTTPS URLs are supported. Got: <scheme> (<url>).` |
 
-**Recovery:** Most INGEST errors require user action (fix the URL, provide different file, fix manifest). E-INGEST-006 is advisory — ingest proceeded partially.
+**Recovery:** Most INGEST errors require user action (fix the URL, provide different file, fix manifest). E-INGEST-006 is advisory — ingest proceeded partially. E-INGEST-012 requires the user to provide an http:// or https:// URL.
 
 ---
 

@@ -4,13 +4,14 @@
 // Usage: defuddle-fetch.mjs <url>
 //
 // Exit codes:
-//   0 — success; writes "TITLE:<title>\n---\n<markdown>" to stdout
+//   0 — success; writes cleaned markdown to stdout; writes {"title":"..."} JSON to stderr
 //   2 — error; writes JSON error envelope to stderr
 //
 // Error codes:
-//   E-INGEST-002 — non-200 HTTP response
+//   E-INGEST-002 — non-200 HTTP response or network error
 //   E-INGEST-003 — Defuddle returned empty content
 //   E-INGEST-005 — Node 22+ required
+//   E-INGEST-012 — Invalid URL or unsupported URL scheme (only http/https permitted)
 
 import { Defuddle } from 'defuddle/node';
 
@@ -32,6 +33,32 @@ if (major < 22) {
 const url = process.argv[2];
 if (!url) {
   process.stderr.write('Usage: defuddle-fetch.mjs <url>\n');
+  process.exit(2);
+}
+
+// ---------------------------------------------------------------------------
+// URL scheme validation — only http: and https: are permitted (SSRF guard).
+// BC-2.02.001 precondition 3: URL must use http or https scheme.
+// ---------------------------------------------------------------------------
+let parsed;
+try {
+  parsed = new URL(url);
+} catch {
+  process.stderr.write(
+    JSON.stringify({
+      code: 'E-INGEST-012',
+      message: `Invalid URL: ${url}. Only HTTP and HTTPS URLs are supported.`,
+    }) + '\n',
+  );
+  process.exit(2);
+}
+if (!['http:', 'https:'].includes(parsed.protocol)) {
+  process.stderr.write(
+    JSON.stringify({
+      code: 'E-INGEST-012',
+      message: `Only HTTP and HTTPS URLs are supported. Got: ${parsed.protocol} (${url})`,
+    }) + '\n',
+  );
   process.exit(2);
 }
 
@@ -93,7 +120,10 @@ if (!body) {
 const title = (result.title || '').trim() || 'Untitled';
 
 // ---------------------------------------------------------------------------
-// Write output: TITLE line, separator, markdown body
+// Write output: raw markdown to stdout; title metadata to stderr.
+// stdout = cleaned markdown body (AC-001: "writes cleaned markdown to stdout")
+// stderr = JSON metadata for the caller to extract title without parsing markdown
 // ---------------------------------------------------------------------------
-process.stdout.write(`TITLE:${title}\n---\n${body}\n`);
+process.stderr.write(JSON.stringify({ title }) + '\n');
+process.stdout.write(body + '\n');
 process.exit(0);
