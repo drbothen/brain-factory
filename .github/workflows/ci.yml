@@ -119,6 +119,24 @@ jobs:
           sudo bash "/tmp/bats-core-${BATS_VERSION}/install.sh" /usr/local
           bats --version
 
+      - name: Set up Node.js (for defuddle-fetch.mjs tests)
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        # actions/setup-node v4.0.2
+        with:
+          node-version: '22'
+
+      - name: Install Node.js dependencies (defuddle + linkedom)
+        run: |
+          set -euo pipefail
+          SCRIPTS_DIR="plugins/brain-factory/scripts"
+          if [ -f "${SCRIPTS_DIR}/package.json" ]; then
+            npm --prefix "$SCRIPTS_DIR" install --prefer-offline 2>/dev/null || \
+              npm --prefix "$SCRIPTS_DIR" install
+            echo "npm install complete: defuddle + linkedom"
+          else
+            echo "No package.json found — skipping npm install (STORY-016 not yet landed)"
+          fi
+
       - name: Run bats test suites
         run: |
           set -euo pipefail
