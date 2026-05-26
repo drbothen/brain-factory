@@ -6,12 +6,34 @@
 # Exports:
 #   emit_event <event_type> [key=value ...]  — writes JSONL to stderr
 #   emit_verdict <json-string>               — writes JSON to stdout
+#
+# GUARD PATTERN (every hook that sources this file must use):
+#   HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
+#   if [ ! -f "$HELPER" ]; then
+#     printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000","reason":"hook-event-emit.sh not found"}\n' \
+#       "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "${BASH_SOURCE[0]##*/}" >&2
+#     exit 2
+#   fi
+#   source "$HELPER"
 
 # Shared trace ID for the hook invocation — set once per source operation.
 # Falls back across platforms: uuidgen (macOS/BSD), /proc (Linux), od fallback.
 : "${HOOK_TRACE_ID:=$(uuidgen 2>/dev/null ||
   cat /proc/sys/kernel/random/uuid 2>/dev/null ||
   od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')}"
+
+# _json_escape <string>
+#
+# Escapes a string for safe embedding in a JSON double-quoted value.
+# Escapes: backslash, double-quote, newline, tab.
+_json_escape() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\t'/\\t}"
+  printf '%s' "$s"
+}
 
 # emit_event <event_type> [key=value ...]
 #
@@ -32,7 +54,8 @@ emit_event() {
 
   local ts hook_name
   ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-  hook_name="${BASH_SOURCE[1]##*/}"
+  hook_name="$(_json_escape "${BASH_SOURCE[1]##*/}")"
+  event_type="$(_json_escape "$event_type")"
 
   # Build JSON incrementally with base required fields.
   local json
@@ -50,6 +73,8 @@ emit_event() {
       [[ "$key_lower" == *_secret ]] ||
       [[ "$key_lower" == *_password ]]; then
       val="[REDACTED]"
+    else
+      val="$(_json_escape "$val")"
     fi
     json="${json},\"${key}\":\"${val}\""
   done
