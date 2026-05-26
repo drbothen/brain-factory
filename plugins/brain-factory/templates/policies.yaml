@@ -1,0 +1,50 @@
+policies:
+  - id: POL-001
+    name: source-immutability
+    description: "Sources are immutable after ingest. Never edit or delete a source file. Use /brain:quarantine-check to flag bad sources."
+    enforcement: block
+
+  - id: POL-002
+    name: frontmatter-required
+    description: "All wiki pages must have valid YAML frontmatter including type and embedding_status fields."
+    enforcement: block
+
+  - id: POL-003
+    name: wikilink-integrity
+    description: "All [[wikilinks]] in wiki pages must resolve to existing pages. Broken wikilinks are advisory violations."
+    enforcement: advisory
+
+  - id: POL-004
+    name: voice-avoid-list
+    description: "Content drafts must not use words in rules/voice-avoid-list.txt. Violations are advisory."
+    enforcement: advisory
+
+  - id: POL-005
+    name: no-duplicate-sources
+    description: "Sources with the same URL or sha256 hash as an existing source are rejected before ingest."
+    enforcement: block
+
+  - id: POL-006
+    name: embedding-status-tracking
+    description: "Wiki pages written without embedding_status: pending in frontmatter are blocked by validate-frontmatter-schema.sh."
+    enforcement: block
+
+  - id: POL-007
+    name: manifest-atomicity
+    description: "manifest.json writes must be atomic (write to temp, rename). Partial writes are blocked."
+    enforcement: block
+
+  - id: POL-008
+    name: inbox-processing
+    description: "Files in inbox/ older than 7 days trigger a brain:health advisory. inbox/ is a staging area, not storage."
+    enforcement: advisory
+
+  - id: POL-009
+    name: plugin-root-path-discipline
+    description: "All template references in skills and hooks must use ${CLAUDE_PLUGIN_ROOT}/templates/... never .claude/templates/..."
+    enforcement: block
+
+  - id: POL-010
+    name: wiki-filename-immutability
+    description: "Wiki filenames are immutable after creation. Use /brain:rename-page to rename (preserves backlinks)."
+    enforcement: block

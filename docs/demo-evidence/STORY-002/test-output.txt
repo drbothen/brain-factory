@@ -1,0 +1,67 @@
+# bats test output — plugins/brain-factory/tests/init.bats
+# Command: bats plugins/brain-factory/tests/init.bats
+# Date: 2026-05-26
+# Exit code: 0
+
+1..61
+ok 1 BC_2_01_001: init creates sources/ai directory
+ok 2 BC_2_01_001: init creates sources/health directory
+ok 3 BC_2_01_001: init creates sources/psychology directory
+ok 4 BC_2_01_001: init creates sources/productivity directory
+ok 5 BC_2_01_001: init creates sources/business directory
+ok 6 BC_2_01_001: init creates sources/books directory
+ok 7 BC_2_01_001: init creates sources/podcasts directory
+ok 8 BC_2_01_001: init creates wiki/concepts directory
+ok 9 BC_2_01_001: init creates wiki/people directory
+ok 10 BC_2_01_001: init creates wiki/frameworks directory
+ok 11 BC_2_01_001: init creates wiki/syntheses directory
+ok 12 BC_2_01_001: init creates wiki/observations directory
+ok 13 BC_2_01_001: init creates wiki/questions directory
+ok 14 BC_2_01_001: init creates briefs/daily directory
+ok 15 BC_2_01_001: init creates briefs/weekly directory
+ok 16 BC_2_01_001: init creates briefs/monthly directory
+ok 17 BC_2_01_001: init creates briefs/content directory
+ok 18 BC_2_01_001: init creates briefs/decisions directory
+ok 19 BC_2_01_001: init creates inbox directory
+ok 20 BC_2_01_001: init creates .brain/logs directory
+ok 21 BC_2_01_001: init creates .github/workflows directory
+ok 22 BC_2_01_001: init creates rules directory
+ok 23 BC_2_01_001: init creates .brain/manifest.json
+ok 24 BC_2_01_001: init creates .brain/STATE.md
+ok 25 BC_2_01_001: init creates .brain/policies.yaml
+ok 26 BC_2_01_001: init creates wiki/index.md
+ok 27 BC_2_01_001: init creates wiki/log.md
+ok 28 BC_2_01_001: init creates CLAUDE.md
+ok 29 BC_2_01_001: init creates rules/voice-avoid-list.txt
+ok 30 BC_2_01_004: manifest.json is valid JSON
+ok 31 BC_2_01_004: manifest.json has version field equal to 1
+ok 32 BC_2_01_004: manifest.json has empty sources object
+ok 33 BC_2_01_004: manifest.json has embeddings_model null
+ok 34 BC_2_01_004: manifest.json has empty chunks array
+ok 35 BC_2_01_004: manifest.json has last_updated field
+ok 36 BC_2_01_004: manifest.json last_updated is ISO8601 format
+ok 37 BC_2_01_001: policies.yaml has exactly 10 baseline policies
+ok 38 BC_2_01_004: wiki concepts template has embedding_status pending
+ok 39 BC_2_01_004: wiki people template has embedding_status pending
+ok 40 BC_2_01_004: wiki frameworks template has embedding_status pending
+ok 41 BC_2_01_004: wiki syntheses template has embedding_status pending
+ok 42 BC_2_01_004: wiki observations template has embedding_status pending
+ok 43 BC_2_01_004: wiki questions template has embedding_status pending
+ok 44 BC_2_06_004: exactly 7 source topic directories exist
+ok 45 BC_2_06_004: all 7 source topic directories are initially empty
+ok 46 BC_2_01_001: CLAUDE.md is non-empty
+ok 47 BC_2_01_001: daily-brain.yml workflow file exists
+ok 48 BC_2_01_001: weekly-brain.yml workflow file exists
+ok 49 BC_2_01_001: ingest-rss.yml workflow file exists
+ok 50 BC_2_01_001: ingest-bookmarks.yml workflow file exists
+ok 51 BC_2_01_001: brain-health-check.yml workflow file exists
+ok 52 BC_2_01_001: adversary-review.yml workflow file exists
+ok 53 BC_2_01_001: voice-avoid-list.txt has exactly 30 entries
+ok 54 BC_2_01_001: voice-avoid-list.txt has no blank lines
+ok 55 BC_2_01_001: plugin directory not modified during init (no files newer than run.sh after run)
+ok 56 BC_2_01_001: run.sh uses CLAUDE_PLUGIN_ROOT not hardcoded .claude/templates paths
+ok 57 BC_2_01_001: init prints success confirmation with brain root path
+ok 58 BC_2_01_001: missing CLAUDE_PLUGIN_ROOT exits 2
+ok 59 BC_2_01_001: missing CLAUDE_PLUGIN_ROOT emits E-INIT-004 error code
+ok 60 BC_2_01_001: run.sh passes shellcheck
+ok 61 BC_2_01_001: run.sh passes shfmt normalization check
