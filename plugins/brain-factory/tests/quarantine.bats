@@ -577,6 +577,21 @@ SHIM
 }
 
 # ===========================================================================
+# H03 / BC-2.04.001 invariant 2 + fail-closed:
+# Malformed (non-JSON) stdin → exit 2 (fail-closed, not allowed through)
+# ===========================================================================
+
+@test "test_BC_2_04_001_malformed_json_stdin_exits_2_failclosed" {
+  run bash -c "export CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}'; printf 'not valid json' | bash '${HOOK_SCRIPT}'"
+  [ "$status" -eq 2 ]
+}
+
+@test "test_BC_2_04_001_empty_stdin_exits_2_failclosed" {
+  run bash -c "export CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}'; printf '' | bash '${HOOK_SCRIPT}'"
+  [ "$status" -eq 2 ]
+}
+
+# ===========================================================================
 # Edge case: empty curl preview → exit 0 (empty content is clean, not an error)
 # Source: BC-2.04.001 EC-001 / Test Vectors table row 3
 # ===========================================================================
