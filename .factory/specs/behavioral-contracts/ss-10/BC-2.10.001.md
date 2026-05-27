@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -12,7 +12,7 @@ subsystem: "SS-10"
 capability: "CAP-010"
 lifecycle_status: active
 introduced: v0.1.0
-modified: []
+modified: ["1.3"]
 ---
 
 # Behavioral Contract BC-2.10.001: `/brain:quarantine-check <path>` scrubs prompt-injection patterns before content reaches tool-access session
@@ -25,7 +25,7 @@ modified: []
 
 1. `<path>` resolves to a readable file or URL content has been fetched.
 2. `scripts/quarantine.mjs` is present at `${CLAUDE_PLUGIN_ROOT}/scripts/quarantine.mjs`.
-3. Node 20+ is in PATH.
+3. Node 22+ is in PATH. (Node 20 reached EOL April 30, 2026.)
 
 ## Postconditions
 
@@ -81,6 +81,10 @@ modified: []
 - BC-2.10.003 — depends on (pattern corpus)
 
 ## Changelog
+
+### v1.3 (2026-05-26)
+
+**SPEC REFRESH (I-04):** Precondition 3 updated from "Node 20+" to "Node 22+". Node 20 reached EOL April 30, 2026; Node 22 is the current active LTS. No change to contract semantics — the precondition was always intended to track the current LTS.
 
 ### v1.2 (2026-05-19)
 
