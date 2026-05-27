@@ -24,13 +24,25 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 7 stories completed (STORY-001, STORY-002, STORY-006, STORY-014, STORY-016, STORY-027, STORY-038). 36 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 13 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-014, STORY-016, STORY-027, STORY-038). 30 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.1 — 2026-05-27 (STORY-011 delivery / POL-14 BC promotion — Wave 3 progress 6/8)
+
+- **STORY-011 status:** `draft` → `completed` (PR #13 merged to develop, commit 7cf0400). BC-2.04.009, BC-2.04.010 promoted `draft` → `active` per POL-14.
+- **Delivery summary:** validate-source-id-citation.sh (manifest.json lookup, source_ids YAML parsing, E-WIKI-007/008) + validate-publish-state.sh (draft→ready→published state machine, git-based prior state, E-PUBLISH-001/002). Red Gate: 41 failing → 48 total tests. Adversary: 4 passes, 1 fix cycle, BC-5.39.001 3-CLEAN at passes 2-3-4. Trajectory: 5→0→0→0.
+- **Wave 3 progress:** 6/8 stories delivered (26/32 points). Next: STORY-012 (enforce-kebab-case.sh + block-ai-attribution.sh, 3 points).
+
+### v0.4.0 — 2026-05-27 (STORY-010 delivery / POL-14 BC promotion — Wave 3 progress 5/8)
+
+- **STORY-010 status:** `draft` → `completed` (PR #12 merged to develop, commit c79fcca). BC-2.04.007, BC-2.04.008 promoted `draft` → `active` per POL-14.
+- **Delivery summary:** validate-page-type-policy.sh (exit 2, 6 valid wiki types, E-WIKI-005/E-WIKI-006) + validate-voice-avoid-list.sh (exit 0 always, systemMessage advisory, 30-term check). Red Gate: 43 failing → 53 total tests. Adversary: 5 passes, 2 fix cycles, BC-5.39.001 3-CLEAN at passes 3-4-5. Trajectory: 8→2→0→0→0.
+- **Wave 3 progress:** 5/8 stories delivered (21/32 points). Next: STORY-011 (validate-source-citation.sh, 5 points).
 
 ### v0.3.9 — 2026-05-26 (STORY-006 delivery / POL-14 BC promotion — Wave 2 COMPLETE)
 
@@ -110,8 +122,8 @@ inputs:
 | STORY-007 | validate-source-immutability.sh: block overwrite of existing source records | draft | 3 | P0 | BC-2.04.002 | — |
 | STORY-008 | validate-wikilink-integrity.sh and validate-index-log-coherence.sh: wiki structural integrity hooks | draft | 5 | P0 | BC-2.04.003, BC-2.04.006 | — |
 | STORY-009 | validate-frontmatter-schema.sh: enforce embedding_status and all mandatory wiki/source fields | draft | 5 | P0 | BC-2.04.004, BC-2.04.005 | — |
-| STORY-010 | validate-page-type-policy.sh and validate-voice-avoid-list.sh: wiki type path gate and voice advisory | draft | 3 | P0 | BC-2.04.007, BC-2.04.008 | — |
-| STORY-011 | validate-source-id-citation.sh and validate-publish-state.sh: citation integrity and publish state machine | draft | 5 | P0 | BC-2.04.009, BC-2.04.010 | — |
+| STORY-010 | validate-page-type-policy.sh and validate-voice-avoid-list.sh: wiki type path gate and voice advisory | completed | 3 | P0 | BC-2.04.007, BC-2.04.008 | — |
+| STORY-011 | validate-source-id-citation.sh and validate-publish-state.sh: citation integrity and publish state machine | completed | 5 | P0 | BC-2.04.009, BC-2.04.010 | PR #13 merged 7cf0400 (2026-05-27) |
 | STORY-012 | enforce-kebab-case.sh and block-ai-attribution.sh: filename naming gate and AI attribution block | draft | 3 | P0 | BC-2.04.011, BC-2.04.012 | — |
 | STORY-013 | flush-state-and-commit.sh and brain-health-check.sh: session Stop commit and SessionStart health banner | draft | 3 | P1 | BC-2.04.013, BC-2.04.014 | — |
 | STORY-014 | Structured event catalog: scripts/event-catalog.json, hook-event-emit.sh shim, and BC-2.04.017 universal emission | completed | 5 | P0 | BC-2.04.017, BC-2.17.001, BC-2.17.002 | — |
