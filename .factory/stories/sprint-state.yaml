@@ -21,7 +21,7 @@ total_points: 264
 current_wave: 3
 created: 2026-05-19
 last_updated: 2026-05-26
-in_progress_stories: []
+in_progress_stories: [STORY-008]
 completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038, STORY-016, STORY-002, STORY-006, STORY-003, STORY-007]
 waves:
   - id: 1
@@ -130,7 +130,7 @@ waves:
         critical_path: false
         terminal_node: true
       - id: STORY-008
-        status: pending
+        status: in_progress
         points: 5
         priority: P0
         epic: EPIC-02
