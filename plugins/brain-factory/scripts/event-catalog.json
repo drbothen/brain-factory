@@ -140,6 +140,15 @@
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.passed\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\"}"
   },
   {
+    "event_type": "voice.avoid_list.skipped",
+    "hook_name": "validate-voice-avoid-list.sh",
+    "description": "Voice avoid-list file not found; advisory skipped",
+    "severity": "advisory",
+    "code": "E-VOICE-002",
+    "fields": ["file_path", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.skipped\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"reason\":\"avoid-list not found at expected path\"}"
+  },
+  {
     "event_type": "source.citation.unresolved",
     "hook_name": "validate-source-id-citation.sh",
     "severity": "error",
