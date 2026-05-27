@@ -66,7 +66,8 @@ _payload() {
 
 # ===========================================================================
 # AC-002 / BC-2.04.002 postconditions §new source write:
-# Path NOT in manifest → exit 0 + verdict:allow stdout + source.added stderr.
+# Path NOT in manifest → exit 0 + continue:true stdout + source.added stderr.
+# ADR-002 v2.0 schema: {"continue":true,"trace":"...","message":"New source accepted."}
 # ===========================================================================
 
 @test "test_BC_2_04_002_new_source_not_in_manifest_exits_0" {
@@ -79,15 +80,26 @@ _payload() {
   [ "$status" -eq 0 ]
 }
 
-@test "test_BC_2_04_002_new_source_not_in_manifest_stdout_contains_verdict_allow" {
+@test "test_BC_2_04_002_new_source_not_in_manifest_stdout_contains_continue_true" {
+  # ADR-002 v2.0: allow → {"continue":true,...} (not the retired v1.0 verdict:allow).
   cp "${FIXTURES_DIR}/manifest-empty.json" "${BRAIN_DIR}/.brain/manifest.json"
   local file_path="${BRAIN_DIR}/sources/ai/new-source.md"
   local payload
   payload="$(_payload "${file_path}")"
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *'"verdict"'* ]]
-  [[ "$output" == *"allow"* ]]
+  [[ "$output" == *'"continue":true'* ]]
+}
+
+@test "test_BC_2_04_002_new_source_stdout_contains_new_source_accepted_message" {
+  # MED-002: allow stdout must contain "New source accepted." message text.
+  cp "${FIXTURES_DIR}/manifest-empty.json" "${BRAIN_DIR}/.brain/manifest.json"
+  local file_path="${BRAIN_DIR}/sources/ai/new-source.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"New source accepted."* ]]
 }
 
 @test "test_BC_2_04_002_new_source_stdout_contains_trace_field" {
@@ -102,7 +114,8 @@ _payload() {
 
 # ===========================================================================
 # AC-003 / BC-2.04.002 postconditions §overwrite attempt:
-# Path IS in manifest → exit 2 + verdict:block + E-SOURCE-001 stdout.
+# Path IS in manifest → exit 2 + decision:block + E-SOURCE-001 stdout.
+# ADR-002 v2.0 schema: {"continue":false,"decision":"block","reason":"...","hookSpecificOutput":{...}}
 # ===========================================================================
 
 @test "test_BC_2_04_002_existing_source_in_manifest_exits_2" {
@@ -116,14 +129,15 @@ _payload() {
   [ "$status" -eq 2 ]
 }
 
-@test "test_BC_2_04_002_existing_source_stdout_contains_verdict_block" {
+@test "test_BC_2_04_002_existing_source_stdout_contains_decision_block" {
+  # ADR-002 v2.0: block → {"continue":false,"decision":"block",...} (not the retired v1.0 verdict:block).
   cp "${FIXTURES_DIR}/manifest-with-source.json" "${BRAIN_DIR}/.brain/manifest.json"
   local file_path="${BRAIN_DIR}/sources/ai/existing-source.md"
   local payload
   payload="$(_payload "${file_path}" "Edit")"
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 2 ]
-  [[ "$output" == *"block"* ]]
+  [[ "$output" == *'"decision":"block"'* ]]
 }
 
 @test "test_BC_2_04_002_existing_source_stdout_contains_E_SOURCE_001" {
@@ -192,7 +206,26 @@ _payload() {
   payload="$(_payload "${file_path}")"
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"allow"* ]]
+  # ADR-002 v2.0: allow → {"continue":true,...}
+  [[ "$output" == *'"continue":true'* ]]
+}
+
+# ===========================================================================
+# MED-001 / VP-003 / BC-2.04.002 precondition 1:
+# Non-source paths (wiki, briefs) → exit 0, no-op (early return).
+# The hook only protects sources/** — all other paths are passthrough.
+# ===========================================================================
+
+@test "VP_003_non_source_path_wiki_exits_0_noop" {
+  # Wiki path — not under sources/ — hook must pass through without manifest lookup.
+  # No manifest needed since the hook exits early for non-source paths.
+  local file_path="${BRAIN_DIR}/wiki/technology/some-page.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+  # ADR-002 v2.0: no-op allow → {"continue":true,...}
+  [[ "$output" == *'"continue":true'* ]]
 }
 
 # ===========================================================================
