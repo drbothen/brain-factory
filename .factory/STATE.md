@@ -44,13 +44,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). STORY-009 COMPLETED (PR #11 merged 5c9c438). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 4/8 stories (18/32 points). Next: STORY-010 (wave_position 5, page type policy enforcement, 3 points).
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). STORY-009 COMPLETED (PR #11 merged 5c9c438). STORY-010 COMPLETED (PR #12 merged c79fcca). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 5/8 stories (21/32 points). Next: STORY-011 (wave_position 6, source citation validation, 5 points).
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-010-in-progress
-session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 4/8 stories delivered (18/32 points). 11 total stories delivered (68/264 points). 25 BCs active. ~369 tests on develop. Wave 3 remaining: STORY-010 (3pt, page type policy), STORY-011 (5pt, source citation), STORY-012 (3pt, publish state), STORY-013 (3pt, filename/attribution). All remaining Wave 3 stories are independent (no within-wave deps). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
+session_stage: phase-3-wave-3-story-011-in-progress
+session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 5/8 stories delivered (21/32 points). 12 total stories delivered (71/264 points). 27 BCs active. ~422 tests on develop. Wave 3 remaining: STORY-011 (5pt, source citation), STORY-012 (3pt, publish state), STORY-013 (3pt, filename/attribution). All remaining Wave 3 stories are independent (no within-wave deps). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -88,7 +88,7 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 3 — 4/8 stories (18/32 points) — STORY-010 IN PROGRESS
+## TOP OF STACK — Phase 3 Wave 3 — 5/8 stories (21/32 points) — STORY-011 NEXT
 
 ### Pipeline Position
 - Phase 3: TDD Implementation
@@ -102,24 +102,24 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 | STORY-007 | 3 | #9 | 9cb5147 | 8p/4fc, 3-CLEAN@6-7-8 |
 | STORY-008 | 5 | #10 | fd56a73 | 5p/2fc, 3-CLEAN@3-4-5 |
 | STORY-009 | 5 | #11 | 5c9c438 | 5p/2fc, 3-CLEAN@3-4-5 |
+| STORY-010 | 3 | #12 | c79fcca | 5p/2fc, 3-CLEAN@3-4-5 |
 
 ### Remaining This Wave
 | Story | Points | Priority | Goal | Terminal? |
 |-------|--------|----------|------|-----------|
-| STORY-010 | 3 | P0 | validate-page-type-policy.sh — directory↔type consistency | yes |
 | STORY-011 | 5 | P0 | validate-source-citation.sh — wiki→source backlinks | yes |
 | STORY-012 | 3 | P0 | validate-publish-state.sh — publishing state machine | yes |
 | STORY-013 | 3 | P1 | validate-filename-attribution.sh — kebab-case + author field | yes |
 
 ### Overall Progress
-- 11/43 stories (68/264 points — 26%)
-- 25 BCs active (of 95 total)
-- ~369 tests on develop (tip: 5c9c438)
-- 11 PRs merged (#1-#11)
+- 12/43 stories (71/264 points — 27%)
+- 27 BCs active (of 95 total)
+- ~422 tests on develop (tip: c79fcca)
+- 12 PRs merged (#1-#12)
 - Waves 1-2 COMPLETE + GATE PASSED
 
 ### Git State to Verify
-- `git log --oneline origin/develop -3` should show PR #11 (5c9c438) at tip
+- `git log --oneline origin/develop -3` should show PR #12 (c79fcca) at tip
 - `git status --short` should be clean (untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/)
 - `.worktrees/` should be empty
 - No open PRs
@@ -138,17 +138,25 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 - ADR-002 v2.0 is authoritative for stdout schema — use `continue`/`decision`/`hookSpecificOutput`, NOT `verdict`
 
 ### Next Action
-**STORY-010 delivery is actively in progress** (page type policy + voice advisory hooks — validate-page-type-policy.sh, 3 points).
-1. STORY-010 delivery in progress: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
-2. After STORY-010: continue with STORY-011, STORY-012, STORY-013 (all independent)
+**STORY-011 is actively in progress** (validate-source-citation.sh — wiki→source backlink validation + publish state hooks, 5 points, BC-2.04.009/BC-2.04.010).
+1. STORY-011 delivery in progress: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
+2. After STORY-011: continue with STORY-012, STORY-013 (both independent)
 3. After all 8 stories: run Wave 3 integration gate
 
-Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009 (completed), STORY-010, STORY-011, STORY-012, STORY-013 (pending)
+Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009 (completed), STORY-010 (completed), STORY-011, STORY-012, STORY-013 (pending)
 
-**STORY-010 delivery started (2026-05-27):**
-- Goal: validate-page-type-policy.sh — directory↔type consistency enforcement (PostToolUse hook, 3 points)
-- BCs: BC-2.04.007 (page type policy), BC-2.04.008 (voice advisory)
-- Status: IN PROGRESS — worktree active, TDD delivery underway
+**STORY-011 delivery started (2026-05-27) — IN PROGRESS:**
+- Goal: validate-source-citation.sh (source citation integrity) + validate-publish-state.sh (publish state machine hooks), 5 points
+- BCs: BC-2.04.009 (source citation validation) + BC-2.04.010 (publish state machine)
+- Status: worktree created, delivery in progress
+
+**STORY-010 delivery summary (2026-05-27):**
+- Red Gate: 43 failing → 53 total tests after implementation + adversary fixes
+- Implementation: validate-page-type-policy.sh (exit 2, 6 valid wiki types, E-WIKI-005/E-WIKI-006) + validate-voice-avoid-list.sh (exit 0 always, systemMessage advisory, 30-term check)
+- Adversary: 5 passes, 2 fix cycles, BC-5.39.001 3-CLEAN at passes 3-4-5. Trajectory: 8→2→0→0→0
+- PR #12 merged to develop (squash-merge, commit c79fcca), CI green
+- BC-2.04.007/BC-2.04.008 promoted draft → active per POL-14
+- Wave 3 progress: 5/8 stories (21/32 points)
 
 **STORY-009 delivery summary (2026-05-27):**
 - Red Gate: 37 failing → 50 total tests after implementation + adversary fixes
