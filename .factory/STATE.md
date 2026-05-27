@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-26
+last_updated: 2026-05-27
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -44,13 +44,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 3/8 stories (13/32 points). Next: STORY-009 (wave_position 4, frontmatter schema validation hook, 5 points).
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). STORY-009 COMPLETED (PR #11 merged 5c9c438). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 4/8 stories (18/32 points). Next: STORY-010 (wave_position 5, page type policy enforcement, 3 points).
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-009
-session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress. 10 stories delivered (63/264 points). 23 BCs active. 319 tests on develop. Wave 3 progress: 3/8 stories (13/32 points). Remaining: STORY-009..013 (pending, all independent). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Holdout scenarios restricted. No AI attribution. Single-commit-per-burst. Deferred to Wave 3 gate scope: STORY-002 test naming drift, F-INTEG-004 (E-QUARANTINE-005/E-HOOK-003 unregistered), F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR), STORY-006 AC exit codes stale vs BC v1.4.
+session_stage: phase-3-wave-3-story-009-delivered
+session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress. 11 stories delivered (68/264 points). 25 BCs active. Wave 3 progress: 4/8 stories (18/32 points). Remaining: STORY-010..013 (pending, all independent). Next: STORY-010 (page type policy enforcement, 3 points). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Holdout scenarios restricted. No AI attribution. Single-commit-per-burst. Deferred to Wave 3 gate scope: STORY-002 test naming drift, F-INTEG-004 (E-QUARANTINE-005/E-HOOK-003 unregistered), F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR), STORY-006 AC exit codes stale vs BC v1.4.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -88,11 +88,19 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 3 IN PROGRESS — 3/8 stories (13/32 points)
+## TOP OF STACK — Phase 3 Wave 3 IN PROGRESS — 4/8 stories (18/32 points)
 
-Wave 3 in progress. STORY-003, STORY-007, and STORY-008 delivered. 5 stories remaining: STORY-009..013 (pending, all independent). Next: STORY-009 (wave_position 4, frontmatter schema validation hook, 5 points).
+Wave 3 in progress. STORY-003, STORY-007, STORY-008, and STORY-009 delivered. 4 stories remaining: STORY-010..013 (pending, all independent). Next: STORY-010 (wave_position 5, page type policy enforcement, 3 points).
 
-Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (pending)
+Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009 (completed), STORY-010, STORY-011, STORY-012, STORY-013 (pending)
+
+**STORY-009 delivery summary (2026-05-27):**
+- Red Gate: 37 failing → 50 total tests after implementation + adversary fixes
+- Implementation: validate-frontmatter-schema.sh (yq+awk, wiki+sources schemas, 7 error codes: E-SCHEMA-001..007)
+- Adversary: 5 passes, 2 fix cycles, BC-5.39.001 3-CLEAN at passes 3-4-5. Trajectory: 7→4→0→0→0
+- PR #11 merged to develop (squash-merge, commit 5c9c438), CI green
+- BC-2.04.004/BC-2.04.005 promoted `draft` → `active` per POL-14
+- Wave 3 progress: 4/8 stories (18/32 points)
 
 **STORY-008 delivery summary (2026-05-27):**
 - Red Gate: 31 failing → 57 total tests after implementation + adversary fixes

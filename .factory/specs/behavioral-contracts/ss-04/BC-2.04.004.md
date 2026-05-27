@@ -2,7 +2,7 @@
 document_type: behavioral-contract
 level: L3
 version: "1.3"
-status: draft
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
