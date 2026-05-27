@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-2-closure-pending-human-approval
-session_stage: phase-2-closure-pending-human-approval-post-uncertainty-removal
+session_phase: phase-3-wave-2-gate-passed
+session_stage: phase-3-wave-2-gate-passed-wave-3-ready
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,7 +94,7 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-2-closure-pending-human-approval-uncertainty-removal-complete
+status: phase-3-wave-2-gate-passed-wave-3-ready
 ---
 
 # SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d / Phase 2 (closure pending)
@@ -103,7 +103,7 @@ status: phase-2-closure-pending-human-approval-uncertainty-removal-complete
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-25):** Phase 2 CONVERGED + uncertainty removal COMPLETE. The next action is to present the Phase 2 closure gate to the human and await Phase 3 authorization. Do NOT dispatch any agents until human approves Phase 3.
+**Current state (as of 2026-05-26):** Phase 3 Wave 2 GATE PASSED (6/6 checks). Wave 3 ready — 8 stories (32 points): STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013. Dispatch Wave 3 TDD pipeline.
 
 ### Step 1 — Read documents in this exact order
 
@@ -126,23 +126,22 @@ git status --short
 ```
 Expected: empty (clean tree)
 
-### Step 3 — What just happened; Phase 2 closure is next-action
+### Step 3 — What just happened; Wave 3 dispatch is next-action
 
-**3a. DONE — Phase 2 Pass 6 adversary persist (commit 543c588):**
-Pass 6 adversary report persisted. Verdict: PASS. 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION. THIRD CONSECUTIVE PASS IN PHASE 2 CASCADE. Streak advances 2/3 → 3/3. BC-5.39.001 3-CLEAN literal streak ACHIEVED. Zero findings. Adversarial cascade CLOSED. All 26 unique findings from Passes 1-5 VERIFIED-CLOSED. I07 and P3-S02 remain DEFERRED per prior decisions.
+**3a. DONE — Wave 2 stories delivered:**
+STORY-016 (PR #5 merged 7e94ec0), STORY-002 (PR #6 merged 1665a92), STORY-006 (PR #7 merged 139b05f). 3/3 stories, 24/24 points. All BCs promoted active per POL-14: BC-2.02.001/004/006, BC-2.01.001/004, BC-2.06.003/004, BC-2.04.001, BC-2.10.001/002/003.
 
-**3b. NO-ARCHITECT-BURST — Pass 6 PASS verdict, zero findings.**
+**3b. DONE — Wave 2 integration gate PASSED (6/6 checks):**
+Gate 1 (Test Suite) PASS — 250/250 tests. Gate 2 (DTU) SKIP — LinkedIn not Wave 2 scope. Gate 3 (Adversarial) PASS — manifest sources type + error taxonomy fixed at df6eb49; gen-test-corpus schema fixed at 99f83d1. Gate 4 (Demo Evidence) PASS — all ACs covered. Gate 5 (Holdout) PASS — mean 1.0, HS-002 verified. Gate 6 (State Update) PASS — this commit.
 
-**3c. NO-PO-BURST — Pass 6 PASS verdict, zero findings.**
+**3c. Deferred findings carried to Wave 3 gate scope:**
+STORY-002 test naming drift (init.bats vs integration.bats). F-INTEG-004 (unregistered error codes E-QUARANTINE-005, E-HOOK-003). F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR env var naming). STORY-006 AC exit codes stale vs BC v1.4.
 
-**3d. DONE — Phase 2 Step G FINAL state-mgr commit (commit ab88737):**
-STATE.md + SESSION-HANDOFF.md + TASK-LIST.md updated. Pass 5 closure SHA-pending row back-filled to 9843c70. Streak 3/3 CONVERGED recorded. Decay `17→7→4→1→0→0` documented. Phase 2 step_g_status set to CONVERGED at 543c588.
+**3d. DONE — State-mgr gate commit (Wave 2 integration gate state update):**
+STATE.md + SESSION-HANDOFF.md updated. wave_2_gate_result, wave_2_progress, phase_3_status, session_continuity, session_stage, phase, status frontmatter updated. TOP OF STACK updated to Wave 3 ready.
 
-**3e. DONE — Uncertainty removal (commit 5a64927):**
-70 files changed (+2137/-626). 11 implementation-blocking issues fixed across all 43 stories, 5 ADRs, 8 VPs, 3 SS designs, 2 BCs, 4 PRD supplements. Critical fixes: hook stdin/stdout field names corrected (tool→tool_name, input→tool_input, output→tool_result; verdict envelope→Claude Code native decision/continue/systemMessage); plugin.json auto-discovery documented; `@defuddle/node`→`defuddle` v0.18.1+`linkedom`; Node 20 EOL→Node 22+; macOS portability fixes (realpath, grep -P, /usr/bin/time -v, date +%s%N). All stories now self-contained with Hook I/O Protocol Reference, per-tool field tables, and correct version pins.
-
-**3f. TOP-OF-STACK — Phase 2 closure / human approval gate:**
-Fresh session reads STATE.md → SESSION-HANDOFF.md → TASK-LIST.md. Surfaces Phase 2 closure to human. Presents Phase 3 pre-dispatch checklist (see §Phase 3 Readiness Checklist below). Awaits human authorization before dispatching Phase 3 TDD agents. Phase 3 first wave: Wave 1 (STORY-001 + STORY-014 + STORY-027 + STORY-038).
+**3e. TOP-OF-STACK — Wave 3 dispatch:**
+Dispatch Wave 3 TDD pipeline: STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (8 stories, 32 points). Carry deferred findings into Wave 3 gate scope.
 
 ### Step 4 — Key constraints to carry forward
 
