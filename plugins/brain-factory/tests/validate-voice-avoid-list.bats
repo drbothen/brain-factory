@@ -238,6 +238,41 @@ _payload_with_content() {
 }
 
 # ===========================================================================
+# AC-013 addendum / adversary HIGH-003: event field correctness.
+# Verify JSONL fields in stderr events are properly keyed — not just present
+# as substrings. Parses the JSONL line with jq to check individual fields.
+# ===========================================================================
+
+@test "test_BC_2_04_008_matched_event_has_correct_match_count" {
+  # briefs-draft-with-matches.md contains 5 avoid-list terms.
+  # The matched event must carry match_count as a proper JSON numeric field >= 3.
+  local payload
+  payload="$(_payload_with_file "briefs/content/test-draft-field-check.md" "${FIXTURES_DIR}/briefs-draft-with-matches.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)"
+
+  local match_count
+  match_count="$(printf '%s\n' "$stderr_out" | grep 'voice.avoid_list.matched' | jq -r '.match_count' 2>/dev/null || true)"
+  # match_count must parse as a number and be >= 3
+  [ -n "$match_count" ]
+  [ "$match_count" -ge 3 ]
+}
+
+@test "test_BC_2_04_008_passed_event_has_correct_path_field" {
+  # For a brief with no matches, the passed event must carry the file path
+  # as a proper JSON path field (not just a bare substring).
+  local payload
+  payload="$(_payload_with_file "briefs/content/test-draft-clean-fields.md" "${FIXTURES_DIR}/briefs-draft-no-matches.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)"
+
+  local event_path
+  event_path="$(printf '%s\n' "$stderr_out" | grep 'voice.avoid_list.passed' | jq -r '.path' 2>/dev/null || true)"
+  # path field must be present and non-empty
+  [ -n "$event_path" ]
+}
+
+# ===========================================================================
 # AC-014 / CLAUDE.md §Conventions §shellcheck:
 # Hook must pass shellcheck.
 # ===========================================================================

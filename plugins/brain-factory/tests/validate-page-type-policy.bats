@@ -254,6 +254,52 @@ _payload() {
 }
 
 # ===========================================================================
+# AC-006 addendum / adversary HIGH-003: event field correctness.
+# Verify JSONL fields in stderr events are properly keyed — not just present
+# as substrings. Parses the JSONL line with jq to check individual fields.
+# ===========================================================================
+
+@test "test_BC_2_04_007_rejected_event_has_correct_invalid_type_field" {
+  # For wiki/tools/hammer.md, the rejected event must carry invalid_type="tools"
+  # as a proper JSON field (not a bare substring).
+  local payload
+  payload="$(_payload "${BRAIN_DIR}/wiki/tools/hammer.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
+
+  # Parse the JSONL line that contains wiki.page_type.rejected and extract the invalid_type field.
+  local invalid_type
+  invalid_type="$(printf '%s\n' "$stderr_out" | grep 'wiki.page_type.rejected' | jq -r '.invalid_type' 2>/dev/null || true)"
+  [ "$invalid_type" = "tools" ]
+}
+
+@test "test_BC_2_04_007_rejected_event_has_correct_path_field" {
+  # For wiki/tools/hammer.md, the rejected event must carry the file path
+  # as a proper JSON path field, not just a bare substring.
+  local payload
+  payload="$(_payload "${BRAIN_DIR}/wiki/tools/hammer.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
+
+  local event_path
+  event_path="$(printf '%s\n' "$stderr_out" | grep 'wiki.page_type.rejected' | jq -r '.path' 2>/dev/null || true)"
+  [[ "$event_path" == *"wiki/tools/hammer.md"* ]]
+}
+
+@test "test_BC_2_04_007_accepted_event_has_correct_path_field" {
+  # For wiki/concepts/test-page.md, the accepted event must carry the file path
+  # as a proper JSON path field.
+  local payload
+  payload="$(_payload "${BRAIN_DIR}/wiki/concepts/test-page.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)"
+
+  local event_path
+  event_path="$(printf '%s\n' "$stderr_out" | grep 'wiki.page_type.accepted' | jq -r '.path' 2>/dev/null || true)"
+  [[ "$event_path" == *"wiki/concepts/test-page.md"* ]]
+}
+
+# ===========================================================================
 # Edge cases:
 # Malformed JSON stdin → fail-closed (exit 2).
 # Empty stdin → fail-closed (exit 2).
