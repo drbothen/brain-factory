@@ -330,8 +330,12 @@ embedding_status: null
   local file_path="${BRAIN_DIR}/wiki/technology/valid-page.md"
   local payload
   payload="$(_payload "${file_path}" "${content}")"
-  # Strip yq from PATH by constructing a minimal PATH without it.
-  run bash -c "printf '%s' '${payload}' | PATH='/usr/bin:/bin' CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  # Strip yq from PATH but preserve jq's directory so json output works.
+  # /usr/bin:/bin alone may omit jq on some systems (e.g. Homebrew installs to /usr/local/bin or /opt/homebrew/bin).
+  local jq_path jq_dir
+  jq_path="$(command -v jq)"
+  jq_dir="${jq_path%/*}"
+  run bash -c "printf '%s' '${payload}' | PATH='/usr/bin:/bin:${jq_dir}' CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 2 ]
   [[ "$output" == *"E-SCHEMA-005"* ]]
 }
@@ -638,20 +642,26 @@ topic: ml
 # ===========================================================================
 
 @test "BC_2_04_005: missing multiple mandatory fields exits 2 with E-SCHEMA-006" {
-  # Page with only title and type — missing created, source_ids, embedding_status.
+  # Page with title, type, and embedding_status present — but missing BOTH created and source_ids.
+  # This ensures the hook reaches E-SCHEMA-006 (not E-SCHEMA-001 for missing embedding_status)
+  # and collects ALL missing non-embedding fields in the missing_fields array.
   local content
   content="$(printf '%s' '---
 title: Partial Page
 type: concepts
+embedding_status: pending
 ---
 
 # Partial Page')"
   local file_path="${BRAIN_DIR}/wiki/technology/partial-page.md"
   local payload
   payload="$(_payload "${file_path}" "${content}")"
-  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
   [ "$status" -eq 2 ]
-  [[ "$output" == *"E-SCHEMA"* ]]
+  [[ "$output" == *"E-SCHEMA-006"* ]]
+  # Both missing fields must appear in the output.
+  [[ "$output" == *"created"* ]]
+  [[ "$output" == *"source_ids"* ]]
 }
 
 # ===========================================================================
@@ -744,4 +754,75 @@ embedding_status: stale
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 0 ]
   [[ "$output" == *'"continue":true'* ]]
+}
+
+# ===========================================================================
+# C02 / BC-2.04.005: missing type field → exit 2 + E-SCHEMA-006
+# (type is a mandatory wiki field; its absence is a missing-field violation,
+# not an invalid-value violation — E-SCHEMA-007 requires the key to be present)
+# ===========================================================================
+
+@test "BC_2_04_005: missing type exits 2 with E-SCHEMA-006" {
+  local content
+  content="$(printf '%s' '---
+title: Missing Type
+created: 2026-01-01
+source_ids: []
+embedding_status: pending
+---
+
+# Missing Type')"
+  local file_path="${BRAIN_DIR}/wiki/technology/missing-type.md"
+  local payload
+  payload="$(_payload "${file_path}" "${content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-SCHEMA-006"* ]]
+  [[ "$output" == *"type"* ]]
+}
+
+# ===========================================================================
+# I02 / BC-2.04.005 invariant 3: sources schema negative test.
+# Source page missing url and topic → exit 2 + E-SCHEMA-006.
+# ===========================================================================
+
+@test "BC_2_04_005: source missing mandatory fields exits 2 with E-SCHEMA-006" {
+  # Source page has title, ingested_at, source_id — but is missing url and topic.
+  local content
+  content="$(printf '%s' '---
+title: Bad Source
+ingested_at: 2026-01-01T00:00:00Z
+source_id: bad-source
+---
+
+# Bad Source')"
+  local file_path="${BRAIN_DIR}/sources/ai/bad-source.md"
+  local payload
+  payload="$(_payload "${file_path}" "${content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-SCHEMA-006"* ]]
+  [[ "$output" == *"url"* ]]
+  [[ "$output" == *"topic"* ]]
+}
+
+# ===========================================================================
+# I03 / BC-2.04.004 invariant 3: malformed YAML frontmatter → exit 2 + E-SCHEMA-003.
+# The hook must catch yq parse failures explicitly, not via generic ERR trap.
+# ===========================================================================
+
+@test "BC_2_04_004: malformed YAML frontmatter exits 2 with E-SCHEMA-003" {
+  # Frontmatter with an unterminated flow sequence — invalid YAML that yq cannot parse.
+  local content
+  content="$(printf '%s' '---
+title: [unterminated
+---
+
+# Bad YAML')"
+  local file_path="${BRAIN_DIR}/wiki/technology/bad-yaml.md"
+  local payload
+  payload="$(_payload "${file_path}" "${content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-SCHEMA-003"* ]]
 }

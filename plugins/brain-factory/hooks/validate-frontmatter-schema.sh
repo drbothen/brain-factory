@@ -141,6 +141,21 @@ trap 'rm -f "${tmp_fm}"' EXIT
 printf '%s' "$content" | awk '/^---/{if(p){exit}p=1;next}p{print}' >"${tmp_fm}"
 
 # ---------------------------------------------------------------------------
+# E-SCHEMA-003: yq parse failure — explicit check before field extraction.
+# BC-2.04.004 invariant 3: malformed YAML frontmatter → exit 2.
+# ---------------------------------------------------------------------------
+if ! yq e '.' "${tmp_fm}" >/dev/null 2>&1; then
+  emit_event "frontmatter.schema.violated" "code=E-SCHEMA-003" "path=${relative_path}"
+  jq -cn \
+    --arg code "E-SCHEMA-003" \
+    --arg msg "Malformed YAML frontmatter: yq could not parse the frontmatter block." \
+    --arg trace "${HOOK_TRACE_ID}" \
+    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  echo "Frontmatter schema hook blocked: malformed YAML frontmatter in ${relative_path}." >&2
+  exit 2
+fi
+
+# ---------------------------------------------------------------------------
 # Schema validation by path type.
 # ---------------------------------------------------------------------------
 if [[ "$schema" == "wiki" ]]; then
@@ -193,7 +208,7 @@ if [[ "$schema" == "wiki" ]]; then
   # -----------------------------------------------------------------------
   if [[ "$embedding_has" != "true" ]]; then
     # embedding_status key is absent from the frontmatter — E-SCHEMA-001.
-    emit_event "frontmatter.schema.violated" "code=E-SCHEMA-001" "field=embedding_status" "path=${relative_path}"
+    emit_event "frontmatter.schema.violated" "code=E-SCHEMA-001" "missing_field=embedding_status" "path=${relative_path}"
     jq -cn \
       --arg code "E-SCHEMA-001" \
       --arg msg "Missing required field: embedding_status. Must be one of: pending, computed, stale." \
@@ -208,7 +223,7 @@ if [[ "$schema" == "wiki" ]]; then
     { [[ "$f_embedding_raw" != "pending" ]] &&
       [[ "$f_embedding_raw" != "computed" ]] &&
       [[ "$f_embedding_raw" != "stale" ]]; }; then
-    emit_event "frontmatter.schema.violated" "code=E-SCHEMA-002" "field=embedding_status" "value=${f_embedding_raw}" "path=${relative_path}"
+    emit_event "frontmatter.schema.violated" "code=E-SCHEMA-002" "invalid_field=embedding_status" "invalid_value=${f_embedding_raw}" "path=${relative_path}"
     jq -cn \
       --arg code "E-SCHEMA-002" \
       --arg val "${f_embedding_raw}" \
@@ -251,7 +266,7 @@ if [[ "$schema" == "wiki" ]]; then
   esac
 
   if [[ "$type_valid" != "true" ]]; then
-    emit_event "frontmatter.schema.violated" "code=E-SCHEMA-007" "field=type" "value=${f_type}" "path=${relative_path}"
+    emit_event "frontmatter.schema.violated" "code=E-SCHEMA-007" "invalid_field=type" "invalid_value=${f_type}" "path=${relative_path}"
     jq -cn \
       --arg code "E-SCHEMA-007" \
       --arg val "${f_type}" \
