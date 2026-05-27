@@ -24,13 +24,19 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 13 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-014, STORY-016, STORY-027, STORY-038). 30 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 14 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-014, STORY-016, STORY-027, STORY-038). 29 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.2 — 2026-05-27 (STORY-012 delivery / POL-14 BC promotion — Wave 3 progress 7/8)
+
+- **STORY-012 status:** `draft` → `completed` (PR #14 merged to develop, commit 50b54e0). BC-2.04.011, BC-2.04.012 promoted `draft` → `active` per POL-14.
+- **Delivery summary:** enforce-kebab-case.sh (PreToolUse, basename regex, 7-item exception list, E-NAMING-001) + block-ai-attribution.sh (PreToolUse on Bash, 3 forbidden patterns, E-ATTR-001). Red Gate: 25 failing → 43 total tests (26 kebab + 17 attribution). Adversary: 4 passes, 1 fix cycle, BC-5.39.001 3-CLEAN at passes 2-3-4. Trajectory: 4→0→0→0.
+- **Wave 3 progress:** 7/8 stories delivered (29/32 points). Next: STORY-013 (flush-state-and-commit.sh + brain-health-check.sh, 3 points).
 
 ### v0.4.1 — 2026-05-27 (STORY-011 delivery / POL-14 BC promotion — Wave 3 progress 6/8)
 
@@ -124,7 +130,7 @@ inputs:
 | STORY-009 | validate-frontmatter-schema.sh: enforce embedding_status and all mandatory wiki/source fields | draft | 5 | P0 | BC-2.04.004, BC-2.04.005 | — |
 | STORY-010 | validate-page-type-policy.sh and validate-voice-avoid-list.sh: wiki type path gate and voice advisory | completed | 3 | P0 | BC-2.04.007, BC-2.04.008 | — |
 | STORY-011 | validate-source-id-citation.sh and validate-publish-state.sh: citation integrity and publish state machine | completed | 5 | P0 | BC-2.04.009, BC-2.04.010 | PR #13 merged 7cf0400 (2026-05-27) |
-| STORY-012 | enforce-kebab-case.sh and block-ai-attribution.sh: filename naming gate and AI attribution block | draft | 3 | P0 | BC-2.04.011, BC-2.04.012 | — |
+| STORY-012 | enforce-kebab-case.sh and block-ai-attribution.sh: filename naming gate and AI attribution block | completed | 3 | P0 | BC-2.04.011, BC-2.04.012 | PR #14 merged 50b54e0 (2026-05-27) |
 | STORY-013 | flush-state-and-commit.sh and brain-health-check.sh: session Stop commit and SessionStart health banner | draft | 3 | P1 | BC-2.04.013, BC-2.04.014 | — |
 | STORY-014 | Structured event catalog: scripts/event-catalog.json, hook-event-emit.sh shim, and BC-2.04.017 universal emission | completed | 5 | P0 | BC-2.04.017, BC-2.17.001, BC-2.17.002 | — |
 | STORY-015 | Hook contract meta-lint expansion: performance budget, canonical I/O, fail-closed, and stream/credential enforcement | draft | 5 | P0 | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 | — |

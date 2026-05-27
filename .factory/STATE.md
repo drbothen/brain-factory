@@ -44,13 +44,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). STORY-009 COMPLETED (PR #11 merged 5c9c438). STORY-010 COMPLETED (PR #12 merged c79fcca). STORY-011 COMPLETED (PR #13 merged 7cf0400). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 6/8 stories (26/32 points). Next: STORY-012 (wave_position 7, kebab-case + AI attribution blocks, 3 points).
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). STORY-009 COMPLETED (PR #11 merged 5c9c438). STORY-010 COMPLETED (PR #12 merged c79fcca). STORY-011 COMPLETED (PR #13 merged 7cf0400). STORY-012 COMPLETED (PR #14 merged 50b54e0). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 7/8 stories (29/32 points). Next: STORY-013 (wave_position 8, session stop commit + health banner, 3 points).
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-012-in-progress
-session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 6/8 stories delivered (26/32 points). 13 total stories delivered (76/264 points). 29 BCs active. ~470 tests on develop. Wave 3 remaining: STORY-012 (3pt, kebab-case + AI attribution blocks), STORY-013 (3pt, session hooks). All remaining Wave 3 stories are independent (no within-wave deps). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
+session_stage: phase-3-wave-3-story-012-delivered
+session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 7/8 stories delivered (29/32 points). 14 total stories delivered (79/264 points). 31 BCs active. ~513 tests on develop. Wave 3 remaining: STORY-013 (3pt, session hooks). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -88,7 +88,7 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 3 — 6/8 stories (26/32 points) — STORY-012 NEXT
+## TOP OF STACK — Phase 3 Wave 3 — 7/8 stories (29/32 points) — STORY-013 NEXT
 
 ### Pipeline Position
 - Phase 3: TDD Implementation
@@ -104,22 +104,22 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 | STORY-009 | 5 | #11 | 5c9c438 | 5p/2fc, 3-CLEAN@3-4-5 |
 | STORY-010 | 3 | #12 | c79fcca | 5p/2fc, 3-CLEAN@3-4-5 |
 | STORY-011 | 5 | #13 | 7cf0400 | 4p/1fc, 3-CLEAN@2-3-4 |
+| STORY-012 | 3 | #14 | 50b54e0 | 4p/1fc, 3-CLEAN@2-3-4 |
 
 ### Remaining This Wave
 | Story | Points | Priority | Goal | Terminal? |
 |-------|--------|----------|------|-----------|
-| STORY-012 | 3 | P0 | enforce-kebab-case.sh + block-ai-attribution.sh — filename + attribution blocks | yes |
 | STORY-013 | 3 | P1 | flush-state-and-commit.sh + brain-health-check.sh — session Stop commit + health banner | yes |
 
 ### Overall Progress
-- 13/43 stories (76/264 points — 29%)
-- 29 BCs active (of 95 total)
-- ~470 tests on develop (tip: 7cf0400)
-- 13 PRs merged (#1-#13)
+- 14/43 stories (79/264 points — 30%)
+- 31 BCs active (of 95 total)
+- ~513 tests on develop (tip: 50b54e0)
+- 14 PRs merged (#1-#14)
 - Waves 1-2 COMPLETE + GATE PASSED
 
 ### Git State to Verify
-- `git log --oneline origin/develop -3` should show PR #13 (7cf0400) at tip
+- `git log --oneline origin/develop -3` should show PR #14 (50b54e0) at tip
 - `git status --short` should be clean (untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/)
 - `.worktrees/` should be empty
 - No open PRs
@@ -138,12 +138,19 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 - ADR-002 v2.0 is authoritative for stdout schema — use `continue`/`decision`/`hookSpecificOutput`, NOT `verdict`
 
 ### Next Action
-**STORY-012 is actively being delivered** (enforce-kebab-case.sh + block-ai-attribution.sh — filename naming gate + AI attribution block, 3 points, BC-2.04.011/BC-2.04.012).
-1. STORY-012 in_progress: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
-2. After STORY-012: continue with STORY-013 (independent)
-3. After all 8 stories: run Wave 3 integration gate
+**STORY-013 is next** (flush-state-and-commit.sh + brain-health-check.sh — session Stop commit + health banner, 3 points, BC-2.04.013/BC-2.04.014).
+1. STORY-013: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
+2. After STORY-013: run Wave 3 integration gate
 
-Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009 (completed), STORY-010 (completed), STORY-011 (completed), STORY-012, STORY-013 (pending)
+Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009 (completed), STORY-010 (completed), STORY-011 (completed), STORY-012 (completed), STORY-013 (pending)
+
+**STORY-012 delivery summary (2026-05-27):**
+- Red Gate: 25 failing → 43 total tests (26 kebab + 17 attribution)
+- Implementation: enforce-kebab-case.sh (PreToolUse, basename regex, 7-item exception list, E-NAMING-001) + block-ai-attribution.sh (PreToolUse on Bash, 3 forbidden patterns, E-ATTR-001)
+- Adversary: 4 passes, 1 fix cycle, BC-5.39.001 3-CLEAN at passes 2-3-4. Trajectory: 4→0→0→0
+- PR #14 merged to develop (squash-merge, commit 50b54e0), CI green
+- BC-2.04.011/BC-2.04.012 promoted draft → active per POL-14
+- Wave 3 progress: 7/8 stories (29/32 points)
 
 **STORY-011 delivery summary (2026-05-27):**
 - Red Gate: 41 failing → 48 total tests after implementation + adversary fixes
