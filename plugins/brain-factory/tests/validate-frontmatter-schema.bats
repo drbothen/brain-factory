@@ -826,3 +826,63 @@ title: [unterminated
   [ "$status" -eq 2 ]
   [[ "$output" == *"E-SCHEMA-003"* ]]
 }
+
+# ===========================================================================
+# BC-2.04.004 Edit-tool disk-read fallback:
+# When tool_name=Edit, tool_input.content is absent; hook reads from disk.
+# These two tests exercise lines 111-113 of the hook (the fallback path).
+# ===========================================================================
+
+@test "BC_2_04_004: Edit tool_name reads frontmatter from disk (valid wiki page)" {
+  # Write a valid wiki page to disk so the hook can read it.
+  mkdir -p "${BRAIN_DIR}/wiki/concepts"
+  printf '%s\n' \
+    '---' \
+    'title: Edit Test' \
+    'type: concepts' \
+    'created: 2026-01-01' \
+    'source_ids: []' \
+    'embedding_status: pending' \
+    '---' \
+    '' \
+    '# Edit Test' \
+    > "${BRAIN_DIR}/wiki/concepts/edit-test.md"
+
+  local file_path="${BRAIN_DIR}/wiki/concepts/edit-test.md"
+  # Build Edit payload WITHOUT content field — jq omits the key entirely.
+  local payload
+  payload="$(jq -cn \
+    --arg cwd "${BRAIN_DIR}" \
+    --arg fp "${file_path}" \
+    '{"session_id":"test","cwd":$cwd,"hook_event_name":"PostToolUse","tool_name":"Edit","tool_input":{"file_path":$fp,"old_string":"Edit Test","new_string":"Edited Test","replace_all":false},"tool_use_id":"edit-001","tool_result":{"type":"text","text":"Edit applied","exit_code":0}}')"
+
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"continue":true'* ]]
+}
+
+@test "BC_2_04_004: Edit tool_name reads frontmatter from disk (missing embedding_status)" {
+  # Write an invalid wiki page to disk — missing required embedding_status field.
+  mkdir -p "${BRAIN_DIR}/wiki/concepts"
+  printf '%s\n' \
+    '---' \
+    'title: Edit Bad' \
+    'type: concepts' \
+    'created: 2026-01-01' \
+    'source_ids: []' \
+    '---' \
+    '' \
+    '# Edit Bad' \
+    > "${BRAIN_DIR}/wiki/concepts/edit-bad.md"
+
+  local file_path="${BRAIN_DIR}/wiki/concepts/edit-bad.md"
+  local payload
+  payload="$(jq -cn \
+    --arg cwd "${BRAIN_DIR}" \
+    --arg fp "${file_path}" \
+    '{"session_id":"test","cwd":$cwd,"hook_event_name":"PostToolUse","tool_name":"Edit","tool_input":{"file_path":$fp,"old_string":"old","new_string":"new","replace_all":false},"tool_use_id":"edit-002","tool_result":{"type":"text","text":"Edit applied","exit_code":0}}')"
+
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-SCHEMA-001"* ]]
+}
