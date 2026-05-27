@@ -98,6 +98,20 @@
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"frontmatter.schema.accepted\",\"hook_name\":\"validate-frontmatter-schema.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\"}"
   },
   {
+    "event_type": "frontmatter.schema.violated",
+    "hook_name": "validate-frontmatter-schema.sh",
+    "severity": "error",
+    "fields": ["code", "missing_field", "invalid_field", "invalid_value", "missing_fields", "path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"frontmatter.schema.violated\",\"hook_name\":\"validate-frontmatter-schema.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-SCHEMA-001\",\"missing_field\":\"embedding_status\",\"path\":\"wiki/concepts/test.md\"}"
+  },
+  {
+    "event_type": "frontmatter.schema.validated",
+    "hook_name": "validate-frontmatter-schema.sh",
+    "severity": "info",
+    "fields": ["path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"frontmatter.schema.validated\",\"hook_name\":\"validate-frontmatter-schema.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/concepts/test.md\"}"
+  },
+  {
     "event_type": "wiki.page_type.rejected",
     "hook_name": "validate-page-type-policy.sh",
     "severity": "error",
