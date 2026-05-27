@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-3-in-progress
+phase: phase-3-wave-3-complete-gate-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -44,13 +44,13 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). STORY-009 COMPLETED (PR #11 merged 5c9c438). STORY-010 COMPLETED (PR #12 merged c79fcca). STORY-011 COMPLETED (PR #13 merged 7cf0400). STORY-012 COMPLETED (PR #14 merged 50b54e0). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 7/8 stories (29/32 points). Next: STORY-013 (wave_position 8, session stop commit + health banner, 3 points).
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). STORY-008 COMPLETED (PR #10 merged fd56a73). STORY-009 COMPLETED (PR #11 merged 5c9c438). STORY-010 COMPLETED (PR #12 merged c79fcca). STORY-011 COMPLETED (PR #13 merged 7cf0400). STORY-012 COMPLETED (PR #14 merged 50b54e0). STORY-013 COMPLETED (PR #15 merged 93af76d). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 8/8 stories (32/32 points) — COMPLETE, gate pending.
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-013-in-progress
-session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 7/8 stories delivered (29/32 points). 14 total stories delivered (79/264 points). 31 BCs active. ~513 tests on develop. Wave 3 remaining: STORY-013 (3pt, session hooks). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
+session_stage: phase-3-wave-3-complete-gate-pending
+session_continuity: FRESH-CONTEXT-READY — Wave 3 COMPLETE, 8/8 stories delivered (32/32 points). 15 total stories delivered (82/264 points). 33 BCs active. ~555 tests on develop. Wave 3 integration gate NEXT: full test suite + adversarial review of wave diff + holdout evaluation + demo evidence validation. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -79,7 +79,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-3-in-progress
+status: phase-3-wave-3-complete-gate-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -88,12 +88,12 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 3 — 7/8 stories (29/32 points) — STORY-013 NEXT
+## TOP OF STACK — Phase 3 Wave 3 COMPLETE — 8/8 stories (32/32 points) — WAVE 3 GATE NEXT
 
 ### Pipeline Position
 - Phase 3: TDD Implementation
 - Wave 3: Hook Enforcement Chain (8 stories, 32 points)
-- 6/8 delivered, 2 remaining (all independent, no within-wave dependencies)
+- 8/8 delivered — COMPLETE, integration gate pending
 
 ### Completed This Wave
 | Story | Points | PR | Commit | Adversary |
@@ -105,21 +105,20 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 | STORY-010 | 3 | #12 | c79fcca | 5p/2fc, 3-CLEAN@3-4-5 |
 | STORY-011 | 5 | #13 | 7cf0400 | 4p/1fc, 3-CLEAN@2-3-4 |
 | STORY-012 | 3 | #14 | 50b54e0 | 4p/1fc, 3-CLEAN@2-3-4 |
+| STORY-013 | 3 | #15 | 93af76d | 5p/2fc, 3-CLEAN@3-4-5 |
 
 ### Remaining This Wave
-| Story | Points | Priority | Goal | Terminal? |
-|-------|--------|----------|------|-----------|
-| STORY-013 | 3 | P1 | flush-state-and-commit.sh + brain-health-check.sh — session Stop commit + health banner | yes |
+EMPTY — all 8 stories delivered.
 
 ### Overall Progress
-- 14/43 stories (79/264 points — 30%)
-- 31 BCs active (of 95 total)
-- ~513 tests on develop (tip: 50b54e0)
-- 14 PRs merged (#1-#14)
+- 15/43 stories (82/264 points — 31%)
+- 33 BCs active (of 95 total)
+- ~555 tests on develop (tip: 93af76d)
+- 15 PRs merged (#1-#15)
 - Waves 1-2 COMPLETE + GATE PASSED
 
 ### Git State to Verify
-- `git log --oneline origin/develop -3` should show PR #14 (50b54e0) at tip
+- `git log --oneline origin/develop -3` should show PR #15 (93af76d) at tip
 - `git status --short` should be clean (untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/)
 - `.worktrees/` should be empty
 - No open PRs
@@ -138,11 +137,22 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 - ADR-002 v2.0 is authoritative for stdout schema — use `continue`/`decision`/`hookSpecificOutput`, NOT `verdict`
 
 ### Next Action
-**STORY-013 is next** (flush-state-and-commit.sh + brain-health-check.sh — session Stop commit + health banner, 3 points, BC-2.04.013/BC-2.04.014).
-1. STORY-013: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
-2. After STORY-013: run Wave 3 integration gate
+**Wave 3 integration gate** — all 8 stories delivered (32/32 points).
+1. Full test suite on develop (~555 tests)
+2. Adversarial review of Wave 3 diff
+3. Holdout evaluation
+4. Demo evidence validation
+5. DTU validation (if applicable)
 
-Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009 (completed), STORY-010 (completed), STORY-011 (completed), STORY-012 (completed), STORY-013 (pending)
+Wave 3 stories: STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 — all completed.
+
+**STORY-013 delivery summary (2026-05-27):**
+- Red Gate: 21 failing → 42 total tests (21 flush + 21 health)
+- Implementation: flush-state-and-commit.sh (Stop lifecycle, git auto-commit, brain(auto): prefix, worktree detection, STATE.md session-close update) + brain-health-check.sh (SessionStart lifecycle, STATE.md YAML parsing, GREEN/RED/UNREADABLE banner, red_dimensions event field)
+- Adversary: 5 passes, 2 fix cycles, BC-5.39.001 3-CLEAN at passes 3-4-5. Trajectory: 3→2→0→0→0
+- PR #15 merged to develop (squash-merge, commit 93af76d), CI green
+- BC-2.04.013/BC-2.04.014 promoted draft → active per POL-14
+- **Wave 3 COMPLETE: 8/8 stories (32/32 points)**
 
 **STORY-012 delivery summary (2026-05-27):**
 - Red Gate: 25 failing → 43 total tests (26 kebab + 17 attribution)

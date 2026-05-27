@@ -1,8 +1,8 @@
 ---
 artifact_type: story-index
-version: "0.3.9"
+version: "0.4.3"
 created: 2026-05-18
-last_updated: 2026-05-26
+last_updated: 2026-05-27
 authored_by: vsdd-factory:story-writer
 total_stories: 43
 total_points: 264
@@ -24,13 +24,19 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 14 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-014, STORY-016, STORY-027, STORY-038). 29 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 15 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-027, STORY-038). 28 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.3 — 2026-05-27 (STORY-013 delivery / POL-14 BC promotion — Wave 3 COMPLETE 8/8)
+
+- **STORY-013 status:** `draft` → `completed` (PR #15 merged to develop, commit 93af76d). BC-2.04.013, BC-2.04.014 promoted `draft` → `active` per POL-14.
+- **Delivery summary:** flush-state-and-commit.sh (Stop lifecycle, git auto-commit, brain(auto): prefix, worktree detection, STATE.md session-close update) + brain-health-check.sh (SessionStart lifecycle, STATE.md YAML parsing, GREEN/RED/UNREADABLE banner, red_dimensions event field). Red Gate: 21 failing → 42 total tests (21 flush + 21 health). Adversary: 5 passes, 2 fix cycles, BC-5.39.001 3-CLEAN at passes 3-4-5. Trajectory: 3→2→0→0→0.
+- **Wave 3 COMPLETE:** 8/8 stories delivered (32/32 points). Wave 3 integration gate next.
 
 ### v0.4.2 — 2026-05-27 (STORY-012 delivery / POL-14 BC promotion — Wave 3 progress 7/8)
 
@@ -131,7 +137,7 @@ inputs:
 | STORY-010 | validate-page-type-policy.sh and validate-voice-avoid-list.sh: wiki type path gate and voice advisory | completed | 3 | P0 | BC-2.04.007, BC-2.04.008 | — |
 | STORY-011 | validate-source-id-citation.sh and validate-publish-state.sh: citation integrity and publish state machine | completed | 5 | P0 | BC-2.04.009, BC-2.04.010 | PR #13 merged 7cf0400 (2026-05-27) |
 | STORY-012 | enforce-kebab-case.sh and block-ai-attribution.sh: filename naming gate and AI attribution block | completed | 3 | P0 | BC-2.04.011, BC-2.04.012 | PR #14 merged 50b54e0 (2026-05-27) |
-| STORY-013 | flush-state-and-commit.sh and brain-health-check.sh: session Stop commit and SessionStart health banner | draft | 3 | P1 | BC-2.04.013, BC-2.04.014 | — |
+| STORY-013 | flush-state-and-commit.sh and brain-health-check.sh: session Stop commit and SessionStart health banner | completed | 3 | P1 | BC-2.04.013, BC-2.04.014 | PR #15 merged 93af76d (2026-05-27) |
 | STORY-014 | Structured event catalog: scripts/event-catalog.json, hook-event-emit.sh shim, and BC-2.04.017 universal emission | completed | 5 | P0 | BC-2.04.017, BC-2.17.001, BC-2.17.002 | — |
 | STORY-015 | Hook contract meta-lint expansion: performance budget, canonical I/O, fail-closed, and stream/credential enforcement | draft | 5 | P0 | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 | — |
 
