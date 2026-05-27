@@ -229,8 +229,9 @@
     "event_type": "brain.health.checked",
     "hook_name": "brain-health-check.sh",
     "severity": "info",
-    "fields": ["overall_state"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.checked\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"overall_state\":\"GREEN\"}"
+    "fields": ["overall_state", "red_dimensions"],
+    "description": "overall_state is GREEN/RED/YELLOW/UNREADABLE; red_dimensions is a comma-separated list of failing dimension names (empty string when overall_state is GREEN or UNREADABLE)",
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.checked\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"overall_state\":\"RED\",\"red_dimensions\":\"wiki,voice\"}"
   },
   {
     "event_type": "brain.health.skipped",

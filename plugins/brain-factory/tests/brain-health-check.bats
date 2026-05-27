@@ -190,6 +190,24 @@ _create_malformed_state_md() {
 }
 
 # ===========================================================================
+# AC-013-red-dimensions / BC-2.04.014 event contract:
+# RED state event must include a non-empty red_dimensions field in the JSONL
+# event emitted to stderr. The BC specifies the event carries dimension details.
+# ===========================================================================
+
+@test "test_BC_2_04_014_red_event_has_red_dimensions_field" {
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
+  # The JSONL line for brain.health.checked must contain red_dimensions.
+  [[ "$stderr_out" == *"red_dimensions"* ]]
+  # And the value must be non-empty (wiki and voice are failing in the fixture).
+  [[ "$stderr_out" != *'"red_dimensions":""'* ]]
+}
+
+# ===========================================================================
 # AC-014 / BC-2.04.014 edge case EC-002:
 # Malformed STATE.md → exit 1; stdout contains "unreadable".
 # FAILS against the stub (stub exits 0).

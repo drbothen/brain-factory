@@ -51,8 +51,9 @@ fi
 # ---------------------------------------------------------------------------
 # Check if this directory is inside a git repository.
 # EC-002: outside a git repo → exit 0 immediately, no commit attempted.
+# Handles both regular repos (.git directory) and worktrees (.git file).
 # ---------------------------------------------------------------------------
-if [[ ! -d "${brain_dir}/.git" ]]; then
+if ! git -C "$brain_dir" rev-parse --git-dir >/dev/null 2>&1; then
   emit_event "session.state.flushed" "committed=false"
   jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
     '{"continue":true,"trace":$trace,"message":"No changes to flush."}'

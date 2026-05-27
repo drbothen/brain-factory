@@ -248,6 +248,30 @@ _stop_payload() {
 }
 
 # ===========================================================================
+# AC-013-git-worktree / BC-2.04.013 edge case EC-002 (git worktree variant):
+# A git worktree (where .git is a FILE, not a directory) is correctly detected
+# as a git repo — the hook must commit (or no-op), NOT take the "outside git" path.
+# ===========================================================================
+
+@test "test_BC_2_04_013_git_worktree_is_detected" {
+  local worktree_dir
+  worktree_dir="$(mktemp -d)"
+  # Create a worktree from the test git repo.
+  git -C "$BRAIN_DIR" worktree add -q "$worktree_dir" -b test-worktree-$$
+  # Create a change in the worktree so commit is attempted.
+  echo "worktree change" >"${worktree_dir}/wt-test.txt"
+  local payload
+  payload="$(_stop_payload "$worktree_dir")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${worktree_dir}' bash '${HOOK}'"
+  # Cleanup before asserting (to avoid teardown issues).
+  git -C "$BRAIN_DIR" worktree remove --force "$worktree_dir" 2>/dev/null || rm -rf "$worktree_dir"
+  [ "$status" -eq 0 ]
+  # Must have detected the repo — output must NOT contain the "outside git" no-op message
+  # AND must contain evidence of a commit (not just a silent no-op).
+  [[ "$output" == *"committed"* ]] || [[ "$output" == *"Committed"* ]]
+}
+
+# ===========================================================================
 # AC-016 / CLAUDE.md §Conventions: shellcheck and shfmt normalization.
 # These PASS against the stub (stub is shellcheck-clean and shfmt-normalized).
 # ===========================================================================

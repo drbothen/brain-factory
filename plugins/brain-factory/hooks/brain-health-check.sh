@@ -102,10 +102,13 @@ fi
 # RED or YELLOW — emit advisory with dimension summary.
 # ---------------------------------------------------------------------------
 issues_summary=""
+dims_csv=""
 
 if command -v yq >/dev/null 2>&1; then
   # Extract red_dimensions as a compact summary (key: value pairs).
   issues_summary="$(printf '%s' "$frontmatter" | yq '.red_dimensions // [] | .[] | to_entries | .[] | (.key + " (" + .value + ")")' - 2>/dev/null | tr '\n' ';' | sed 's/;$//;s/;/, /g')" || issues_summary=""
+  # Build dims_csv: comma-separated list of RED/YELLOW dimension names.
+  dims_csv="$(printf '%s' "$frontmatter" | yq '.red_dimensions // [] | .[] | keys | .[0]' - 2>/dev/null | tr '\n' ',' | sed 's/,$//')" || dims_csv=""
 fi
 
 if [[ -z "$issues_summary" ]]; then
@@ -113,12 +116,17 @@ if [[ -z "$issues_summary" ]]; then
   issues_summary="$(printf '%s' "$frontmatter" | grep -E '^\s+[a-z]+:' | grep -v 'GREEN' | awk '{print $1}' | tr -d ':' | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')" || issues_summary=""
 fi
 
+if [[ -z "$dims_csv" ]] && [[ -n "$issues_summary" ]]; then
+  # Fallback dims_csv from issues_summary if yq path above yielded nothing.
+  dims_csv="$(printf '%s' "$frontmatter" | grep -E '^\s+[a-z]+:' | grep -v 'GREEN' | awk '{print $1}' | tr -d ':' | tr '\n' ',' | sed 's/,$//')" || dims_csv=""
+fi
+
 issue_msg="Brain health: ${overall_health}."
 if [[ -n "$issues_summary" ]]; then
   issue_msg="Brain health: ${overall_health}. Issues: ${issues_summary}"
 fi
 
-emit_event "brain.health.checked" "overall_state=${overall_health}"
+emit_event "brain.health.checked" "overall_state=${overall_health}" "red_dimensions=${dims_csv}"
 jq -cn \
   --arg msg "$issue_msg" \
   --arg state "$overall_health" \
