@@ -1,0 +1,1 @@
+{"session_id":"test","transcript_path":"/tmp/t","cwd":"/tmp","permission_mode":"default","effort":{"level":"medium"},"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"git commit -m \"feat: add feature\n\nCo-Authored-By: Claude Opus <noreply@anthropic.com>\"","description":"test"},"tool_use_id":"test-005"}
