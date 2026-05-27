@@ -176,6 +176,19 @@ _payload() {
   [[ "$output" == *"rename-page"* ]]
 }
 
+@test "test_BC_2_04_002_existing_source_reason_text_matches_BC_canonical_format" {
+  # BC-2.04.002 postcondition: reason must be
+  # "Source file <path> already exists in manifest. Sources are immutable. Use /brain:rename-page to rename."
+  # NOT "<path>: Source file already exists..." (path-prepended format is a violation).
+  cp "${FIXTURES_DIR}/manifest-with-source.json" "${BRAIN_DIR}/.brain/manifest.json"
+  local file_path="${BRAIN_DIR}/sources/ai/existing-source.md"
+  local payload
+  payload="$(_payload "${file_path}" "Edit")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"Source file"*"already exists in manifest"* ]]
+}
+
 # ===========================================================================
 # AC-004 / BC-2.04.002 invariant 2 + EC-003:
 # manifest.json absent OR malformed → exit 2, fail-closed.

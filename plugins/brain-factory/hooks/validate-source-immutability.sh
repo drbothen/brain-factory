@@ -122,9 +122,8 @@ if [[ -n "$existing" ]]; then
     --arg code "E-SOURCE-001" \
     --arg path "$relative_path" \
     --arg trace "${HOOK_TRACE_ID}" \
-    --arg msg "Source file already exists in manifest. Sources are immutable. Use /brain:rename-page to rename." \
-    '{"continue":false,"decision":"block","reason":("\($path): " + $msg),"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source immutability hook blocked: ${relative_path} already exists in manifest. Sources are immutable. Use /brain:rename-page to rename." >&2
+    '{"continue":false,"decision":"block","reason":("Source file " + $path + " already exists in manifest. Sources are immutable. Use /brain:rename-page to rename."),"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  echo "Source immutability hook blocked: Source file ${relative_path} already exists in manifest. Sources are immutable. Use /brain:rename-page to rename." >&2
   exit 2
 fi
 
