@@ -85,10 +85,10 @@ BC-2.04.017 event catalog compliance)
 ## Tasks
 
 1. **[failing test — Red Gate]** Create `plugins/brain-factory/tests/validate-source-immutability.bats` with the VP-003 assertions in failing state:
-   - Test: clean stdin (path not in manifest) → exit 0 + `verdict:allow` stdout.
+   - Test: clean stdin (path not in manifest) → exit 0 + `continue:true` stdout.
      Use a JSON fixture with a temp manifest.json that does NOT contain the path.
-   - Test: overwrite stdin (path in manifest) → exit 2 + `verdict:block` +
-     `code:E-SOURCE-001` stdout.
+   - Test: overwrite stdin (path in manifest) → exit 2 + `decision:block` +
+     `code:E-SOURCE-001` in hookSpecificOutput stdout.
    - Test: manifest absent → exit 2 + `code:E-SOURCE-002`.
    - Test: blocked payload → stderr contains `event_type:source.immutability.violated`.
    - Test: allowed payload → stderr contains `event_type:source.added`.
@@ -103,10 +103,11 @@ BC-2.04.017 event catalog compliance)
    - Check `.brain/manifest.json` is readable; exit 2 with E-SOURCE-002 if absent
    - Use `jq` to check whether the extracted path appears in `.brain/manifest.json`
      (check `.sources[<path>]` or the appropriate manifest schema key from ADR-010)
-   - If path in manifest: emit `verdict:block`/`E-SOURCE-001` stdout +
+   - If path in manifest: emit structured block response with `decision:block` and
+     `E-SOURCE-001` in hookSpecificOutput stdout +
      `source.immutability.violated` JSONL stderr via `hooks/lib/hook-event-emit.sh`;
      exit 2
-   - If path not in manifest: emit `verdict:allow` stdout + `source.added` JSONL stderr;
+   - If path not in manifest: emit `continue:true` response stdout + `source.added` JSONL stderr;
      exit 0
    - Generate a uuid for the `trace` field
 
