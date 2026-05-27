@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-3-complete-gate-passed-wave-4-next
+phase: phase-3-wave-4-story-017-in-progress
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,7 +51,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-gate-passed-wave-4-next
+session_stage: phase-3-wave-4-story-017-in-progress
 session_continuity: "FRESH-CONTEXT-READY — Wave 3 integration gate PASSED 6/6 (2026-05-27). 15/43 stories (82/264 pts). 33 BCs active. 584 tests on develop. 15 PRs + 3 gate fix commits (e7824d0 + 56e1ec7 + 42ca028). Wave 4 dispatch next. Deferred: BC verdict schema drift (PO sweep), STORY-002 test naming, F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, STORY-006 AC exit codes, VP-003 field name."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-3-gate-passed-wave-4-next
+status: phase-3-wave-4-story-017-in-progress
 ---
 
 # brain-factory Pipeline STATE
@@ -90,7 +90,11 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 3 COMPLETE + INTEGRATION GATE PASSED 6/6 — Wave 4 Next
+## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-017 (Wiki page generation pipeline) delivery started — Wave 4 story 1/4
+
+---
+
+## Wave 3 Complete — Gate Passed 6/6
 
 ### Pipeline Position
 - Phase 3: TDD Implementation
