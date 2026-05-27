@@ -4,7 +4,7 @@
       {"hooks": [{"type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/brain-health-check.sh", "timeout": 5000}]}
     ],
     "PreToolUse": [
-      {"matcher": "WebFetch", "hooks": [{"type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/quarantine-fetch.sh", "timeout": 3000}]},
+      {"matcher": "WebFetch", "hooks": [{"type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/quarantine-fetch.sh", "timeout": 10000}]},
       {"matcher": "Write\\|Edit", "hooks": [{"type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/enforce-kebab-case.sh", "timeout": 2000}]},
       {"matcher": "Bash", "hooks": [{"type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-ai-attribution.sh", "timeout": 2000}]}
     ],

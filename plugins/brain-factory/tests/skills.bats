@@ -45,14 +45,14 @@ teardown() {
   local updated
   updated="$(jq --arg id "$source_id" \
     --arg ts "$ingested_at" \
-    '.sources[$id] = {ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test", topic: "ai"}' \
+    '.sources += [{id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test", topic: "ai"}]' \
     "$manifest")"
   printf '%s' "$updated" > "$manifest"
 
   # Assert: last_ingest equals ingested_at for this source entry
   local last_ingest ingested_at_read
-  last_ingest="$(jq -r --arg id "$source_id" '.sources[$id].last_ingest' "$manifest")"
-  ingested_at_read="$(jq -r --arg id "$source_id" '.sources[$id].ingested_at' "$manifest")"
+  last_ingest="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].last_ingest' "$manifest")"
+  ingested_at_read="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].ingested_at' "$manifest")"
   [ "$last_ingest" = "$ingested_at_read" ]
 }
 
@@ -69,12 +69,12 @@ teardown() {
   local updated
   updated="$(jq --arg id "$source_id" \
     --arg ts "$ingested_at" \
-    '.sources[$id] = {ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test2", topic: "health"}' \
+    '.sources += [{id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test2", topic: "health"}]' \
     "$manifest")"
   printf '%s' "$updated" > "$manifest"
 
   local last_ingest
-  last_ingest="$(jq -r --arg id "$source_id" '.sources[$id].last_ingest' "$manifest")"
+  last_ingest="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].last_ingest' "$manifest")"
   # ISO8601 UTC format: YYYY-MM-DDTHH:MM:SSZ
   [[ "$last_ingest" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]
 }
@@ -92,12 +92,12 @@ teardown() {
   local updated
   updated="$(jq --arg id "$source_id" \
     --arg ts "$ingested_at" \
-    '.sources[$id] = {ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test3", topic: "psychology"}' \
+    '.sources += [{id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test3", topic: "psychology"}]' \
     "$manifest")"
   printf '%s' "$updated" > "$manifest"
 
   local last_ingest
-  last_ingest="$(jq -r --arg id "$source_id" '.sources[$id].last_ingest' "$manifest")"
+  last_ingest="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].last_ingest' "$manifest")"
   [ "$last_ingest" != "null" ]
   [ -n "$last_ingest" ]
 }

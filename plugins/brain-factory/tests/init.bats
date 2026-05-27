@@ -188,11 +188,11 @@ teardown() {
   [ "$version" = "1" ]
 }
 
-@test "BC_2_01_004: manifest.json has empty sources object" {
+@test "BC_2_01_004: manifest.json has empty sources array" {
   bash "$RUN_SH"
   local sources
   sources="$(jq '.sources' "${BRAIN_DIR}/.brain/manifest.json")"
-  [ "$sources" = "{}" ]
+  [ "$sources" = "[]" ]
 }
 
 @test "BC_2_01_004: manifest.json has embeddings_model null" {

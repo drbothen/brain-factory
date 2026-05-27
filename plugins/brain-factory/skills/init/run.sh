@@ -164,7 +164,7 @@ last_updated="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 cat >"${BRAIN_ROOT}/.brain/manifest.json" <<EOF
 {
   "version": "1",
-  "sources": {},
+  "sources": [],
   "last_updated": "${last_updated}",
   "embeddings_model": null,
   "chunks": []

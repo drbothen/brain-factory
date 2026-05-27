@@ -133,7 +133,7 @@ Message format uses `<placeholder>` for dynamic values.
 |------|----------|------|-----------|---------------|
 | E-QUARANTINE-001 | broken | 2 | `quarantine-fetch.sh`, `/brain:quarantine-check` | `Prompt-injection pattern detected in fetched content from <url>. Content quarantined.` |
 | E-QUARANTINE-002 | broken | 2 | `quarantine-fetch.sh`, `/brain:quarantine-check` | `Quarantine corpus missing at ${CLAUDE_PLUGIN_ROOT}/scripts/quarantine.mjs. Cannot safely proceed.` |
-| E-QUARANTINE-003 | broken | 2 | `quarantine-fetch.sh` | `Node 20+ required for quarantine check. Install Node from nodejs.org.` |
+| E-QUARANTINE-003 | broken | 2 | `quarantine-fetch.sh` | `Node 22+ required for quarantine check. Install Node from nodejs.org.` |
 | E-QUARANTINE-004 | broken | 2 | `quarantine-fetch.sh` | `Preview fetch failed; cannot safely proceed.` |
 
 ---

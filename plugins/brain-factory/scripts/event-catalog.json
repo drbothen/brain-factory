@@ -3,8 +3,8 @@
     "event_type": "quarantine.blocked",
     "hook_name": "quarantine-fetch.sh",
     "severity": "error",
-    "fields": ["url", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"quarantine.blocked\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com\",\"reason\":\"Domain not in allowlist\"}"
+    "fields": ["url", "pattern_matched"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"quarantine.blocked\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com\",\"pattern_matched\":\"Domain not in allowlist\"}"
   },
   {
     "event_type": "quarantine.allowed",
