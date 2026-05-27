@@ -49,7 +49,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-011-delivered
+session_stage: phase-3-wave-3-story-012-in-progress
 session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 6/8 stories delivered (26/32 points). 13 total stories delivered (76/264 points). 29 BCs active. ~470 tests on develop. Wave 3 remaining: STORY-012 (3pt, kebab-case + AI attribution blocks), STORY-013 (3pt, session hooks). All remaining Wave 3 stories are independent (no within-wave deps). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -138,8 +138,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 - ADR-002 v2.0 is authoritative for stdout schema — use `continue`/`decision`/`hookSpecificOutput`, NOT `verdict`
 
 ### Next Action
-**STORY-012 is next** (enforce-kebab-case.sh + block-ai-attribution.sh — filename naming gate + AI attribution block, 3 points, BC-2.04.011/BC-2.04.012).
-1. STORY-012 delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
+**STORY-012 is actively being delivered** (enforce-kebab-case.sh + block-ai-attribution.sh — filename naming gate + AI attribution block, 3 points, BC-2.04.011/BC-2.04.012).
+1. STORY-012 in_progress: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
 2. After STORY-012: continue with STORY-013 (independent)
 3. After all 8 stories: run Wave 3 integration gate
 
