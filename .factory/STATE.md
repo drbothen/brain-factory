@@ -50,7 +50,7 @@ dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
 session_stage: phase-3-wave-2-gate-passed
-session_continuity: Wave 2 GATE PASSED. Integration gate: 250/250 tests, DTU skip (LinkedIn not Wave 2 scope), adversary PASS (manifest sources type fixed df6eb49 + gen-test-corpus schema fixed 99f83d1), demo evidence PASS (3 stories, all ACs), holdout mean 1.0 (HS-002 quarantine block verified), state commit Gate 6. Deferred to Wave 3: STORY-002 test naming drift, F-INTEG-004 (E-QUARANTINE-005/E-HOOK-003 unregistered), F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR), STORY-006 AC exit codes stale. Wave 3 stories: STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (8 stories, 32 points).
+session_continuity: FRESH-CONTEXT-READY — Wave 2 GATE PASSED. 7 stories delivered (45/264 points). 18 BCs active. 250 tests on develop. Wave 3 dispatch ready: 8 stories (STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013), 32 points. All dependencies satisfied. Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Holdout scenarios restricted. No AI attribution. Single-commit-per-burst. Deferred to Wave 3 gate scope: STORY-002 test naming drift, F-INTEG-004 (E-QUARANTINE-005/E-HOOK-003 unregistered), F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR), STORY-006 AC exit codes stale vs BC v1.4.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -64,7 +64,7 @@ canonical_dependency_graph: .factory/stories/dependency-graph.md (v0.1.1, commit
 canonical_holdout_scenarios: .factory/stories/holdout-scenarios.md (v0.1.4, commit 7b1ae9d)
 total_stories_drafted: 43
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.3.7"
+current_story_index_version: "0.3.9"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
@@ -88,9 +88,13 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Wave 2 GATE PASSED — Wave 3 ready (8 stories, 32 points).
+## TOP OF STACK — Phase 3 Wave 2 GATE PASSED — Wave 3 Ready (8 stories, 32 points)
 
-**Status:** Phase 3 Wave 2 GATE PASSED (6/6 checks). 250/250 tests green, adversary PASS (2 integration fixes applied), holdout mean 1.0, demo evidence PASS. Next: Wave 3 dispatch — STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (8 stories, 32 points).
+Wave 2 integration gate PASSED (6/6 checks). 250 tests on develop. Wave 3 dispatch ready.
+
+Wave 3 stories: STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013
+
+Recommended dispatch order: STORY-003 first (init error handling, blocks STORY-004), then STORY-007..013 in parallel or sequential (all independent, all terminal nodes).
 
 **STORY-006 delivery summary (2026-05-26):**
 - Red Gate: 41 failing → 64 total tests after implementation
@@ -189,9 +193,9 @@ Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+
 **Next action for fresh-context orchestrator:**
 
 1. Read in order: this STATE.md → `.factory/SESSION-HANDOFF.md` → `.factory/TASK-LIST.md`.
-2. Verify HEAD via `git log --oneline -1` shows Wave 2 start state update as most recent. Verify clean tree via `git status --short`.
-3. **Wave 2 COMPLETE** — STORY-016 COMPLETE (PR #5 merged 7e94ec0). STORY-002 COMPLETE (PR #6 merged 1665a92). STORY-006 COMPLETE (PR #7 merged 139b05f).
-4. Run Wave 2 integration gate: `vsdd-factory:wave-gate` — full test suite on develop, adversarial review of wave diff, holdout evaluation.
+2. Verify git state: `git log --oneline origin/develop -5` should show PRs #5-#7 (139b05f, 1665a92, 7e94ec0) plus 2 integration fixes (99f83d1, df6eb49). Verify `git status --short` is clean.
+3. **Wave 3 dispatch ready.** All Wave 2 stories COMPLETE. Wave 2 gate PASSED (6/6). Dispatch Wave 3 per-story delivery starting with STORY-003.
+4. Wave 3 stories are all independent (no within-wave dependencies) — STORY-003 recommended first (blocks STORY-004), then STORY-007..013 can be parallelized.
 5. DTU note: LinkedIn Posts API mock (2 SP) must ship with VP-020 story. See `.factory/specs/dtu-assessment.md` for full DTU scope.
 
 **Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2):**

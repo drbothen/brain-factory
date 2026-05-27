@@ -117,9 +117,9 @@ status: phase-3-wave-2-gate-passed-wave-3-ready
 ### Step 2 — Verify git state before dispatching any agent
 
 ```
-git log --oneline -3
+git log --oneline origin/develop -5
 ```
-Expected: HEAD ~ "factory(specs+stories): uncertainty removal" (5a64927) OR state-manager closure commit on top; HEAD~1 ~ "Phase 2 Step G FINAL CONVERGED"
+Expected: 99f83d1 (gen-test-corpus schema fix), df6eb49 (Wave 2 integration fixes), 139b05f (STORY-006 PR #7), 1665a92 (STORY-002 PR #6), 7e94ec0 (STORY-016 PR #5)
 
 ```
 git status --short
@@ -128,28 +128,54 @@ Expected: empty (clean tree)
 
 ### Step 3 — What just happened; Wave 3 dispatch is next-action
 
-**3a. DONE — Wave 2 stories delivered:**
-STORY-016 (PR #5 merged 7e94ec0), STORY-002 (PR #6 merged 1665a92), STORY-006 (PR #7 merged 139b05f). 3/3 stories, 24/24 points. All BCs promoted active per POL-14: BC-2.02.001/004/006, BC-2.01.001/004, BC-2.06.003/004, BC-2.04.001, BC-2.10.001/002/003.
+**3a. DONE — Wave 1 stories delivered (4/4, 21/21 points):**
+STORY-001 (PR #1 merged 92c618a), STORY-014 (PR #2 merged 1a1874f), STORY-027 (PR #3 merged 00ebfa7), STORY-038 (PR #4 merged d18d50f). Wave 1 gate PASSED.
 
-**3b. DONE — Wave 2 integration gate PASSED (6/6 checks):**
-Gate 1 (Test Suite) PASS — 250/250 tests. Gate 2 (DTU) SKIP — LinkedIn not Wave 2 scope. Gate 3 (Adversarial) PASS — manifest sources type + error taxonomy fixed at df6eb49; gen-test-corpus schema fixed at 99f83d1. Gate 4 (Demo Evidence) PASS — all ACs covered. Gate 5 (Holdout) PASS — mean 1.0, HS-002 verified. Gate 6 (State Update) PASS — this commit.
+**3b. DONE — Wave 2 stories delivered (3/3, 24/24 points):**
+STORY-016 (PR #5 merged 7e94ec0, 54 bats tests, 6 adversary passes 3-CLEAN P4-P5-P6), STORY-002 (PR #6 merged 1665a92, 61 bats tests, 4 adversary passes 3-CLEAN P2-P3-P4), STORY-006 (PR #7 merged 139b05f, 64 bats tests, 9 adversary passes 3-CLEAN P7-P8-P9). BCs promoted active per POL-14: BC-2.02.001/004/006, BC-2.01.001/004, BC-2.06.003/004, BC-2.04.001, BC-2.10.001/002/003.
 
-**3c. Deferred findings carried to Wave 3 gate scope:**
+**3c. DONE — Wave 2 integration gate PASSED (6/6 checks):**
+Gate 1 (Test Suite) PASS — 250/250 tests, shellcheck + shfmt clean. Gate 2 (DTU) SKIP — LinkedIn not Wave 2 scope. Gate 3 (Adversarial) PASS — manifest sources type + error taxonomy fixed at df6eb49; gen-test-corpus schema fixed at 99f83d1; re-review PASS. Gate 4 (Demo Evidence) PASS — all ACs covered. Gate 5 (Holdout) PASS — mean 1.0, HS-002 quarantine block verified. Gate 6 (State Update) PASS.
+
+**3d. Deferred findings carried to Wave 3 gate scope:**
 STORY-002 test naming drift (init.bats vs integration.bats). F-INTEG-004 (unregistered error codes E-QUARANTINE-005, E-HOOK-003). F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR env var naming). STORY-006 AC exit codes stale vs BC v1.4.
-
-**3d. DONE — State-mgr gate commit (Wave 2 integration gate state update):**
-STATE.md + SESSION-HANDOFF.md updated. wave_2_gate_result, wave_2_progress, phase_3_status, session_continuity, session_stage, phase, status frontmatter updated. TOP OF STACK updated to Wave 3 ready.
 
 **3e. TOP-OF-STACK — Wave 3 dispatch:**
 Dispatch Wave 3 TDD pipeline: STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (8 stories, 32 points). Carry deferred findings into Wave 3 gate scope.
 
 ### Step 4 — Key constraints to carry forward
 
-- **No catalog freeze:** Per UD-002, new disciplines discovered in any pass should still be codified. The cascade continues indefinitely.
-- **No convergence shortcuts:** "Stable discipline catalog" does not count as convergence. Only literal 3/3 streak counts.
+- **Per-story delivery flow:** worktree → stubs (failing bats Red Gate) → TDD green → local adversary 3-CLEAN → demo-recorder per-AC → push → pr-manager → merge → state-mgr post-merge burst.
+- **Holdout scenarios restricted:** `.factory/stories/holdout-scenarios.md` MUST NOT be passed to story-writer, architect, adversary, implementer, or any agent other than holdout-evaluator (Phase 4).
 - **Chat-only adversary protocol:** Every adversary dispatch uses chat-only output per F-PASS12-O1. Adversary must NOT be instructed to Write or Commit files.
 - **Single-commit-per-burst:** Per TD-VSDD-053. One logical agent role = one commit.
 - **No AI attribution:** No `Co-Authored-By: Claude`, no robot emoji per CLAUDE.md hard rule.
+- **bash + bats project:** No Rust, no cargo, no JS test framework. Pure bash + bats + shellcheck + shfmt.
+- **BC-5.39.001 3-CLEAN protocol:** 3 consecutive clean adversary passes required per story. Any finding resets streak to 0/3.
+
+### Step 5 — Wave 3 story list with dependencies
+
+| Story | Points | Priority | Epic | Depends On | Description |
+|-------|--------|----------|------|------------|-------------|
+| STORY-003 | 5 | P0 | EPIC-01 | STORY-001 ✅, STORY-002 ✅ | /brain:init error handling + SLA timer |
+| STORY-007 | 3 | P0 | EPIC-02 | STORY-001 ✅, STORY-006 ✅, STORY-014 ✅ | validate-frontmatter-schema.sh hook |
+| STORY-008 | 5 | P0 | EPIC-02 | STORY-006 ✅, STORY-014 ✅ | validate-source-immutability.sh hook |
+| STORY-009 | 5 | P0 | EPIC-02 | STORY-006 ✅, STORY-014 ✅ | enforce-kebab-case.sh hook |
+| STORY-010 | 3 | P0 | EPIC-02 | STORY-006 ✅, STORY-014 ✅ | validate-wikilink-integrity.sh hook |
+| STORY-011 | 5 | P0 | EPIC-02 | STORY-006 ✅, STORY-014 ✅ | validate-page-type-policy.sh hook |
+| STORY-012 | 3 | P0 | EPIC-02 | STORY-006 ✅, STORY-014 ✅ | block-ai-attribution.sh hook |
+| STORY-013 | 3 | P1 | EPIC-02 | STORY-006 ✅, STORY-014 ✅ | validate-voice-avoid-list.sh hook |
+
+All dependencies satisfied. STORY-003 recommended first (blocks STORY-004 in Wave 4). STORY-007..013 have no within-wave dependencies and can be parallelized.
+
+### Step 6 — Deferred findings for Wave 3 gate scope
+
+| Finding | Source | Target | Description |
+|---------|--------|--------|-------------|
+| Test naming drift | STORY-002 | Wave 3 gate | init.bats vs integration.bats naming in spec vs implementation |
+| F-INTEG-004 | Wave 2 gate adversary | Wave 3 gate | E-QUARANTINE-005 and E-HOOK-003 unregistered in error-taxonomy.md |
+| F-INTEG-007 | Wave 2 gate adversary | Wave 3 gate | BRAIN_ROOT vs BRAIN_DIR env var naming inconsistency across hooks |
+| STORY-006 AC stale | STORY-006 | Wave 3 gate | Story spec AC exit codes/format stale vs BC-2.04.001 v1.4 (story says exit 0 + hookSpecificOutput, BC says exit 2 + flat JSON) |
 
 ---
 
