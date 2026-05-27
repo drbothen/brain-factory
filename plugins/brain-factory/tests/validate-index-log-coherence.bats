@@ -341,3 +341,56 @@ print('PASS')
   run grep -q 'CLAUDE_PLUGIN_ROOT.*validate-index-log-coherence.sh\|validate-index-log-coherence.sh.*CLAUDE_PLUGIN_ROOT' "${PLUGIN_DIR}/hooks/hooks.json"
   [ "$status" -eq 0 ]
 }
+
+# ===========================================================================
+# F-001 / BC-2.04.006 bidirectional check:
+# Slug in log but NOT in index → exit 2, E-WIKI-003 (reverse direction).
+# BC-2.04.006 says "and vice versa" — both directions must be enforced.
+# ===========================================================================
+
+@test "test_BC_2_04_006_slug_in_log_but_not_in_index_exits_2_with_E_WIKI_003" {
+  # Write a log that has an extra slug not present in the index.
+  # The fixture index only knows test-concept, test-person, test-framework.
+  # We add log-only-slug to the log — it will not be in the index.
+  cp "${FIXTURES_DIR}/wiki-index-with-slugs.md" "${BRAIN_DIR}/wiki/index.md"
+  {
+    cat "${FIXTURES_DIR}/wiki-log-with-slugs.md"
+    printf '\n- 2026-02-01: Added [Log Only Page](concepts/log-only-slug.md)\n'
+  } > "${BRAIN_DIR}/wiki/log.md"
+  local file_path="${BRAIN_DIR}/wiki/log.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-WIKI-003"* ]]
+}
+
+@test "test_BC_2_04_006_log_only_violation_message_names_missing_slug" {
+  # BC-2.04.006 postcondition §violation: message must name the missing slug.
+  cp "${FIXTURES_DIR}/wiki-index-with-slugs.md" "${BRAIN_DIR}/wiki/index.md"
+  {
+    cat "${FIXTURES_DIR}/wiki-log-with-slugs.md"
+    printf '\n- 2026-02-01: Added [Log Only Page](concepts/log-only-slug.md)\n'
+  } > "${BRAIN_DIR}/wiki/log.md"
+  local file_path="${BRAIN_DIR}/wiki/log.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"log-only-slug"* ]]
+}
+
+@test "test_BC_2_04_006_log_only_violation_stdout_contains_decision_block" {
+  # ADR-002 v2.0: block → {"continue":false,"decision":"block",...}
+  cp "${FIXTURES_DIR}/wiki-index-with-slugs.md" "${BRAIN_DIR}/wiki/index.md"
+  {
+    cat "${FIXTURES_DIR}/wiki-log-with-slugs.md"
+    printf '\n- 2026-02-01: Added [Log Only Page](concepts/log-only-slug.md)\n'
+  } > "${BRAIN_DIR}/wiki/log.md"
+  local file_path="${BRAIN_DIR}/wiki/log.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *'"decision":"block"'* ]]
+}

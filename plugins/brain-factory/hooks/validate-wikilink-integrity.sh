@@ -122,28 +122,41 @@ if [[ ! -r "$index_file" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Check each slug against wiki/index.md — collect broken slugs.
-# A slug matches if wiki/index.md contains that slug string (as part of a path).
+# Check each slug against wiki/index.md — collect broken slugs into array.
+# A slug matches if wiki/index.md contains /${slug}.md as a path component.
 # ---------------------------------------------------------------------------
-broken=""
+broken_arr=()
 while IFS= read -r slug; do
   [[ -z "$slug" ]] && continue
-  if ! grep -q "${slug}" "${index_file}"; then
-    broken="${broken:+${broken}, }[[${slug}]]"
+  # Use -F (fixed string) and match the slug as a complete path component to
+  # avoid regex metacharacter issues and substring false-positives (F-002).
+  if ! grep -Fq "/${slug}.md" "${index_file}"; then
+    broken_arr+=("${slug}")
   fi
 done <<<"$slugs"
 
 # ---------------------------------------------------------------------------
+# Build broken_slugs JSON array (BC-2.04.003 requires array, not string — F-005).
+# ---------------------------------------------------------------------------
+broken_json="[]"
+broken_display=""
+for slug in "${broken_arr[@]+"${broken_arr[@]}"}"; do
+  broken_json="$(jq -cn --arg s "$slug" --argjson arr "$broken_json" '$arr + [$s]')"
+  broken_display="${broken_display:+${broken_display}, }[[${slug}]]"
+done
+
+# ---------------------------------------------------------------------------
 # Emit result.
 # ---------------------------------------------------------------------------
-if [[ -n "$broken" ]]; then
-  emit_event "wiki.wikilink.broken" "broken_slugs=${broken}" "path=${relative_path}"
+if [[ "${#broken_arr[@]}" -gt 0 ]]; then
+  emit_event "wiki.wikilink.broken" "broken_slugs=${broken_display}" "path=${relative_path}"
   jq -cn \
     --arg code "E-WIKI-001" \
-    --arg reason "Broken wikilink(s): ${broken} in ${relative_path}. No matching wiki page found." \
+    --arg reason "Broken wikilink(s): ${broken_display} in ${relative_path}. No matching wiki page found." \
     --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$reason,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Wikilink integrity hook blocked: Broken wikilink(s): ${broken} in ${relative_path}." >&2
+    --argjson brokenjson "$broken_json" \
+    '{"continue":false,"decision":"block","reason":$reason,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace,"details":{"broken_slugs":$brokenjson}}}'
+  echo "Wikilink integrity hook blocked: Broken wikilink(s): ${broken_display} in ${relative_path}." >&2
   exit 2
 fi
 

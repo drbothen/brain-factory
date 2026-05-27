@@ -332,3 +332,72 @@ print('PASS')
   run grep -q 'CLAUDE_PLUGIN_ROOT.*validate-wikilink-integrity.sh\|validate-wikilink-integrity.sh.*CLAUDE_PLUGIN_ROOT' "${PLUGIN_DIR}/hooks/hooks.json"
   [ "$status" -eq 0 ]
 }
+
+# ===========================================================================
+# F-004 / BC-2.04.003 postconditions §broken:
+# Multiple broken wikilinks — both slugs named in output.
+# ===========================================================================
+
+@test "test_BC_2_04_003_multiple_broken_wikilinks_both_named_in_output" {
+  # wiki-page-multi-broken.md contains [[bad-one]] and [[bad-two]] — neither in index.
+  cp "${FIXTURES_DIR}/wiki-index-with-slugs.md" "${BRAIN_DIR}/wiki/index.md"
+  local page_content
+  page_content="$(cat "${FIXTURES_DIR}/wiki-page-multi-broken.md")"
+  local file_path="${BRAIN_DIR}/wiki/concepts/test-multi-broken.md"
+  local payload
+  payload="$(_payload "${file_path}" "${page_content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"bad-one"* ]]
+  [[ "$output" == *"bad-two"* ]]
+}
+
+@test "test_BC_2_04_003_multiple_broken_wikilinks_broken_slugs_is_json_array" {
+  # BC-2.04.003: broken_slugs must be a JSON array in hookSpecificOutput.details.
+  cp "${FIXTURES_DIR}/wiki-index-with-slugs.md" "${BRAIN_DIR}/wiki/index.md"
+  local page_content
+  page_content="$(cat "${FIXTURES_DIR}/wiki-page-multi-broken.md")"
+  local file_path="${BRAIN_DIR}/wiki/concepts/test-multi-broken.md"
+  local payload
+  payload="$(_payload "${file_path}" "${page_content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+  local arr_len
+  arr_len="$(printf '%s' "$output" | jq -r '.hookSpecificOutput.details.broken_slugs | length' 2>/dev/null || true)"
+  [ "$arr_len" -eq 2 ]
+}
+
+# ===========================================================================
+# F-003 / VP-004 §O(n) performance:
+# 1000-entry index — hook completes within CI-safe threshold (1000ms).
+# AC-006: local target is 100ms; CI threshold is 1000ms to account for slower runners.
+# ===========================================================================
+
+@test "VP_004_O_n_resolution_completes_under_1000ms_on_1000_entry_index" {
+  # Generate a 1000-entry index.
+  {
+    printf -- '---\ntype: index\ntitle: Wiki Index\n---\n\n# Wiki Index\n\n'
+    local i
+    for i in $(seq 1 1000); do
+      printf -- '- [Concept %d](concepts/concept-%04d.md)\n' "$i" "$i"
+    done
+  } > "${BRAIN_DIR}/wiki/index.md"
+
+  # Page with one valid wikilink pointing to concept-0500 (in the generated index).
+  local content
+  content='---\ntype: concept\ntitle: Test\n---\n\n# Test\n\nSee [[concept-0500]].\n'
+  local file_path="${BRAIN_DIR}/wiki/concepts/test-perf.md"
+  local payload
+  payload="$(_payload "${file_path}" "$(printf '%b' "${content}")")"
+
+  local start_ms end_ms elapsed_ms
+  start_ms="$(python3 -c 'import time; print(int(time.time()*1000))')"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  end_ms="$(python3 -c 'import time; print(int(time.time()*1000))')"
+  elapsed_ms=$((end_ms - start_ms))
+
+  # Hook must exit 0 (concept-0500 is in the index).
+  [ "$status" -eq 0 ]
+  # CI-safe threshold: 1000ms (local target is 100ms per AC-006).
+  [ "$elapsed_ms" -lt 1000 ]
+}

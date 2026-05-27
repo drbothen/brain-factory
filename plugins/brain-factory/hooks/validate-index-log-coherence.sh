@@ -5,10 +5,11 @@ set -euo pipefail
 trap 'echo "Index-log coherence hook blocked: internal error." >&2; exit 2' ERR
 # validate-index-log-coherence.sh — PostToolUse hook: wiki index/log coherence
 # BC-2.04.006 | VP-002 | ADR-002 v2.0 | ADR-016 (event emission)
-# Fires AFTER Write|Edit executes — checks that every slug in wiki/index.md
-# also appears in wiki/log.md.
-# Exit 0: allow (all index slugs in log, or non-target path, or vacuous coherence)
-# Exit 2: block (missing slug, missing file, or fail-closed on error)
+# Fires AFTER Write|Edit executes — bidirectional check:
+#   1. Every slug in wiki/index.md must appear in wiki/log.md (index→log)
+#   2. Every slug in wiki/log.md must appear in wiki/index.md (log→index)
+# Exit 0: allow (all slugs coherent, non-target path, or vacuous coherence)
+# Exit 2: block (missing slug in either direction, missing file, or fail-closed on error)
 # stdout protocol (ADR-002 v2.0):
 #   allow → {"continue":true,"trace":"<uuid>","message":"..."}
 #   block → {"continue":false,"decision":"block","reason":"<text>",
@@ -106,10 +107,15 @@ fi
 # and extract the basename (filename without extension).
 # Portable: no grep -P; uses grep -o + sed.
 # ---------------------------------------------------------------------------
-index_slugs="$(grep -o '\[.*\](.*\.md)' "${index_file}" | sed 's/.*(\(.*\)\.md)/\1/' | sed 's|.*/||' || true)"
+index_slugs="$(grep -o '\[[^]]*\]([^)]*\.md)' "${index_file}" | sed 's/.*(\(.*\)\.md)/\1/' | sed 's|.*/||' || true)"
 
-# No slugs in index — vacuously coherent.
-if [[ -z "$index_slugs" ]]; then
+# ---------------------------------------------------------------------------
+# Extract slugs from wiki/log.md — same pattern.
+# ---------------------------------------------------------------------------
+log_slugs="$(grep -o '\[[^]]*\]([^)]*\.md)' "${log_file}" | sed 's/.*(\(.*\)\.md)/\1/' | sed 's|.*/||' || true)"
+
+# Both empty — vacuously coherent.
+if [[ -z "$index_slugs" ]] && [[ -z "$log_slugs" ]]; then
   emit_event "wiki.index_log.coherence_verified" "path=${relative_path}" "slug_count=0"
   jq -cn --arg trace "${HOOK_TRACE_ID}" \
     --arg msg "Index-log coherence verified." \
@@ -118,27 +124,47 @@ if [[ -z "$index_slugs" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Check each index slug appears in wiki/log.md — collect missing slugs.
+# Direction 1: check each index slug appears in wiki/log.md.
+# Use -F (fixed string) and match as complete path component (F-002).
 # ---------------------------------------------------------------------------
 missing=""
 while IFS= read -r slug; do
   [[ -z "$slug" ]] && continue
-  if ! grep -q "${slug}" "${log_file}"; then
+  if ! grep -Fq "/${slug}.md" "${log_file}"; then
     missing="${missing:+${missing}, }${slug}"
   fi
 done <<<"$index_slugs"
 
 # ---------------------------------------------------------------------------
+# Direction 2: check each log slug appears in wiki/index.md (F-001).
+# BC-2.04.006 "and vice versa" — log-only slugs are E-WIKI-003 violations.
+# ---------------------------------------------------------------------------
+log_only=""
+while IFS= read -r slug; do
+  [[ -z "$slug" ]] && continue
+  if ! grep -Fq "/${slug}.md" "${index_file}"; then
+    log_only="${log_only:+${log_only}, }${slug}"
+  fi
+done <<<"$log_slugs"
+
+# Combine all missing slugs for the violation report.
+all_missing=""
+[[ -n "$missing" ]] && all_missing="${missing}"
+if [[ -n "$log_only" ]]; then
+  all_missing="${all_missing:+${all_missing}, }${log_only}"
+fi
+
+# ---------------------------------------------------------------------------
 # Emit result.
 # ---------------------------------------------------------------------------
-if [[ -n "$missing" ]]; then
-  emit_event "wiki.index_log.coherence_violated" "missing_slugs=${missing}" "path=${relative_path}"
+if [[ -n "$all_missing" ]]; then
+  emit_event "wiki.index_log.coherence_violated" "missing_slugs=${all_missing}" "path=${relative_path}"
   jq -cn \
     --arg code "E-WIKI-003" \
-    --arg reason "Index-log coherence violation: slug(s) in index but not in log: ${missing}." \
+    --arg reason "Index-log coherence violation: slug(s) missing from counterpart file: ${all_missing}." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$reason,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Index-log coherence hook blocked: slug(s) in index but not in log: ${missing}." >&2
+  echo "Index-log coherence hook blocked: slug(s) missing from counterpart file: ${all_missing}." >&2
   exit 2
 fi
 
