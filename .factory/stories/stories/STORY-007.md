@@ -57,16 +57,15 @@ and every `exit` statement uses `0`, `1`, or `2` only.
 
 **AC-002** — Given a PostToolUse stdin payload for a Write to `sources/ai/new-source.md`
 where that path is NOT in `.brain/manifest.json`, the hook exits 0 and stdout is
-`{"verdict":"allow","message":"New source accepted.","trace":"<uuid>"}`.
+`{"continue":true,"trace":"<uuid>","message":"New source accepted."}`.
 (traces to BC-2.04.002 postconditions on new source write: 1–3)
 
 **AC-003** — Given a PostToolUse stdin payload for an Edit to `sources/ai/existing.md`
 where that path IS in `.brain/manifest.json`, the hook exits 2 and stdout is
-`{"verdict":"block","code":"E-SOURCE-001","message":"Source file <path> already exists in manifest. Sources are immutable. Use /brain:rename-page to rename.","trace":"<uuid>"}`.
+`{"continue":false,"decision":"block","reason":"Source file <path> already exists in manifest. Sources are immutable. Use /brain:rename-page to rename.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-SOURCE-001","trace":"<uuid>"}}`.
 (traces to BC-2.04.002 postconditions on overwrite attempt: 1–3)
 
-**AC-004** — When `.brain/manifest.json` is absent, the hook exits 2 and stdout contains
-`"code":"E-SOURCE-002"`. The hook is fail-closed.
+**AC-004** — When `.brain/manifest.json` is absent, the hook exits 2 and stdout contains structured block response with `"code":"E-SOURCE-002"` in `hookSpecificOutput`. The hook is fail-closed.
 (traces to BC-2.04.002 invariant 2; edge case EC-003)
 
 **AC-005** — The hook checks the manifest for the path (not file-system existence). A
@@ -120,8 +119,8 @@ BC-2.04.017 event catalog compliance)
 
 | Input | Expected Output | Category | Source |
 |-------|----------------|----------|--------|
-| Write to `sources/ai/new-source.md`; path NOT in manifest | exit 0; `{"verdict":"allow",...}` | happy-path | BC-2.04.002 |
-| Edit to `sources/ai/existing.md`; path IS in manifest | exit 2; `{"verdict":"block","code":"E-SOURCE-001",...}` | error | BC-2.04.002 |
+| Write to `sources/ai/new-source.md`; path NOT in manifest | exit 0; `{"continue":true,...}` | happy-path | BC-2.04.002 |
+| Edit to `sources/ai/existing.md`; path IS in manifest | exit 2; `{"continue":false,"decision":"block","hookSpecificOutput":{"code":"E-SOURCE-001",...}}` | error | BC-2.04.002 |
 | Write with `manifest.json` absent | exit 2; `{"code":"E-SOURCE-002",...}` | edge-case | BC-2.04.002 EC-003 |
 | Path exists on disk but NOT in manifest | exit 0 | edge-case | BC-2.04.002 invariant 1 |
 
