@@ -49,7 +49,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-009-delivered
+session_stage: phase-3-wave-3-story-010-in-progress
 session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 4/8 stories delivered (18/32 points). 11 total stories delivered (68/264 points). 25 BCs active. ~369 tests on develop. Wave 3 remaining: STORY-010 (3pt, page type policy), STORY-011 (5pt, source citation), STORY-012 (3pt, publish state), STORY-013 (3pt, filename/attribution). All remaining Wave 3 stories are independent (no within-wave deps). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -88,7 +88,7 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 3 — 4/8 stories (18/32 points) — STORY-010 next
+## TOP OF STACK — Phase 3 Wave 3 — 4/8 stories (18/32 points) — STORY-010 IN PROGRESS
 
 ### Pipeline Position
 - Phase 3: TDD Implementation
@@ -138,13 +138,17 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 - ADR-002 v2.0 is authoritative for stdout schema — use `continue`/`decision`/`hookSpecificOutput`, NOT `verdict`
 
 ### Next Action
-1. Read this STATE.md
-2. Verify git state per §Git State to Verify above
-3. Dispatch STORY-010 per-story delivery (worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge)
-4. After STORY-010: continue with STORY-011, STORY-012, STORY-013 (all independent)
-5. After all 8 stories: run Wave 3 integration gate
+**STORY-010 delivery is actively in progress** (page type policy + voice advisory hooks — validate-page-type-policy.sh, 3 points).
+1. STORY-010 delivery in progress: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge
+2. After STORY-010: continue with STORY-011, STORY-012, STORY-013 (all independent)
+3. After all 8 stories: run Wave 3 integration gate
 
 Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008 (completed), STORY-009 (completed), STORY-010, STORY-011, STORY-012, STORY-013 (pending)
+
+**STORY-010 delivery started (2026-05-27):**
+- Goal: validate-page-type-policy.sh — directory↔type consistency enforcement (PostToolUse hook, 3 points)
+- BCs: BC-2.04.007 (page type policy), BC-2.04.008 (voice advisory)
+- Status: IN PROGRESS — worktree active, TDD delivery underway
 
 **STORY-009 delivery summary (2026-05-27):**
 - Red Gate: 37 failing → 50 total tests after implementation + adversary fixes
