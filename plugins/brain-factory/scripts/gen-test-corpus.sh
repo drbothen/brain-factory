@@ -266,20 +266,25 @@ generate_manifest() {
     i=$((i + 1))
   done
 
-  jq -n --slurpfile entries "$entries_file" '
+  local last_updated="2026-01-01T00:00:00Z"
+
+  jq -n --slurpfile entries "$entries_file" --arg last_updated "$last_updated" '
     {
-      brain_version: "0.1.0",
-      sources: (
-        [$entries[] | {
-          (.key): {
-            slug: .slug,
-            topic: .topic,
-            ingested_at: "2026-01-01T00:00:00Z",
-            chunks: [],
-            embeddings_model: null
-          }
-        }] | add // {}
-      )
+      version: "1",
+      sources: [
+        $entries[] | {
+          source_id: .slug,
+          url: "",
+          topic: .topic,
+          ingested_at: "2026-01-01T00:00:00Z",
+          last_ingest: "2026-01-01T00:00:00Z",
+          chunks: [],
+          embeddings_model: null
+        }
+      ],
+      last_updated: $last_updated,
+      embeddings_model: null,
+      chunks: []
     }
   ' >"$out/.brain/manifest.json"
 
