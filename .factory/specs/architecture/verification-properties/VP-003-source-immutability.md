@@ -3,7 +3,7 @@ document_type: verification-property
 id: VP-003
 title: "Source immutability enforcement"
 level: L3
-version: "1.2"
+version: "1.3"
 producer: "vsdd-factory:architect"
 phase: phase-1c
 traces_to: ../VP-INDEX.md
@@ -17,7 +17,7 @@ status: proposed
 
 ## Property Statement
 
-For any path P that exists as a key in `manifest.json`, a PostToolUse hook invocation with `tool_input.path = P` and a Write tool will produce: exit code 2, decision `block`, code `E-SOURCE-001`. For any path P not in manifest.json, the same invocation will produce: exit code 0, `continue: true`.
+For any path P that exists as a key in `manifest.json`, a PostToolUse hook invocation with `tool_input.file_path = P` and a Write tool will produce: exit code 2, decision `block`, code `E-SOURCE-001`. For any path P not in manifest.json, the same invocation will produce: exit code 0, `continue: true`.
 
 ## Verification Mechanism
 
@@ -26,21 +26,21 @@ bats (`tests/validate-source-immutability.bats`) with fixture manifest.json:
 ```bash
 @test "validate-source-immutability.sh: existing source path → E-SOURCE-001" {
   # manifest.json fixture has "sources/ai/existing-article.md" as a key
-  local payload='{"tool_name":"Write","tool_input":{"path":"sources/ai/existing-article.md","content":"..."}}'
+  local payload='{"tool_name":"Write","tool_input":{"file_path":"sources/ai/existing-article.md","content":"..."}}'
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-immutability.sh"
   assert_failure 2
   assert_output --partial '"code":"E-SOURCE-001"'
 }
 
 @test "validate-source-immutability.sh: new source path → allow" {
-  local payload='{"tool_name":"Write","tool_input":{"path":"sources/ai/new-article.md","content":"..."}}'
+  local payload='{"tool_name":"Write","tool_input":{"file_path":"sources/ai/new-article.md","content":"..."}}'
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-immutability.sh"
   assert_success
   assert_output --partial '"continue":true'
 }
 
 @test "validate-source-immutability.sh: path not in sources/ → allow (no-op)" {
-  local payload='{"tool_name":"Write","tool_input":{"path":"wiki/concepts/test.md","content":"..."}}'
+  local payload='{"tool_name":"Write","tool_input":{"file_path":"wiki/concepts/test.md","content":"..."}}'
   echo "$payload" | "${CLAUDE_PLUGIN_ROOT}/hooks/validate-source-immutability.sh"
   assert_success
 }
@@ -64,6 +64,10 @@ bats (`tests/validate-source-immutability.bats`) with fixture manifest.json:
 proposed — pending Phase 3 implementation
 
 ## Changelog
+
+### v1.3 (2026-05-26)
+
+**FIELD NAME CORRECTION (ADR-002 v2.0 — second hop missed by v1.2):** §Property Statement and §Verification Mechanism fixture payloads updated `tool_input.path` → `tool_input.file_path` and `"path":` → `"file_path":` inside all `tool_input` objects. The v1.2 cascade updated `input.path` → `tool_input.path` but missed the further correction to `tool_input.file_path` per ADR-002 v2.0 canonical field name. [audit-trail]
 
 ### v1.2 (2026-05-25)
 
