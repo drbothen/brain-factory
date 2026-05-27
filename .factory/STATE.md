@@ -49,7 +49,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-008-delivered
+session_stage: phase-3-wave-3-story-009
 session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress. 10 stories delivered (63/264 points). 23 BCs active. 319 tests on develop. Wave 3 progress: 3/8 stories (13/32 points). Remaining: STORY-009..013 (pending, all independent). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Holdout scenarios restricted. No AI attribution. Single-commit-per-burst. Deferred to Wave 3 gate scope: STORY-002 test naming drift, F-INTEG-004 (E-QUARANTINE-005/E-HOOK-003 unregistered), F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR), STORY-006 AC exit codes stale vs BC v1.4.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
