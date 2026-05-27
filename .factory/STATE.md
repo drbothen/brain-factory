@@ -34,7 +34,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-2-in-progress
+phase: phase-3-wave-2-complete
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -48,7 +48,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-2-in-progress
+session_stage: phase-3-wave-2-complete
 session_continuity: FRESH-CONTEXT-READY — Wave 2 COMPLETE. STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f, 2026-05-26) — quarantine corpus + quarantine-fetch.sh (PreToolUse hook, fail-closed, SSRF guard, trap ERR) + quarantine.mjs (4 patterns + --check CLI) + quarantine-check SKILL.md. 41 Red Gate tests → 64 total. Adversary: 9 passes, 3-CLEAN at passes 7-8-9. BCs active: BC-2.14.003/004/005 + BC-2.04.017 + BC-2.17.001/002 + BC-2.08.004/009.005 + BC-2.16.006 + BC-2.02.001/004/006 + BC-2.01.001/004 + BC-2.06.003/004 + BC-2.04.001 + BC-2.10.001/002/003 (18 total active). Wave 2: 3/3 stories (24/24 points) — COMPLETE. Next: Wave 2 integration gate.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -78,7 +78,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-2-in-progress
+status: phase-3-wave-2-complete
 ---
 
 # brain-factory Pipeline STATE
