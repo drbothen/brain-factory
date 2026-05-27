@@ -225,17 +225,30 @@ _make_git_dir() {
   printf '%s' "$d"
 }
 
-# Helper: strip a command from PATH, returning a restricted PATH string
-_path_without() {
-  local cmd="$1"
-  local new_path=""
-  local dir
-  while IFS= read -r -d: dir; do
-    if [[ -n "$dir" ]] && [[ ! -x "${dir}/${cmd}" ]]; then
-      new_path="${new_path}${dir}:"
-    fi
-  done <<<"${PATH}:"
-  printf '%s' "${new_path%:}"
+# Helper: build a flat symlink directory containing every command on the current
+# PATH EXCEPT the excluded one.  Returns the directory path.
+#
+# Rationale: _path_without removed entire directories, which on ubuntu-latest
+# strips co-located tools (git, bash, node all live in /usr/bin/ alongside jq).
+# A flat symlink dir avoids that: only the target command is absent.
+_make_restricted_path() {
+  local exclude="$1"
+  local rdir
+  rdir="$(mktemp -d)"
+  local IFS=':'
+  local dir cmd_path name
+  for dir in $PATH; do
+    [[ -d "$dir" ]] || continue
+    for cmd_path in "$dir"/*; do
+      [[ -x "$cmd_path" ]] || continue
+      name="${cmd_path##*/}"
+      [[ "$name" = "$exclude" ]] && continue
+      # First directory wins (mirrors PATH precedence); don't clobber.
+      [[ -e "${rdir}/${name}" ]] && continue
+      ln -sf "$cmd_path" "${rdir}/${name}"
+    done
+  done
+  printf '%s' "$rdir"
 }
 
 # AC-003 / BC-2.01.003: rejects non-git directory with E-INIT-001
@@ -349,15 +362,17 @@ _path_without() {
 
 # AC-008 check-order / BC-2.01.003: absent jq produces E-INIT-006
 # jq is checked before node (check order: CLAUDE_PLUGIN_ROOT, jq/yq, node, git-repo, ...)
+# Uses _make_restricted_path (flat symlink dir) so co-located tools like git/node
+# remain discoverable — avoids the directory-removal problem on ubuntu-latest.
 @test "BC_2_01_003: jq absent produces E-INIT-006 exit 2" {
-  local brain_dir
+  local brain_dir rdir
   brain_dir="$(_make_git_dir)"
-  local restricted_path
-  restricted_path="$(_path_without jq)"
-  run env PATH="$restricted_path" \
+  rdir="$(_make_restricted_path jq)"
+  run env PATH="$rdir" \
     BRAIN_ROOT="$brain_dir" \
     CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
     bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$rdir"
   # Must exit 2
   [ "$status" -eq 2 ]
   # stdout must contain E-INIT-006
@@ -435,15 +450,17 @@ _path_without() {
 
 # AC-006 / BC-2.01.003: absent yq produces E-INIT-006
 # jq present, yq absent — yq is now checked immediately after jq (AC-008 order)
+# Uses _make_restricted_path (flat symlink dir) so co-located tools like git/node
+# remain discoverable — avoids the directory-removal problem on ubuntu-latest.
 @test "BC_2_01_003: yq absent produces E-INIT-006 exit 2" {
-  local brain_dir
+  local brain_dir rdir
   brain_dir="$(_make_git_dir)"
-  local restricted_path
-  restricted_path="$(_path_without yq)"
-  run env PATH="$restricted_path" \
+  rdir="$(_make_restricted_path yq)"
+  run env PATH="$rdir" \
     BRAIN_ROOT="$brain_dir" \
     CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
     bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$rdir"
   # Must exit 2
   [ "$status" -eq 2 ]
   # stdout must contain E-INIT-006
