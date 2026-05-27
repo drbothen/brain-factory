@@ -1,0 +1,15 @@
+{
+  "session_id": "test-session",
+  "transcript_path": "/tmp/transcript",
+  "cwd": "/tmp/test-brain",
+  "permission_mode": "default",
+  "effort": {"level": "medium"},
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "/tmp/test-brain/drafts/linkedin/my-post.md",
+    "content": "---\ntitle: My Post\nstatus: draft\n---\n# My Post\n\nContent here.\n"
+  },
+  "tool_use_id": "test-publish-001",
+  "tool_result": {"type": "text", "text": "File written", "exit_code": 0}
+}

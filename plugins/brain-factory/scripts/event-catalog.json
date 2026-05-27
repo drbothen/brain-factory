@@ -152,29 +152,29 @@
     "event_type": "source.citation.unresolved",
     "hook_name": "validate-source-id-citation.sh",
     "severity": "error",
-    "fields": ["file_path", "citation_id", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.citation.unresolved\",\"hook_name\":\"validate-source-id-citation.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"citation_id\":\"SRC-999\",\"reason\":\"Source ID not found in sources index\"}"
+    "fields": ["path", "missing_source_id"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.citation.unresolved\",\"hook_name\":\"validate-source-id-citation.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/concepts/page.md\",\"missing_source_id\":\"ai/nonexistent\"}"
   },
   {
     "event_type": "source.citation.resolved",
     "hook_name": "validate-source-id-citation.sh",
     "severity": "info",
-    "fields": ["file_path", "citation_count"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.citation.resolved\",\"hook_name\":\"validate-source-id-citation.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"citation_count\":\"2\"}"
+    "fields": ["path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.citation.resolved\",\"hook_name\":\"validate-source-id-citation.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/concepts/page.md\"}"
   },
   {
     "event_type": "publish.state.transition_rejected",
     "hook_name": "validate-publish-state.sh",
     "severity": "error",
-    "fields": ["file_path", "from_state", "to_state", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"publish.state.transition_rejected\",\"hook_name\":\"validate-publish-state.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"from_state\":\"draft\",\"to_state\":\"published\",\"reason\":\"Required review approval missing\"}"
+    "fields": ["path", "from_state", "to_state"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"publish.state.transition_rejected\",\"hook_name\":\"validate-publish-state.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"drafts/linkedin/post.md\",\"from_state\":\"draft\",\"to_state\":\"published\"}"
   },
   {
     "event_type": "publish.state.transition_accepted",
     "hook_name": "validate-publish-state.sh",
     "severity": "info",
-    "fields": ["file_path", "from_state", "to_state"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"publish.state.transition_accepted\",\"hook_name\":\"validate-publish-state.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"from_state\":\"draft\",\"to_state\":\"published\"}"
+    "fields": ["path", "to_state"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"publish.state.transition_accepted\",\"hook_name\":\"validate-publish-state.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"drafts/linkedin/post.md\",\"to_state\":\"ready\"}"
   },
   {
     "event_type": "naming.kebab_case.rejected",
