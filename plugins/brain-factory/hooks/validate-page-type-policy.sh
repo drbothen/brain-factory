@@ -126,7 +126,7 @@ concepts | people | frameworks | syntheses | observations | questions)
 esac
 
 if [[ "$type_valid" != "true" ]]; then
-  emit_event "wiki.page_type.rejected" "path=$file_path" "invalid_type=$type_dir"
+  emit_event "wiki.page_type.rejected" "path=$file_path" "code=E-WIKI-005" "invalid_type=$type_dir"
   jq -cn \
     --arg code "E-WIKI-005" \
     --arg type_dir "$type_dir" \

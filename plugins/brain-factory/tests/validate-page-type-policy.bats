@@ -299,6 +299,45 @@ _payload() {
   [[ "$event_path" == *"wiki/concepts/test-page.md"* ]]
 }
 
+@test "test_BC_2_04_007_wiki_root_rejected_event_has_correct_code_field" {
+  # For wiki/stray.md (E-WIKI-006 path), the rejected event must carry code="E-WIKI-006"
+  # as a proper JSON field (not a bare substring).
+  local payload
+  payload="$(_payload "${BRAIN_DIR}/wiki/stray.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
+
+  local code
+  code="$(printf '%s\n' "$stderr_out" | grep 'wiki.page_type.rejected' | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-WIKI-006" ]
+}
+
+@test "test_BC_2_04_007_wiki_root_rejected_event_has_correct_path_field" {
+  # For wiki/stray.md (E-WIKI-006 path), the rejected event must carry the file path
+  # as a proper JSON path field.
+  local payload
+  payload="$(_payload "${BRAIN_DIR}/wiki/stray.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
+
+  local event_path
+  event_path="$(printf '%s\n' "$stderr_out" | grep 'wiki.page_type.rejected' | jq -r '.path' 2>/dev/null || true)"
+  [[ "$event_path" == *"wiki/stray.md"* ]]
+}
+
+@test "test_BC_2_04_007_invalid_type_rejected_event_has_correct_code_field" {
+  # For wiki/tools/hammer.md (E-WIKI-005 path), the rejected event must carry code="E-WIKI-005"
+  # as a proper JSON field (not a bare substring).
+  local payload
+  payload="$(_payload "${BRAIN_DIR}/wiki/tools/hammer.md")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
+
+  local code
+  code="$(printf '%s\n' "$stderr_out" | grep 'wiki.page_type.rejected' | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-WIKI-005" ]
+}
+
 # ===========================================================================
 # Edge cases:
 # Malformed JSON stdin → fail-closed (exit 2).
