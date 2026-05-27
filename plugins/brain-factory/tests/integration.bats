@@ -367,6 +367,10 @@ _path_without() {
   local code
   code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
   [ "$code" = "E-INIT-005" ]
+  # Only the pre-existing wiki/ dir exists; no additional files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 1 ]
   rm -rf "$brain_dir"
 }
 
@@ -384,6 +388,10 @@ _path_without() {
   local code
   code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
   [ "$code" = "E-INIT-005" ]
+  # Only the pre-existing sources/ dir exists; no additional files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 1 ]
   rm -rf "$brain_dir"
 }
 
@@ -400,6 +408,10 @@ _path_without() {
   local code
   code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
   [ "$code" = "E-INIT-004" ]
+  # CLAUDE_PLUGIN_ROOT check fires before any I/O — no brain files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
   rm -rf "$brain_dir"
 }
 

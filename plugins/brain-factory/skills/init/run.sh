@@ -24,11 +24,15 @@ _die() {
   else
     trace="${RANDOM}-${RANDOM}-${RANDOM}-${RANDOM}"
   fi
-  # JSON-escape the message: backslash first, then double-quote, tab, newline
+  # JSON-escape the message: backslash first, then double-quote, then control chars
+  # Order matters: backslash must be first to avoid double-escaping.
   message="${message//\\/\\\\}"
   message="${message//\"/\\\"}"
   message="${message//$'\t'/\\t}"
   message="${message//$'\n'/\\n}"
+  message="${message//$'\r'/\\r}"
+  message="${message//$'\b'/\\b}"
+  message="${message//$'\f'/\\f}"
   printf '{"level":"error","code":"%s","message":"%s","trace":"%s"}\n' "$code" "$message" "$trace"
   exit 2
 }

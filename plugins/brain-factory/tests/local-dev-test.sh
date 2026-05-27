@@ -30,9 +30,9 @@ assert_under_5_minutes() {
   git -C "$brain_dir" init -q
 
   local start="$SECONDS"
+  local exit_code=0
   BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="$CLAUDE_PLUGIN_ROOT" \
-    bash "${PLUGIN_DIR}/skills/init/run.sh"
-  local exit_code="$?"
+    bash "${PLUGIN_DIR}/skills/init/run.sh" || exit_code=$?
   local elapsed=$((SECONDS - start))
 
   if [[ "$exit_code" -ne 0 ]]; then
