@@ -272,6 +272,37 @@ _stop_payload() {
 }
 
 # ===========================================================================
+# EC-003 / BC-2.04.013 edge case: .brain/STATE.md updated before git add.
+# If .brain/STATE.md is present, hook must update it with session-close
+# timestamp BEFORE running git add -A so the marker is included in the commit.
+# FAILS against the current implementation (no STATE.md update logic exists).
+# ===========================================================================
+
+@test "test_BC_2_04_013_state_md_updated_before_commit" {
+  # Create .brain/STATE.md in the brain git repo.
+  mkdir -p "${BRAIN_DIR}/.brain"
+  cat >"${BRAIN_DIR}/.brain/STATE.md" <<'STATEEOF'
+---
+overall_health: GREEN
+---
+# Brain State
+STATEEOF
+  # Stage and commit so the repo is aware of this file.
+  git -C "${BRAIN_DIR}" add .brain/STATE.md
+  git -C "${BRAIN_DIR}" commit -q -m "add state"
+  # Create another uncommitted change to trigger the flush.
+  echo "new content" >"${BRAIN_DIR}/trigger.txt"
+  local payload
+  payload="$(_stop_payload "${BRAIN_DIR}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+  # The committed version of .brain/STATE.md must contain the session-close marker.
+  local committed_state
+  committed_state="$(git -C "${BRAIN_DIR}" show HEAD:.brain/STATE.md 2>/dev/null)"
+  [[ "$committed_state" == *"session-close"* ]]
+}
+
+# ===========================================================================
 # AC-016 / CLAUDE.md §Conventions: shellcheck and shfmt normalization.
 # These PASS against the stub (stub is shellcheck-clean and shfmt-normalized).
 # ===========================================================================

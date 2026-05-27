@@ -47,7 +47,7 @@ brain_dir="${BRAIN_DIR:-$(printf '%s' "$stdin_json" | jq -r '.cwd // empty' 2>/d
 state_file="${brain_dir}/.brain/STATE.md"
 
 if [[ ! -f "$state_file" ]]; then
-  emit_event "brain.health.skipped" "reason=not_a_brain_session"
+  emit_event "brain.health.skipped" "reason=not_a_brain_session" "path=${brain_dir}"
   jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
     '{"continue":true,"trace":$trace,"message":"Not a brain session."}'
   exit 0

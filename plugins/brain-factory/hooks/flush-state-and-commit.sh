@@ -74,6 +74,16 @@ if [[ -z "$status_output" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# EC-003: Update .brain/STATE.md with session-close timestamp if present.
+# This ensures the close timestamp is included in the auto-commit.
+# ---------------------------------------------------------------------------
+_state_file="${brain_dir}/.brain/STATE.md"
+if [[ -f "$_state_file" ]]; then
+  _close_ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  printf '\n<!-- session-close: %s -->\n' "$_close_ts" >>"$_state_file"
+fi
+
+# ---------------------------------------------------------------------------
 # Uncommitted changes present — stage all and commit.
 # ---------------------------------------------------------------------------
 git -C "$brain_dir" add -A 2>/dev/null || true

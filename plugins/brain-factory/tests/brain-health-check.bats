@@ -276,6 +276,25 @@ _create_malformed_state_md() {
 }
 
 # ===========================================================================
+# BC-2.04.014 event contract: brain.health.skipped must include path field.
+# The path field must be present and non-empty in the JSONL event emitted
+# to stderr when the session is not a brain session.
+# FAILS against the current implementation (skipped event has no path field).
+# ===========================================================================
+
+@test "test_BC_2_04_014_skipped_event_has_path_field" {
+  # Non-brain dir — no .brain/STATE.md.
+  local payload
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  local stderr_out
+  stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)"
+  # The JSONL line for brain.health.skipped must contain a non-empty "path" field.
+  [[ "$stderr_out" == *'"path"'* ]]
+  # The path value must not be empty (\"path\":\"\" would fail production-grade test).
+  [[ "$stderr_out" != *'"path":""'* ]]
+}
+
+# ===========================================================================
 # AC-016 / CLAUDE.md §Conventions: shellcheck and shfmt normalization.
 # These PASS against the stub (stub is shellcheck-clean and shfmt-normalized).
 # ===========================================================================

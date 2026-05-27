@@ -237,8 +237,8 @@
     "event_type": "brain.health.skipped",
     "hook_name": "brain-health-check.sh",
     "severity": "warn",
-    "fields": ["reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.skipped\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"reason\":\"Brain vault directory not found\"}"
+    "fields": ["reason", "path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.skipped\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"reason\":\"not_a_brain_session\",\"path\":\"/home/user/my-brain\"}"
   },
   {
     "event_type": "hook.helper.missing",
