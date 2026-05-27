@@ -14,7 +14,10 @@ PLUGIN_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-${PLUGIN_DIR}}"
 
 _pass() { printf '[PASS] %s\n' "$1"; }
-_fail() { printf '[FAIL] %s\n' "$1" >&2; exit 1; }
+_fail() {
+  printf '[FAIL] %s\n' "$1" >&2
+  exit 1
+}
 
 # ---------------------------------------------------------------------------
 # assert_under_5_minutes
@@ -30,7 +33,7 @@ assert_under_5_minutes() {
   BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="$CLAUDE_PLUGIN_ROOT" \
     bash "${PLUGIN_DIR}/skills/init/run.sh"
   local exit_code="$?"
-  local elapsed=$(( SECONDS - start ))
+  local elapsed=$((SECONDS - start))
 
   if [[ "$exit_code" -ne 0 ]]; then
     rm -rf "$brain_dir"
@@ -39,7 +42,7 @@ assert_under_5_minutes() {
 
   if [[ "$elapsed" -ge 300 ]]; then
     rm -rf "$brain_dir"
-    _fail "SLA exceeded: init took ${elapsed}s (limit: 300s)"
+    _fail "brain:init took ${elapsed}s, exceeds 5-minute SLA"
   fi
   _pass "SLA: init completed in ${elapsed}s (< 300s)"
 
@@ -84,16 +87,21 @@ assert_error_path() {
   local expected_code="$2"
   shift 2
 
-  local actual_output
-  # "$@" is the full command to run; capture stdout; ignore exit code
-  actual_output="$("$@" 2>/dev/null || true)"
+  local actual_output actual_exit=0
+  # "$@" is the full command to run; capture stdout; capture exit code
+  actual_output="$("$@" 2>/dev/null)" || actual_exit=$?
+
+  if [[ "$actual_exit" -ne 2 ]]; then
+    _fail "${label}: expected exit 2 got exit ${actual_exit}"
+  fi
+
   local actual_code
   actual_code="$(printf '%s' "$actual_output" | jq -r '.code' 2>/dev/null || true)"
 
   if [[ "$actual_code" != "$expected_code" ]]; then
     _fail "${label}: expected code=${expected_code} got code=${actual_code}"
   fi
-  _pass "${label}: got expected ${expected_code}"
+  _pass "${label}: got expected ${expected_code} (exit 2)"
 }
 
 # ---------------------------------------------------------------------------

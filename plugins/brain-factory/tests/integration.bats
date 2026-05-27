@@ -294,20 +294,28 @@ _path_without() {
   local code
   code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
   [ "$code" = "E-INIT-007" ]
+  # AC-007: No files created (bare repo dir contains git objects, not brain files)
+  local file_count
+  file_count="$(find "$bare_dir" -mindepth 1 -not -path '*HEAD' -not -path '*/objects*' -not -path '*/refs*' -not -path '*/info*' -not -path '*/hooks*' -not -path '*/config' -not -path '*/description' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
   rm -rf "$bare_dir"
 }
 
 # AC-008 check-order / BC-2.01.003: absent node produces E-INIT-003
-# Prerequisite: valid non-bare git repo (past checks 1-4); no .brain/ or wiki/
+# Uses a fake-bin approach: prepend a dir containing a stub node that exits 127,
+# so that jq/yq (in their real bin dirs) remain discoverable.
 @test "BC_2_01_003: node absent produces E-INIT-003 exit 2" {
-  local brain_dir
+  local brain_dir fake_bin
   brain_dir="$(_make_git_dir)"
-  local restricted_path
-  restricted_path="$(_path_without node)"
-  run env PATH="$restricted_path" \
+  fake_bin="$(mktemp -d)"
+  # Stub node: exits 127 (command not found equivalent)
+  printf '#!/usr/bin/env bash\nexit 127\n' > "${fake_bin}/node"
+  chmod +x "${fake_bin}/node"
+  run env PATH="${fake_bin}:${PATH}" \
     BRAIN_ROOT="$brain_dir" \
     CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
     bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$fake_bin"
   # Must exit 2
   [ "$status" -eq 2 ]
   # stdout must contain E-INIT-003
@@ -359,6 +367,63 @@ _path_without() {
   local code
   code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
   [ "$code" = "E-INIT-005" ]
+  rm -rf "$brain_dir"
+}
+
+# AC-005 / BC-2.01.003: conflicting sources/ produces E-INIT-005
+@test "BC_2_01_003: conflicting sources/ produces E-INIT-005 exit 2" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  mkdir -p "${brain_dir}/sources"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-005
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-005" ]
+  rm -rf "$brain_dir"
+}
+
+# AC-004 / BC-2.01.003: missing CLAUDE_PLUGIN_ROOT produces E-INIT-004
+@test "BC_2_01_003: missing CLAUDE_PLUGIN_ROOT produces E-INIT-004 exit 2" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="/nonexistent/path/brain-factory" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-004
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-004" ]
+  rm -rf "$brain_dir"
+}
+
+# AC-006 / BC-2.01.003: absent yq produces E-INIT-006
+# jq present, yq absent — yq is now checked immediately after jq (AC-008 order)
+@test "BC_2_01_003: yq absent produces E-INIT-006 exit 2" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  local restricted_path
+  restricted_path="$(_path_without yq)"
+  run env PATH="$restricted_path" \
+    BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-006
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-006" ]
+  # No brain files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
   rm -rf "$brain_dir"
 }
 

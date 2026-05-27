@@ -24,6 +24,11 @@ _die() {
   else
     trace="${RANDOM}-${RANDOM}-${RANDOM}-${RANDOM}"
   fi
+  # JSON-escape the message: backslash first, then double-quote, tab, newline
+  message="${message//\\/\\\\}"
+  message="${message//\"/\\\"}"
+  message="${message//$'\t'/\\t}"
+  message="${message//$'\n'/\\n}"
   printf '{"level":"error","code":"%s","message":"%s","trace":"%s"}\n' "$code" "$message" "$trace"
   exit 2
 }
@@ -35,21 +40,19 @@ _die() {
 
 [[ -d "${CLAUDE_PLUGIN_ROOT:-}" ]] || _die "E-INIT-004" "Plugin root not found — reinstall brain-factory."
 
-# Check 2: jq available (checked before node so jq-absent always produces E-INIT-006)
+# Check 2: jq and yq available (checked before node, AC-008 order)
 command -v jq >/dev/null 2>&1 || _die "E-INIT-006" "jq and yq are required. Install via your package manager."
+command -v yq >/dev/null 2>&1 || _die "E-INIT-006" "jq and yq are required. Install via your package manager."
 
-# Check 3: Node 22+ available (checked before yq because yq may share node's bin dir)
+# Check 3: Node 22+ available
 if ! node_ver="$(node --version 2>/dev/null)"; then
   _die "E-INIT-003" "Node 22+ is required. Install from nodejs.org or via nvm."
 fi
 node_major="${node_ver#v}"
 node_major="${node_major%%.*}"
 if [[ "$node_major" -lt 22 ]]; then
-  _die "E-INIT-003" "Node 22+ is required (found ${node_ver}). Install from nodejs.org or via nvm."
+  _die "E-INIT-003" "Node 22+ is required. Install from nodejs.org or via nvm."
 fi
-
-# Check 3b: yq available (checked after node because yq may share node's bin dir)
-command -v yq >/dev/null 2>&1 || _die "E-INIT-006" "jq and yq are required. Install via your package manager."
 
 # Check 4: must be inside a git working tree (check relative to BRAIN_ROOT)
 git -C "${BRAIN_ROOT}" rev-parse --git-dir >/dev/null 2>&1 || _die "E-INIT-001" "brain:init requires a git repository — run \`git init -b main\` first"
