@@ -330,12 +330,17 @@ embedding_status: null
   local file_path="${BRAIN_DIR}/wiki/technology/valid-page.md"
   local payload
   payload="$(_payload "${file_path}" "${content}")"
-  # Strip yq from PATH but preserve jq's directory so json output works.
-  # /usr/bin:/bin alone may omit jq on some systems (e.g. Homebrew installs to /usr/local/bin or /opt/homebrew/bin).
-  local jq_path jq_dir
-  jq_path="$(command -v jq)"
-  jq_dir="${jq_path%/*}"
-  run bash -c "printf '%s' '${payload}' | PATH='/usr/bin:/bin:${jq_dir}' CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  # Build an isolated PATH directory containing only the required tools, definitively
+  # excluding yq regardless of where it is installed on the CI runner.
+  local isolated_dir
+  isolated_dir="$(mktemp -d)"
+  local cmd cmd_path
+  for cmd in jq bash env printf cat awk head date python3; do
+    cmd_path="$(command -v "$cmd" 2>/dev/null || true)"
+    [[ -n "$cmd_path" ]] && ln -sf "$cmd_path" "${isolated_dir}/${cmd}"
+  done
+  run bash -c "printf '%s' '${payload}' | PATH='${isolated_dir}' CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  rm -rf "$isolated_dir"
   [ "$status" -eq 2 ]
   [[ "$output" == *"E-SCHEMA-005"* ]]
 }
