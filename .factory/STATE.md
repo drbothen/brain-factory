@@ -49,7 +49,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-012-delivered
+session_stage: phase-3-wave-3-story-013-in-progress
 session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress, 7/8 stories delivered (29/32 points). 14 total stories delivered (79/264 points). 31 BCs active. ~513 tests on develop. Wave 3 remaining: STORY-013 (3pt, session hooks). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Deferred to Wave 3 gate: (1) Systemic BC v1.0 verdict schema drift across SS-04 BCs — PO sweep to align postconditions with ADR-002 v2.0 (only BC-2.04.002 updated so far), (2) STORY-002 test naming drift, (3) F-INTEG-004 unregistered events, (4) F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, (5) STORY-006 AC exit codes stale vs BC v1.4, (6) VP-003 uses tool_input.path not tool_input.file_path (updated to v1.3 but verify). No AI attribution in commits. Single-commit-per-burst. Holdout scenarios restricted.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
