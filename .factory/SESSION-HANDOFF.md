@@ -143,7 +143,26 @@ STORY-003 (#8), STORY-007 (#9), STORY-008 (#10), STORY-009 (#11), STORY-010 (#12
 584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed via e7824d0+56e1ec7+42ca028), demo evidence PASS, holdout PASS (mean 0.925, HS-003/004/005 verified), state update PASS. 33 BCs active total.
 
 **3d. TOP-OF-STACK — Wave 4 dispatch next:**
-Wave 3 gate CLOSED. Consult `.factory/stories/wave-schedule.md` for Wave 4 story list. Dispatch via `vsdd-factory:deliver-story`. 5 deferred items still open — see STATE.md deferred disposition.
+Wave 3 gate CLOSED. 5 deferred items still open — see Step 6 below. Develop tip: 42ca028 (Wave 3 gate fix — slug_count). No open worktrees. No open PRs.
+
+**3e. Wave 4 Stories and Delivery Order:**
+
+| # | Story | Pts | Epic | Goal | Key BCs |
+|---|-------|-----|------|------|---------|
+| 1 | STORY-017 | 8 | EPIC-03 | Wiki page generation pipeline + token JSONL logging + 50K-chunk warning | BC-2.05.001, BC-2.05.002, BC-2.05.003, BC-2.05.004, BC-2.05.005 |
+| 2 | STORY-032 | 8 | EPIC-07 | bin/lobster-run — YAML parsing, topological sort, exit-code contract | BC-2.12.001, BC-2.12.002 |
+| 3 | STORY-004 | 5 | EPIC-01 | /brain:health six-dimensional convergence skill | BC-2.01.006 |
+| 4 | STORY-015 | 5 | EPIC-02 | Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 |
+
+Critical path: STORY-017 first (unblocks Wave 5 STORY-019). STORY-032, STORY-004, and STORY-015 are parallel after STORY-017 starts.
+
+**3f. Git State Verification (run before dispatching any agent):**
+```
+git log --oneline origin/develop -3   # expect 42ca028 at tip
+git status --short                    # expect clean tree
+ls .worktrees/                        # expect empty
+gh pr list --state open               # expect none
+```
 
 ### Step 4 — Key constraints to carry forward
 
@@ -154,6 +173,11 @@ Wave 3 gate CLOSED. Consult `.factory/stories/wave-schedule.md` for Wave 4 story
 - **No AI attribution:** No `Co-Authored-By: Claude`, no robot emoji per CLAUDE.md hard rule.
 - **bash + bats project:** No Rust, no cargo, no JS test framework. Pure bash + bats + shellcheck + shfmt.
 - **BC-5.39.001 3-CLEAN protocol:** 3 consecutive clean adversary passes required per story. Any finding resets streak to 0/3.
+- **emit_event format:** key=value pairs — `emit_event "type" "field=value"` (not JSON object inline).
+- **ADR-002 v2.0 stdout schema:** `continue`/`decision`/`hookSpecificOutput` — NOT `verdict`.
+- **Lifecycle hooks (Stop/SessionStart):** exit 0 always; use systemMessage for advisories.
+- **manifest.json:** OBJECT format with full-path keys per ADR-015.
+- **Event catalog:** `scripts/event-catalog.json` — update fields BEFORE pushing or CI fails VP-008 meta-lint.
 
 ### Step 5 — Wave 3 story list with status (COMPLETE)
 

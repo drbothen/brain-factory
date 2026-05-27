@@ -147,8 +147,67 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 - Tool-absent tests (jq/yq/node absent): use `_make_restricted_path` symlink approach from STORY-003, NOT `_path_without` (which strips entire directories)
 - ADR-002 v2.0 is authoritative for stdout schema — use `continue`/`decision`/`hookSpecificOutput`, NOT `verdict`
 
-### Next Action
-**Wave 4 dispatch** — consult `.factory/stories/wave-schedule.md` for Wave 4 story list and critical path order.
+### Resume Procedure for Fresh Context
+
+#### 1. Pipeline Position
+Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4 next. 15/43 stories delivered (82/264 pts). 33 BCs active. 584 tests on develop.
+
+#### 2. Wave 4 Task List (CRITICAL — this is what to DO)
+
+Wave 4: Wiki Generation + Lobster Core + Health + Hook Meta-Lint (4 stories / 26 points)
+
+Delivery order (STORY-017 first, rest parallel):
+
+| # | Story | Pts | Epic | Goal | Key BCs |
+|---|-------|-----|------|------|---------|
+| 1 | STORY-017 | 8 | EPIC-03 | Wiki page generation pipeline + token JSONL logging + 50K-chunk warning | BC-2.05.001, BC-2.05.002, BC-2.05.003, BC-2.05.004, BC-2.05.005 |
+| 2 | STORY-032 | 8 | EPIC-07 | bin/lobster-run — YAML parsing, topological sort, exit-code contract | BC-2.12.001, BC-2.12.002 |
+| 3 | STORY-004 | 5 | EPIC-01 | /brain:health six-dimensional convergence skill | BC-2.01.006 |
+| 4 | STORY-015 | 5 | EPIC-02 | Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 |
+
+Critical path: STORY-017 first (unblocks Wave 5 STORY-019). Others are parallel.
+
+#### 3. Per-Story Delivery Steps
+```
+1. state-manager: mark in_progress
+2. devops-engineer: create worktree (.worktrees/STORY-NNN on feature/STORY-NNN from develop)
+3. test-writer: Red Gate bats tests (must fail)
+4. implementer: TDD green (all tests pass)
+5. adversary: 3-CLEAN cascade (BC-5.39.001 — 3 consecutive clean passes)
+6. demo-recorder: per-AC evidence
+7. pr-manager: push + create PR + security review + code review + CI + merge
+8. state-manager: post-merge (BC promotion POL-14, STORY-INDEX, sprint-state.yaml)
+9. worktree cleanup
+```
+
+#### 4. Git State Verification
+```
+git log --oneline origin/develop -3   # tip at 42ca028 (Wave 3 gate fix)
+git status --short                    # clean
+ls .worktrees/                        # empty
+gh pr list --state open               # none
+```
+
+#### 5. Key Patterns to Carry Forward
+```
+- emit_event uses key=value format: emit_event "type" "field=value"
+- ADR-002 v2.0 stdout: continue/decision/hookSpecificOutput (NOT verdict)
+- Lifecycle hooks (Stop/SessionStart): exit 0 always, systemMessage for advisories
+- PostToolUse/PreToolUse hooks: exit 0 (allow) or exit 2 (block)
+- manifest.json uses OBJECT format with full-path keys per ADR-015
+- Event catalog at scripts/event-catalog.json — update fields BEFORE pushing
+- No AI attribution in commits — no Co-Authored-By, no robot emoji
+- Single-commit-per-burst for .factory/ (TD-VSDD-053)
+```
+
+#### 6. Deferred Items (5 remaining)
+```
+1. Systemic BC v1.0 verdict schema drift — PO sweep at full-pipeline gate
+2. STORY-002 test naming drift (init.bats vs integration.bats)
+3. F-INTEG-007: BRAIN_ROOT vs BRAIN_DIR env var naming
+4. STORY-006 AC exit codes stale vs BC v1.4
+5. VP-003 field name cascade verification
+```
 
 **STORY-013 delivery summary (2026-05-27):**
 - Red Gate: 21 failing → 42 total tests (21 flush + 21 health)
