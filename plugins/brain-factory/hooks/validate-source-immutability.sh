@@ -97,6 +97,18 @@ if [[ ! -r "$manifest" ]]; then
   exit 2
 fi
 
+# Check manifest is valid JSON (fail-closed on malformed) — EC-003 covers both missing and malformed.
+if ! jq empty "$manifest" 2>/dev/null; then
+  emit_event "source.immutability.check_failed" "code=E-SOURCE-002" "reason=manifest malformed"
+  jq -cn \
+    --arg code "E-SOURCE-002" \
+    --arg msg "Manifest malformed — cannot verify source immutability." \
+    --arg trace "${HOOK_TRACE_ID}" \
+    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  echo "Source immutability hook blocked: manifest malformed at ${manifest}. Cannot verify source immutability." >&2
+  exit 2
+fi
+
 # ---------------------------------------------------------------------------
 # Manifest lookup — check whether the relative path is registered.
 # ADR-015: non-null .sources[$path] means the source already exists.

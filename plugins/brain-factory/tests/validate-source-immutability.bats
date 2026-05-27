@@ -184,12 +184,14 @@ _payload() {
 @test "test_BC_2_04_002_malformed_manifest_json_exits_2_failclosed" {
   # MED-001: manifest exists but contains invalid JSON — hook must block (fail-closed).
   # BC-2.04.002 EC-003 covers both "missing" and "malformed" manifest cases.
+  # Stdout must contain E-SOURCE-002 (structured error, not the generic ERR trap message).
   printf '%s\n' "not valid json" > "${BRAIN_DIR}/.brain/manifest.json"
   local file_path="${BRAIN_DIR}/sources/ai/any-source.md"
   local payload
   payload="$(_payload "${file_path}")"
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
   [ "$status" -eq 2 ]
+  [[ "$output" == *"E-SOURCE-002"* ]]
 }
 
 @test "test_BC_2_04_002_missing_manifest_exits_2_failclosed" {
