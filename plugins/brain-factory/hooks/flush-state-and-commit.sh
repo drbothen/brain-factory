@@ -5,8 +5,8 @@ set -euo pipefail
 # Fires on the Stop event. Commits any uncommitted changes in the brain's git
 # repo under cwd. Advisory only on failure — NEVER exits 2.
 # Exit codes:
-#   0 — success (committed or no changes to commit, or not a git repo)
-#   1 — advisory (git commit failed — session still closes normally)
+#   0 — always (committed, no changes, not a git repo, or commit failed advisory)
+#   Advisory messages delivered via stdout systemMessage, never via exit code
 
 # ADVISORY ERR trap: unhandled errors exit 0 so session close is never blocked.
 trap 'printf "%s\n" "{\"continue\":true,\"systemMessage\":\"Flush hook encountered an error; session closing normally.\"}" ; exit 0' ERR
@@ -96,7 +96,7 @@ commit_exit=0
 commit_output="$(git -C "$brain_dir" commit -m "brain(auto): flush session state" 2>&1)" || commit_exit=$?
 
 if [[ "$commit_exit" -ne 0 ]]; then
-  # Commit failed — emit advisory; session still closes (exit 1, NOT 2).
+  # Commit failed — emit advisory via systemMessage; session still closes (exit 0).
   error_msg="$(printf '%s' "$commit_output" | head -1)"
   # Surface partial-add errors if present (permission denied, etc.).
   if [[ -n "$add_errors" ]]; then
@@ -107,7 +107,7 @@ if [[ "$commit_exit" -ne 0 ]]; then
     --arg msg "Flush failed: ${error_msg}" \
     --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
     '{"continue":true,"systemMessage":$msg,"hookSpecificOutput":{"hookEventName":"Stop","code":"E-FLUSH-001","trace":$trace}}'
-  exit 1
+  exit 0
 fi
 
 # Commit succeeded — retrieve short SHA.

@@ -6,7 +6,8 @@
 # stdin JSON has minimal schema: {session_id, transcript_path, cwd, hook_event_name}
 # No tool_name, no tool_input, no tool_result.
 #
-# Exit codes: 0 (success) or 1 (advisory) ONLY — NEVER 2.
+# Exit codes: 0 ONLY — NEVER 1 or 2. ADR-002 v2.0: advisory visibility requires
+# exit 0 + systemMessage in stdout. exit 1 goes to debug log only (invisible).
 # Blocking session close is architecturally forbidden per BC-2.04.013 invariant 2.
 #
 # Event catalog (post-STORY-013 field reconciliation):
@@ -73,6 +74,13 @@ _stop_payload() {
   [ "$status" -ne 0 ]
 }
 
+@test "test_BC_2_04_013_hook_never_exits_1" {
+  # ADR-002 v2.0: exit 1 stderr goes to debug log only — invisible to operators.
+  # Advisory messages MUST be delivered via stdout systemMessage + exit 0.
+  run grep -n 'exit 1' "${HOOK}"
+  [ "$status" -ne 0 ]
+}
+
 # ===========================================================================
 # AC-002 / BC-2.04.013 postconditions on uncommitted changes:
 # Uncommitted file present → commit performed; exit 0; stdout contains
@@ -130,11 +138,11 @@ _stop_payload() {
 
 # ===========================================================================
 # AC-004 / BC-2.04.013 postconditions on git commit failure:
-# Pre-commit hook blocks commit → exit 1; stdout contains E-FLUSH-001.
-# FAILS against the stub (stub exits 0).
+# Pre-commit hook blocks commit → exit 0; stdout contains E-FLUSH-001 in systemMessage.
+# ADR-002 v2.0: advisory visibility requires exit 0 + systemMessage.
 # ===========================================================================
 
-@test "test_BC_2_04_013_git_failure_exits_1_with_E_FLUSH_001" {
+@test "test_BC_2_04_013_git_failure_exits_0_with_E_FLUSH_001" {
   # Install a pre-commit hook that always fails to simulate commit failure.
   mkdir -p "${BRAIN_DIR}/.git/hooks"
   printf '#!/bin/sh\nexit 1\n' >"${BRAIN_DIR}/.git/hooks/pre-commit"
@@ -145,13 +153,13 @@ _stop_payload() {
   local payload
   payload="$(_stop_payload "${BRAIN_DIR}")"
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' bash '${HOOK}'"
-  [ "$status" -eq 1 ]
+  [ "$status" -eq 0 ]
   [[ "$output" == *"E-FLUSH-001"* ]]
 }
 
-@test "test_BC_2_04_013_git_failure_exit_is_1_not_2" {
-  # Git failure must exit 1 (advisory), never 2 (block).
-  # Blocking Stop is architecturally forbidden per BC-2.04.013 invariant 2.
+@test "test_BC_2_04_013_git_failure_exit_is_0_not_1_or_2" {
+  # Git failure must exit 0 (advisory via systemMessage), never 1 or 2.
+  # exit 1 = debug log only (invisible); exit 2 = block (forbidden for Stop).
   mkdir -p "${BRAIN_DIR}/.git/hooks"
   printf '#!/bin/sh\nexit 1\n' >"${BRAIN_DIR}/.git/hooks/pre-commit"
   chmod +x "${BRAIN_DIR}/.git/hooks/pre-commit"
@@ -160,8 +168,7 @@ _stop_payload() {
   local payload
   payload="$(_stop_payload "${BRAIN_DIR}")"
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' bash '${HOOK}'"
-  # Must be 0 or 1 — never 2.
-  [ "$status" -ne 2 ]
+  [ "$status" -eq 0 ]
 }
 
 # ===========================================================================

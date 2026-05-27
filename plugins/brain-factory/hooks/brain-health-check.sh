@@ -5,8 +5,8 @@ set -euo pipefail
 # Fires on the SessionStart event. Reads .brain/STATE.md frontmatter and
 # emits a health banner. Advisory only on unhealthy state — NEVER exits 2.
 # Exit codes:
-#   0 — success (GREEN or not a brain session)
-#   1 — advisory (RED/YELLOW state or unreadable STATE.md — session still opens)
+#   0 — always (GREEN, RED/YELLOW advisory, unreadable, or not a brain session)
+#   Advisory messages delivered via stdout systemMessage, never via exit code
 
 # ADVISORY ERR trap: unhandled errors exit 0 so session open is never blocked.
 trap 'printf "%s\n" "{\"continue\":true,\"systemMessage\":\"Health check encountered an error.\"}" ; exit 0' ERR
@@ -85,7 +85,7 @@ if [[ -z "$overall_health" ]] || [[ "$overall_health" == "null" ]]; then
   emit_event "brain.health.checked" "overall_state=UNREADABLE"
   jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
     '{"continue":true,"systemMessage":"Brain STATE.md unreadable — run /brain:health for diagnosis.","hookSpecificOutput":{"hookEventName":"SessionStart","code":"E-HEALTH-003","trace":$trace,"overall_state":"UNREADABLE"}}'
-  exit 1
+  exit 0
 fi
 
 # ---------------------------------------------------------------------------
@@ -132,4 +132,4 @@ jq -cn \
   --arg state "$overall_health" \
   --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
   '{"continue":true,"systemMessage":$msg,"hookSpecificOutput":{"hookEventName":"SessionStart","code":"E-HEALTH-002","trace":$trace,"overall_state":$state}}'
-exit 1
+exit 0
