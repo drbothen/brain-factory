@@ -150,6 +150,21 @@ _payload() {
   [[ "$output" == *"E-SOURCE-001"* ]]
 }
 
+@test "test_BC_2_04_002_error_code_in_hookSpecificOutput" {
+  # HIGH-002: verify E-SOURCE-001 is at hookSpecificOutput.code (ADR-002 v2.0 schema),
+  # not just anywhere in the output string. Substring match alone is insufficient.
+  # Suppress stderr so $output only contains the stdout JSON (parseable by jq).
+  cp "${FIXTURES_DIR}/manifest-with-source.json" "${BRAIN_DIR}/.brain/manifest.json"
+  local file_path="${BRAIN_DIR}/sources/ai/existing-source.md"
+  local payload
+  payload="$(_payload "${file_path}" "Edit")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+  local code
+  code="$(printf '%s' "$output" | jq -r '.hookSpecificOutput.code' 2>/dev/null || true)"
+  [ "$code" = "E-SOURCE-001" ]
+}
+
 @test "test_BC_2_04_002_existing_source_stdout_contains_rename_page_guidance" {
   # AC-003 stdout must mention /brain:rename-page per the BC postcondition message.
   cp "${FIXTURES_DIR}/manifest-with-source.json" "${BRAIN_DIR}/.brain/manifest.json"
@@ -163,8 +178,19 @@ _payload() {
 
 # ===========================================================================
 # AC-004 / BC-2.04.002 invariant 2 + EC-003:
-# manifest.json absent → exit 2 + E-SOURCE-002 (fail-closed).
+# manifest.json absent OR malformed → exit 2, fail-closed.
 # ===========================================================================
+
+@test "test_BC_2_04_002_malformed_manifest_json_exits_2_failclosed" {
+  # MED-001: manifest exists but contains invalid JSON — hook must block (fail-closed).
+  # BC-2.04.002 EC-003 covers both "missing" and "malformed" manifest cases.
+  printf '%s\n' "not valid json" > "${BRAIN_DIR}/.brain/manifest.json"
+  local file_path="${BRAIN_DIR}/sources/ai/any-source.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 2 ]
+}
 
 @test "test_BC_2_04_002_missing_manifest_exits_2_failclosed" {
   # BRAIN_DIR/.brain/ exists but no manifest.json inside it — deliberate absence.
