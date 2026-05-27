@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.3"
+version: "1.4"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -31,12 +31,12 @@ modified: []
 
 **On overwrite attempt (path matches an existing manifest entry):**
 1. Hook exits 2.
-2. Hook writes to stdout: `{"verdict": "block", "code": "E-SOURCE-001", "message": "Source file <path> already exists in manifest. Sources are immutable. Use /brain:rename-page to rename.", "trace": "<uuid>"}`.
+2. Hook writes to stdout: `{"continue": false, "decision": "block", "reason": "Source file <path> already exists in manifest. Sources are immutable. Use /brain:rename-page to rename.", "hookSpecificOutput": {"hookEventName": "PostToolUse", "code": "E-SOURCE-001", "trace": "<uuid>"}}`.
 3. Hook emits JSONL event to stderr: `{"ts": "...", "event_type": "source.immutability.violated", "hook_name": "validate-source-immutability.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **On new source write (path not in manifest):**
 1. Hook exits 0.
-2. Hook writes to stdout: `{"verdict": "allow", "message": "New source accepted.", "trace": "<uuid>"}`.
+2. Hook writes to stdout: `{"continue": true, "trace": "<uuid>", "message": "New source accepted."}`.
 3. Hook emits JSONL event to stderr: `{"ts": "...", "event_type": "source.added", "hook_name": "validate-source-immutability.sh", "path": "<path>"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 ## Invariants
@@ -51,14 +51,16 @@ modified: []
 | EC-001 | Edit on a source file that is in the manifest (repair attempt) | Hook exits 2 (E-SOURCE-001). Source repair must go through `/brain:rename-page` or explicit operator override in policies.yaml. |
 | EC-002 | Write to `sources/` with a file path not matching any existing manifest entry | Hook exits 0. New source accepted. |
 | EC-003 | `manifest.json` missing or malformed | Hook exits 2 (E-SOURCE-002: "manifest.json unreadable — cannot verify source immutability."). Fail-closed. |
+| EC-004 | Malformed or empty stdin payload (not valid JSON, or missing required fields `tool_input.file_path` / `cwd`) | Hook exits 2 with E-SOURCE-003, stdout: `{"continue": false, "decision": "block", "reason": "Malformed or empty hook payload.", "hookSpecificOutput": {"hookEventName": "PostToolUse", "code": "E-SOURCE-003", "trace": "<uuid>"}}`. Fail-closed per Invariant 2. |
 
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| Write to `sources/ai/new-source.md` (not in manifest) | `{"verdict": "allow", ...}`; exit 0 | happy-path |
-| Edit to `sources/ai/existing-source.md` (path in manifest) | `{"verdict": "block", "code": "E-SOURCE-001", ...}`; exit 2 | error |
-| Write with `manifest.json` absent | `{"verdict": "block", "code": "E-SOURCE-002", ...}`; exit 2 | edge-case |
+| Write to `sources/ai/new-source.md` (not in manifest) | `{"continue": true, "trace": "<uuid>", "message": "New source accepted."}`; exit 0 | happy-path |
+| Edit to `sources/ai/existing-source.md` (path in manifest) | `{"continue": false, "decision": "block", "reason": "Source file <path> already exists in manifest...", "hookSpecificOutput": {"hookEventName": "PostToolUse", "code": "E-SOURCE-001", "trace": "<uuid>"}}`; exit 2 | error |
+| Write with `manifest.json` absent | `{"continue": false, "decision": "block", "reason": "manifest.json unreadable — cannot verify source immutability.", "hookSpecificOutput": {"hookEventName": "PostToolUse", "code": "E-SOURCE-002", "trace": "<uuid>"}}`; exit 2 | edge-case |
+| Malformed or empty stdin payload (missing `tool_input.file_path` / `cwd`) | `{"continue": false, "decision": "block", "reason": "Malformed or empty hook payload.", "hookSpecificOutput": {"hookEventName": "PostToolUse", "code": "E-SOURCE-003", "trace": "<uuid>"}}`; exit 2 | edge-case |
 
 ## Verification Properties
 
@@ -85,6 +87,13 @@ modified: []
 - BC-2.04.017 — composes with (event emission: source.immutability.violated, source.added — past-tense per SS-17)
 
 ## Changelog
+
+### v1.4 (2026-05-26)
+
+**SCHEMA ALIGNMENT (ADR-002 v2.0):** Replaced retired v1.0 `{"verdict": "block|allow", ...}` stdout envelope with ADR-002 v2.0 Claude Code native schema across all postconditions, edge cases, and canonical test vectors:
+- Block responses now use `{"continue": false, "decision": "block", "reason": "...", "hookSpecificOutput": {"hookEventName": "PostToolUse", "code": "E-SOURCE-NNN", "trace": "<uuid>"}}`.
+- Allow responses now use `{"continue": true, "trace": "<uuid>", "message": "..."}`.
+- Added EC-004: Malformed or empty stdin payload → E-SOURCE-003, exit 2 (fail-closed per Invariant 2).
 
 ### v1.3 (2026-05-19)
 
