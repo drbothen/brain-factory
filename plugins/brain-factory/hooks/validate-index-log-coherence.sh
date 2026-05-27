@@ -168,7 +168,8 @@ if [[ -n "$all_missing" ]]; then
   exit 2
 fi
 
-emit_event "wiki.index_log.coherence_verified" "path=${relative_path}"
+_verified_count="$(printf '%s\n' "$index_slugs" | grep -c . || true)"
+emit_event "wiki.index_log.coherence_verified" "path=${relative_path}" "slug_count=${_verified_count}"
 jq -cn --arg trace "${HOOK_TRACE_ID}" \
   --arg msg "Index-log coherence verified." \
   '{"continue":true,"trace":$trace,"message":$msg}'

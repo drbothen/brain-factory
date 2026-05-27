@@ -160,7 +160,8 @@ if [[ "${#broken_arr[@]}" -gt 0 ]]; then
   exit 2
 fi
 
-emit_event "wiki.wikilink.validated" "path=${relative_path}"
+_validated_count="$(printf '%s\n' "$slugs" | grep -c . || true)"
+emit_event "wiki.wikilink.validated" "path=${relative_path}" "slug_count=${_validated_count}"
 jq -cn --arg trace "${HOOK_TRACE_ID}" \
   --arg msg "All wikilinks valid." \
   '{"continue":true,"trace":$trace,"message":$msg}'
