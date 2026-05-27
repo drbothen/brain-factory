@@ -344,3 +344,61 @@ _write_manifest_with_entry() {
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 2 ]
 }
+
+# ===========================================================================
+# Finding 4: YAML block-sequence source_ids parsing untested.
+# BC-2.04.009 invariant 1: block format source_ids must be parsed correctly.
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# Helper: write a wiki page with source_ids in YAML block-sequence format.
+# Arguments:
+#   $1 — relative path under BRAIN_DIR (e.g. wiki/concepts/test.md)
+#   $2 ... — source_id slugs; each written as a "  - slug" list item
+# ---------------------------------------------------------------------------
+_write_wiki_page_block_format() {
+  local rel_path="$1"
+  shift
+  local slugs=("$@")
+  local abs_path="${BRAIN_DIR}/${rel_path}"
+  mkdir -p "$(dirname "${abs_path}")"
+
+  {
+    printf '%s\n' "---"
+    printf '%s\n' "title: Test Page"
+    printf '%s\n' "source_ids:"
+    for slug in "${slugs[@]+${slugs[@]}}"; do
+      printf '  - %s\n' "${slug}"
+    done
+    printf '%s\n' "---"
+    printf '%s\n' "# Test Page"
+    printf '%s\n' ""
+    printf '%s\n' "Content here."
+  } > "${abs_path}"
+}
+
+@test "test_BC_2_04_009_block_format_resolved_exits_0" {
+  # Block-sequence format source_ids with a valid manifest entry → exit 0.
+  # Verifies the hook parses "  - slug" list items correctly.
+  _write_manifest_with_entry
+  _write_wiki_page_block_format "wiki/concepts/block-page.md" "ai/valid-source"
+  local file_path="${BRAIN_DIR}/wiki/concepts/block-page.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+}
+
+@test "test_BC_2_04_009_block_format_unresolved_exits_2" {
+  # Block-sequence format source_ids with an unresolved slug → exit 2 + E-WIKI-007.
+  # Verifies the block-format parser correctly surfaces unresolved IDs.
+  _write_manifest_with_entry
+  _write_wiki_page_block_format "wiki/concepts/block-page-bad.md" "ai/not-in-manifest"
+  local file_path="${BRAIN_DIR}/wiki/concepts/block-page-bad.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-WIKI-007"* ]]
+  [[ "$output" == *"ai/not-in-manifest"* ]]
+}

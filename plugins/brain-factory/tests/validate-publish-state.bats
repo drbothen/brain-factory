@@ -453,3 +453,160 @@ _commit_prior_state() {
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 2 ]
 }
+
+# ---------------------------------------------------------------------------
+# Helper: build a PostToolUse payload for an Edit call on a content file.
+# For Edit operations the hook reads prior status from tool_input.old_string.
+# Uses jq --arg to correctly JSON-encode multi-line strings — the manual
+# tr/sed approach strips the \n escape sequences before jq can parse them,
+# causing the hook to see old_string as a single concatenated line and fail
+# to parse frontmatter from it.
+# Arguments:
+#   $1 — absolute file_path embedded in the payload
+#   $2 — old_string content (the prior version of the file — contains old frontmatter)
+#   $3 — new_string content (the replacement content — contains new frontmatter)
+# Outputs JSON to a temp file and prints the temp file path.
+# Caller must read the temp file and clean it up.
+# ---------------------------------------------------------------------------
+_edit_payload_file() {
+  local file_path="$1"
+  local old_string="$2"
+  local new_string="$3"
+  local tmp
+  tmp="$(mktemp)"
+  jq -cn \
+    --arg cwd "${BRAIN_DIR}" \
+    --arg file_path "${file_path}" \
+    --arg old_string "${old_string}" \
+    --arg new_string "${new_string}" \
+    '{"session_id":"test-session","transcript_path":"/tmp/transcript","cwd":$cwd,"permission_mode":"default","effort":{"level":"medium"},"hook_event_name":"PostToolUse","tool_name":"Edit","tool_input":{"file_path":$file_path,"old_string":$old_string,"new_string":$new_string},"tool_use_id":"test-publish-edit-011","tool_result":{"type":"text","text":"File edited","exit_code":0}}' \
+    > "${tmp}"
+  printf '%s' "${tmp}"
+}
+
+# ===========================================================================
+# Finding 1: Edit tool code path — hook reads prior status from old_string.
+# BC-2.04.010 postconditions §valid transition + §invalid transition.
+# ===========================================================================
+
+@test "test_BC_2_04_010_edit_draft_to_ready_exits_0" {
+  # Edit payload: old_string has status: draft, file on disk has status: ready.
+  # Hook reads prior status from old_string (not git) → validates draft→ready → exit 0.
+  local file_path="${BRAIN_DIR}/drafts/linkedin/edit-post.md"
+
+  # Write the NEW version (ready) to disk — PostToolUse fires after the edit.
+  local new_tmp
+  new_tmp="$(_make_content_file "ready")"
+  cp "${new_tmp}" "${file_path}"
+  rm -f "${new_tmp}"
+
+  # Build old_string content (draft status frontmatter).
+  local old_tmp
+  old_tmp="$(_make_content_file "draft")"
+  local old_content new_content
+  old_content="$(cat "${old_tmp}")"
+  rm -f "${old_tmp}"
+  new_content="$(cat "${file_path}")"
+
+  local payload_file
+  payload_file="$(_edit_payload_file "${file_path}" "${old_content}" "${new_content}")"
+  run bash -c "cat '${payload_file}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  rm -f "${payload_file}"
+  [ "$status" -eq 0 ]
+}
+
+@test "test_BC_2_04_010_edit_draft_to_published_exits_2" {
+  # Edit payload: old_string has status: draft, file on disk has status: published.
+  # Skips ready → invalid transition → exit 2 + E-PUBLISH-001.
+  local file_path="${BRAIN_DIR}/drafts/linkedin/edit-post.md"
+
+  # Write the NEW version (published) to disk.
+  local new_tmp
+  new_tmp="$(_make_content_file "published")"
+  cp "${new_tmp}" "${file_path}"
+  rm -f "${new_tmp}"
+
+  # Build old_string content (draft status frontmatter).
+  local old_tmp
+  old_tmp="$(_make_content_file "draft")"
+  local old_content new_content
+  old_content="$(cat "${old_tmp}")"
+  rm -f "${old_tmp}"
+  new_content="$(cat "${file_path}")"
+
+  local payload_file
+  payload_file="$(_edit_payload_file "${file_path}" "${old_content}" "${new_content}")"
+  run bash -c "cat '${payload_file}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  rm -f "${payload_file}"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-PUBLISH-001"* ]]
+}
+
+# ===========================================================================
+# Finding 2: published → ready reverse transition untested.
+# BC-2.04.010 invariant 2: reverse transitions are always blocked.
+# ===========================================================================
+
+@test "test_BC_2_04_010_published_to_ready_exits_2_with_E_PUBLISH_001" {
+  # Prior state: published committed to git.
+  # New state: ready — reverse transition, always blocked.
+  local file_path="${BRAIN_DIR}/published/linkedin/my-post.md"
+  _commit_prior_state "${file_path}" "published"
+
+  local tmp
+  tmp="$(_make_content_file "ready")"
+  cp "${tmp}" "${file_path}"
+  rm -f "${tmp}"
+  local content
+  content="$(cat "${file_path}")"
+  local payload
+  payload="$(_payload "${file_path}" "${content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-PUBLISH-001"* ]]
+}
+
+# ===========================================================================
+# Finding 3: New file with non-draft initial status untested.
+# BC-2.04.010 postconditions §new file: only draft is valid initial status.
+# ===========================================================================
+
+@test "test_BC_2_04_010_new_file_status_published_exits_2_with_E_PUBLISH_001" {
+  # No prior git history for this file → new file case.
+  # New file written with status: published → must be rejected (must start as draft).
+  local file_path="${BRAIN_DIR}/drafts/linkedin/brand-new-published.md"
+  local tmp
+  tmp="$(_make_content_file "published")"
+  cp "${tmp}" "${file_path}"
+  rm -f "${tmp}"
+  local content
+  content="$(cat "${file_path}")"
+  local payload
+  payload="$(_payload "${file_path}" "${content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-PUBLISH-001"* ]]
+}
+
+# ===========================================================================
+# Finding 5: Same-state idempotent write untested.
+# BC-2.04.010 postconditions §idempotent: same-state writes are always allowed.
+# ===========================================================================
+
+@test "test_BC_2_04_010_same_state_draft_to_draft_exits_0" {
+  # Prior state: draft committed to git.
+  # New state: draft (no change) — idempotent write → exit 0.
+  local file_path="${BRAIN_DIR}/drafts/linkedin/idempotent-post.md"
+  _commit_prior_state "${file_path}" "draft"
+
+  local tmp
+  tmp="$(_make_content_file "draft")"
+  cp "${tmp}" "${file_path}"
+  rm -f "${tmp}"
+  local content
+  content="$(cat "${file_path}")"
+  local payload
+  payload="$(_payload "${file_path}" "${content}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+}
