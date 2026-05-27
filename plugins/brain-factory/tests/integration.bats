@@ -329,6 +329,24 @@ _path_without() {
   rm -rf "$brain_dir"
 }
 
+# AC-003 / BC-2.01.003: node present but version < 22 produces E-INIT-003
+@test "BC_2_01_003: node version < 22 produces E-INIT-003 exit 2" {
+  local brain_dir fake_bin
+  brain_dir="$(_make_git_dir)"
+  fake_bin="$(mktemp -d)"
+  printf '#!/usr/bin/env bash\necho "v20.0.0"\n' > "${fake_bin}/node"
+  chmod +x "${fake_bin}/node"
+  run env PATH="${fake_bin}:${PATH}" \
+    BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$fake_bin" "$brain_dir"
+  [ "$status" -eq 2 ]
+  local err_code
+  err_code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$err_code" = "E-INIT-003" ]
+}
+
 # AC-008 check-order / BC-2.01.003: absent jq produces E-INIT-006
 # jq is checked before node (check order: CLAUDE_PLUGIN_ROOT, jq/yq, node, git-repo, ...)
 @test "BC_2_01_003: jq absent produces E-INIT-006 exit 2" {
