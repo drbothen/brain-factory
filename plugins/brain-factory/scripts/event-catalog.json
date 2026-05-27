@@ -49,6 +49,13 @@
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.wikilink.validated\",\"hook_name\":\"validate-wikilink-integrity.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"link_count\":\"3\"}"
   },
   {
+    "event_type": "wiki.wikilink.check_failed",
+    "hook_name": "validate-wikilink-integrity.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.wikilink.check_failed\",\"hook_name\":\"validate-wikilink-integrity.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-WIKI-002\",\"reason\":\"missing file_path or brain_dir in payload\"}"
+  },
+  {
     "event_type": "wiki.index_log.coherence_violated",
     "hook_name": "validate-index-log-coherence.sh",
     "severity": "error",
@@ -61,6 +68,20 @@
     "severity": "info",
     "fields": ["file_path"],
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.index_log.coherence_accepted\",\"hook_name\":\"validate-index-log-coherence.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/index.md\"}"
+  },
+  {
+    "event_type": "wiki.index_log.coherence_verified",
+    "hook_name": "validate-index-log-coherence.sh",
+    "severity": "info",
+    "fields": ["path", "slug_count"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.index_log.coherence_verified\",\"hook_name\":\"validate-index-log-coherence.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/index.md\",\"slug_count\":\"5\"}"
+  },
+  {
+    "event_type": "wiki.index_log.check_failed",
+    "hook_name": "validate-index-log-coherence.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.index_log.check_failed\",\"hook_name\":\"validate-index-log-coherence.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-WIKI-004\",\"reason\":\"missing file_path or brain_dir in payload\"}"
   },
   {
     "event_type": "frontmatter.schema.rejected",
