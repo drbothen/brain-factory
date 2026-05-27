@@ -1,6 +1,6 @@
 ---
 artifact_type: story-index
-version: "0.3.8"
+version: "0.3.9"
 created: 2026-05-18
 last_updated: 2026-05-26
 authored_by: vsdd-factory:story-writer
@@ -24,7 +24,7 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 6 stories completed (STORY-001, STORY-002, STORY-014, STORY-016, STORY-027, STORY-038). 37 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 7 stories completed (STORY-001, STORY-002, STORY-006, STORY-014, STORY-016, STORY-027, STORY-038). 36 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
@@ -32,11 +32,17 @@ inputs:
 
 ## Changelog
 
+### v0.3.9 — 2026-05-26 (STORY-006 delivery / POL-14 BC promotion — Wave 2 COMPLETE)
+
+- **STORY-006 status:** `draft` → `completed` (PR #7 merged to develop, commit 139b05f). BC-2.04.001, BC-2.10.001, BC-2.10.002, BC-2.10.003 promoted `draft` → `active` per POL-14.
+- **Delivery summary:** quarantine-fetch.sh (PreToolUse hook, fail-closed, SSRF guard, trap ERR), quarantine.mjs (4 patterns + --check CLI), quarantine-check SKILL.md. 41 Red Gate tests → 64 total. Adversary: 9 passes, 3-CLEAN at passes 7-8-9, 2 fix cycles. Security: fail-closed on ALL paths, SSRF --proto guard, jq-based JSON, credential masking, no eval.
+- **Wave 2 COMPLETE:** 3/3 stories delivered (24/24 points). Wave 2 integration gate next.
+
 ### v0.3.8 — 2026-05-26 (STORY-002 delivery / POL-14 BC promotion — Wave 2 progress 2/3)
 
 - **STORY-002 status:** `draft` → `completed` (PR #6 merged to develop, commit 1665a92). BC-2.01.001, BC-2.01.004, BC-2.06.003, BC-2.06.004 promoted `draft` → `active` per POL-14.
 - **Delivery summary:** run.sh (175 lines, scaffold 26 dirs + 14 template files + manifest.json), SKILL.md (full 6-section), 14 templates. 55 Red Gate tests → 61 total. Adversary: 4 passes, 3-CLEAN at passes 2-3-4. Deferred: test file naming spec drift (init.bats vs integration.bats) — wave gate scope.
-- **Wave 2 progress:** 2/3 stories complete (16/24 points). Next: STORY-006 (last Wave 2 story).
+- **Wave 2 COMPLETE:** 3/3 stories delivered (24/24 points). Wave 2 integration gate next.
 
 ### v0.3.7 — 2026-05-26 (STORY-038 delivery / POL-14 BC promotion — Wave 1 COMPLETE)
 
@@ -100,7 +106,7 @@ inputs:
 
 | Story ID | Title | Status | Points | Priority | BCs | Depends On |
 |----------|-------|--------|--------|----------|-----|------------|
-| STORY-006 | Quarantine corpus, quarantine-fetch.sh hook, and /brain:quarantine-check skill | draft | 8 | P0 | BC-2.04.001, BC-2.10.001, BC-2.10.002, BC-2.10.003 | — |
+| STORY-006 | Quarantine corpus, quarantine-fetch.sh hook, and /brain:quarantine-check skill | completed | 8 | P0 | BC-2.04.001, BC-2.10.001, BC-2.10.002, BC-2.10.003 | PR #7 (139b05f) |
 | STORY-007 | validate-source-immutability.sh: block overwrite of existing source records | draft | 3 | P0 | BC-2.04.002 | — |
 | STORY-008 | validate-wikilink-integrity.sh and validate-index-log-coherence.sh: wiki structural integrity hooks | draft | 5 | P0 | BC-2.04.003, BC-2.04.006 | — |
 | STORY-009 | validate-frontmatter-schema.sh: enforce embedding_status and all mandatory wiki/source fields | draft | 5 | P0 | BC-2.04.004, BC-2.04.005 | — |
