@@ -1,0 +1,15 @@
+{
+  "session_id": "test-session",
+  "transcript_path": "/tmp/transcript",
+  "cwd": "/tmp/test-brain",
+  "permission_mode": "default",
+  "effort": {"level": "medium"},
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "/tmp/test-brain/wiki/concepts/test-page.md",
+    "content": "---\ntitle: Test Page\nsource_ids:\n  - ai/valid-source\n---\n# Test Page\n\nContent here.\n"
+  },
+  "tool_use_id": "test-citation-001",
+  "tool_result": {"type": "text", "text": "File written", "exit_code": 0}
+}
