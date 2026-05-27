@@ -208,29 +208,29 @@
     "event_type": "session.state.committed",
     "hook_name": "flush-state-and-commit.sh",
     "severity": "info",
-    "fields": ["commit_sha", "files_committed"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.committed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"commit_sha\":\"abc1234\",\"files_committed\":\"3\"}"
+    "fields": ["sha"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.committed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"sha\":\"abc1234\"}"
   },
   {
     "event_type": "session.state.flushed",
     "hook_name": "flush-state-and-commit.sh",
     "severity": "info",
-    "fields": ["files_staged"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.flushed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"files_staged\":\"2\"}"
+    "fields": ["committed"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.flushed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"committed\":\"false\"}"
   },
   {
     "event_type": "session.state.commit_failed",
     "hook_name": "flush-state-and-commit.sh",
     "severity": "error",
-    "fields": ["reason", "exit_code"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.commit_failed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"reason\":\"Git commit rejected by pre-commit hook\",\"exit_code\":\"1\"}"
+    "fields": ["error"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"session.state.commit_failed\",\"hook_name\":\"flush-state-and-commit.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"error\":\"Git commit rejected by pre-commit hook\"}"
   },
   {
     "event_type": "brain.health.checked",
     "hook_name": "brain-health-check.sh",
     "severity": "info",
-    "fields": ["checks_run", "checks_passed"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.checked\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"checks_run\":\"5\",\"checks_passed\":\"5\"}"
+    "fields": ["overall_state"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"brain.health.checked\",\"hook_name\":\"brain-health-check.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"overall_state\":\"GREEN\"}"
   },
   {
     "event_type": "brain.health.skipped",
