@@ -1,15 +1,15 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.15"
+version: "0.1.16"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-19T00:00:00
+timestamp: 2026-05-26T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.11
 created: 2026-05-15
-last_updated: 2026-05-19
+last_updated: 2026-05-26
 ---
 
 # Behavioral Contract Index: brain-factory
@@ -281,6 +281,10 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 ---
 
 ## Changelog
+
+### v0.1.16 (2026-05-26)
+
+**FORMAT FIX (ADR-002 v2.0 stdout format alignment + Node EOL update — BC-2.04.001 v1.3 → v1.4):** BC-2.04.001 (`quarantine-fetch.sh`) bumped from v1.3 to v1.4. Postconditions updated to ADR-002 v2.0 hook output format: on detection, `{"continue":false,"decision":"block",...}` replaces deprecated `{"verdict":"block",...}`; on clean content, `{"continue":true,"trace":"<uuid>"}` replaces deprecated `{"verdict":"allow",...}`. Canonical Test Vectors table updated to match. Preconditions §3/§4 and EC-004 updated from "Node 20+" to "Node 22+" (Node 20 reached EOL April 30, 2026). No change to exit codes, invariants, event emission, or H1 title.
 
 ### v0.1.15 (2026-05-19)
 
