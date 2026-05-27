@@ -16,7 +16,9 @@ source "${SCRIPT_DIR}/hook-event-emit.sh"
 
 # manifest_write <entry_json> <manifest_path> [<event_type>]
 #
-# Appends <entry_json> to the .sources array in <manifest_path>.
+# Inserts <entry_json> into the .sources object in <manifest_path> using the
+# full relative path as the key (e.g. "sources/<topic>/<source_id>.md").
+# ADR-015: manifest.sources is an object keyed by full relative source path.
 # Writes atomically via a .tmp file then mv.
 # Requires: BRAIN_DIR env var set (used for event context and call-site validation).
 # Emits: <event_type> on stderr via emit_event (default: ingest.url.manifest_updated).
@@ -57,9 +59,14 @@ manifest_write() {
     return 1
   fi
 
-  # Read current manifest and append new entry to .sources array
+  # Derive the manifest key from the entry's topic and source_id fields.
+  # ADR-015: manifest.sources is an object keyed by "sources/<topic>/<source_id>.md".
+  local source_key
+  source_key="sources/$(printf '%s' "$entry_json" | jq -r '.topic')/$(printf '%s' "$entry_json" | jq -r '.source_id').md"
+
+  # Insert entry into the .sources object using the derived key.
   local updated
-  if ! updated="$(jq --argjson entry "$entry_json" '.sources += [$entry]' "$manifest_path" 2>&1)"; then
+  if ! updated="$(jq --arg key "$source_key" --argjson entry "$entry_json" '.sources[$key] = $entry' "$manifest_path" 2>&1)"; then
     printf '{"level":"error","code":"E-INGEST-008","message":"Failed to update manifest.json: %s"}\n' \
       "$updated" >&2
     return 1

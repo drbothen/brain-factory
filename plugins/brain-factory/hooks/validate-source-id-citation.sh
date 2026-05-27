@@ -203,7 +203,11 @@ fi
 # ---------------------------------------------------------------------------
 unresolved=()
 for slug in "${slugs[@]}"; do
-  exists="$(jq -r --arg slug "$slug" '.sources[$slug] // empty' "$manifest")"
+  # ADR-015: manifest.sources is an object keyed by full relative path
+  # (e.g. "sources/ai/valid-source.md"). Convert the slug (e.g. "ai/valid-source")
+  # to the full-path manifest key before lookup.
+  manifest_key="sources/${slug}.md"
+  exists="$(jq -r --arg key "$manifest_key" '.sources[$key] // empty' "$manifest")"
   if [[ -z "$exists" ]]; then
     unresolved+=("$slug")
     emit_event "source.citation.unresolved" "path=$relative_path" "missing_source_id=$slug"

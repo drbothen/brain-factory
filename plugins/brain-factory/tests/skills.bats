@@ -41,18 +41,21 @@ teardown() {
   ingested_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   local source_id="test-source-001"
 
-  # Write a fixture manifest entry as if ingest-source produced it
+  # Write a fixture manifest entry as if ingest-source produced it.
+  # ADR-015: manifest.sources is an object keyed by "sources/<topic>/<source_id>.md".
+  local manifest_key="sources/ai/${source_id}.md"
   local updated
-  updated="$(jq --arg id "$source_id" \
+  updated="$(jq --arg key "$manifest_key" \
+    --arg id "$source_id" \
     --arg ts "$ingested_at" \
-    '.sources += [{id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test", topic: "ai"}]' \
+    '.sources[$key] = {id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test", topic: "ai"}' \
     "$manifest")"
   printf '%s' "$updated" > "$manifest"
 
   # Assert: last_ingest equals ingested_at for this source entry
   local last_ingest ingested_at_read
-  last_ingest="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].last_ingest' "$manifest")"
-  ingested_at_read="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].ingested_at' "$manifest")"
+  last_ingest="$(jq -r --arg id "$source_id" 'first(.sources[] | select(.id == $id)).last_ingest' "$manifest")"
+  ingested_at_read="$(jq -r --arg id "$source_id" 'first(.sources[] | select(.id == $id)).ingested_at' "$manifest")"
   [ "$last_ingest" = "$ingested_at_read" ]
 }
 
@@ -66,15 +69,18 @@ teardown() {
   ingested_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   local source_id="test-source-002"
 
+  # ADR-015: manifest.sources is an object keyed by "sources/<topic>/<source_id>.md".
+  local manifest_key="sources/health/${source_id}.md"
   local updated
-  updated="$(jq --arg id "$source_id" \
+  updated="$(jq --arg key "$manifest_key" \
+    --arg id "$source_id" \
     --arg ts "$ingested_at" \
-    '.sources += [{id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test2", topic: "health"}]' \
+    '.sources[$key] = {id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test2", topic: "health"}' \
     "$manifest")"
   printf '%s' "$updated" > "$manifest"
 
   local last_ingest
-  last_ingest="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].last_ingest' "$manifest")"
+  last_ingest="$(jq -r --arg id "$source_id" 'first(.sources[] | select(.id == $id)).last_ingest' "$manifest")"
   # ISO8601 UTC format: YYYY-MM-DDTHH:MM:SSZ
   [[ "$last_ingest" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]
 }
@@ -89,15 +95,18 @@ teardown() {
   ingested_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   local source_id="test-source-003"
 
+  # ADR-015: manifest.sources is an object keyed by "sources/<topic>/<source_id>.md".
+  local manifest_key="sources/psychology/${source_id}.md"
   local updated
-  updated="$(jq --arg id "$source_id" \
+  updated="$(jq --arg key "$manifest_key" \
+    --arg id "$source_id" \
     --arg ts "$ingested_at" \
-    '.sources += [{id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test3", topic: "psychology"}]' \
+    '.sources[$key] = {id: $id, ingested_at: $ts, last_ingest: $ts, url: "https://example.com/test3", topic: "psychology"}' \
     "$manifest")"
   printf '%s' "$updated" > "$manifest"
 
   local last_ingest
-  last_ingest="$(jq -r --arg id "$source_id" '[.sources[] | select(.id == $id)][0].last_ingest' "$manifest")"
+  last_ingest="$(jq -r --arg id "$source_id" 'first(.sources[] | select(.id == $id)).last_ingest' "$manifest")"
   [ "$last_ingest" != "null" ]
   [ -n "$last_ingest" ]
 }

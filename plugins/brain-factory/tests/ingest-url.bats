@@ -14,7 +14,7 @@ setup() {
   mkdir -p "${BRAIN_DIR}/sources"
 
   # Empty manifest (no pre-existing sources)
-  printf '{"sources": []}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources": {}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   # Counter file for tracking mock invocations
   INVOCATION_COUNT_FILE="${BRAIN_DIR}/.defuddle-invocation-count"
@@ -477,8 +477,8 @@ _ingest_pipeline() {
 # AC-007 / BC-2.02.006 postconditions 1-3: Duplicate URL rejected before fetch
 # ===========================================================================
 @test "BC_2_02_006: duplicate URL in manifest exits 2 with E-INGEST-001" {
-  # Pre-populate manifest with an existing URL
-  printf '{"sources":[{"source_id":"already-ingested","url":"https://example.com/already-ingested","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}]}\n' \
+  # Pre-populate manifest with an existing URL (ADR-015 object schema).
+  printf '{"sources":{"sources/test-topic/already-ingested.md":{"source_id":"already-ingested","url":"https://example.com/already-ingested","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}}}\n' \
     >"${BRAIN_DIR}/.brain/manifest.json"
 
   run _duplicate_guard "${BRAIN_DIR}/.brain/manifest.json" "https://example.com/already-ingested"
@@ -487,7 +487,7 @@ _ingest_pipeline() {
 }
 
 @test "BC_2_02_006: E-INGEST-001 message names the existing slug" {
-  printf '{"sources":[{"source_id":"already-ingested","url":"https://example.com/already-ingested","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}]}\n' \
+  printf '{"sources":{"sources/test-topic/already-ingested.md":{"source_id":"already-ingested","url":"https://example.com/already-ingested","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}}}\n' \
     >"${BRAIN_DIR}/.brain/manifest.json"
 
   local err_out
@@ -504,8 +504,12 @@ _ingest_pipeline() {
   local existing_entry
   existing_entry="$(jq '.existing_manifest_entry' "$fixture")"
 
-  # Inject the existing entry into manifest
-  jq --argjson entry "$existing_entry" '.sources += [$entry]' \
+  # Inject the existing entry into manifest using full-path key (ADR-015 object schema).
+  local entry_topic entry_source_id entry_key
+  entry_topic="$(printf '%s' "$existing_entry" | jq -r '.topic')"
+  entry_source_id="$(printf '%s' "$existing_entry" | jq -r '.source_id')"
+  entry_key="sources/${entry_topic}/${entry_source_id}.md"
+  jq --arg key "$entry_key" --argjson entry "$existing_entry" '.sources[$key] = $entry' \
     "${BRAIN_DIR}/.brain/manifest.json" >"${BRAIN_DIR}/.brain/manifest.json.tmp"
   mv "${BRAIN_DIR}/.brain/manifest.json.tmp" "${BRAIN_DIR}/.brain/manifest.json"
 
@@ -522,8 +526,8 @@ _ingest_pipeline() {
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
-  # Pre-populate manifest with the URL we'll try to ingest
-  printf '{"sources":[{"source_id":"article","url":"https://mock-200/article","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}]}\n' \
+  # Pre-populate manifest with the URL we'll try to ingest (ADR-015 object schema).
+  printf '{"sources":{"sources/test-topic/article.md":{"source_id":"article","url":"https://mock-200/article","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}}}\n' \
     >"${BRAIN_DIR}/.brain/manifest.json"
 
   # Reset invocation counter
@@ -542,8 +546,8 @@ _ingest_pipeline() {
 # AC-009 / BC-2.02.006 EC-001: Different query string = new URL, ingest proceeds
 # ===========================================================================
 @test "BC_2_02_006_EC001: URL with different query string is treated as new URL" {
-  # Existing URL without query string
-  printf '{"sources":[{"source_id":"article","url":"https://mock-200/article","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}]}\n' \
+  # Existing URL without query string (ADR-015 object schema).
+  printf '{"sources":{"sources/test-topic/article.md":{"source_id":"article","url":"https://mock-200/article","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}}}\n' \
     >"${BRAIN_DIR}/.brain/manifest.json"
 
   # URL with different query string — should NOT be a duplicate
@@ -555,8 +559,8 @@ _ingest_pipeline() {
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
-  # Existing URL in manifest
-  printf '{"sources":[{"source_id":"article","url":"https://mock-200/article","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}]}\n' \
+  # Existing URL in manifest (ADR-015 object schema).
+  printf '{"sources":{"sources/test-topic/article.md":{"source_id":"article","url":"https://mock-200/article","topic":"test-topic","ingested_at":"2026-01-01T00:00:00Z","last_ingest":"2026-01-01T00:00:00Z","chunks":[],"embeddings_model":null}}}\n' \
     >"${BRAIN_DIR}/.brain/manifest.json"
 
   # New URL with different query string
@@ -579,7 +583,7 @@ _ingest_pipeline() {
 
 @test "BC_2_02_004: manifest_write function returns 0 on valid entry and writable manifest" {
   # Create a valid manifest
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   local entry='{"source_id":"new-article","url":"https://example.com/new-article","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
 
@@ -592,7 +596,7 @@ _ingest_pipeline() {
 }
 
 @test "BC_2_02_004: manifest_write appends entry to manifest.json sources array" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   local entry='{"source_id":"new-article","url":"https://example.com/new-article","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
 
@@ -608,7 +612,7 @@ _ingest_pipeline() {
 }
 
 @test "BC_2_02_004: manifest_write does NOT leave .tmp file behind after success (atomic)" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   local entry='{"source_id":"new-article","url":"https://example.com/new-article","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
 
@@ -629,7 +633,7 @@ _ingest_pipeline() {
 }
 
 @test "BC_2_02_004: manifest_write fails with E-INGEST-008 when BRAIN_DIR is unset" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local entry='{"source_id":"test","url":"https://example.com","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
   # Capture the manifest path in a local variable before entering the subshell,
   # making the outer-shell expansion explicit and unambiguous.
@@ -650,79 +654,79 @@ _ingest_pipeline() {
 # Exercises VP-012
 # ===========================================================================
 @test "BC_2_02_004: manifest entry has source_id field after ingest" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/article" "$mock_fetch" || true
 
   local source_id
-  source_id="$(jq -r '.sources[0].source_id' "${BRAIN_DIR}/.brain/manifest.json")"
+  source_id="$(jq -r 'first(.sources[]).source_id' "${BRAIN_DIR}/.brain/manifest.json")"
   [ "$source_id" = "article" ]
 }
 
 @test "BC_2_02_004: manifest entry has url field matching ingested URL" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/article" "$mock_fetch" || true
 
   local url
-  url="$(jq -r '.sources[0].url' "${BRAIN_DIR}/.brain/manifest.json")"
+  url="$(jq -r 'first(.sources[]).url' "${BRAIN_DIR}/.brain/manifest.json")"
   [ "$url" = "https://mock-200/article" ]
 }
 
 @test "BC_2_02_004: manifest entry has topic field" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/article" "$mock_fetch" || true
 
   local topic
-  topic="$(jq -r '.sources[0].topic' "${BRAIN_DIR}/.brain/manifest.json")"
+  topic="$(jq -r 'first(.sources[]).topic' "${BRAIN_DIR}/.brain/manifest.json")"
   [ "$topic" = "ai" ]
 }
 
 @test "BC_2_02_004: manifest entry has ingested_at field in ISO 8601 format" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/article" "$mock_fetch" || true
 
   local ingested_at
-  ingested_at="$(jq -r '.sources[0].ingested_at' "${BRAIN_DIR}/.brain/manifest.json")"
+  ingested_at="$(jq -r 'first(.sources[]).ingested_at' "${BRAIN_DIR}/.brain/manifest.json")"
   [[ "$ingested_at" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]
 }
 
 @test "BC_2_02_004: manifest entry has last_ingest field in ISO 8601 format" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/article" "$mock_fetch" || true
 
   local last_ingest
-  last_ingest="$(jq -r '.sources[0].last_ingest' "${BRAIN_DIR}/.brain/manifest.json")"
+  last_ingest="$(jq -r 'first(.sources[]).last_ingest' "${BRAIN_DIR}/.brain/manifest.json")"
   [[ "$last_ingest" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]
 }
 
 @test "BC_2_02_004: manifest entry has chunks array (empty on first ingest)" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/article" "$mock_fetch" || true
 
   local chunks_type
-  chunks_type="$(jq '.sources[0].chunks | type' "${BRAIN_DIR}/.brain/manifest.json")"
+  chunks_type="$(jq 'first(.sources[]).chunks | type' "${BRAIN_DIR}/.brain/manifest.json")"
   [ "$chunks_type" = '"array"' ]
 }
 
 @test "BC_2_02_004: manifest entry has embeddings_model field (null on first ingest)" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
 
@@ -734,7 +738,7 @@ _ingest_pipeline() {
   [ "$count" -eq 1 ]
 
   local embeddings_model
-  embeddings_model="$(jq '.sources[0].embeddings_model' "${BRAIN_DIR}/.brain/manifest.json")"
+  embeddings_model="$(jq 'first(.sources[]).embeddings_model' "${BRAIN_DIR}/.brain/manifest.json")"
   [ "$embeddings_model" = "null" ]
 }
 
@@ -745,14 +749,14 @@ _ingest_pipeline() {
   # First ingest
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/article" "$mock_fetch" || true
   local first_source_id
-  first_source_id="$(jq -r '.sources[0].source_id' "${BRAIN_DIR}/.brain/manifest.json")"
+  first_source_id="$(jq -r 'first(.sources[]).source_id' "${BRAIN_DIR}/.brain/manifest.json")"
 
   # Second ingest of a different URL
   _ingest_pipeline "$BRAIN_DIR" "ai" "https://mock-200/second-piece" "$mock_fetch" || true
 
   # First entry must be unchanged
   local preserved_source_id
-  preserved_source_id="$(jq -r '.sources[0].source_id' "${BRAIN_DIR}/.brain/manifest.json")"
+  preserved_source_id="$(jq -r 'first(.sources[]).source_id' "${BRAIN_DIR}/.brain/manifest.json")"
   [ "$preserved_source_id" = "$first_source_id" ]
   # Total entries = 2
   local count
@@ -779,7 +783,7 @@ EOMD
   done
 
   # Manifest is empty (URL we check is not in manifest, and not in sources/ either)
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   # Verify that _duplicate_guard inspects ONLY manifest.json.
   # We check the source code of the duplicate guard: the real implementation
@@ -815,7 +819,7 @@ Content.
 EOMD
   done
 
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   # The URL we're ingesting is NOT in manifest, even though some sources/ files exist
   run _duplicate_guard "${BRAIN_DIR}/.brain/manifest.json" "https://example.com/new-article"
@@ -828,7 +832,7 @@ EOMD
 # E-INGEST-008 emitted
 # ===========================================================================
 @test "BC_2_02_004_EC002: manifest write failure emits E-INGEST-008" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   # Make manifest.json read-only to simulate write failure
   chmod 444 "${BRAIN_DIR}/.brain/manifest.json"
@@ -849,7 +853,7 @@ EOMD
 }
 
 @test "BC_2_02_004_EC002: source file is deleted when manifest write fails (rollback)" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   # Write source file first (simulating pre-write step completed before manifest write)
   _write_source_file "$BRAIN_DIR" "ai" "rollback-test" \
@@ -881,7 +885,7 @@ EOMD
 }
 
 @test "BC_2_02_004_EC002: manifest.json is NOT corrupted when write fails" {
-  local original_manifest='{"sources":[]}'
+  local original_manifest='{"sources":{}}'
   printf '%s\n' "$original_manifest" >"${BRAIN_DIR}/.brain/manifest.json"
 
   # Make the target read-only to trigger failure
@@ -918,7 +922,7 @@ EOMD
 @test "BC_2_02_004_EC002: _ingest_pipeline rollback deletes source file on manifest write failure" {
   # This test exercises the full rollback path through _ingest_pipeline.
   # When manifest_write fails, _ingest_pipeline must delete the source file.
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   local mock_fetch="${BRAIN_DIR}/mock-defuddle-fetch.mjs"
   _mock_defuddle_fetch "$mock_fetch"
@@ -965,7 +969,7 @@ EOMD
 # Verifies atomicity property of the manifest write
 # ===========================================================================
 @test "VP_012: manifest_write uses atomic .tmp+mv pattern (no partial writes)" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   local entry='{"source_id":"atomic-test","url":"https://example.com/atomic","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
 
@@ -981,7 +985,7 @@ EOMD
 }
 
 @test "VP_012: manifest.json contains the written entry and is valid JSON after manifest_write" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   local entry='{"source_id":"valid-json-test","url":"https://example.com/valid","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
 
@@ -1010,7 +1014,7 @@ EOMD
 }
 
 @test "VP_015: manifest_write emits ingest.url.manifest_updated or ingest.source.manifest_updated event" {
-  printf '{"sources":[]}\n' >"${BRAIN_DIR}/.brain/manifest.json"
+  printf '{"sources":{}}\n' >"${BRAIN_DIR}/.brain/manifest.json"
 
   local entry='{"source_id":"event-test","url":"https://example.com/event","topic":"ai","ingested_at":"2026-05-26T00:00:00Z","last_ingest":"2026-05-26T00:00:00Z","chunks":[],"embeddings_model":null}'
 

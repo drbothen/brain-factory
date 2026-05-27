@@ -80,10 +80,12 @@ _write_wiki_page() {
 
 # ---------------------------------------------------------------------------
 # Helper: write manifest.json with a known entry.
-# The manifest keys are source slugs relative to the brain (e.g. "ai/valid-source").
+# ADR-015: manifest.sources is an object keyed by full relative source path
+# (e.g. "sources/ai/valid-source.md"). The hook converts wiki frontmatter slugs
+# (e.g. "ai/valid-source") to full-path keys before lookup.
 # ---------------------------------------------------------------------------
 _write_manifest_with_entry() {
-  printf '{"sources":{"ai/valid-source":{"title":"Valid Source","ingested_at":"2026-01-01T00:00:00Z"},"tech/another-source":{"title":"Another Source","ingested_at":"2026-01-01T00:00:00Z"}},"last_updated":"2026-01-01T00:00:00Z"}' \
+  printf '{"sources":{"sources/ai/valid-source.md":{"title":"Valid Source","ingested_at":"2026-01-01T00:00:00Z"},"sources/tech/another-source.md":{"title":"Another Source","ingested_at":"2026-01-01T00:00:00Z"}},"last_updated":"2026-01-01T00:00:00Z"}' \
     > "${BRAIN_DIR}/.brain/manifest.json"
 }
 
