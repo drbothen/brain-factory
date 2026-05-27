@@ -18,10 +18,10 @@ phase: phase-2-story-decomposition-step-d
 total_waves: 11
 total_stories: 43
 total_points: 264
-current_wave: 2
+current_wave: 3
 created: 2026-05-19
 last_updated: 2026-05-26
-in_progress_stories: []
+in_progress_stories: [STORY-003]
 completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038, STORY-016, STORY-002, STORY-006]
 waves:
   - id: 1
@@ -105,14 +105,14 @@ waves:
         terminal_node: false
   - id: 3
     name: "Wave 3: Hook Enforcement Chain"
-    status: pending
+    status: in_progress
     target_story_count: 8
     target_points: 32
     critical_path_stories: []
     terminal_nodes: [STORY-007, STORY-008, STORY-010, STORY-011, STORY-012, STORY-013]
     stories:
       - id: STORY-003
-        status: pending
+        status: in_progress
         points: 5
         priority: P0
         epic: EPIC-01

@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-2-gate-passed
+phase: phase-3-wave-3-in-progress
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -49,7 +49,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-2-gate-passed
+session_stage: phase-3-wave-3-story-003
 session_continuity: FRESH-CONTEXT-READY — Wave 2 GATE PASSED. 7 stories delivered (45/264 points). 18 BCs active. 250 tests on develop. Wave 3 dispatch ready: 8 stories (STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013), 32 points. All dependencies satisfied. Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Holdout scenarios restricted. No AI attribution. Single-commit-per-burst. Deferred to Wave 3 gate scope: STORY-002 test naming drift, F-INTEG-004 (E-QUARANTINE-005/E-HOOK-003 unregistered), F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR), STORY-006 AC exit codes stale vs BC v1.4.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -79,7 +79,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-2-gate-passed
+status: phase-3-wave-3-in-progress
 ---
 
 # brain-factory Pipeline STATE
@@ -88,13 +88,11 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 2 GATE PASSED — Wave 3 Ready (8 stories, 32 points)
+## TOP OF STACK — Phase 3 Wave 3 IN PROGRESS — STORY-003 in_progress (8 stories, 32 points)
 
-Wave 2 integration gate PASSED (6/6 checks). 250 tests on develop. Wave 3 dispatch ready.
+Wave 3 started. STORY-003 dispatched (init error handling hook, wave_position 1, blocks STORY-004). 7 stories remaining in wave: STORY-007..013 (pending, all independent).
 
-Wave 3 stories: STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013
-
-Recommended dispatch order: STORY-003 first (init error handling, blocks STORY-004), then STORY-007..013 in parallel or sequential (all independent, all terminal nodes).
+Wave 3 stories: STORY-003 (in_progress), STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (pending)
 
 **STORY-006 delivery summary (2026-05-26):**
 - Red Gate: 41 failing → 64 total tests after implementation
