@@ -173,6 +173,16 @@ _bash_payload_safe() {
   [ -n "$matched_pattern" ]
 }
 
+@test "test_BC_2_04_012_blocked_event_matched_pattern_exact_value_coauthored" {
+  # matched_pattern for Co-Authored-By fixture must be exactly "Co-Authored-By: Claude"
+  # per event-catalog.json example value and BC-2.04.012.
+  local stderr_out matched_pattern
+  stderr_out="$(cat "${FIXTURES_DIR}/bash-ai-attribution-coauthored.json" | \
+    CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
+  matched_pattern="$(printf '%s\n' "$stderr_out" | grep 'attribution.token.blocked' | jq -r '.matched_pattern' 2>/dev/null || true)"
+  [ "$matched_pattern" = "Co-Authored-By: Claude" ]
+}
+
 # ===========================================================================
 # AC-016 / CLAUDE.md §Conventions §shellcheck:
 # Hook must pass shellcheck. shfmt check left to meta-lint.bats.

@@ -70,6 +70,10 @@ basename_val="${file_path##*/}"
 
 # ---------------------------------------------------------------------------
 # Exception list — uppercase-convention files exempt from kebab-case check.
+# Exception list operates on basenames per BC-2.04.011 precondition 3 (basename-only check).
+# BC invariant 3 lists .brain/STATE.md and .brain/manifest.json with path context,
+# but the hook exempts STATE.md and manifest.json in any directory since it only sees basenames.
+# This is intentional — the hook's scope is filename validation, not path validation.
 # ---------------------------------------------------------------------------
 is_exempt=false
 case "$basename_val" in

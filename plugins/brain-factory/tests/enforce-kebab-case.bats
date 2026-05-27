@@ -247,6 +247,19 @@ _payload() {
 }
 
 # ===========================================================================
+# AC-002 variant / BC-2.04.011 postconditions §kebab-case filename with Edit tool:
+# Valid kebab-case filename via Edit tool → exit 0.
+# ===========================================================================
+
+@test "test_BC_2_04_011_edit_tool_kebab_case_exits_0" {
+  # Edit tool with a valid kebab-case file — the hook applies equally to Write and Edit.
+  local payload
+  payload="$(_payload "wiki/concepts/ai-agents.md" "Edit")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+}
+
+# ===========================================================================
 # AC-016 / CLAUDE.md §Conventions §shellcheck:
 # Hook must pass shellcheck. shfmt check left to meta-lint.bats.
 # ===========================================================================

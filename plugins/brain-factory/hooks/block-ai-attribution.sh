@@ -66,8 +66,8 @@ fi
 # Scan command for forbidden AI attribution tokens (single pass, priority order).
 # ---------------------------------------------------------------------------
 matched=""
-if printf '%s' "$command_str" | grep -qiF 'Co-Authored-By:'; then
-  matched="Co-Authored-By"
+if printf '%s' "$command_str" | grep -qiF 'Co-Authored-By: Claude'; then
+  matched="Co-Authored-By: Claude"
 elif printf '%s' "$command_str" | grep -qF '🤖'; then
   matched="🤖"
 elif printf '%s' "$command_str" | grep -qF 'Generated with Claude Code'; then
