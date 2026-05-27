@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-3-complete-gate-pending
-session_stage: phase-3-wave-3-story-013-delivered-all-complete
+session_phase: phase-3-wave-4-next
+session_stage: phase-3-wave-3-gate-passed-wave-4-next
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -94,16 +94,21 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-3-story-009-delivered-story-010-next
+status: phase-3-wave-3-gate-passed-wave-4-next
+wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
+wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
+total_stories_delivered: 15
+total_bcs_active: 33
+total_tests_on_develop: 584
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d / Phase 2 (closure pending)
+# SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d / Phase 2 CLOSED / Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + GATED — Wave 4 NEXT
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-27):** Phase 3 Wave 3 IN PROGRESS — 4/8 stories delivered (18/32 points). STORY-003, STORY-007, STORY-008, STORY-009 complete. STORY-010, STORY-011, STORY-012, STORY-013 pending. All 4 remaining are independent. STORY-010 is the next delivery. See STATE.md TOP-OF-STACK for the canonical resume entry point.
+**Current state (as of 2026-05-27):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + integration gates PASSED. 15/43 stories (82/264 pts — 31%). 584/587 tests on develop. 33 BCs active. Wave 3 gate PASSED 6/6 (2026-05-27). Wave 4 dispatch is next. Consult `.factory/stories/wave-schedule.md` for Wave 4 story list.
 
 ### Step 1 — Read documents in this exact order
 
@@ -117,28 +122,28 @@ status: phase-3-wave-3-story-009-delivered-story-010-next
 ### Step 2 — Verify git state before dispatching any agent
 
 ```
-git log --oneline origin/develop -3
+git log --oneline origin/develop -5
 ```
-Expected: 5c9c438 (STORY-009 PR #11, squash-merge), fd56a73 (STORY-008 PR #10), 9cb5147 (STORY-007 PR #9) near tip
+Expected: Wave 3 gate fix commits (42ca028, 56e1ec7, e7824d0) near tip, followed by story PRs
 
 ```
 git status --short
 ```
 Expected: empty (clean tree; untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/ are OK untracked)
 
-### Step 3 — What just happened; STORY-010 is next-action
+### Step 3 — What just happened; Wave 4 dispatch is next-action
 
-**3a. DONE — Waves 1+2 stories delivered (7/7 stories, 45/45 points):**
-Wave 1: STORY-001 (PR #1, 92c618a), STORY-014 (PR #2, 1a1874f), STORY-027 (PR #3, 00ebfa7), STORY-038 (PR #4, d18d50f). Wave 2: STORY-016 (PR #5, 7e94ec0), STORY-002 (PR #6, 1665a92), STORY-006 (PR #7, 139b05f). Wave 1 gate PASSED, Wave 2 gate PASSED (6/6).
+**3a. DONE — Waves 1–2 complete (7/7 stories, 53/53 points, gates PASSED):**
+Wave 1: STORY-001 (#1), STORY-014 (#2), STORY-027 (#3), STORY-038 (#4) — gate PASSED. Wave 2: STORY-016 (#5), STORY-002 (#6), STORY-006 (#7) — gate PASSED 6/6.
 
-**3b. DONE — Wave 3 first 4 stories delivered (4/8, 18/32 points):**
-STORY-003 (PR #8, 2f13f97, 28 tests, 6 adversary passes 3-CLEAN@P4-P5-P6), STORY-007 (PR #9, 9cb5147, 3-CLEAN@P6-P7-P8), STORY-008 (PR #10, fd56a73, 57 tests, 3-CLEAN@P3-P4-P5), STORY-009 (PR #11, 5c9c438, 50 tests, 3-CLEAN@P3-P4-P5). BCs promoted active per POL-14: BC-2.01.002/003/005, BC-2.04.002/003/004/005/006.
+**3b. DONE — Wave 3 complete (8/8 stories, 32/32 points, PRs #8-#15 merged):**
+STORY-003 (#8), STORY-007 (#9), STORY-008 (#10), STORY-009 (#11), STORY-010 (#12), STORY-011 (#13), STORY-012 (#14), STORY-013 (#15). 26 BCs promoted draft → active per POL-14.
 
-**3c. Wave 3 deferred findings carried forward:**
-STORY-002 test naming drift (init.bats vs integration.bats). F-INTEG-004 (unregistered error codes E-QUARANTINE-005, E-HOOK-003). F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR env var naming). STORY-006 AC exit codes stale vs BC v1.4. Systemic BC v1.0 verdict schema drift across SS-04 BCs (PO sweep pending).
+**3c. DONE — Wave 3 integration gate PASSED 6/6:**
+584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed via e7824d0+56e1ec7+42ca028), demo evidence PASS, holdout PASS (mean 0.925, HS-003/004/005 verified), state update PASS. 33 BCs active total.
 
-**3d. TOP-OF-STACK — STORY-010 is next-action:**
-See STATE.md TOP-OF-STACK for full resume context. Dispatch STORY-010 (validate-page-type-policy.sh, 3 points, P0) per-story delivery. Then STORY-011, STORY-012, STORY-013. After all 8: Wave 3 integration gate.
+**3d. TOP-OF-STACK — Wave 4 dispatch next:**
+Wave 3 gate CLOSED. Consult `.factory/stories/wave-schedule.md` for Wave 4 story list. Dispatch via `vsdd-factory:deliver-story`. 5 deferred items still open — see STATE.md deferred disposition.
 
 ### Step 4 — Key constraints to carry forward
 
@@ -150,31 +155,31 @@ See STATE.md TOP-OF-STACK for full resume context. Dispatch STORY-010 (validate-
 - **bash + bats project:** No Rust, no cargo, no JS test framework. Pure bash + bats + shellcheck + shfmt.
 - **BC-5.39.001 3-CLEAN protocol:** 3 consecutive clean adversary passes required per story. Any finding resets streak to 0/3.
 
-### Step 5 — Wave 3 story list with status
+### Step 5 — Wave 3 story list with status (COMPLETE)
 
 | Story | Points | Priority | Status | Description |
 |-------|--------|----------|--------|-------------|
 | STORY-003 | 5 | P0 | DONE — PR #8 (2f13f97) | /brain:init error handling + SLA timer |
-| STORY-007 | 3 | P0 | DONE — PR #9 (9cb5147) | validate-frontmatter-schema.sh hook |
-| STORY-008 | 5 | P0 | DONE — PR #10 (fd56a73) | validate-source-immutability.sh + validate-index-log-coherence.sh |
+| STORY-007 | 3 | P0 | DONE — PR #9 (9cb5147) | validate-source-immutability.sh hook |
+| STORY-008 | 5 | P0 | DONE — PR #10 (fd56a73) | validate-wikilink-integrity.sh + validate-index-log-coherence.sh |
 | STORY-009 | 5 | P0 | DONE — PR #11 (5c9c438) | validate-frontmatter-schema.sh (yq+awk, 7 error codes) |
-| STORY-010 | 3 | P0 | PENDING — next action | validate-page-type-policy.sh — directory↔type consistency |
-| STORY-011 | 5 | P0 | PENDING | validate-source-citation.sh — wiki→source backlinks |
-| STORY-012 | 3 | P0 | PENDING | validate-publish-state.sh — publishing state machine |
-| STORY-013 | 3 | P1 | PENDING | validate-filename-attribution.sh — kebab-case + author field |
+| STORY-010 | 3 | P0 | DONE — PR #12 (c79fcca) | validate-page-type-policy.sh + validate-voice-avoid-list.sh |
+| STORY-011 | 5 | P0 | DONE — PR #13 (7cf0400) | validate-source-id-citation.sh + validate-publish-state.sh |
+| STORY-012 | 3 | P0 | DONE — PR #14 (50b54e0) | enforce-kebab-case.sh + block-ai-attribution.sh |
+| STORY-013 | 3 | P1 | DONE — PR #15 (93af76d) | flush-state-and-commit.sh + brain-health-check.sh |
 
-All Wave 3 remaining stories (STORY-010..013) are independent. No within-wave dependencies. Can be delivered sequentially or in parallel.
+Wave 3 integration gate PASSED 6/6 (2026-05-27). Gate fix commits: e7824d0, 56e1ec7, 42ca028. All 8 stories DONE.
 
-### Step 6 — Deferred findings for Wave 3 gate scope
+### Step 6 — Deferred findings disposition after Wave 3 gate
 
-| Finding | Source | Target | Description |
-|---------|--------|--------|-------------|
-| Systemic BC v1.0 verdict schema drift | Wave 3 adversary | Wave 3 gate | All SS-04 BCs postconditions use `verdict` (v1.0) but ADR-002 v2.0 schema is `continue`/`decision`/`hookSpecificOutput`. Only BC-2.04.002 updated so far. PO sweep of all SS-04 BCs required. |
-| Test naming drift | STORY-002 | Wave 3 gate | init.bats vs integration.bats naming in spec vs implementation |
-| F-INTEG-004 | Wave 2 gate adversary | Wave 3 gate | E-QUARANTINE-005 and E-HOOK-003 unregistered in error-taxonomy.md |
-| F-INTEG-007 | Wave 2 gate adversary | Wave 3 gate | BRAIN_ROOT vs BRAIN_DIR env var naming inconsistency across hooks |
-| STORY-006 AC stale | STORY-006 | Wave 3 gate | Story spec AC exit codes/format stale vs BC-2.04.001 v1.4 (story says exit 0 + hookSpecificOutput, BC says exit 2 + flat JSON) |
-| VP-003 field name | Wave 3 adversary | Wave 3 gate | VP-003 updated to v1.3 using tool_input.file_path — verify cascade is complete across all referencing artifacts |
+| Finding | Status | Notes |
+|---------|--------|-------|
+| Systemic BC v1.0 verdict schema drift | STILL DEFERRED | PO sweep at full-pipeline gate |
+| Test naming drift (STORY-002) | STILL DEFERRED | init.bats vs integration.bats |
+| F-INTEG-004 unregistered events | RESOLVED | e7824d0 removed orphaned event entries |
+| F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR | STILL DEFERRED | env var naming inconsistency |
+| STORY-006 AC exit codes stale vs BC v1.4 | STILL DEFERRED | story spec stale |
+| VP-003 field name | STILL DEFERRED | verify cascade completeness |
 
 ---
 
@@ -231,7 +236,7 @@ All items must be reviewed by the human before Phase 3 TDD dispatch is authorize
 
 ## 1. Where we are
 
-**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED. Phase 2 Step G CONVERGED at Pass 6 (PASS 0C+0I+0S — third consecutive PASS — BC-5.39.001 3-CLEAN streak 3/3) — adversarial cascade CLOSED. Uncertainty removal COMPLETE at commit 5a64927. Awaiting human approval for Phase 2 closure + Phase 3 TDD dispatch.**
+**Phase 1a CLOSED. Phase 1b COMPLETED. Phase 1c COMPLETED. Phase 1d CONVERGED — Pass 42 CLOSED. Phase 2 CLOSED — human approved. Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. 15/43 stories (82/264 pts). 33 BCs active. 584 tests on develop. Wave 4 dispatch next.**
 
 Phase 2 Step G Pass 6 CLOSED on 2026-05-19. Report persisted at 543c588 (PASS — 0C+0I+0S). THIRD CONSECUTIVE PASS IN PHASE 2 CASCADE. No fix-burst (zero findings). Streak advances 2/3 → 3/3. BC-5.39.001 3-CLEAN literal streak ACHIEVED. Phase 2 adversarial cascade CLOSED. Decay trajectory: Pass 1=17(4C+8I+5S) → Pass 2=7(0C+3I+4S) → Pass 3=4(0C+2I+2S) → Pass 4=1(0C+0I+1S) → Pass 5=0(0C+0I+0S) → Pass 6=0(0C+0I+0S). Shorthand: `17→7→4→1→0→0`. CRITICAL eliminated at Pass 2 (`4→0→0→0→0→0`). IMPORTANT eliminated at Pass 4 (`8→3→2→0→0→0`). SUGGESTION eliminated at Pass 5 (`5→4→2→1→0→0`). Floor held at Pass 6.
 
