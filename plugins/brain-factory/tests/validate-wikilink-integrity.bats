@@ -373,6 +373,48 @@ print('PASS')
 # AC-006: local target is 100ms; CI threshold is 1000ms to account for slower runners.
 # ===========================================================================
 
+# ===========================================================================
+# F-P2-001 / BC-2.04.003: Edit tool_name reads content from disk (fallback path).
+# When tool_name is Edit, tool_input.content may be absent — the hook reads
+# the written file from disk via BRAIN_DIR instead.
+# ===========================================================================
+
+@test "test_BC_2_04_003_Edit_tool_name_reads_content_from_disk" {
+  # Arrange: valid index + wiki page with a valid wikilink written to disk.
+  cp "${FIXTURES_DIR}/wiki-index-with-slugs.md" "${BRAIN_DIR}/wiki/index.md"
+  mkdir -p "${BRAIN_DIR}/wiki/concepts"
+  printf '%s\n' '---' 'type: concept' 'title: Test' '---' '' '# Test' '' 'See [[test-concept]].' \
+    > "${BRAIN_DIR}/wiki/concepts/test-edit-path.md"
+
+  # Build an Edit payload: no 'content' field — Edit uses old_string/new_string.
+  local file_path="${BRAIN_DIR}/wiki/concepts/test-edit-path.md"
+  local payload
+  payload=$(printf '{"session_id":"test-session","transcript_path":"/tmp/transcript","cwd":"%s","permission_mode":"default","effort":{"level":"medium"},"hook_event_name":"PostToolUse","tool_name":"Edit","tool_input":{"file_path":"%s","old_string":"See","new_string":"Also see","replace_all":false},"tool_use_id":"edit-p2-001","tool_result":{"type":"text","text":"Edit applied","exit_code":0}}' \
+    "${BRAIN_DIR}" "${file_path}")
+
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"continue":true'* ]]
+}
+
+# ===========================================================================
+# F-P2-002 / BC-2.04.003: Non-wiki path early-exits with continue:true.
+# BC-2.04.003 precondition 1: hook only validates wiki/** files.
+# A file outside wiki/ must return exit 0 + continue:true immediately.
+# ===========================================================================
+
+@test "test_BC_2_04_003_non_wiki_path_exits_0_early_return" {
+  # The hook must early-exit without touching wiki/index.md at all.
+  # Do NOT create wiki/index.md — if the hook does not early-exit it would
+  # fail with E-WIKI-002. Early exit means exit 0 + continue:true.
+  local file_path="${BRAIN_DIR}/sources/ai/article.md"
+  local payload
+  payload="$(_payload "${file_path}" "# Content with [[some-link]]")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"continue":true'* ]]
+}
+
 @test "VP_004_O_n_resolution_completes_under_1000ms_on_1000_entry_index" {
   # Generate a 1000-entry index.
   {

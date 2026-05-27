@@ -394,3 +394,44 @@ print('PASS')
   [ "$status" -eq 2 ]
   [[ "$output" == *'"decision":"block"'* ]]
 }
+
+# ===========================================================================
+# F-P2-001 / BC-2.04.006: Edit tool_name on wiki/index.md triggers coherence.
+# The coherence hook reads both files from disk (not from payload content),
+# so tool_name Edit vs Write does not change the check — but the code path
+# from payload parsing through to the coherence check must be exercised.
+# ===========================================================================
+
+@test "test_BC_2_04_006_Edit_tool_name_on_index_triggers_coherence_check" {
+  # Arrange: coherent brain state on disk.
+  cp "${FIXTURES_DIR}/wiki-index-with-slugs.md" "${BRAIN_DIR}/wiki/index.md"
+  cp "${FIXTURES_DIR}/wiki-log-with-slugs.md" "${BRAIN_DIR}/wiki/log.md"
+
+  # Build an Edit payload targeting wiki/index.md (no content field).
+  local file_path="${BRAIN_DIR}/wiki/index.md"
+  local payload
+  payload=$(printf '{"session_id":"test-session","transcript_path":"/tmp/transcript","cwd":"%s","permission_mode":"default","effort":{"level":"medium"},"hook_event_name":"PostToolUse","tool_name":"Edit","tool_input":{"file_path":"%s","old_string":"old","new_string":"new","replace_all":false},"tool_use_id":"edit-p2-006","tool_result":{"type":"text","text":"Edit applied","exit_code":0}}' \
+    "${BRAIN_DIR}" "${file_path}")
+
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"continue":true'* ]]
+}
+
+# ===========================================================================
+# F-P2-002 / BC-2.04.006: Non-index/log path exits 0 (early return).
+# BC-2.04.006 precondition 1: hook only fires for wiki/index.md or wiki/log.md.
+# A wiki concept page must return exit 0 + continue:true immediately without
+# attempting to read index or log — early exit proven by omitting both files.
+# ===========================================================================
+
+@test "test_BC_2_04_006_non_index_log_path_exits_0_early_return" {
+  # Do NOT create wiki/index.md or wiki/log.md — if the hook does not
+  # early-exit it would fail with E-WIKI-004. Early exit proves the guard.
+  local file_path="${BRAIN_DIR}/wiki/concepts/some-page.md"
+  local payload
+  payload="$(_payload "${file_path}")"
+  run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}' 2>/dev/null"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"continue":true'* ]]
+}
