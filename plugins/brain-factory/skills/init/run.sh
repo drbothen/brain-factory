@@ -10,13 +10,60 @@ set -euo pipefail
 BRAIN_ROOT="${BRAIN_ROOT:-$PWD}"
 
 # ---------------------------------------------------------------------------
-# Validate required env
+# _die: emit ADR-002 JSON error envelope to stdout and exit 2
 # ---------------------------------------------------------------------------
 
-if [[ -z "${CLAUDE_PLUGIN_ROOT:-}" ]] || [[ ! -d "${CLAUDE_PLUGIN_ROOT}" ]]; then
-  echo '{"level":"error","code":"E-INIT-004","message":"Plugin root not found — reinstall brain-factory."}' >&2
+_die() {
+  local code="$1" message="$2"
+  local trace
+  # Generate a trace ID using available utilities; fall back to shell builtins.
+  if trace="$(/usr/bin/uuidgen 2>/dev/null)"; then
+    :
+  elif [[ -r /proc/sys/kernel/random/uuid ]]; then
+    trace="$(</proc/sys/kernel/random/uuid)"
+  else
+    trace="${RANDOM}-${RANDOM}-${RANDOM}-${RANDOM}"
+  fi
+  printf '{"level":"error","code":"%s","message":"%s","trace":"%s"}\n' "$code" "$message" "$trace"
   exit 2
+}
+
+# ---------------------------------------------------------------------------
+# Prerequisite check chain (AC-008 — must run in this order, before any I/O)
+# Check 1: CLAUDE_PLUGIN_ROOT present
+# ---------------------------------------------------------------------------
+
+[[ -d "${CLAUDE_PLUGIN_ROOT:-}" ]] || _die "E-INIT-004" "Plugin root not found — reinstall brain-factory."
+
+# Check 2: jq available (checked before node so jq-absent always produces E-INIT-006)
+command -v jq >/dev/null 2>&1 || _die "E-INIT-006" "jq and yq are required. Install via your package manager."
+
+# Check 3: Node 22+ available (checked before yq because yq may share node's bin dir)
+if ! node_ver="$(node --version 2>/dev/null)"; then
+  _die "E-INIT-003" "Node 22+ is required. Install from nodejs.org or via nvm."
 fi
+node_major="${node_ver#v}"
+node_major="${node_major%%.*}"
+if [[ "$node_major" -lt 22 ]]; then
+  _die "E-INIT-003" "Node 22+ is required (found ${node_ver}). Install from nodejs.org or via nvm."
+fi
+
+# Check 3b: yq available (checked after node because yq may share node's bin dir)
+command -v yq >/dev/null 2>&1 || _die "E-INIT-006" "jq and yq are required. Install via your package manager."
+
+# Check 4: must be inside a git working tree (check relative to BRAIN_ROOT)
+git -C "${BRAIN_ROOT}" rev-parse --git-dir >/dev/null 2>&1 || _die "E-INIT-001" "brain:init requires a git repository — run \`git init -b main\` first"
+
+# Check 5: must not be a bare repo (check relative to BRAIN_ROOT)
+[[ "$(git -C "${BRAIN_ROOT}" rev-parse --is-bare-repository 2>/dev/null)" != "true" ]] || _die "E-INIT-007" "brain:init requires a working-tree repository — bare repos are not supported."
+
+# Check 6: brain must not already be initialized
+[[ ! -d "${BRAIN_ROOT}/.brain" ]] || _die "E-INIT-002" "brain already initialized at ${BRAIN_ROOT}. Use \`/brain:upgrade-brain\` to modify an existing brain."
+
+# Check 7: conflict check for directories that init will create
+for conflict_path in wiki sources; do
+  [[ ! -d "${BRAIN_ROOT}/${conflict_path}" ]] || _die "E-INIT-005" "Conflict: ${conflict_path}/ already exists. Remove it or init in a clean directory."
+done
 
 # ---------------------------------------------------------------------------
 # AC-001: Create all required directories
@@ -42,6 +89,10 @@ mkdir -p \
   "${BRAIN_ROOT}/briefs/monthly" \
   "${BRAIN_ROOT}/briefs/content" \
   "${BRAIN_ROOT}/briefs/decisions" \
+  "${BRAIN_ROOT}/briefs/research" \
+  "${BRAIN_ROOT}/drafts/linkedin" \
+  "${BRAIN_ROOT}/to-publish/linkedin" \
+  "${BRAIN_ROOT}/published/linkedin" \
   "${BRAIN_ROOT}/.brain/logs" \
   "${BRAIN_ROOT}/.github/workflows" \
   "${BRAIN_ROOT}/rules"
