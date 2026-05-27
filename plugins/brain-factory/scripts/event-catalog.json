@@ -17,15 +17,22 @@
     "event_type": "source.immutability.violated",
     "hook_name": "validate-source-immutability.sh",
     "severity": "error",
-    "fields": ["file_path", "expected_hash", "actual_hash"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.immutability.violated\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"sources/article.md\",\"expected_hash\":\"abc123\",\"actual_hash\":\"def456\"}"
+    "fields": ["path", "code"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.immutability.violated\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"sources/article.md\",\"code\":\"E-SOURCE-001\"}"
   },
   {
-    "event_type": "source.immutability.accepted",
+    "event_type": "source.immutability.check_failed",
+    "hook_name": "validate-source-immutability.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.immutability.check_failed\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-SOURCE-002\",\"reason\":\"manifest not found\"}"
+  },
+  {
+    "event_type": "source.added",
     "hook_name": "validate-source-immutability.sh",
     "severity": "info",
-    "fields": ["file_path"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.immutability.accepted\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"sources/article.md\"}"
+    "fields": ["path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.added\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"sources/article.md\"}"
   },
   {
     "event_type": "wiki.wikilink.broken",
