@@ -212,6 +212,299 @@ _run_init_publishing_scaffold() {
   [ -z "$output" ]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-003: init error handling, SLA assertion, briefs/research/ scaffold
+# Traces to: BC-2.01.003, BC-2.01.005, BC-2.01.002
+# ---------------------------------------------------------------------------
+
+# Helper: create a minimal git repo (non-bare) with no .brain/ conflict
+_make_git_dir() {
+  local d
+  d="$(mktemp -d)"
+  git -C "$d" init -q
+  printf '%s' "$d"
+}
+
+# Helper: build a flat symlink directory containing every command on the current
+# PATH EXCEPT the excluded one.  Returns the directory path.
+#
+# Rationale: _path_without removed entire directories, which on ubuntu-latest
+# strips co-located tools (git, bash, node all live in /usr/bin/ alongside jq).
+# A flat symlink dir avoids that: only the target command is absent.
+_make_restricted_path() {
+  local exclude="$1"
+  local rdir
+  rdir="$(mktemp -d)"
+  local IFS=':'
+  local dir cmd_path name
+  for dir in $PATH; do
+    [[ -d "$dir" ]] || continue
+    for cmd_path in "$dir"/*; do
+      [[ -x "$cmd_path" ]] || continue
+      name="${cmd_path##*/}"
+      [[ "$name" = "$exclude" ]] && continue
+      # First directory wins (mirrors PATH precedence); don't clobber.
+      [[ -e "${rdir}/${name}" ]] && continue
+      ln -sf "$cmd_path" "${rdir}/${name}"
+    done
+  done
+  printf '%s' "$rdir"
+}
+
+# AC-003 / BC-2.01.003: rejects non-git directory with E-INIT-001
+@test "BC_2_01_003: rejects non-git directory with E-INIT-001 exit 2" {
+  local non_git_dir
+  non_git_dir="$(mktemp -d)"
+  run env BRAIN_ROOT="$non_git_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-001
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-001" ]
+  # No files created in the target dir (only the temp dir itself exists)
+  local file_count
+  file_count="$(find "$non_git_dir" -mindepth 1 | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
+  rm -rf "$non_git_dir"
+}
+
+# AC-004 / BC-2.01.003: rejects existing .brain/ with E-INIT-002
+@test "BC_2_01_003: rejects existing .brain/ with E-INIT-002 exit 2" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  mkdir -p "${brain_dir}/.brain"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-002
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-002" ]
+  # .brain/ must still exist but no new files added
+  [ -d "${brain_dir}/.brain" ]
+  local file_count
+  file_count="$(find "${brain_dir}/.brain" -mindepth 1 | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
+  rm -rf "$brain_dir"
+}
+
+# AC-006 / BC-2.01.003: rejects bare git repo with E-INIT-007
+@test "BC_2_01_003: rejects bare git repo with E-INIT-007 exit 2" {
+  local bare_dir
+  bare_dir="$(mktemp -d)"
+  git -C "$bare_dir" init -q --bare
+  run env BRAIN_ROOT="$bare_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-007
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-007" ]
+  # AC-007: No files created (bare repo dir contains git objects, not brain files)
+  local file_count
+  file_count="$(find "$bare_dir" -mindepth 1 -not -path '*HEAD' -not -path '*/objects*' -not -path '*/refs*' -not -path '*/info*' -not -path '*/hooks*' -not -path '*/config' -not -path '*/description' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
+  rm -rf "$bare_dir"
+}
+
+# AC-008 check-order / BC-2.01.003: absent node produces E-INIT-003
+# Uses a fake-bin approach: prepend a dir containing a stub node that exits 127,
+# so that jq/yq (in their real bin dirs) remain discoverable.
+@test "BC_2_01_003: node absent produces E-INIT-003 exit 2" {
+  local brain_dir fake_bin
+  brain_dir="$(_make_git_dir)"
+  fake_bin="$(mktemp -d)"
+  # Stub node: exits 127 (command not found equivalent)
+  printf '#!/usr/bin/env bash\nexit 127\n' > "${fake_bin}/node"
+  chmod +x "${fake_bin}/node"
+  run env PATH="${fake_bin}:${PATH}" \
+    BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$fake_bin"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-003
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-003" ]
+  # No brain files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
+  rm -rf "$brain_dir"
+}
+
+# AC-003 / BC-2.01.003: node present but version < 22 produces E-INIT-003
+@test "BC_2_01_003: node version < 22 produces E-INIT-003 exit 2" {
+  local brain_dir fake_bin
+  brain_dir="$(_make_git_dir)"
+  fake_bin="$(mktemp -d)"
+  printf '#!/usr/bin/env bash\necho "v20.0.0"\n' > "${fake_bin}/node"
+  chmod +x "${fake_bin}/node"
+  run env PATH="${fake_bin}:${PATH}" \
+    BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$fake_bin" "$brain_dir"
+  [ "$status" -eq 2 ]
+  local err_code
+  err_code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$err_code" = "E-INIT-003" ]
+}
+
+# AC-008 check-order / BC-2.01.003: absent jq produces E-INIT-006
+# jq is checked before node (check order: CLAUDE_PLUGIN_ROOT, jq/yq, node, git-repo, ...)
+# Uses _make_restricted_path (flat symlink dir) so co-located tools like git/node
+# remain discoverable — avoids the directory-removal problem on ubuntu-latest.
+@test "BC_2_01_003: jq absent produces E-INIT-006 exit 2" {
+  local brain_dir rdir
+  brain_dir="$(_make_git_dir)"
+  rdir="$(_make_restricted_path jq)"
+  run env PATH="$rdir" \
+    BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$rdir"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-006
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-006" ]
+  # No brain files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
+  rm -rf "$brain_dir"
+}
+
+# AC-005 / BC-2.01.003: conflicting wiki/ produces E-INIT-005
+@test "BC_2_01_003: conflicting wiki/ produces E-INIT-005 exit 2" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  mkdir -p "${brain_dir}/wiki"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-005
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-005" ]
+  # Only the pre-existing wiki/ dir exists; no additional files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 1 ]
+  rm -rf "$brain_dir"
+}
+
+# AC-005 / BC-2.01.003: conflicting sources/ produces E-INIT-005
+@test "BC_2_01_003: conflicting sources/ produces E-INIT-005 exit 2" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  mkdir -p "${brain_dir}/sources"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-005
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-005" ]
+  # Only the pre-existing sources/ dir exists; no additional files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 1 ]
+  rm -rf "$brain_dir"
+}
+
+# AC-004 / BC-2.01.003: missing CLAUDE_PLUGIN_ROOT produces E-INIT-004
+@test "BC_2_01_003: missing CLAUDE_PLUGIN_ROOT produces E-INIT-004 exit 2" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="/nonexistent/path/brain-factory" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-004
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-004" ]
+  # CLAUDE_PLUGIN_ROOT check fires before any I/O — no brain files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
+  rm -rf "$brain_dir"
+}
+
+# AC-006 / BC-2.01.003: absent yq produces E-INIT-006
+# jq present, yq absent — yq is now checked immediately after jq (AC-008 order)
+# Uses _make_restricted_path (flat symlink dir) so co-located tools like git/node
+# remain discoverable — avoids the directory-removal problem on ubuntu-latest.
+@test "BC_2_01_003: yq absent produces E-INIT-006 exit 2" {
+  local brain_dir rdir
+  brain_dir="$(_make_git_dir)"
+  rdir="$(_make_restricted_path yq)"
+  run env PATH="$rdir" \
+    BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  rm -rf "$rdir"
+  # Must exit 2
+  [ "$status" -eq 2 ]
+  # stdout must contain E-INIT-006
+  local code
+  code="$(printf '%s' "$output" | jq -r '.code' 2>/dev/null || true)"
+  [ "$code" = "E-INIT-006" ]
+  # No brain files created
+  local file_count
+  file_count="$(find "$brain_dir" -mindepth 1 -not -path '*/.git*' | wc -l | tr -d ' ')"
+  [ "$file_count" -eq 0 ]
+  rm -rf "$brain_dir"
+}
+
+# AC-001 / BC-2.01.005: briefs/research/ exists after successful init
+@test "BC_2_01_005: briefs/research/ exists after init" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  [ "$status" -eq 0 ]
+  [ -d "${brain_dir}/briefs/research" ]
+  rm -rf "$brain_dir"
+}
+
+# SLA / BC-2.01.002: init completes under 5 minutes (300 seconds)
+# NOTE: also asserts briefs/research/ exists (BC-2.01.005) so that this test
+# fails at Red Gate (run.sh has no briefs/research/ in its mkdir list yet).
+@test "BC_2_01_002: completes under 5 minutes" {
+  local brain_dir
+  brain_dir="$(_make_git_dir)"
+  local start_seconds="$SECONDS"
+  run env BRAIN_ROOT="$brain_dir" \
+    CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR" \
+    bash "${PLUGIN_DIR}/skills/init/run.sh"
+  local elapsed=$(( SECONDS - start_seconds ))
+  [ "$status" -eq 0 ]
+  [ "$elapsed" -lt 300 ]
+  # briefs/research/ must also be present (guard: ensure this test fails until
+  # the full STORY-003 implementation lands, making this a real Red Gate test)
+  [ -d "${brain_dir}/briefs/research" ]
+  rm -rf "$brain_dir"
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir
