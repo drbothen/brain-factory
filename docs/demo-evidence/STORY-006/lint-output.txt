@@ -1,0 +1,2 @@
+shellcheck: PASS (0 warnings)
+shfmt: PASS (no diff)
