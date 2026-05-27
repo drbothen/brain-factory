@@ -101,7 +101,7 @@ fi
 # wiki_rel is now the path relative to wiki/ (e.g. "concepts/ai-agents.md")
 # If it has no slash, the file is directly in wiki/ root — that is forbidden.
 if [[ "$wiki_rel" != */* ]]; then
-  emit_event "wiki.page_type.rejected" "path" "$file_path" "code" "E-WIKI-006"
+  emit_event "wiki.page_type.rejected" "path=$file_path" "code=E-WIKI-006"
   jq -cn \
     --arg code "E-WIKI-006" \
     --arg msg "Wiki page must be in a type directory (wiki/<type>/). Direct writes to wiki/ root are not allowed." \
@@ -126,7 +126,7 @@ concepts | people | frameworks | syntheses | observations | questions)
 esac
 
 if [[ "$type_valid" != "true" ]]; then
-  emit_event "wiki.page_type.rejected" "path" "$file_path" "invalid_type" "$type_dir"
+  emit_event "wiki.page_type.rejected" "path=$file_path" "invalid_type=$type_dir"
   jq -cn \
     --arg code "E-WIKI-005" \
     --arg type_dir "$type_dir" \
@@ -141,7 +141,7 @@ fi
 # ---------------------------------------------------------------------------
 # Valid type — allow.
 # ---------------------------------------------------------------------------
-emit_event "wiki.page_type.accepted" "path" "$file_path"
+emit_event "wiki.page_type.accepted" "path=$file_path"
 jq -cn --arg trace "${HOOK_TRACE_ID}" \
   --arg type_dir "$type_dir" \
   --arg msg "Wiki page type '${type_dir}' accepted." \

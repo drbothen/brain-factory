@@ -115,38 +115,38 @@
     "event_type": "wiki.page_type.rejected",
     "hook_name": "validate-page-type-policy.sh",
     "severity": "error",
-    "fields": ["file_path", "page_type", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.rejected\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"page_type\":\"unknown\",\"reason\":\"page_type must be one of: concept, reference, log\"}"
+    "fields": ["path", "code", "invalid_type"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.rejected\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/page.md\",\"invalid_type\":\"unknown\"}"
   },
   {
     "event_type": "wiki.page_type.accepted",
     "hook_name": "validate-page-type-policy.sh",
     "severity": "info",
-    "fields": ["file_path", "page_type"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.accepted\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"page_type\":\"concept\"}"
+    "fields": ["path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.accepted\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/concepts/page.md\"}"
   },
   {
     "event_type": "voice.avoid_list.matched",
     "hook_name": "validate-voice-avoid-list.sh",
     "severity": "warn",
-    "fields": ["file_path", "matched_term", "line_number"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.matched\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"matched_term\":\"utilize\",\"line_number\":\"12\"}"
+    "fields": ["path", "match_count"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.matched\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"briefs/content/my-draft.md\",\"match_count\":\"2\"}"
   },
   {
     "event_type": "voice.avoid_list.passed",
     "hook_name": "validate-voice-avoid-list.sh",
     "severity": "info",
-    "fields": ["file_path"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.passed\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\"}"
+    "fields": ["path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.passed\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"briefs/content/my-draft.md\"}"
   },
   {
     "event_type": "voice.avoid_list.skipped",
     "hook_name": "validate-voice-avoid-list.sh",
-    "description": "Voice avoid-list file not found; advisory skipped",
-    "severity": "advisory",
+    "description": "Voice avoid-list check skipped (missing list, malformed payload, or unreadable file)",
+    "severity": "warn",
     "code": "E-VOICE-002",
-    "fields": ["file_path", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.skipped\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"reason\":\"avoid-list not found at expected path\"}"
+    "fields": ["reason", "path"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"voice.avoid_list.skipped\",\"hook_name\":\"validate-voice-avoid-list.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"reason\":\"avoid_list_not_found\",\"path\":\"/plugin/rules/voice-avoid-list.txt\"}"
   },
   {
     "event_type": "source.citation.unresolved",

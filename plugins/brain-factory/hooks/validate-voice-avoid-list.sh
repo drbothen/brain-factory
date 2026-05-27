@@ -46,7 +46,7 @@ fi
 # E-VOICE-002 rather than a silent fallback.
 # ---------------------------------------------------------------------------
 if [[ ! -f "$AVOID_LIST" ]] || [[ ! -r "$AVOID_LIST" ]]; then
-  emit_event "voice.avoid_list.skipped" "reason" "avoid_list_not_found" "path" "$AVOID_LIST"
+  emit_event "voice.avoid_list.skipped" "reason=avoid_list_not_found" "path=$AVOID_LIST"
   jq -cn \
     '{"continue":true,"systemMessage":"Voice avoid-list not found; advisory skipped.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-VOICE-002"}}'
   exit 0
@@ -58,7 +58,7 @@ fi
 stdin_json="$(cat)" || true
 
 if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
-  emit_event "voice.avoid_list.skipped" "reason" "malformed_payload"
+  emit_event "voice.avoid_list.skipped" "reason=malformed_payload"
   printf '%s\n' '{"continue":true}'
   exit 0
 fi
@@ -69,7 +69,7 @@ fi
 file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')" || true
 
 if [[ -z "$file_path" ]]; then
-  emit_event "voice.avoid_list.skipped" "reason" "missing_file_path"
+  emit_event "voice.avoid_list.skipped" "reason=missing_file_path"
   printf '%s\n' '{"continue":true}'
   exit 0
 fi
@@ -79,7 +79,7 @@ fi
 # Advisory fallback if the file cannot be read.
 # ---------------------------------------------------------------------------
 if [[ ! -f "$file_path" ]] || [[ ! -r "$file_path" ]]; then
-  emit_event "voice.avoid_list.skipped" "reason" "target_file_unreadable" "path" "$file_path"
+  emit_event "voice.avoid_list.skipped" "reason=target_file_unreadable" "path=$file_path"
   printf '%s\n' '{"continue":true}'
   exit 0
 fi
@@ -106,7 +106,7 @@ done <"$AVOID_LIST"
 # Emit result based on whether matches were found.
 # ---------------------------------------------------------------------------
 if [[ "${#matched_terms[@]}" -eq 0 ]]; then
-  emit_event "voice.avoid_list.passed" "path" "$file_path"
+  emit_event "voice.avoid_list.passed" "path=$file_path"
   printf '%s\n' '{"continue":true}'
   exit 0
 fi
@@ -123,7 +123,7 @@ matches_json="$(
 # Build comma-separated display string.
 matches_display="$(printf '%s' "$matches_json" | jq -r 'join(", ")')"
 
-emit_event "voice.avoid_list.matched" "path" "$file_path" "match_count" "${#matched_terms[@]}"
+emit_event "voice.avoid_list.matched" "path=$file_path" "match_count=${#matched_terms[@]}"
 
 jq -cn \
   --arg msg "Voice avoid-list terms found: ${matches_display}" \
