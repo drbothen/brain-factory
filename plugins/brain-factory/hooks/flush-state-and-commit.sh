@@ -85,8 +85,11 @@ fi
 
 # ---------------------------------------------------------------------------
 # Uncommitted changes present — stage all and commit.
+# Capture add stderr: partial-add failures (e.g. permission denied on a file)
+# are surfaced in the commit advisory message rather than silently ignored.
 # ---------------------------------------------------------------------------
-git -C "$brain_dir" add -A 2>/dev/null || true
+add_errors=""
+add_errors="$(git -C "$brain_dir" add -A 2>&1 1>/dev/null)" || true
 
 commit_output=""
 commit_exit=0
@@ -95,6 +98,10 @@ commit_output="$(git -C "$brain_dir" commit -m "brain(auto): flush session state
 if [[ "$commit_exit" -ne 0 ]]; then
   # Commit failed — emit advisory; session still closes (exit 1, NOT 2).
   error_msg="$(printf '%s' "$commit_output" | head -1)"
+  # Surface partial-add errors if present (permission denied, etc.).
+  if [[ -n "$add_errors" ]]; then
+    error_msg="${error_msg}${error_msg:+ | }add errors: $(printf '%s' "$add_errors" | head -1)"
+  fi
   emit_event "session.state.commit_failed" "error=${error_msg}"
   jq -cn \
     --arg msg "Flush failed: ${error_msg}" \

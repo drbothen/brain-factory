@@ -104,7 +104,7 @@ fi
 issues_summary=""
 dims_csv=""
 
-if command -v yq >/dev/null 2>&1; then
+if [[ "$_yq_available" == "true" ]]; then
   # Extract red_dimensions as a compact summary (key: value pairs).
   issues_summary="$(printf '%s' "$frontmatter" | yq '.red_dimensions // [] | .[] | to_entries | .[] | (.key + " (" + .value + ")")' - 2>/dev/null | tr '\n' ';' | sed 's/;$//;s/;/, /g')" || issues_summary=""
   # Build dims_csv: comma-separated list of RED/YELLOW dimension names.
