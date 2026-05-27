@@ -273,6 +273,24 @@ _payload_with_content() {
 }
 
 # ===========================================================================
+# BC-2.04.008 edge cases: malformed / empty stdin must never cause non-zero exit.
+# The hook contract is "always exit 0" — bad input is not an exception.
+# ===========================================================================
+
+@test "test_BC_2_04_008_malformed_json_stdin_exits_0_advisory" {
+  # Malformed JSON on stdin must not crash the hook or exit non-zero.
+  run bash -c "printf '%s' 'not valid json{{' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"continue":true'* ]] || [[ "$output" == *'"continue": true'* ]]
+}
+
+@test "test_BC_2_04_008_empty_stdin_exits_0_advisory" {
+  # Empty stdin must not crash the hook or exit non-zero.
+  run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' bash '${HOOK}'"
+  [ "$status" -eq 0 ]
+}
+
+# ===========================================================================
 # AC-014 / CLAUDE.md §Conventions §shellcheck:
 # Hook must pass shellcheck.
 # ===========================================================================

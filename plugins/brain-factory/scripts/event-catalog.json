@@ -116,7 +116,7 @@
     "hook_name": "validate-page-type-policy.sh",
     "severity": "error",
     "fields": ["path", "code", "invalid_type"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.rejected\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/page.md\",\"invalid_type\":\"unknown\"}"
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"wiki.page_type.rejected\",\"hook_name\":\"validate-page-type-policy.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"wiki/tools/hammer.md\",\"code\":\"E-WIKI-005\",\"invalid_type\":\"tools\"}"
   },
   {
     "event_type": "wiki.page_type.accepted",
