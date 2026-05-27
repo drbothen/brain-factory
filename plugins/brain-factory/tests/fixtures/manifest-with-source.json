@@ -1,0 +1,10 @@
+{
+  "sources": {
+    "sources/ai/existing-source.md": {
+      "sha256": "abc123def456abc123def456abc123def456abc123def456abc123def456abc1",
+      "ingested_at": "2026-01-01T00:00:00Z",
+      "topic": "ai"
+    }
+  },
+  "last_updated": "2026-01-01T00:00:00Z"
+}
