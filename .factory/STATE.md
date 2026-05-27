@@ -44,12 +44,12 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 1/8 stories (5/32 points). Next: STORY-007 (source immutability hook, 3 points).
+phase_3_status: IN PROGRESS — Wave 1 COMPLETE (gate passed). Wave 2 COMPLETE + GATE PASSED (6/6 checks: test suite 250/250, DTU skip, adversary PASS, demo evidence PASS, holdout 1.0, state update). STORY-001 COMPLETED (PR #1 merged 92c618a). STORY-014 COMPLETED (PR #2 merged 1a1874f). STORY-027 COMPLETED (PR #3 merged 00ebfa7). STORY-038 COMPLETED (PR #4 merged d18d50f). STORY-016 COMPLETED (PR #5 merged 7e94ec0). STORY-002 COMPLETED (PR #6 merged 1665a92). STORY-006 COMPLETED (PR #7 merged 139b05f). STORY-003 COMPLETED (PR #8 merged 2f13f97). STORY-007 COMPLETED (PR #9 merged 9cb5147). Wave 1: 4/4 stories (21/21 points). Wave 2: 3/3 stories (24/24 points) — GATE PASSED. Wave 3: 2/8 stories (8/32 points). Next: STORY-008 (wave_position 3).
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-3-story-007
+session_stage: phase-3-wave-3-story-007-delivered
 session_continuity: FRESH-CONTEXT-READY — Wave 3 in progress. 8 stories delivered (50/264 points). 21 BCs active. 262 tests on develop. Wave 3 progress: 1/8 stories (5/32 points). Remaining: STORY-007..013 (pending, all independent). Per-story delivery: worktree → stubs → failing tests → TDD → adversary 3-CLEAN → demo → PR → merge. Holdout scenarios restricted. No AI attribution. Single-commit-per-burst. Deferred to Wave 3 gate scope: STORY-002 test naming drift, F-INTEG-004 (E-QUARANTINE-005/E-HOOK-003 unregistered), F-INTEG-007 (BRAIN_ROOT vs BRAIN_DIR), STORY-006 AC exit codes stale vs BC v1.4.
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -88,11 +88,19 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 3 IN PROGRESS — 1/8 stories (5/32 points)
+## TOP OF STACK — Phase 3 Wave 3 IN PROGRESS — 2/8 stories (8/32 points)
 
-Wave 3 in progress. STORY-003 delivered. 7 stories remaining: STORY-007..013 (pending, all independent). Next: STORY-007 (source immutability hook, wave_position 2, 3 points).
+Wave 3 in progress. STORY-003 and STORY-007 delivered. 6 stories remaining: STORY-008..013 (pending, all independent). Next: STORY-008 (wave_position 3, 5 points).
 
-Wave 3 stories: STORY-003 (completed), STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (pending)
+Wave 3 stories: STORY-003 (completed), STORY-007 (completed), STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013 (pending)
+
+**STORY-007 delivery summary (2026-05-26):**
+- Red Gate: bats tests for validate-source-immutability.sh (hook enforcing source immutability, PostToolUse on Write|Edit to sources/**)
+- Implementation: validate-source-immutability.sh (manifest-based overwrite detection, fail-closed on missing/malformed manifest, ADR-002 v2.0 stdout envelope, JSONL stderr events)
+- Adversary cascade: BC-5.39.001 3-CLEAN achieved
+- PR #9 merged to develop (squash-merge, commit 9cb5147), CI green
+- BC-2.04.002 promoted `draft` → `active` per POL-14
+- Wave 3 progress: 2/8 stories (8/32 points)
 
 **STORY-003 delivery summary (2026-05-27):**
 - Red Gate: 8 failing tests → 28 total after implementation + adversary fixes
