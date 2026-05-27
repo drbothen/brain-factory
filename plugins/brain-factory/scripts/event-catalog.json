@@ -180,29 +180,29 @@
     "event_type": "naming.kebab_case.rejected",
     "hook_name": "enforce-kebab-case.sh",
     "severity": "error",
-    "fields": ["file_path", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"naming.kebab_case.rejected\",\"hook_name\":\"enforce-kebab-case.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/My Page.md\",\"reason\":\"Filename contains uppercase letters or spaces\"}"
+    "fields": ["filename", "suggested"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"naming.kebab_case.rejected\",\"hook_name\":\"enforce-kebab-case.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"filename\":\"AI Agents.md\",\"suggested\":\"ai-agents.md\"}"
   },
   {
     "event_type": "naming.kebab_case.accepted",
     "hook_name": "enforce-kebab-case.sh",
     "severity": "info",
-    "fields": ["file_path"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"naming.kebab_case.accepted\",\"hook_name\":\"enforce-kebab-case.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/my-page.md\"}"
+    "fields": ["filename"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"naming.kebab_case.accepted\",\"hook_name\":\"enforce-kebab-case.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"filename\":\"ai-agents.md\"}"
   },
   {
     "event_type": "attribution.token.blocked",
     "hook_name": "block-ai-attribution.sh",
     "severity": "error",
-    "fields": ["file_path", "matched_token", "reason"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"attribution.token.blocked\",\"hook_name\":\"block-ai-attribution.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\",\"matched_token\":\"Co-Authored-By\",\"reason\":\"AI attribution token found in content\"}"
+    "fields": ["matched_pattern"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"attribution.token.blocked\",\"hook_name\":\"block-ai-attribution.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"matched_pattern\":\"Co-Authored-By: Claude\"}"
   },
   {
     "event_type": "attribution.token.cleared",
     "hook_name": "block-ai-attribution.sh",
     "severity": "info",
-    "fields": ["file_path"],
-    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"attribution.token.cleared\",\"hook_name\":\"block-ai-attribution.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"file_path\":\"wiki/page.md\"}"
+    "fields": [],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"attribution.token.cleared\",\"hook_name\":\"block-ai-attribution.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\"}"
   },
   {
     "event_type": "session.state.committed",

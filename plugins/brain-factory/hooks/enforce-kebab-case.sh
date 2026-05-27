@@ -1,5 +1,130 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Stub — reads stdin JSON and exits success (no-op)
-cat >/dev/null
-exit 0
+# Fail-closed trap: any unhandled error exits 2 (block).
+# ADR-002 v2.0: exit codes other than 0 are treated as blocking errors.
+trap 'printf "%s\n" "enforce-kebab-case hook blocked: internal error." >&2; exit 2' ERR
+# enforce-kebab-case.sh — PreToolUse hook: filename kebab-case naming gate
+# BC-2.04.011 | ADR-002 v2.0 | ADR-016 (event emission)
+# Fires BEFORE Write|Edit executes — validates that the target filename is
+# kebab-case (or is on the exception list for uppercase-convention files).
+# Exit 0: allow (valid kebab-case filename or exception list match)
+# Exit 2: block (non-kebab-case filename, or fail-closed on error)
+# stdout protocol (ADR-002 v2.0):
+#   allow → {"continue":true,"trace":"<uuid>","message":"..."}
+#   block → {"continue":false,"decision":"block","reason":"<text>",
+#             "hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-NAMING-001","trace":"<uuid>","filename":"<name>","suggested":"<suggested>"}}
+
+HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
+
+# ---------------------------------------------------------------------------
+# Source the event-emit helper (fail-closed if missing)
+# ---------------------------------------------------------------------------
+if [ ! -f "$HELPER" ]; then
+  printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
+    "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "enforce-kebab-case.sh" >&2
+  jq -cn \
+    --arg trace "00000000-0000-0000-0000-000000000000" \
+    '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-002","trace":$trace}}'
+  printf "%s\n" "enforce-kebab-case hook blocked: internal error." >&2
+  exit 2
+fi
+# shellcheck disable=SC1090,SC1091
+source "$HELPER"
+
+# ---------------------------------------------------------------------------
+# Read stdin JSON payload
+# ---------------------------------------------------------------------------
+stdin_json="$(cat)"
+
+# Validate JSON is parseable — fail-closed on malformed or empty stdin.
+if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
+  jq -cn \
+    --arg code "E-NAMING-001" \
+    --arg msg "Malformed or empty hook payload." \
+    --arg trace "${HOOK_TRACE_ID}" \
+    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
+  printf "%s\n" "enforce-kebab-case hook blocked: malformed or empty hook payload." >&2
+  exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# Extract file_path from the payload
+# ---------------------------------------------------------------------------
+file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')"
+
+# Fail-closed if we cannot determine the file path.
+if [[ -z "$file_path" ]]; then
+  jq -cn \
+    --arg code "E-NAMING-001" \
+    --arg msg "Malformed or empty hook payload." \
+    --arg trace "${HOOK_TRACE_ID}" \
+    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
+  printf "%s\n" "enforce-kebab-case hook blocked: malformed or empty hook payload." >&2
+  exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# Extract basename only — the naming rule applies to the filename, not the path.
+# ---------------------------------------------------------------------------
+basename_val="${file_path##*/}"
+
+# ---------------------------------------------------------------------------
+# Exception list — uppercase-convention files exempt from kebab-case check.
+# Exception list operates on basenames per BC-2.04.011 precondition 3 (basename-only check).
+# BC invariant 3 lists .brain/STATE.md and .brain/manifest.json with path context,
+# but the hook exempts STATE.md and manifest.json in any directory since it only sees basenames.
+# This is intentional — the hook's scope is filename validation, not path validation.
+# ---------------------------------------------------------------------------
+is_exempt=false
+case "$basename_val" in
+CLAUDE.md | README.md | CHANGELOG.md | MANIFEST.md | LICENSE | STATE.md | manifest.json)
+  is_exempt=true
+  ;;
+esac
+
+if [[ "$is_exempt" == "true" ]]; then
+  emit_event "naming.kebab_case.accepted" "filename=${basename_val}"
+  jq -cn \
+    --arg trace "${HOOK_TRACE_ID}" \
+    --arg msg "Filename '${basename_val}' is on the exception list." \
+    '{"continue":true,"trace":$trace,"message":$msg}'
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Validate basename against kebab-case regex.
+# Accepted forms:
+#   - kebab-case: ^[a-z0-9][a-z0-9-]*(\.[a-z0-9]+)?$
+#   - dotfiles:   ^\.[a-z0-9][a-z0-9-]*$
+# ---------------------------------------------------------------------------
+is_kebab=false
+if [[ "$basename_val" =~ ^[a-z0-9][a-z0-9-]*(\.[a-z0-9]+)?$ ]]; then
+  is_kebab=true
+elif [[ "$basename_val" =~ ^\.[a-z0-9][a-z0-9-]*$ ]]; then
+  is_kebab=true
+fi
+
+if [[ "$is_kebab" == "true" ]]; then
+  emit_event "naming.kebab_case.accepted" "filename=${basename_val}"
+  jq -cn \
+    --arg trace "${HOOK_TRACE_ID}" \
+    --arg msg "Filename '${basename_val}' is kebab-case." \
+    '{"continue":true,"trace":$trace,"message":$msg}'
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Non-conforming filename — derive suggestion and block.
+# Suggestion: lowercase + replace spaces with hyphens + replace underscores with hyphens.
+# ---------------------------------------------------------------------------
+# Use tr for the transformation — portable and safe.
+suggested="$(printf '%s' "$basename_val" | tr '[:upper:]' '[:lower:]' | tr ' _' '-')"
+
+emit_event "naming.kebab_case.rejected" "filename=${basename_val}" "suggested=${suggested}"
+jq -cn \
+  --arg code "E-NAMING-001" \
+  --arg filename "${basename_val}" \
+  --arg suggested "${suggested}" \
+  --arg trace "${HOOK_TRACE_ID}" \
+  '{"continue":false,"decision":"block","reason":"Filename \($filename) is not kebab-case. Suggested: \($suggested).","hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace,"filename":$filename,"suggested":$suggested}}'
+exit 2
