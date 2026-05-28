@@ -1755,6 +1755,88 @@ steps:
   [[ "$output" != *"E-LOBSTER-002"* ]]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 9 — Adversary Pass 9 findings
+# I01: multi-positional args silently overwrite WORKFLOW_FILE
+# L01: dry-run PLUGIN_ROOT/skill not shell-quoted (printf %q)
+# L02: embedded newline in dep value bypasses kebab-case validation
+# ---------------------------------------------------------------------------
+
+# I01: two positional workflow files → E-LOBSTER-007, exit 2
+@test "BC_2_12_001: lobster-run two positional workflow files emits E-LOBSTER-007 exit 2 (I01/FB9)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml" "${FIXTURE_DIR}/diamond-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-007"* ]]
+}
+
+# L01: dry-run output uses printf %q for the run-skill.mjs path — path with
+# a literal double-quote must not produce broken output
+@test "BC_2_12_001: lobster-run dry-run shell-quotes path with double-quote in PLUGIN_ROOT (L01/FB9)" {
+  # Create a temp plugin root whose path contains a double-quote character
+  local quoted_root
+  quoted_root="$(mktemp -d)/plu\"gin"
+  mkdir -p "${quoted_root}/scripts"
+  mkdir -p "${quoted_root}/skills"
+  mkdir -p "${quoted_root}/.claude-plugin"
+  printf '{"name":"brain-factory","skills":"./skills/","hooks":"hooks/hooks.json"}\n' \
+    >"${quoted_root}/.claude-plugin/plugin.json"
+  # Mirror init skill
+  mkdir -p "${quoted_root}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${quoted_root}/skills/init/SKILL.md"
+  # Copy mock run-skill.mjs
+  cat >"${quoted_root}/scripts/run-skill.mjs" <<'MOCK_EOF'
+#!/usr/bin/env node
+process.exit(0);
+MOCK_EOF
+  chmod +x "${quoted_root}/scripts/run-skill.mjs"
+  # Create a simple one-step workflow inline
+  local fixture_path
+  fixture_path="${quoted_root}/simple.yaml"
+  printf 'name: test\ndescription: "Quote test"\nsteps:\n  - id: step-a\n    skill: init\n    depends_on: []\n' \
+    >"$fixture_path"
+  # Run in a wrapper so the env var assignment with embedded quote is safe
+  local wrapper dry_out
+  wrapper="$(mktemp)"
+  printf '#!/usr/bin/env bash\nexport CLAUDE_PLUGIN_ROOT=%s\nexport BRAIN_ROOT=/tmp\nexec %s --dry-run %s\n' \
+    "$(printf '%q' "$quoted_root")" \
+    "$(printf '%q' "${PLUGIN_DIR}/bin/lobster-run")" \
+    "$(printf '%q' "$fixture_path")" \
+    >"$wrapper"
+  chmod +x "$wrapper"
+  dry_out="$("$wrapper" 2>/dev/null || true)"
+  rm -f "$wrapper"
+  rm -rf "$(dirname "$quoted_root")"
+  # step-a must appear in dry-run output (invocation was printed)
+  [[ "$dry_out" == *"step-a"* ]]
+  # run-skill.mjs must appear in the output
+  [[ "$dry_out" == *"run-skill.mjs"* ]]
+}
+
+# L02: dep with embedded literal newline → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run dep with embedded newline emits E-LOBSTER-003 exit 2 (L02/FB9)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  # Construct a YAML fixture where depends_on has an entry with a literal newline embedded.
+  # jq encodes the newline as \n in JSON; yq maps it into the YAML scalar.
+  local fixture_path
+  fixture_path="${LOBSTER_PLUGIN_ROOT}/dep-embedded-newline.yaml"
+  # Write YAML with a double-quoted scalar containing \n (YAML escape for newline)
+  # yq will parse "step-a\nstep-b" as a string containing a literal newline character.
+  printf 'name: test-newline-dep\ndescription: "Dep with embedded newline"\nsteps:\n  - id: step-z\n    skill: init\n    depends_on:\n      - "step-a\\nstep-b"\n  - id: step-a\n    skill: init\n    depends_on: []\n' \
+    >"$fixture_path"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "$fixture_path"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

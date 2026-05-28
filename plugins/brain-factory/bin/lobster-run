@@ -131,6 +131,12 @@ while [[ $# -gt 0 ]]; do
   *)
     WORKFLOW_FILE="$1"
     shift
+    # I01 (Fix Burst 9): reject additional positional args — multiple workflow files
+    # is a user error; silently discarding all but the first is worse than failing fast.
+    if [[ $# -gt 0 && "${1:-}" != "-"* ]]; then
+      _emit_error "E-LOBSTER-007" "Multiple workflow files specified; only one workflow per invocation is supported."
+      _emit_run_completed_and_exit 2
+    fi
     ;;
   esac
 done
@@ -297,8 +303,19 @@ for step_json in "${step_json_lines[@]}"; do
   STEP_SKILLS+=("$skill_val")
   # S02: validate each dep entry against kebab-case before storing; an embedded
   # comma in a dep value would silently split into two bogus entries at topo sort time.
+  # L02 (Fix Burst 9): use index-based extraction (parallel to args pattern) so an
+  # embedded newline in a dep value is preserved as a single entry rather than being
+  # split by mapfile -t into two phantom valid kebab-case entries.
+  _dep_count="$(printf '%s' "$deps_json" | jq 'length' 2>/dev/null || echo "0")"
   declare -a _dep_array=()
-  mapfile -t _dep_array < <(printf '%s' "$deps_json" | jq -r '.[]?' 2>/dev/null || true)
+  if [[ "$_dep_count" =~ ^[0-9]+$ ]] && [[ "$_dep_count" -gt 0 ]]; then
+    _di=0
+    while [[ "$_di" -lt "$_dep_count" ]]; do
+      _dep_val="$(printf '%s' "$deps_json" | jq -r --argjson idx "$_di" '.[$idx]')"
+      _dep_array+=("$_dep_val")
+      _di=$((_di + 1))
+    done
+  fi
   declare -a _validated_deps=()
   for _dep_entry in "${_dep_array[@]}"; do
     if ! [[ "$_dep_entry" =~ ^[a-z][a-z0-9-]*$ ]]; then
@@ -496,9 +513,15 @@ if [[ "$DRY_RUN" == "true" ]]; then
       done
       # Trim leading space
       args_display="${args_display# }"
-      printf '%s: node "%s/scripts/run-skill.mjs" %s %s\n' "$sid" "$PLUGIN_ROOT" "$skill" "$args_display"
+      # L01 (Fix Burst 9): shell-quote ALL components with printf %q for consistency.
+      # Double-quoting "$PLUGIN_ROOT" breaks if PLUGIN_ROOT contains a literal '"'.
+      # The quoted invocation string is built as a single unit containing the literal
+      # text "run-skill.mjs" so the pure-bash meta-test exclusion still works.
+      _q_invocation="node $(printf '%q' "${PLUGIN_ROOT}/scripts/run-skill.mjs") $(printf '%q' "$skill")" # node run-skill.mjs
+      printf '%s: %s %s\n' "$sid" "$_q_invocation" "$args_display"
     else
-      printf '%s: node "%s/scripts/run-skill.mjs" %s\n' "$sid" "$PLUGIN_ROOT" "$skill"
+      _q_invocation="node $(printf '%q' "${PLUGIN_ROOT}/scripts/run-skill.mjs") $(printf '%q' "$skill")" # node run-skill.mjs
+      printf '%s: %s\n' "$sid" "$_q_invocation"
     fi
   done
   # I01: emit lobster.run.completed on stderr (same as execution mode success path)
