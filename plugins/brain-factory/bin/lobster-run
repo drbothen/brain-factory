@@ -235,7 +235,7 @@ if [[ "$DRY_RUN" == "true" ]]; then
     args_raw="${STEP_ARGS["$sid"]:-}"
     if [[ -n "$args_raw" ]]; then
       # Convert unit-separator delimited args back to space-separated for display
-      args_display="$(printf '%s' "$args_raw" | tr '\x1f' ' ')"
+      args_display="$(printf '%s' "$args_raw" | tr $'\x1f' ' ')"
       printf '%s: node "%s/scripts/run-skill.mjs" %s %s\n' "$sid" "$PLUGIN_ROOT" "$skill" "$args_display"
     else
       printf '%s: node "%s/scripts/run-skill.mjs" %s\n' "$sid" "$PLUGIN_ROOT" "$skill"
@@ -279,7 +279,7 @@ for sid in "${TOPO_ORDER[@]}"; do
   # C05: build args array from unit-separator delimited string
   declare -a step_args=()
   if [[ -n "$args_raw" ]]; then
-    mapfile -t step_args < <(printf '%s' "$args_raw" | tr '\x1f' '\n')
+    mapfile -t step_args < <(printf '%s' "$args_raw" | tr $'\x1f' '\n')
   fi
 
   if [[ "${#step_args[@]}" -gt 0 ]]; then
