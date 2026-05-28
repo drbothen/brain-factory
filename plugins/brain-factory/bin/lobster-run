@@ -195,8 +195,7 @@ _yq_err="$(yq eval '.' "$WORKFLOW_FILE" 2>&1 >/dev/null || true)"
 if [[ -n "$_yq_err" ]]; then
   # Collapse newlines to spaces; truncate to 500 chars for JSON safety
   _yq_err_clean="$(printf '%s' "$_yq_err" | tr '\n' ' ' | tr -s ' ' | cut -c1-500)"
-  jq -nc --arg msg "Invalid workflow YAML: ${_yq_err_clean}." \
-    '{level:"error",code:"E-LOBSTER-003",message:$msg}'
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: ${_yq_err_clean}."
   _emit_run_completed_and_exit 2
 fi
 
@@ -205,8 +204,7 @@ fi
 # Accept !!seq (array) and !!null (absent — caught by step_count==0 check below).
 _steps_type="$(yq eval '.steps | type' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
 if [[ "$_steps_type" != "!!seq" && "$_steps_type" != "!!null" ]]; then
-  jq -nc --arg t "$_steps_type" \
-    '{level:"error",code:"E-LOBSTER-003",message:("Invalid workflow YAML: .steps must be an array, got " + $t + ".")}'
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: .steps must be an array, got ${_steps_type}."
   _emit_run_completed_and_exit 2
 fi
 
@@ -291,6 +289,21 @@ for step_json in "${step_json_lines[@]}"; do
   if [[ "$args_type" != "array" ]]; then
     _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' args must be an array."
     _emit_run_completed_and_exit 2
+  fi
+
+  # M01 (Fix Burst 10): validate each args element is a string — null/number/object coerce
+  # silently without this check, producing incorrect invocations of run-skill.mjs.
+  _m01_args_count="$(printf '%s' "$args_json" | jq 'length' 2>/dev/null || echo "0")"
+  if [[ "$_m01_args_count" =~ ^[0-9]+$ ]] && [[ "$_m01_args_count" -gt 0 ]]; then
+    _m01_ai=0
+    while [[ "$_m01_ai" -lt "$_m01_args_count" ]]; do
+      _m01_elem_type="$(printf '%s' "$args_json" | jq -r --argjson idx "$_m01_ai" '.[$idx] | type' 2>/dev/null || printf '')"
+      if [[ "$_m01_elem_type" != "string" ]]; then
+        _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' args element $_m01_ai must be a string, got $_m01_elem_type."
+        _emit_run_completed_and_exit 2
+      fi
+      _m01_ai=$((_m01_ai + 1))
+    done
   fi
 
   # C02: duplicate step ID is an error (not a silent merge)
@@ -477,8 +490,7 @@ if [[ "${#TOPO_ORDER[@]}" -ne "${#STEP_IDS[@]}" ]]; then
     IFS=','
     printf '%s' "${cycle_members[*]}"
   )"
-  jq -nc --arg msg "Circular dependency detected in workflow: ${cycle_csv}." \
-    '{level:"error",code:"E-LOBSTER-001",message:$msg}'
+  _emit_error "E-LOBSTER-001" "Circular dependency detected in workflow: ${cycle_csv}."
   _emit_run_completed_and_exit 2 0 "${#STEP_IDS[@]}"
 fi
 

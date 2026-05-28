@@ -1837,6 +1837,89 @@ MOCK_EOF
   [[ "$output" == *"E-LOBSTER-003"* ]]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 10 — Adversary Pass 10 findings
+# H01: three raw jq -nc sites bypass _emit_error (paper-fix from Pass 8)
+#      — cycle, malformed YAML, .steps-type must all carry trace field
+# M01: args array elements not type-validated (null/number/object silently coerce)
+# ---------------------------------------------------------------------------
+
+# H01: malformed YAML error envelope contains trace field (via _emit_error)
+@test "BC_2_12_001: malformed YAML error envelope contains trace field (H01/FB10)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/malformed.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  local trace_val
+  trace_val="$(printf '%s' "$output" | head -1 | jq -r '.trace // ""' 2>/dev/null || true)"
+  [ -n "$trace_val" ]
+  [[ "$trace_val" =~ ^[0-9a-f-]+$ ]]
+}
+
+# H01: .steps type mismatch error envelope contains trace field (via _emit_error)
+@test "BC_2_12_001: steps-type mismatch error envelope contains trace field (H01/FB10)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/steps-as-string.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  local trace_val
+  trace_val="$(printf '%s' "$output" | head -1 | jq -r '.trace // ""' 2>/dev/null || true)"
+  [ -n "$trace_val" ]
+  [[ "$trace_val" =~ ^[0-9a-f-]+$ ]]
+}
+
+# H01: cycle detection error envelope contains trace field (via _emit_error)
+@test "BC_2_12_001: cycle detection error envelope contains trace field (H01/FB10)" {
+  _setup_lobster_env
+  local stdout_out
+  stdout_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml" 2>/dev/null || true)"
+  _teardown_lobster_env
+  [[ "$stdout_out" == *"E-LOBSTER-001"* ]]
+  local trace_val
+  trace_val="$(printf '%s' "$stdout_out" | head -1 | jq -r '.trace // ""' 2>/dev/null || true)"
+  [ -n "$trace_val" ]
+  [[ "$trace_val" =~ ^[0-9a-f-]+$ ]]
+}
+
+# M01: args element null → E-LOBSTER-003, exit 2 (not silent string coercion)
+@test "BC_2_12_001: lobster-run args null element emits E-LOBSTER-003 exit 2 (M01/FB10)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/args-null-element.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"args element"* ]]
+  [[ "$output" == *"null"* ]]
+}
+
+# M01: args null element error envelope contains trace field
+@test "BC_2_12_001: lobster-run args null element error envelope contains trace field (M01/FB10)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/args-null-element.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  local trace_val
+  trace_val="$(printf '%s' "$output" | head -1 | jq -r '.trace // ""' 2>/dev/null || true)"
+  [ -n "$trace_val" ]
+  [[ "$trace_val" =~ ^[0-9a-f-]+$ ]]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir
