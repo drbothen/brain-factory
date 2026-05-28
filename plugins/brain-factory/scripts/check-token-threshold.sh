@@ -11,7 +11,7 @@ set -euo pipefail
 #   0 — always (this script is advisory-only; it never blocks)
 #
 # Stdout: JSON object {"estimated_tokens": N, "threshold": T, "exceeds": true|false}
-#         plus E-INGEST-009 advisory JSON when threshold exceeded
+#         plus E-INGEST-013 advisory JSON when threshold exceeded
 # Stderr: structured advisory event when threshold exceeded
 
 BRAIN_DIR="${1:?Usage: check-token-threshold.sh <brain_dir> <source_file_path>}"
@@ -38,6 +38,11 @@ if [ -f "$POLICIES_FILE" ]; then
   fi
 fi
 
+# Validate threshold is a non-negative integer; fall back to default if not.
+if ! [[ "$THRESHOLD" =~ ^[0-9]+$ ]]; then
+  THRESHOLD=50000
+fi
+
 # Extract body content (after YAML frontmatter) and count words
 # Skip frontmatter: lines between the first and second '---' marker
 BODY_WORDS=0
@@ -62,10 +67,14 @@ if [ "$ESTIMATED_TOKENS" -gt "$THRESHOLD" ]; then
   EXCEEDS="true"
 fi
 
+# Always emit the result JSON on stdout
+printf '{"estimated_tokens":%s,"threshold":%s,"exceeds":%s}\n' \
+  "$ESTIMATED_TOKENS" "$THRESHOLD" "$EXCEEDS"
+
 # Emit advisory warning when threshold exceeded
 if [ "$EXCEEDS" = "true" ]; then
   ADVISORY_MSG="Source content estimated at ${ESTIMATED_TOKENS} tokens, exceeding the ${THRESHOLD}-token chunk threshold. Full content ingested in v0.1. Automatic chunking available at v0.5+. Consider splitting large sources manually."
-  printf '{"level":"warn","code":"E-INGEST-009","message":"%s"}\n' "$ADVISORY_MSG"
+  printf '{"level":"warn","code":"E-INGEST-013","message":"%s"}\n' "$ADVISORY_MSG"
   emit_event "ingest.url.token_threshold_exceeded" \
     "estimated_tokens=${ESTIMATED_TOKENS}" \
     "threshold=${THRESHOLD}" \

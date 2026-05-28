@@ -74,15 +74,21 @@ _write_wiki_page() {
   local page_dir="${BRAIN_DIR}/wiki/${page_type}"
   local page_path="${page_dir}/${page_slug}.md"
 
+  # Ensure wiki type directory exists
+  mkdir -p "$page_dir"
+
   # Slug collision check: skip if file already exists
   if [ -f "$page_path" ]; then
     return 1
   fi
 
+  # Escape double quotes in title to produce valid YAML
+  local safe_title="${page_title//\"/\\\"}"
+
   # Attempt to write the page
-  if ! cat >"$page_path" <<PAGEEOF 2>/dev/null; then
+  if ! cat >"$page_path" <<PAGEEOF; then
 ---
-title: "${page_title}"
+title: "${safe_title}"
 type: ${page_type}
 embedding_status: pending
 source_ids: [${SOURCE_SLUG}]
@@ -174,7 +180,7 @@ fi
 # Write pages with fan-out error handling
 # Limit to 15 pages maximum (BC-2.02.002 postcondition 1: 5-15 pages)
 # ---------------------------------------------------------------------------
-MAX_PAGES=13
+MAX_PAGES=15
 PAGES_ATTEMPTED=0
 PAGES_CREATED=0
 PAGES_FAILED=0
@@ -183,6 +189,8 @@ FAILURES=()
 HAD_WRITE_FAILURE=0
 
 declare -A SEEN_SLUGS
+declare -a CREATED_SLUGS
+declare -a CREATED_TYPES
 
 for i in "${!PAGE_TITLES[@]}"; do
   # Stop if we've already attempted the maximum
@@ -214,18 +222,28 @@ for i in "${!PAGE_TITLES[@]}"; do
   case "$write_result" in
   0)
     PAGES_CREATED=$((PAGES_CREATED + 1))
+    CREATED_SLUGS+=("$page_slug")
+    CREATED_TYPES+=("$page_type")
     ;;
   1)
     # Slug collision — skip recorded
     PAGES_SKIPPED=$((PAGES_SKIPPED + 1))
     PAGES_FAILED=$((PAGES_FAILED + 1))
-    FAILURES+=("{\"slug\":\"${page_slug}\",\"reason\":\"slug_collision\",\"type\":\"${page_type}\"}")
+    FAILURES+=("$(jq -n \
+      --arg slug "$page_slug" \
+      --arg type "$page_type" \
+      --arg reason "slug_collision" \
+      '{slug:$slug,type:$type,reason:$reason}')")
     ;;
   *)
     # Write failure
     PAGES_FAILED=$((PAGES_FAILED + 1))
     HAD_WRITE_FAILURE=1
-    FAILURES+=("{\"slug\":\"${page_slug}\",\"reason\":\"write_failed\",\"type\":\"${page_type}\"}")
+    FAILURES+=("$(jq -n \
+      --arg slug "$page_slug" \
+      --arg type "$page_type" \
+      --arg reason "write_failed" \
+      '{slug:$slug,type:$type,reason:$reason}')")
     ;;
   esac
 done
@@ -239,14 +257,8 @@ NOW="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
 if [ -f "$INDEX_FILE" ] && [ "$PAGES_CREATED" -gt 0 ]; then
   printf '\n## Ingest: %s (%s)\n' "$SOURCE_SLUG" "$NOW" >>"$INDEX_FILE"
-  for i in "${!PAGE_TITLES[@]}"; do
-    page_title="${PAGE_TITLES[$i]}"
-    page_type="${PAGE_TYPES[$i]}"
-    page_slug="$(_to_slug "$page_title")"
-    if [ -n "${SEEN_SLUGS[$page_slug]+x}" ] &&
-      [ -f "${BRAIN_DIR}/wiki/${page_type}/${page_slug}.md" ]; then
-      printf '%s\n' "- [[${page_slug}]] (${page_type})" >>"$INDEX_FILE"
-    fi
+  for i in "${!CREATED_SLUGS[@]}"; do
+    printf '%s\n' "- [[${CREATED_SLUGS[$i]}]] (${CREATED_TYPES[$i]})" >>"$INDEX_FILE"
   done
 fi
 
@@ -256,19 +268,17 @@ if [ -f "$LOG_FILE" ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Build failures JSON array
+# Build failures JSON array via jq (safe: no string concatenation)
 # ---------------------------------------------------------------------------
-FAILURES_JSON="["
-first=1
-for f in "${FAILURES[@]+"${FAILURES[@]}"}"; do
-  if [ "$first" -eq 1 ]; then
-    FAILURES_JSON="${FAILURES_JSON}${f}"
-    first=0
+FAILURES_JSON="$(
+  if [ "${#FAILURES[@]}" -eq 0 ]; then
+    printf '[]'
   else
-    FAILURES_JSON="${FAILURES_JSON},${f}"
+    # Each element in FAILURES is a valid JSON object produced by jq -n above.
+    # Collect them as a newline-delimited stream and slurp into an array.
+    printf '%s\n' "${FAILURES[@]}" | jq -s '.'
   fi
-done
-FAILURES_JSON="${FAILURES_JSON}]"
+)"
 
 # ---------------------------------------------------------------------------
 # Emit structured event on stderr
@@ -287,10 +297,15 @@ if [ "$PAGES_CREATED" -lt 5 ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Output fan-out envelope on stdout
+# Output fan-out envelope on stdout (built via jq for safety)
 # ---------------------------------------------------------------------------
-printf '{"pages_attempted":%d,"pages_created":%d,"pages_failed":%d,"pages_skipped":%d,"failures":%s}\n' \
-  "$PAGES_ATTEMPTED" "$PAGES_CREATED" "$PAGES_FAILED" "$PAGES_SKIPPED" "$FAILURES_JSON"
+jq -n \
+  --argjson attempted "$PAGES_ATTEMPTED" \
+  --argjson created "$PAGES_CREATED" \
+  --argjson failed "$PAGES_FAILED" \
+  --argjson skipped "$PAGES_SKIPPED" \
+  --argjson failures "$FAILURES_JSON" \
+  '{pages_attempted:$attempted,pages_created:$created,pages_failed:$failed,pages_skipped:$skipped,failures:$failures}'
 
 # ---------------------------------------------------------------------------
 # Exit code: 1 if any write failure; 0 if only collisions (or all success)

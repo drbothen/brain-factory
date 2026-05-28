@@ -1049,3 +1049,861 @@ EOMD
 
   [ -f "${BRAIN_DIR}/sources/${topic}/${expected_slug}.md" ]
 }
+
+# ===========================================================================
+# STORY-017: Wiki page generation pipeline, token JSONL logging, 50K-token warning
+# Traces to: BC-2.02.002, BC-2.02.003, BC-2.02.005, VP-015
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# Helper: _write_source_for_wiki
+#
+# Creates a source file with realistic article content so generate-wiki.sh
+# has a valid input. Returns the source slug.
+# ---------------------------------------------------------------------------
+_write_source_for_wiki() {
+  local brain_dir="$1"
+  local topic="$2"
+  local slug="$3"
+  local url="${4:-https://example.com/article}"
+
+  mkdir -p "${brain_dir}/sources/${topic}"
+  local dest="${brain_dir}/sources/${topic}/${slug}.md"
+  local ingested_at
+  ingested_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+  cat >"$dest" <<'SRCEOF'
+---
+title: "Understanding Transformer Architecture in Large Language Models"
+url: "https://example.com/article"
+ingested_at: "2026-05-26T00:00:00Z"
+source_id: "article"
+topic: "ai"
+embedding_status: pending
+---
+
+# Understanding Transformer Architecture in Large Language Models
+
+The transformer architecture, introduced in the landmark 2017 paper "Attention Is All You Need"
+by Vaswani et al., fundamentally changed how we process sequential data. Unlike recurrent neural
+networks (RNNs), transformers rely entirely on self-attention mechanisms, allowing for
+substantially greater parallelization during training.
+
+## Key Components
+
+The transformer consists of an encoder and decoder stack. Each encoder layer has two sub-layers:
+a multi-head self-attention mechanism and a position-wise fully connected feed-forward network.
+Residual connections and layer normalization wrap each sub-layer.
+
+Self-attention allows the model to weigh the importance of different positions in the input
+sequence relative to each other. The attention function maps a query and a set of key-value
+pairs to an output. Multi-head attention runs attention in parallel h times, then concatenates
+the results and projects them.
+
+## Position Encoding
+
+Since transformers contain no recurrence or convolution, position information must be injected.
+Sinusoidal position encodings are added to the input embeddings. These encodings have the same
+dimension as the embeddings, so the two can be summed.
+
+## Scaling Laws
+
+Research by Kaplan et al. demonstrated that model performance scales predictably with compute,
+model parameters, and dataset size. This finding drove the rapid scaling of GPT-3, PaLM, and
+subsequent large language models, each demonstrating emergent capabilities not present at
+smaller scales.
+
+## Applications in Modern AI
+
+Transformers now dominate natural language processing, computer vision, and multimodal tasks.
+BERT uses bidirectional encoders for understanding; GPT uses unidirectional decoders for
+generation. Vision Transformers (ViTs) apply the same architecture to image patches.
+
+The attention mechanism's ability to capture long-range dependencies without sequential
+processing makes transformers especially powerful for complex reasoning tasks, code generation,
+and scientific question-answering.
+
+## Key People
+
+Ashish Vaswani led the original transformer research at Google Brain. Ilya Sutskever drove
+scaling experiments at OpenAI. Alec Radford pioneered the GPT series. Noam Shazeer contributed
+to both the original transformer and mixture-of-experts scaling.
+
+## Frameworks and Tools
+
+PyTorch and JAX are the dominant frameworks for transformer research. HuggingFace Transformers
+provides pre-trained models and fine-tuning utilities. FlashAttention optimizes attention
+computation for memory and speed. DeepSpeed enables efficient distributed training.
+SRCEOF
+}
+
+# ---------------------------------------------------------------------------
+# Helper: _setup_wiki_dirs
+#
+# Creates the wiki directory structure including empty index.md and log.md.
+# ---------------------------------------------------------------------------
+_setup_wiki_dirs() {
+  local brain_dir="$1"
+  mkdir -p "${brain_dir}/wiki/concepts" \
+    "${brain_dir}/wiki/people" \
+    "${brain_dir}/wiki/frameworks" \
+    "${brain_dir}/wiki/syntheses" \
+    "${brain_dir}/wiki/observations" \
+    "${brain_dir}/wiki/questions"
+
+  # Minimal index.md
+  cat >"${brain_dir}/wiki/index.md" <<'IDXEOF'
+---
+type: index
+title: "Wiki Index"
+---
+
+# Wiki Index
+IDXEOF
+
+  # Minimal log.md
+  cat >"${brain_dir}/wiki/log.md" <<'LOGEOF'
+---
+type: log
+title: "Ingest Log"
+---
+
+# Ingest Log
+LOGEOF
+}
+
+# ---------------------------------------------------------------------------
+# Helper: _setup_policies_with_threshold
+#
+# Writes a .brain/policies.yaml file with max_ingest_tokens_per_chunk set.
+# ---------------------------------------------------------------------------
+_setup_policies_with_threshold() {
+  local brain_dir="$1"
+  local threshold="${2:-50000}"
+  mkdir -p "${brain_dir}/.brain"
+  cat >"${brain_dir}/.brain/policies.yaml" <<POLEOF
+policies:
+  - id: POL-001
+    name: source-immutability
+    description: "Sources are immutable after ingest."
+    enforcement: block
+max_ingest_tokens_per_chunk: ${threshold}
+POLEOF
+}
+
+# ---------------------------------------------------------------------------
+# Helper: _write_large_source
+#
+# Creates a source file at $1 containing $2 words (for threshold tests).
+# Uses portable cat-heredoc for the frontmatter header to avoid
+# printf '---\n...' on macOS (where -- is misinterpreted as an option).
+# ---------------------------------------------------------------------------
+_write_large_source() {
+  local dest="$1"
+  local word_count="$2"
+  # Write frontmatter header using cat + heredoc (avoids printf -- issue on macOS)
+  cat >"$dest" <<'HDREOF'
+---
+title: "Large Article"
+type: source
+embedding_status: pending
+---
+
+HDREOF
+  # Append body words using printf with explicit format string (no --ambiguity)
+  local i
+  for i in $(seq 1 "$word_count"); do
+    printf '%s' "word "
+    if [ $(( i % 20 )) -eq 0 ]; then
+      printf '\n'
+    fi
+  done >>"$dest"
+}
+
+# ===========================================================================
+# AC-001 / BC-2.02.002 postcondition 1: Wiki pages created under wiki/{type}/
+# VP-015: 5+ wiki pages created on standard article ingest
+# ===========================================================================
+@test "BC_2_02_002: generate-wiki.sh creates 5-15 wiki pages under wiki/{type}/ (AC-001)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  # generate-wiki.sh takes: <brain_dir> <source_path>
+  run bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md"
+  [ "$status" -eq 0 ]
+
+  # Count wiki pages created (excluding index.md and log.md)
+  local wiki_count
+  wiki_count="$(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' | wc -l | tr -d ' ')"
+  [ "$wiki_count" -ge 5 ]
+  [ "$wiki_count" -le 15 ]
+}
+
+@test "BC_2_02_002: generate-wiki.sh creates pages in canonical type directories (AC-001)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" || true
+
+  # At least one page must exist in one of the 6 canonical type subdirectories
+  local typed_count
+  typed_count="$(find "${BRAIN_DIR}/wiki/concepts" \
+    "${BRAIN_DIR}/wiki/people" \
+    "${BRAIN_DIR}/wiki/frameworks" \
+    "${BRAIN_DIR}/wiki/syntheses" \
+    "${BRAIN_DIR}/wiki/observations" \
+    "${BRAIN_DIR}/wiki/questions" \
+    -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "$typed_count" -ge 5 ]
+}
+
+# ===========================================================================
+# AC-002 / BC-2.02.002 postconditions 2-3: Each page passes schema + wikilink checks
+# VP-015: All created pages pass schema validation
+# ===========================================================================
+@test "BC_2_02_002: each generated wiki page has embedding_status: pending (AC-002)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" || true
+
+  # First: at least 5 pages must exist (if 0, the schema check below is vacuous)
+  local page_count
+  page_count="$(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "$page_count" -ge 5 ]
+
+  # Every wiki page except index.md and log.md must have embedding_status: pending
+  local fail_count=0
+  while IFS= read -r page; do
+    local status_val
+    status_val="$(yq eval '.embedding_status' "$page" 2>/dev/null || true)"
+    if [ "$status_val" != "pending" ]; then
+      fail_count=$(( fail_count + 1 ))
+    fi
+  done < <(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' 2>/dev/null)
+  [ "$fail_count" -eq 0 ]
+}
+
+@test "BC_2_02_002: each generated wiki page has required frontmatter fields (AC-002)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" || true
+
+  # First: at least 5 pages must exist (otherwise the loop is vacuously true)
+  local page_count
+  page_count="$(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "$page_count" -ge 5 ]
+
+  local fail_count=0
+  while IFS= read -r page; do
+    local title_val type_val emb_val
+    title_val="$(yq eval '.title' "$page" 2>/dev/null || true)"
+    type_val="$(yq eval '.type' "$page" 2>/dev/null || true)"
+    emb_val="$(yq eval '.embedding_status' "$page" 2>/dev/null || true)"
+    if [ -z "$title_val" ] || [ "$title_val" = "null" ] || \
+       [ -z "$type_val" ] || [ "$type_val" = "null" ] || \
+       [ "$emb_val" != "pending" ]; then
+      fail_count=$(( fail_count + 1 ))
+    fi
+  done < <(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' 2>/dev/null)
+  [ "$fail_count" -eq 0 ]
+}
+
+# ===========================================================================
+# AC-003 / BC-2.02.002 postconditions 4-6: source_ids, index.md, log.md updated
+# VP-015: index.md updated after ingest
+# ===========================================================================
+@test "BC_2_02_002: each generated wiki page has source_ids containing the source slug (AC-003)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" || true
+
+  # First: at least 5 pages must exist (otherwise the loop is vacuously true)
+  local page_count
+  page_count="$(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "$page_count" -ge 5 ]
+
+  local fail_count=0
+  while IFS= read -r page; do
+    local source_ids
+    source_ids="$(yq eval '.source_ids' "$page" 2>/dev/null || true)"
+    if [[ "$source_ids" != *"article"* ]]; then
+      fail_count=$(( fail_count + 1 ))
+    fi
+  done < <(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' 2>/dev/null)
+  [ "$fail_count" -eq 0 ]
+}
+
+@test "BC_2_02_002: wiki/index.md is updated with new page entries after generation (AC-003)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  # VP-015: index.md updated after ingest
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  local index_before
+  index_before="$(wc -l < "${BRAIN_DIR}/wiki/index.md" | tr -d ' ')"
+
+  bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" || true
+
+  local index_after
+  index_after="$(wc -l < "${BRAIN_DIR}/wiki/index.md" | tr -d ' ')"
+  # index.md must have grown (entries added)
+  [ "$index_after" -gt "$index_before" ]
+}
+
+@test "BC_2_02_002: wiki/log.md is updated with ingest log entries after generation (AC-003)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  local log_before
+  log_before="$(wc -l < "${BRAIN_DIR}/wiki/log.md" | tr -d ' ')"
+
+  bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" || true
+
+  local log_after
+  log_after="$(wc -l < "${BRAIN_DIR}/wiki/log.md" | tr -d ' ')"
+  # log.md must have grown (ingest log entries added)
+  [ "$log_after" -gt "$log_before" ]
+}
+
+# ===========================================================================
+# AC-005 / BC-2.02.002 EC-002: Slug collision → page skipped, skip recorded
+# ===========================================================================
+@test "BC_2_02_002: slug collision causes page to be skipped, not overwritten (AC-005)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  # Pre-create a wiki page that WILL collide with a generated slug.
+  # The source fixture has "## Position Encoding" which generate-wiki.sh
+  # slugifies to "position-encoding" and places under wiki/concepts/.
+  local collision_page="${BRAIN_DIR}/wiki/concepts/position-encoding.md"
+  cat >"$collision_page" <<'COLEOF'
+---
+title: "Position Encoding"
+type: concepts
+embedding_status: complete
+source_ids: [prior-source]
+---
+
+# Position Encoding
+
+Original content — must not be overwritten.
+COLEOF
+
+  local original_content
+  original_content="$(cat "$collision_page")"
+
+  # generate-wiki.sh must exist and run (Red Gate: script not present yet)
+  bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" || true
+
+  # At least 5 pages generated (proves the script ran and attempted generation)
+  local page_count
+  page_count="$(find "${BRAIN_DIR}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "$page_count" -ge 5 ]
+
+  # Page content must be unchanged (not overwritten)
+  local after_content
+  after_content="$(cat "$collision_page")"
+  [ "$original_content" = "$after_content" ]
+}
+
+@test "BC_2_02_002: generate-wiki.sh records slug collision skip in summary output (AC-005)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  # Pre-create a colliding page — must match an actual generated slug.
+  # "## Position Encoding" → slug "position-encoding" under wiki/concepts/.
+  local collision_page="${BRAIN_DIR}/wiki/concepts/position-encoding.md"
+  cat >"$collision_page" <<'COLEOF'
+---
+title: "Position Encoding"
+type: concepts
+embedding_status: complete
+source_ids: [prior-source]
+---
+
+Prior content — preserved by collision handling.
+COLEOF
+
+  # generate-wiki.sh must emit a summary on stdout; collision must be recorded
+  local summary_output
+  summary_output="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" 2>/dev/null || true)"
+
+  # pages_skipped must be > 0 (proves the collision code path ran)
+  local skipped
+  skipped="$(printf '%s' "$summary_output" | jq -r '.pages_skipped')"
+  [ "$skipped" -gt 0 ]
+
+  # The collision must appear in the failures array with reason "slug_collision"
+  local collision_found
+  collision_found="$(printf '%s' "$summary_output" | \
+    jq -r '.failures[] | select(.reason == "slug_collision") | .slug' || true)"
+  [ "$collision_found" = "position-encoding" ]
+
+  # The pre-existing file content must not have been overwritten
+  [[ "$(cat "$collision_page")" == *"Prior content"* ]]
+}
+
+# ===========================================================================
+# AC-006 / BC-2.02.002 invariant 3 EC-003: Hook-blocked page → partial failure
+# ===========================================================================
+@test "BC_2_02_002: hook-blocked wiki page causes partial failure; other pages proceed (AC-006)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  # When one page fails (hook exit 2), other pages are still created.
+  # We simulate a hook block by making one target directory read-only.
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  # Make concepts/ write-protected to trigger a failure for any concepts pages
+  chmod 555 "${BRAIN_DIR}/wiki/concepts"
+
+  run bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md"
+
+  # Restore permissions for teardown
+  chmod 755 "${BRAIN_DIR}/wiki/concepts"
+
+  # Partial failure: skill exits 1 (not 0 or 2)
+  [ "$status" -eq 1 ]
+
+  # Other page types must still have been created (partial success)
+  local other_count
+  other_count="$(find "${BRAIN_DIR}/wiki/people" \
+    "${BRAIN_DIR}/wiki/frameworks" \
+    "${BRAIN_DIR}/wiki/syntheses" \
+    "${BRAIN_DIR}/wiki/observations" \
+    "${BRAIN_DIR}/wiki/questions" \
+    -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "$other_count" -ge 1 ]
+}
+
+@test "BC_2_02_002: generate-wiki.sh output includes fan-out envelope with pages_attempted, pages_created, pages_failed (AC-006)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  local output
+  output="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" 2>/dev/null || true)"
+
+  # Output must be a JSON object with fan-out envelope fields
+  local pages_attempted
+  pages_attempted="$(printf '%s' "$output" | jq -r '.pages_attempted' 2>/dev/null || true)"
+  [ -n "$pages_attempted" ]
+  [ "$pages_attempted" != "null" ]
+
+  local pages_created
+  pages_created="$(printf '%s' "$output" | jq -r '.pages_created' 2>/dev/null || true)"
+  [ -n "$pages_created" ]
+  [ "$pages_created" != "null" ]
+
+  local pages_failed
+  pages_failed="$(printf '%s' "$output" | jq -r '.pages_failed' 2>/dev/null || true)"
+  [ -n "$pages_failed" ]
+  [ "$pages_failed" != "null" ]
+}
+
+# ===========================================================================
+# AC-007 / BC-2.02.003 postcondition 1: JSONL record appended on every ingest
+# VP-015: JSONL token record written on every ingest
+# ===========================================================================
+@test "BC_2_02_003: log-tokens.sh appends JSONL record to .brain/logs/ingest-tokens.jsonl (AC-007)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  mkdir -p "${BRAIN_DIR}/.brain/logs"
+
+  # log-tokens.sh takes: <brain_dir> <url> <source_id> <input_tokens> <output_tokens> <wiki_pages_created> <duration_seconds>
+  run bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/article" \
+    "article" \
+    "1500" \
+    "800" \
+    "7" \
+    "12"
+  [ "$status" -eq 0 ]
+
+  [ -f "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" ]
+}
+
+@test "BC_2_02_003: JSONL record has all required fields: timestamp, url, source_id, input_tokens, output_tokens, wiki_pages_created, duration_seconds (AC-007)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  # VP-015: Token JSONL record schema valid (jq parseable)
+  mkdir -p "${BRAIN_DIR}/.brain/logs"
+
+  bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/article" \
+    "article" \
+    "1500" \
+    "800" \
+    "7" \
+    "12" || true
+
+  local record
+  record="$(tail -1 "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" 2>/dev/null || true)"
+  [ -n "$record" ]
+
+  local timestamp url source_id input_tokens output_tokens wiki_pages_created duration_seconds
+  timestamp="$(printf '%s' "$record" | jq -r '.timestamp' 2>/dev/null || true)"
+  url="$(printf '%s' "$record" | jq -r '.url' 2>/dev/null || true)"
+  source_id="$(printf '%s' "$record" | jq -r '.source_id' 2>/dev/null || true)"
+  input_tokens="$(printf '%s' "$record" | jq -r '.input_tokens' 2>/dev/null || true)"
+  output_tokens="$(printf '%s' "$record" | jq -r '.output_tokens' 2>/dev/null || true)"
+  wiki_pages_created="$(printf '%s' "$record" | jq -r '.wiki_pages_created' 2>/dev/null || true)"
+  duration_seconds="$(printf '%s' "$record" | jq -r '.duration_seconds' 2>/dev/null || true)"
+
+  [ -n "$timestamp" ] && [ "$timestamp" != "null" ]
+  [ "$url" = "https://example.com/article" ]
+  [ "$source_id" = "article" ]
+  [ "$input_tokens" = "1500" ]
+  [ "$output_tokens" = "800" ]
+  [ "$wiki_pages_created" = "7" ]
+  [ "$duration_seconds" = "12" ]
+}
+
+@test "BC_2_02_003: JSONL timestamp is in ISO 8601 UTC format (AC-007)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  mkdir -p "${BRAIN_DIR}/.brain/logs"
+
+  bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/article" \
+    "article" \
+    "1500" \
+    "800" \
+    "7" \
+    "12" || true
+
+  local timestamp
+  timestamp="$(tail -1 "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" 2>/dev/null \
+    | jq -r '.timestamp' 2>/dev/null || true)"
+  [[ "$timestamp" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2} ]]
+}
+
+# ===========================================================================
+# AC-008 / BC-2.02.003 postcondition 2 EC-001: .brain/logs/ auto-created when absent
+# ===========================================================================
+@test "BC_2_02_003: log-tokens.sh creates .brain/logs/ when absent (AC-008)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  # .brain/ exists but logs/ does NOT
+  mkdir -p "${BRAIN_DIR}/.brain"
+  [ ! -d "${BRAIN_DIR}/.brain/logs" ]
+
+  run bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/article" \
+    "article" \
+    "1500" \
+    "800" \
+    "7" \
+    "12"
+  [ "$status" -eq 0 ]
+
+  [ -d "${BRAIN_DIR}/.brain/logs" ]
+  [ -f "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" ]
+}
+
+@test "BC_2_02_003: log-tokens.sh creates ingest-tokens.jsonl when file absent (AC-008)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  mkdir -p "${BRAIN_DIR}/.brain/logs"
+  [ ! -f "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" ]
+
+  bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/article" \
+    "article" \
+    "0" \
+    "0" \
+    "0" \
+    "1" || true
+
+  [ -f "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" ]
+}
+
+# ===========================================================================
+# AC-009 / BC-2.02.003 postcondition 3: JSONL appended even on partial failure;
+# wiki_pages_created reflects actual count
+# ===========================================================================
+@test "BC_2_02_003: JSONL wiki_pages_created reflects actual count on partial failure (AC-009)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  mkdir -p "${BRAIN_DIR}/.brain/logs"
+
+  # Partial failure: only 3 of 7 attempted pages were created
+  bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/article" \
+    "article" \
+    "1500" \
+    "800" \
+    "3" \
+    "9" || true
+
+  local wiki_pages_created
+  wiki_pages_created="$(tail -1 "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" 2>/dev/null \
+    | jq -r '.wiki_pages_created' 2>/dev/null || true)"
+  [ "$wiki_pages_created" = "3" ]
+}
+
+@test "BC_2_02_003: JSONL record is appended (not overwritten) on multiple invocations (AC-009)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  mkdir -p "${BRAIN_DIR}/.brain/logs"
+
+  # First ingest
+  bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/first" \
+    "first" \
+    "1000" \
+    "500" \
+    "5" \
+    "8" || true
+
+  # Second ingest (different URL)
+  bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/second" \
+    "second" \
+    "2000" \
+    "1000" \
+    "8" \
+    "15" || true
+
+  local line_count
+  line_count="$(wc -l < "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl" | tr -d ' ')"
+  # Both records must be present (append, not overwrite)
+  [ "$line_count" -eq 2 ]
+}
+
+# ===========================================================================
+# AC-011 / BC-2.02.003 postcondition 1: jq empty succeeds on each JSONL line
+# VP-015: Token JSONL record schema valid (jq parseable)
+# ===========================================================================
+@test "BC_2_02_003: each line of ingest-tokens.jsonl is valid JSON (jq empty succeeds) (AC-011)" {
+  # Red Gate: scripts/log-tokens.sh does not exist yet
+  mkdir -p "${BRAIN_DIR}/.brain/logs"
+
+  bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$BRAIN_DIR" \
+    "https://example.com/article" \
+    "article" \
+    "1500" \
+    "800" \
+    "7" \
+    "12" || true
+
+  # Verify every line parses as valid JSON
+  local fail_count=0
+  while IFS= read -r line; do
+    if [ -n "$line" ]; then
+      if ! printf '%s' "$line" | jq empty 2>/dev/null; then
+        fail_count=$(( fail_count + 1 ))
+      fi
+    fi
+  done < "${BRAIN_DIR}/.brain/logs/ingest-tokens.jsonl"
+  [ "$fail_count" -eq 0 ]
+}
+
+# ===========================================================================
+# AC-012 / BC-2.02.005 postcondition 1: Source > 50K tokens → advisory warning
+# ===========================================================================
+@test "BC_2_02_005: check-token-threshold.sh emits advisory when source exceeds threshold (AC-012)" {
+  # Red Gate: scripts/check-token-threshold.sh does not exist yet
+  # Create a large source file: wc -w * 1.3 > 50000
+  # 50000 / 1.3 = ~38462 words needed to exceed threshold; use 38500
+  local large_source="${BRAIN_DIR}/sources/ai/large-article.md"
+  mkdir -p "${BRAIN_DIR}/sources/ai"
+  _setup_policies_with_threshold "$BRAIN_DIR" "50000"
+  _write_large_source "$large_source" 38500
+
+  # Script must exist (fails at Red Gate until implementer creates it)
+  [ -f "${PLUGIN_DIR}/scripts/check-token-threshold.sh" ]
+
+  # check-token-threshold.sh takes: <brain_dir> <source_path>
+  # Emits advisory warning on stderr when threshold exceeded
+  local advisory_output
+  advisory_output="$(bash "${PLUGIN_DIR}/scripts/check-token-threshold.sh" \
+    "$BRAIN_DIR" \
+    "$large_source" 2>&1 || true)"
+
+  [[ "$advisory_output" == *"50000"* ]] || \
+    [[ "$advisory_output" == *"threshold"* ]] || \
+    [[ "$advisory_output" == *"chunk"* ]] || \
+    [[ "$advisory_output" == *"tokens"* ]]
+
+  # Advisory error code E-INGEST-013 must be present in the combined output
+  [[ "$advisory_output" == *"E-INGEST-013"* ]]
+}
+
+@test "BC_2_02_005: advisory warning message mentions estimated token count and threshold (AC-012)" {
+  # Red Gate: scripts/check-token-threshold.sh does not exist yet
+  local large_source="${BRAIN_DIR}/sources/ai/large-article.md"
+  mkdir -p "${BRAIN_DIR}/sources/ai"
+  _setup_policies_with_threshold "$BRAIN_DIR" "50000"
+  _write_large_source "$large_source" 38500
+
+  local advisory_output
+  advisory_output="$(bash "${PLUGIN_DIR}/scripts/check-token-threshold.sh" \
+    "$BRAIN_DIR" \
+    "$large_source" 2>&1 || true)"
+
+  # Must contain the advisory message text from AC-012
+  [[ "$advisory_output" == *"estimated"* ]] || \
+    [[ "$advisory_output" == *"exceeding"* ]] || \
+    [[ "$advisory_output" == *"chunk threshold"* ]] || \
+    [[ "$advisory_output" == *"Consider splitting"* ]]
+}
+
+# ===========================================================================
+# AC-013 / BC-2.02.005 invariants 1-2: Warning is advisory only; ingest proceeds
+# ===========================================================================
+@test "BC_2_02_005: check-token-threshold.sh exits 0 on large source (advisory, not blocking) (AC-013)" {
+  # Red Gate: scripts/check-token-threshold.sh does not exist yet
+  local large_source="${BRAIN_DIR}/sources/ai/large-article.md"
+  mkdir -p "${BRAIN_DIR}/sources/ai"
+  _setup_policies_with_threshold "$BRAIN_DIR" "50000"
+  _write_large_source "$large_source" 38500
+
+  # Must exit 0 (advisory only — does not block) even when threshold exceeded
+  run bash "${PLUGIN_DIR}/scripts/check-token-threshold.sh" \
+    "$BRAIN_DIR" \
+    "$large_source"
+  [ "$status" -eq 0 ]
+}
+
+# ===========================================================================
+# AC-014 / BC-2.02.005 EC-002: Content at or below threshold → no warning
+# ===========================================================================
+@test "BC_2_02_005: check-token-threshold.sh emits no warning for content below 50K threshold (AC-014)" {
+  # Red Gate: scripts/check-token-threshold.sh does not exist yet
+  # ~2000 words (well below 50K / 1.3 ≈ 38462 word threshold)
+  local small_source="${BRAIN_DIR}/sources/ai/small-article.md"
+  mkdir -p "${BRAIN_DIR}/sources/ai"
+  _setup_policies_with_threshold "$BRAIN_DIR" "50000"
+  _write_large_source "$small_source" 2000
+
+  # Script must exist (fails at Red Gate until implementer creates it)
+  [ -f "${PLUGIN_DIR}/scripts/check-token-threshold.sh" ]
+
+  local advisory_output
+  advisory_output="$(bash "${PLUGIN_DIR}/scripts/check-token-threshold.sh" \
+    "$BRAIN_DIR" \
+    "$small_source" 2>&1 || true)"
+
+  # Must NOT emit a threshold-exceeded advisory for small content
+  # (result JSON may contain "50000" as the threshold value; check only for advisory keywords)
+  [[ "$advisory_output" != *"exceeding"* ]]
+}
+
+@test "BC_2_02_005: content exactly at 50000-token estimate triggers no warning (exclusive threshold) (AC-014)" {
+  # Red Gate: scripts/check-token-threshold.sh does not exist yet
+  # Exactly at threshold: wc -w * 1.3 == 50000 → no warning (> 50000 triggers, not >=)
+  # 50000 / 1.3 = 38461.5... → 38462 words → 38462 * 1.3 = 50000.6 → truncated to 50000 tokens
+  # 50000 is NOT > 50000, so no advisory should be emitted.
+  local exact_source="${BRAIN_DIR}/sources/ai/exact-article.md"
+  mkdir -p "${BRAIN_DIR}/sources/ai"
+  _setup_policies_with_threshold "$BRAIN_DIR" "50000"
+  _write_large_source "$exact_source" 38462
+
+  # Must exit 0 with no advisory for content at/below threshold
+  run bash "${PLUGIN_DIR}/scripts/check-token-threshold.sh" \
+    "$BRAIN_DIR" \
+    "$exact_source"
+  [ "$status" -eq 0 ]
+
+  local out
+  out="$(bash "${PLUGIN_DIR}/scripts/check-token-threshold.sh" \
+    "$BRAIN_DIR" \
+    "$exact_source" 2>&1 || true)"
+  [[ "$out" != *"exceeding"* ]]
+}
+
+# ===========================================================================
+# AC-007 structured event: generate-wiki.sh emits ingest.url.wiki_pages_generated
+# AC-007 structured event: ingest.url.completed on ingest completion
+# ===========================================================================
+@test "BC_2_02_002: generate-wiki.sh emits ingest.url.wiki_pages_generated event on stderr (AC-007 event)" {
+  # Red Gate: scripts/generate-wiki.sh does not exist yet
+  # Events must be pre-registered in scripts/event-catalog.json (STORY-014 deliverable)
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  local stderr_out
+  stderr_out="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" 2>&1 1>/dev/null || true)"
+
+  [[ "$stderr_out" == *"wiki_pages_generated"* ]]
+}
+
+@test "BC_2_02_002: ingest.url.wiki_pages_generated event is registered in event-catalog.json" {
+  # Red Gate: event catalog entry does not exist yet (STORY-017 implementer must add it)
+  local catalog="${PLUGIN_DIR}/scripts/event-catalog.json"
+  [ -f "$catalog" ]
+
+  local found
+  found="$(jq -r '.[].event_type' "$catalog" | grep -c 'ingest.url.wiki_pages_generated' || true)"
+  [ "$found" -ge 1 ]
+}
+
+@test "BC_2_02_003: ingest.url.completed event is registered in event-catalog.json" {
+  # Red Gate: event catalog entry does not exist yet (STORY-017 implementer must add it)
+  local catalog="${PLUGIN_DIR}/scripts/event-catalog.json"
+  [ -f "$catalog" ]
+
+  local found
+  found="$(jq -r '.[].event_type' "$catalog" | grep -c 'ingest.url.completed' || true)"
+  [ "$found" -ge 1 ]
+}
+
+@test "BC_2_02_005: ingest.url.token_threshold_exceeded event is registered in event-catalog.json" {
+  # BC-2.02.005: token_threshold_exceeded event must be in the catalog
+  run jq -e '.[] | select(.event_type == "ingest.url.token_threshold_exceeded")' \
+    "${PLUGIN_DIR}/scripts/event-catalog.json"
+  [ "$status" -eq 0 ]
+}

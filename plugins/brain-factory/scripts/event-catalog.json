@@ -274,5 +274,12 @@
     "severity": "info",
     "fields": ["url", "source_id", "wiki_pages_created", "duration_seconds"],
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.url.completed\",\"hook_name\":\"ingest-url\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"url\":\"https://example.com/article\",\"source_id\":\"article\",\"wiki_pages_created\":\"7\",\"duration_seconds\":\"12\"}"
+  },
+  {
+    "event_type": "ingest.url.token_threshold_exceeded",
+    "hook_name": "check-token-threshold.sh",
+    "severity": "warn",
+    "fields": ["estimated_tokens", "threshold", "source_file"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.url.token_threshold_exceeded\",\"hook_name\":\"check-token-threshold.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"estimated_tokens\":\"55000\",\"threshold\":\"50000\",\"source_file\":\"sources/ai/large-article.md\"}"
   }
 ]
