@@ -1,8 +1,8 @@
 ---
 artifact_type: story-index
-version: "0.4.4"
+version: "0.4.5"
 created: 2026-05-18
-last_updated: 2026-05-27
+last_updated: 2026-05-28
 authored_by: vsdd-factory:story-writer
 total_stories: 43
 total_points: 264
@@ -24,13 +24,20 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 16 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-017, STORY-027, STORY-038). 27 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 17 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-017, STORY-027, STORY-032, STORY-038). 26 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.5 — 2026-05-28 (STORY-032 delivery / POL-14 BC promotion — Wave 4 progress 2/4)
+
+- **STORY-032 status:** `draft` → `completed` (PR #17 merged to develop, commit d610cf0). BC-2.12.001, BC-2.12.002 promoted `draft` → `active` per POL-14 (already reflected in BC-INDEX during adversarial cascade).
+- **Delivery summary:** bin/lobster-run (~700 lines) — pure-bash Lobster runtime with YAML parsing, Kahn's BFS topological sort (alphabetical determinism), exit-code contract (0/1/2), --dry-run mode, JSONL step logging, structured stderr events, process-substitution support, EXIT trap cleanup. Red Gate: 14 failing → 114 STORY-032 integration tests after all fix bursts. Adversary: 22 passes, 14 fix bursts, BC-5.39.001 3-CLEAN at passes 20-21-22. Trajectory: 5C+4I → 2C+5I → 3C+5I → 0C+4I → ... → 0C+0I+3O. Longest cascade in project history.
+- **Wave 4 progress:** 2/4 stories delivered (16/26 points). Next: STORY-004, STORY-015 (parallel).
+- **Deferred items (5 new):** SS-12 doc drift (architect), holdout-scenarios.md exit codes 3/4→2 (PO), VP-007 example fixtures missing description (architect), BC-2.12.001 wording/EC-001 alignment (PO), STORY-032 body BC title drift (story-writer).
 
 ### v0.4.4 — 2026-05-27 (STORY-017 delivery / POL-14 BC promotion — Wave 4 progress 1/4)
 
@@ -198,7 +205,7 @@ inputs:
 
 | Story ID | Title | Status | Points | Priority | BCs | Depends On |
 |----------|-------|--------|--------|----------|-----|------------|
-| STORY-032 | bin/lobster-run — YAML parsing, topological sort, and exit-code contract | draft | 8 | P0 | BC-2.12.001, BC-2.12.002 | — |
+| STORY-032 | bin/lobster-run — YAML parsing, topological sort, and exit-code contract | completed | 8 | P0 | BC-2.12.001, BC-2.12.002 | PR #17, d610cf0 |
 | STORY-033 | bin/lobster-run headless execution + six workflow YAML files | draft | 5 | P0 | BC-2.12.003, BC-2.12.004 | — |
 | STORY-034 | v0.1 core GH Action templates (6) and /brain:install-actions skill | draft | 8 | P0 | BC-2.13.001 | — |
 | STORY-035 | scripts/lib/api-retry.sh canonical implementation, v0.5 GH Action templates (9), and community-optional templates (4) | draft | 8 | P1 | BC-2.13.002, BC-2.13.003, BC-2.13.004 | — |

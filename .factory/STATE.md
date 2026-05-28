@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-27
+last_updated: 2026-05-28
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-032-in-progress
+phase: phase-3-wave-4-in-progress
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -44,15 +44,15 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 1: 4/4 (29 pts, gate PASSED). Wave 2: 3/3 (24 pts, gate PASSED 6/6). Wave 3: 8/8 (32 pts, gate PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925). Wave 4: 1/4 stories delivered + STORY-032 in_progress (8/26 pts delivered). 16/43 stories (90/264 pts). 36 BCs active."
+phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 1: 4/4 (29 pts, gate PASSED). Wave 2: 3/3 (24 pts, gate PASSED 6/6). Wave 3: 8/8 (32 pts, gate PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925). Wave 4: 2/4 stories delivered (16/26 pts delivered). 17/43 stories (98/264 pts). 38 BCs active."
 wave_3_status: "GATE PASSED 6/6 — 2026-05-27 — 584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed), demo evidence PASS, holdout PASS (mean 0.925), state update PASS"
 wave_3_gate_result: "PASSED 6/6 — fix commits: e7824d0 (lifecycle+catalog) + 56e1ec7 (manifest schema) + 42ca028 (slug_count)"
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-032-in-progress
-session_continuity: "Wave 4 STORY-032 IN PROGRESS (bin/lobster-run YAML parsing + toposort + exit-code contract). 16/43 stories delivered (90/264 pts). 36 BCs active. 631 tests on develop (628 passing). 16 PRs merged. Wave 4 remaining: STORY-032 (in_progress) + STORY-004 + STORY-015 (parallel). Deferred: BC verdict schema drift (PO sweep), STORY-002 test naming, F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, STORY-006 AC exit codes, VP-003 field name."
+session_stage: phase-3-wave-4-story-032-delivered
+session_continuity: "Wave 4 STORY-032 DELIVERED (PR #17, d610cf0). 17/43 stories delivered (98/264 pts). 38 BCs active. 717 tests on develop (714 passing). 17 PRs merged. Wave 4 remaining: STORY-004 + STORY-015 (parallel). Deferred: BC verdict schema drift (PO sweep), STORY-002 test naming, F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, STORY-006 AC exit codes, VP-003 field name. New deferred: SS-12 doc drift (architect), holdout-scenarios.md exit codes 3/4 (PO), VP-007 example fixtures (architect), BC-2.12.001 wording/EC-001 alignment (PO), STORY-032 body BC title drift (story-writer)."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -61,7 +61,7 @@ canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.15, co
 canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.24, commit 5a64927) + 17 ADRs + 18 SS-NN (SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2) + VP-INDEX v0.1.8 + 27 VPs
 canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.2, commit 5a64927)
 canonical_error_taxonomy: .factory/specs/prd/error-taxonomy.md (v0.1.2, commit 39d6fba)
-canonical_story_index: .factory/stories/STORY-INDEX.md (v0.4.4, post-STORY-017 delivery — Wave 4 1/4)
+canonical_story_index: .factory/stories/STORY-INDEX.md (v0.4.5, post-STORY-032 delivery — Wave 4 2/4)
 canonical_dependency_graph: .factory/stories/dependency-graph.md (v0.1.1, commit f160696)
 canonical_holdout_scenarios: .factory/stories/holdout-scenarios.md (v0.1.4, commit 7b1ae9d)
 total_stories_drafted: 43
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-032-in-progress
+status: phase-3-wave-4-in-progress
 ---
 
 # brain-factory Pipeline STATE
@@ -90,9 +90,16 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-032 IN PROGRESS (Wave 4 story 2/4) — bin/lobster-run YAML parsing + toposort + exit-code contract
+## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-032 DELIVERED (Wave 4 story 2/4) — Wave 4 remaining: STORY-004 + STORY-015
 
-STORY-032 delivery started — Wave 4 story 2/4. Goal: bin/lobster-run YAML parsing, topological sort, exit-code contract (BC-2.12.001, BC-2.12.002).
+**STORY-032 delivery summary (2026-05-28):**
+- Red Gate: 14 failing → 114 STORY-032 integration tests after all fix bursts
+- Implementation: bin/lobster-run (~700 lines) — pure-bash Lobster runtime with YAML parsing, Kahn's BFS topological sort (alphabetical determinism), exit-code contract (0/1/2), --dry-run mode, JSONL step logging, structured stderr events, process-substitution support, EXIT trap cleanup
+- Adversary: 22 passes, 14 fix bursts, BC-5.39.001 3-CLEAN at passes 20-21-22. Trajectory: 5C+4I → 2C+5I → 3C+5I → 0C+4I → ... → 0C+0I+3O (CONVERGED)
+- Notable: longest cascade in project history due to many parallel validation surfaces (each pass surfaced sibling-sweep gaps in error codes, telemetry, argument parsing); user explicitly approved continuing to convergence rather than relaxing the bar
+- PR #17 merged to develop (squash-merge, commit d610cf0), CI green (Lint + Test 4m23s)
+- BC-2.12.001/BC-2.12.002 promoted draft → active per POL-14
+- Wave 4 progress: 2/4 stories (16/26 points)
 
 ---
 
@@ -100,8 +107,8 @@ STORY-032 delivery started — Wave 4 story 2/4. Goal: bin/lobster-run YAML pars
 
 ### Pipeline Position
 - Phase 3: TDD Implementation
-- Waves 1–3: COMPLETE + GATE PASSED; Wave 4: 1/4 delivered + STORY-032 in_progress
-- 16/43 stories delivered (90/264 points — 34%)
+- Waves 1–3: COMPLETE + GATE PASSED; Wave 4: 2/4 delivered (STORY-017, STORY-032)
+- 17/43 stories delivered (98/264 points — 37%)
 
 ### Wave 3 Integration Gate Results (2026-05-27) — GATE PASSED 6/6
 | Check | Result | Detail |
@@ -128,14 +135,14 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 | STORY-013 | 3 | #15 | 93af76d | 5p/2fc, 3-CLEAN@3-4-5 |
 
 ### Overall Progress
-- 16/43 stories (90/264 points — 34%)
-- 36 BCs active (of 95 total)
-- 631 tests on develop (628 passing)
-- 16 PRs merged (#1-#16) + 3 Wave 3 gate fix commits
-- Waves 1–3 COMPLETE + GATE PASSED; Wave 4: 1/4 delivered + STORY-032 in_progress
+- 17/43 stories (98/264 points — 37%)
+- 38 BCs active (of 95 total)
+- 717 tests on develop (714 passing)
+- 17 PRs merged (#1-#17) + 3 Wave 3 gate fix commits
+- Waves 1–3 COMPLETE + GATE PASSED; Wave 4: 2/4 delivered (STORY-017, STORY-032)
 
 ### Git State to Verify
-- `git log --oneline origin/develop -3` should show Wave 3 gate fix commits at tip
+- `git log --oneline origin/develop -3` should show d610cf0 (STORY-032 PR #17 squash-merge) at tip
 - `git status --short` should be clean (untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/)
 - `.worktrees/` should be empty
 - No open PRs
@@ -156,7 +163,7 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 ### Resume Procedure for Fresh Context
 
 #### 1. Pipeline Position
-Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 1/4 delivered + STORY-032 in_progress (bin/lobster-run YAML parsing + toposort + exit-code contract). 16/43 stories delivered (90/264 pts). 36 BCs active. 631 tests on develop (628 passing).
+Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 2/4 delivered (STORY-017, STORY-032). 17/43 stories delivered (98/264 pts). 38 BCs active. 717 tests on develop (714 passing).
 
 #### 2. Wave 4 Task List (CRITICAL — this is what to DO)
 
@@ -167,11 +174,11 @@ Delivery order (STORY-017 first, rest parallel):
 | # | Story | Pts | Epic | Goal | Key BCs |
 |---|-------|-----|------|------|---------|
 | 1 | STORY-017 | 8 | EPIC-03 | Wiki page generation pipeline + token JSONL logging + 50K-chunk warning | BC-2.02.002, BC-2.02.003, BC-2.02.005 | **DELIVERED** — PR #16 b30dd35 |
-| 2 | STORY-032 | 8 | EPIC-07 | bin/lobster-run — YAML parsing, topological sort, exit-code contract | BC-2.12.001, BC-2.12.002 |
+| 2 | STORY-032 | 8 | EPIC-07 | bin/lobster-run — YAML parsing, topological sort, exit-code contract | BC-2.12.001, BC-2.12.002 | **DELIVERED** — PR #17 d610cf0 |
 | 3 | STORY-004 | 5 | EPIC-01 | /brain:health six-dimensional convergence skill | BC-2.01.006 |
 | 4 | STORY-015 | 5 | EPIC-02 | Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 |
 
-Critical path: STORY-017 first (unblocks Wave 5 STORY-019). Others are parallel.
+Critical path: STORY-017 first (unblocks Wave 5 STORY-019). STORY-004 and STORY-015 are parallel.
 
 #### 3. Per-Story Delivery Steps
 ```
@@ -188,7 +195,7 @@ Critical path: STORY-017 first (unblocks Wave 5 STORY-019). Others are parallel.
 
 #### 4. Git State Verification
 ```
-git log --oneline origin/develop -3   # tip at b30dd35 (STORY-017 PR #16 squash-merge)
+git log --oneline origin/develop -3   # tip at d610cf0 (STORY-032 PR #17 squash-merge)
 git status --short                    # clean
 ls .worktrees/                        # empty
 gh pr list --state open               # none
@@ -206,13 +213,18 @@ gh pr list --state open               # none
 - Single-commit-per-burst for .factory/ (TD-VSDD-053)
 ```
 
-#### 6. Deferred Items (5 remaining)
+#### 6. Deferred Items (10 remaining)
 ```
 1. Systemic BC v1.0 verdict schema drift — PO sweep at full-pipeline gate
 2. STORY-002 test naming drift (init.bats vs integration.bats)
 3. F-INTEG-007: BRAIN_ROOT vs BRAIN_DIR env var naming
 4. STORY-006 AC exit codes stale vs BC v1.4
 5. VP-003 field name cascade verification
+6. SS-12 subsystem doc drift — architect (implementation supersedes per Source-of-Truth Precedence)
+7. holdout-scenarios.md exit codes 3/4 should be 2 — product-owner
+8. VP-007 example fixtures missing description: field — architect
+9. BC-2.12.001 wording / EC-001 message text alignment with implementation — product-owner
+10. STORY-032 body BC title minor drift — story-writer
 ```
 
 **STORY-017 delivery summary (2026-05-27):**
@@ -221,7 +233,7 @@ gh pr list --state open               # none
 - Adversary: 5 passes, 2 fix cycles, BC-5.39.001 3-CLEAN at passes 3-4-5. Trajectory: 9→6→0→0→0
 - PR #16 merged to develop (squash-merge, commit b30dd35), CI green
 - BC-2.02.002/BC-2.02.003/BC-2.02.005 promoted draft → active per POL-14
-- Wave 4 progress: 1/4 stories (8/26 points)
+- Wave 4 progress: 1/4 stories (8/26 points) — STORY-032 next
 
 **STORY-013 delivery summary (2026-05-27):**
 - Red Gate: 21 failing → 42 total tests (21 flush + 21 health)
@@ -468,7 +480,7 @@ state-checks audit-trail (mirrored from commit body): state-checks: a:NA b:PASS 
 
 **User decision (UD-007 — 2026-05-19):** Dep-graph supersession convention established. `.factory/stories/dependency-graph.md` is the CANONICAL source-of-truth for inter-story dependencies. Per-story frontmatter `dependencies:` and `blocks:` fields are at-creation-time snapshots only. Downstream agents (wave-scheduler, implementer Phase 3, adversary, CI) consult dependency-graph.md, NOT per-story frontmatter. Asymmetry between frontmatter and graph is legitimate per this convention — consistency-validator MUST NOT flag these as defects.
 
-**Top-of-stack action:** **Wave 4 STORY-017 delivered (2026-05-27).** PR #16 merged b30dd35, 631 tests (628 passing), BC-2.02.002/003/005 active. 16/43 stories (90/264 pts), 36 BCs active. **Wave 4 remaining: STORY-032 + STORY-004 + STORY-015 (parallel).**
+**Top-of-stack action:** **Wave 4 STORY-032 delivered (2026-05-28).** PR #17 merged d610cf0, 717 tests (714 passing), BC-2.12.001/002 active. 17/43 stories (98/264 pts), 38 BCs active. **Wave 4 remaining: STORY-004 + STORY-015 (parallel).**
 
 ---
 
