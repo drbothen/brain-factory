@@ -1,0 +1,6 @@
+name: invalid-step-id-test
+description: "Test workflow with step id containing space (invalid)"
+steps:
+  - id: "step a"
+    skill: init
+    depends_on: []

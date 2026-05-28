@@ -1,0 +1,9 @@
+name: test-duplicate-ids
+description: "Workflow with duplicate step IDs to test E-LOBSTER-009"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []
+  - id: step-a
+    skill: init
+    depends_on: []

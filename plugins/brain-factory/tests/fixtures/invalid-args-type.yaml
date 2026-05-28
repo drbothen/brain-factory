@@ -1,0 +1,7 @@
+name: invalid-args-type-test
+description: "Test workflow with args as a string instead of array"
+steps:
+  - id: step-a
+    skill: init
+    args: "not-an-array"
+    depends_on: []

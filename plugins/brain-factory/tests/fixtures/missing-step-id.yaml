@@ -1,0 +1,5 @@
+name: test-missing-step-id
+description: "Workflow with a step missing the id field"
+steps:
+  - skill: init
+    depends_on: []

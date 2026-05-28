@@ -1,0 +1,5 @@
+name: test-missing-description
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []

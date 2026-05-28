@@ -816,7 +816,7 @@ _teardown_lobster_env() {
   # Create fixture with step-a depending on step-x (undefined)
   local fixture_path
   fixture_path="${LOBSTER_PLUGIN_ROOT}/undefined-dep.yaml"
-  printf 'name: test-undefined-dep\nsteps:\n  - id: step-a\n    skill: init\n    depends_on: [step-x]\n' > "$fixture_path"
+  printf 'name: test-undefined-dep\ndescription: "Test undefined dependency"\nsteps:\n  - id: step-a\n    skill: init\n    depends_on: [step-x]\n' > "$fixture_path"
   run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
     BRAIN_ROOT="${LOBSTER_BRAIN}" \
     "${LOBSTER_BIN}" "$fixture_path"
@@ -833,10 +833,14 @@ _teardown_lobster_env() {
     "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/with-args.yaml"
   _teardown_lobster_env
   [ "$status" -eq 0 ]
-  # Each arg must appear as a separate token in the output (not concatenated)
+  # Each arg must appear as a separate token in the output (not concatenated).
+  # S02 fix: args are shell-quoted with printf %q — "path with spaces" becomes
+  # path\ with\ spaces (backslash-escaped) which is runnable as-is.
   [[ "$output" == *"--verbose"* ]]
   [[ "$output" == *"--output=json"* ]]
-  [[ "$output" == *"path with spaces"* ]]
+  # Match the shell-quoted form produced by printf %q on this platform
+  quoted_spaces="$(printf '%q' "path with spaces")"
+  [[ "$output" == *"${quoted_spaces}"* ]]
 }
 
 # I04: lobster.run.completed emitted on stderr for E-LOBSTER-001 (cycle) failure path
@@ -932,6 +936,280 @@ _teardown_lobster_env() {
   run shfmt -d -i 2 "${PLUGIN_DIR}/bin/lobster-run"
   [ "$status" -eq 0 ]
   [ -z "$output" ]
+}
+
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 3 — Adversary Pass 3 findings
+# C01: missing name/description validation
+# C02: duplicate step IDs → E-LOBSTER-009
+# C03: --dry-run does not require BRAIN_ROOT
+# I01: lobster.run.completed emitted on dry-run success
+# I02: actual exit code preserved in log (not coerced)
+# I03: missing step id/skill → E-LOBSTER-003
+# I04: missing CLAUDE_PLUGIN_ROOT → E-LOBSTER-010
+# S01: missing file → E-LOBSTER-011
+# ---------------------------------------------------------------------------
+
+# C01: workflow missing name field → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run workflow missing name field emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/missing-name.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"name"* ]]
+}
+
+# C01: workflow missing description field → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run workflow missing description field emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/missing-description.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"description"* ]]
+}
+
+# C02: workflow with duplicate step IDs → E-LOBSTER-009, exit 2
+@test "BC_2_12_001: lobster-run duplicate step id emits E-LOBSTER-009 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/duplicate-ids.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-009"* ]]
+}
+
+# C03: --dry-run does not require BRAIN_ROOT to be set
+@test "BC_2_12_001: lobster-run --dry-run does not require BRAIN_ROOT" {
+  _setup_lobster_env
+  run env -u BRAIN_ROOT CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 0 ]
+}
+
+# I01: lobster.run.completed emitted on stderr for successful --dry-run
+@test "BC_2_12_001: lobster-run emits lobster.run.completed on stderr for dry-run success (I01)" {
+  _setup_lobster_env
+  local stderr_out
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml" 2>&1 >/dev/null || true)"
+  _teardown_lobster_env
+  local completed_event
+  completed_event="$(printf '%s' "$stderr_out" | grep 'lobster.run.completed' || true)"
+  [ -n "$completed_event" ]
+}
+
+# I02: step exiting 127 (command not found) logged with exit_code 127 not 2
+@test "BC_2_12_001: lobster-run preserves actual exit code in JSONL log (I02)" {
+  _setup_lobster_env
+  # Create a skill that exits 127 (simulates command-not-found)
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-127"
+  printf -- '---\nname: mock-127\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-127/SKILL.md"
+  # Override run-skill.mjs to exit 127 for mock-127
+  cat > "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs" <<'MOCK_EOF'
+#!/usr/bin/env node
+const skill = process.argv[2] || "";
+if (skill === "mock-advisory") {
+  process.exit(1);
+} else if (skill === "mock-block") {
+  process.exit(2);
+} else if (skill === "mock-127") {
+  process.exit(127);
+} else {
+  process.exit(0);
+}
+MOCK_EOF
+  chmod +x "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs"
+  # Create a fixture that uses mock-127
+  local fixture_path
+  fixture_path="${LOBSTER_PLUGIN_ROOT}/exit-127.yaml"
+  printf 'name: test-exit-127\ndescription: "Step exits 127"\nsteps:\n  - id: step-a\n    skill: mock-127\n    depends_on: []\n' > "$fixture_path"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "$fixture_path"
+  local exit_status="$status"
+  # Lobster must exit 2 (block) for any non-{0,1} exit code
+  [ "$exit_status" -eq 2 ]
+  # JSONL log must record the actual exit_code (127), not 2
+  local log_file
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  [ -n "$log_file" ]
+  local step_line
+  step_line="$(grep 'step-a' "$log_file" 2>/dev/null || true)"
+  [ -n "$step_line" ]
+  # exit_code in log must be 127 (actual), verdict must be "block"
+  local logged_exit
+  logged_exit="$(printf '%s' "$step_line" | jq '.exit_code')"
+  [ "$logged_exit" -eq 127 ]
+  local logged_verdict
+  logged_verdict="$(printf '%s' "$step_line" | jq -r '.verdict')"
+  [ "$logged_verdict" = "block" ]
+  _teardown_lobster_env
+}
+
+# I03: step missing id field → E-LOBSTER-003, exit 2 (not silent skip)
+@test "BC_2_12_001: lobster-run step missing id field emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/missing-step-id.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"id"* ]]
+}
+
+# I03: step missing skill field → E-LOBSTER-003, exit 2 (not silent skip)
+@test "BC_2_12_001: lobster-run step missing skill field emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/missing-step-skill.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"skill"* ]]
+}
+
+# I04: missing CLAUDE_PLUGIN_ROOT → E-LOBSTER-010, exit 2
+@test "BC_2_12_001: lobster-run missing CLAUDE_PLUGIN_ROOT emits E-LOBSTER-010 exit 2" {
+  _setup_lobster_env
+  local fixture_path
+  fixture_path="${LOBSTER_PLUGIN_ROOT}/simple.yaml"
+  printf 'name: test-simple\ndescription: "Simple workflow"\nsteps:\n  - id: step-a\n    skill: init\n    depends_on: []\n' > "$fixture_path"
+  run env -u CLAUDE_PLUGIN_ROOT \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "$fixture_path"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-010"* ]]
+}
+
+# S01: nonexistent workflow file → E-LOBSTER-011, exit 2
+@test "BC_2_12_001: lobster-run nonexistent workflow file emits E-LOBSTER-011 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/does-not-exist.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-011"* ]]
+}
+
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 4 — Adversary Pass 4 findings
+# I01: step IDs lack format validation
+# I02: args field not validated as array
+# I03: args containing newlines split incorrectly
+# I04: non-mapping step shape not validated
+# S01: E-LOBSTER-002 conflates manifest-missing with skill-missing
+# S02: fallback UUID not v4-conformant
+# ---------------------------------------------------------------------------
+
+# I01: step with invalid ID (contains space) → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run step with invalid id (space) emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/invalid-step-id.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"kebab-case"* ]]
+}
+
+# I02: step with args as a string (not array) → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run step with non-array args emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/invalid-args-type.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"args"* ]]
+}
+
+# I03: multiline arg preserved as a single arg (not split on newline) in dry-run
+@test "BC_2_12_001: lobster-run preserves multiline arg as single arg in dry-run (I03)" {
+  _setup_lobster_env
+  # Add init skill to mock plugin root (fixture uses init)
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/multiline-args.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 0 ]
+  # The multiline arg (line1\nline2) must appear shell-quoted on a single output line
+  # (not split into two separate args). Output should contain --message on same line as the quoted value.
+  local step_line
+  step_line="$(printf '%s\n' "$output" | grep 'step-a' || true)"
+  [ -n "$step_line" ]
+  # --message and the multi-line arg must appear on the SAME line (not split)
+  [[ "$step_line" == *"--message"* ]]
+  # The quoted value must not span multiple output lines — verify by counting lines with step-a
+  local step_a_lines
+  step_a_lines="$(printf '%s\n' "$output" | grep -c 'step-a' || true)"
+  [ "$step_a_lines" -eq 1 ]
+}
+
+# I04: steps array containing non-mapping element → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run non-mapping step emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/non-mapping-steps.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"mapping"* ]]
+}
+
+# S01: missing plugin manifest → E-LOBSTER-012 (not E-LOBSTER-002)
+@test "BC_2_12_001: lobster-run missing plugin manifest emits E-LOBSTER-012 exit 2" {
+  _setup_lobster_env
+  # Remove the plugin manifest so E-LOBSTER-012 fires
+  rm -f "${LOBSTER_PLUGIN_ROOT}/.claude-plugin/plugin.json"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-012"* ]]
+}
+
+# S02: UUID fallback (when uuidgen and /proc absent) is v4-conformant
+@test "BC_2_12_001: lobster-run UUID fallback is v4-conformant when uuidgen absent" {
+  _setup_lobster_env
+  # Create a restricted PATH without uuidgen to force the fallback path
+  local rdir
+  rdir="$(_make_restricted_path uuidgen)"
+  # Also ensure /proc/sys/kernel/random/uuid is not available (macOS doesn't have it)
+  # The fallback path runs when neither uuidgen nor /proc UUID is available
+  local stderr_out
+  stderr_out="$(env PATH="$rdir" \
+    CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml" 2>&1 >/dev/null || true)"
+  rm -rf "$rdir"
+  _teardown_lobster_env
+  # Extract the trace from the completed event
+  local completed_line trace
+  completed_line="$(printf '%s' "$stderr_out" | grep 'lobster.run.completed' || true)"
+  [ -n "$completed_line" ]
+  trace="$(printf '%s' "$completed_line" | jq -r '.trace')"
+  [ -n "$trace" ]
+  # Must match UUID v4 format: xxxxxxxx-xxxx-4xxx-[89ab]xxx-xxxxxxxxxxxx
+  [[ "$trace" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$ ]]
 }
 
 # AC-003: LCG seed advances — sources have varied content

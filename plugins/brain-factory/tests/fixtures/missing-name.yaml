@@ -1,0 +1,5 @@
+description: "Workflow missing the name field"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []

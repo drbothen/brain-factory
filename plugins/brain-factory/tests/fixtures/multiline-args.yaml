@@ -1,0 +1,11 @@
+name: multiline-args-test
+description: "Test multiline args are preserved as single arg"
+steps:
+  - id: step-a
+    skill: init
+    args:
+      - --message
+      - |
+        line1
+        line2
+    depends_on: []

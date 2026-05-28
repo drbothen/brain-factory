@@ -1,0 +1,5 @@
+name: non-mapping-steps-test
+description: "Test workflow with steps that are strings not mappings"
+steps:
+  - string-a
+  - string-b

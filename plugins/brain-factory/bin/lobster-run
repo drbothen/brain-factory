@@ -25,9 +25,14 @@ if command -v uuidgen >/dev/null 2>&1; then
 elif [[ -r /proc/sys/kernel/random/uuid ]]; then
   RUN_TRACE="$(cat /proc/sys/kernel/random/uuid)"
 else
-  # Fallback: timestamp-based pseudo-UUID
-  RUN_TRACE="$(printf '%08x-%04x-%04x-%04x-%012x' \
-    "$((RANDOM * RANDOM))" "$RANDOM" "$RANDOM" "$RANDOM" "$((RANDOM * RANDOM * RANDOM))")"
+  # S02: Fallback pseudo-UUID v4 — version nibble=4, variant nibble in [89ab]
+  RUN_TRACE="$(printf '%08x-%04x-4%03x-%01x%03x-%012x' \
+    "$(((RANDOM << 16) | RANDOM))" \
+    "$((RANDOM & 0xFFFF))" \
+    "$((RANDOM & 0xFFF))" \
+    "$(((RANDOM & 0x3) | 0x8))" \
+    "$((RANDOM & 0xFFF))" \
+    "$(((RANDOM << 32) | (RANDOM << 16) | RANDOM))")"
 fi
 
 # ---------------------------------------------------------------------------
@@ -109,15 +114,22 @@ fi
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-}"
 BRAIN_ROOT="${BRAIN_ROOT:-}"
 
-# Validate BRAIN_ROOT is set
-if [[ -z "$BRAIN_ROOT" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT environment variable is not set."}\n'
+# I04: validate CLAUDE_PLUGIN_ROOT is set (required for skill lookup and run-skill.mjs)
+if [[ -z "$PLUGIN_ROOT" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-010","message":"CLAUDE_PLUGIN_ROOT environment variable is not set."}\n'
   _emit_run_completed_and_exit 2
 fi
 
 # ---------------------------------------------------------------------------
 # YAML validation — attempt to parse; any yq error means malformed
 # ---------------------------------------------------------------------------
+
+# S01: check file existence before yq parse to give a precise error code
+if [[ ! -f "$WORKFLOW_FILE" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-011","message":"Workflow file not found: %s"}\n' "$WORKFLOW_FILE"
+  _emit_run_completed_and_exit 2
+fi
+
 if ! yq eval '.' "$WORKFLOW_FILE" >/dev/null 2>&1; then
   printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: parse error."}\n'
   _emit_run_completed_and_exit 2
@@ -131,6 +143,18 @@ if ! [[ "$step_count" =~ ^[0-9]+$ ]]; then
 fi
 if [[ "$step_count" -eq 0 ]]; then
   printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing or empty steps array."}\n'
+  _emit_run_completed_and_exit 2
+fi
+
+# C01: validate required top-level fields: name and description
+name_val="$(yq eval '.name // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ -z "$name_val" || "$name_val" == "null" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing required field name."}\n'
+  _emit_run_completed_and_exit 2
+fi
+description_val="$(yq eval '.description // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ -z "$description_val" || "$description_val" == "null" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing required field description."}\n'
   _emit_run_completed_and_exit 2
 fi
 
@@ -149,15 +173,52 @@ mapfile -t step_json_lines < <(yq eval -o=json -I=0 '.steps[]' "$WORKFLOW_FILE" 
 
 for step_json in "${step_json_lines[@]}"; do
   [[ -z "$step_json" ]] && continue
-  sid="$(printf '%s' "$step_json" | jq -r '.id // empty')"
-  skill="$(printf '%s' "$step_json" | jq -r '.skill // empty')"
+
+  # I04: validate step is a JSON object (not a string/number/array)
+  step_type="$(printf '%s' "$step_json" | jq -r 'type' 2>/dev/null || printf '')"
+  if [[ "$step_type" != "object" ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step must be a YAML mapping, got %s."}\n' "$step_type"
+    _emit_run_completed_and_exit 2
+  fi
+
+  sid="$(printf '%s' "$step_json" | jq -r '.id // ""')"
+  skill_val="$(printf '%s' "$step_json" | jq -r '.skill // ""')"
   deps_json="$(printf '%s' "$step_json" | jq -c '.depends_on // []')"
   args_json="$(printf '%s' "$step_json" | jq -c '.args // []')"
 
-  [[ -z "$sid" ]] && continue
+  # I03: missing id is an error, not a silent skip
+  if [[ -z "$sid" || "$sid" == "null" ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step missing required field id."}\n'
+    _emit_run_completed_and_exit 2
+  fi
+
+  # I01: validate step id is kebab-case (^[a-z][a-z0-9-]*$)
+  if ! [[ "$sid" =~ ^[a-z][a-z0-9-]*$ ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step id '\''%s'\'' must be kebab-case."}\n' "$sid"
+    _emit_run_completed_and_exit 2
+  fi
+
+  # I03: missing skill is an error
+  if [[ -z "$skill_val" || "$skill_val" == "null" ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' missing required field skill."}\n' "$sid"
+    _emit_run_completed_and_exit 2
+  fi
+
+  # I02: validate args is an array (not a string, object, etc.)
+  args_type="$(printf '%s' "$args_json" | jq -r 'type' 2>/dev/null || printf '')"
+  if [[ "$args_type" != "array" ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' args must be an array."}\n' "$sid"
+    _emit_run_completed_and_exit 2
+  fi
+
+  # C02: duplicate step ID is an error (not a silent merge)
+  if [[ -n "${STEP_IDX["$sid"]+isset}" ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-009","message":"Duplicate step id '\''%s'\'' in workflow."}\n' "$sid"
+    _emit_run_completed_and_exit 2
+  fi
 
   STEP_IDS+=("$sid")
-  STEP_SKILLS+=("$skill")
+  STEP_SKILLS+=("$skill_val")
   # Build comma-separated deps string for topo sort compatibility
   deps_csv="$(printf '%s' "$deps_json" | jq -r '.[]' | tr '\n' ',' | sed 's/,$//')"
   STEP_DEPS["$sid"]="$deps_csv"
@@ -170,7 +231,8 @@ done
 # ---------------------------------------------------------------------------
 local_plugin_manifest="${PLUGIN_ROOT}/.claude-plugin/plugin.json"
 if [[ ! -f "$local_plugin_manifest" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-002","message":"Plugin manifest not found at %s"}\n' \
+  # S01: E-LOBSTER-012 for missing manifest (distinct from E-LOBSTER-002 skill-not-found)
+  printf '{"level":"error","code":"E-LOBSTER-012","message":"Plugin manifest not found at %s"}\n' \
     "$local_plugin_manifest"
   _emit_run_completed_and_exit 2
 fi
@@ -294,6 +356,7 @@ done
 
 # ---------------------------------------------------------------------------
 # Dry-run mode: print execution plan and exit
+# C03: BRAIN_ROOT is NOT required for --dry-run (no log writes occur)
 # ---------------------------------------------------------------------------
 if [[ "$DRY_RUN" == "true" ]]; then
   for sid in "${TOPO_ORDER[@]}"; do
@@ -302,19 +365,36 @@ if [[ "$DRY_RUN" == "true" ]]; then
     # Check if args array is non-empty
     args_count="$(printf '%s' "$args_json" | jq 'length')"
     if [[ "$args_count" -gt 0 ]]; then
-      # Build space-separated display from JSON array
-      args_display="$(printf '%s' "$args_json" | jq -r '.[]' | tr '\n' ' ' | sed 's/ $//')"
+      # I03: use index-based extraction so embedded newlines in arg values are preserved as one arg
+      # mapfile -t splits on newlines which breaks multiline values; index loop is safe.
+      declare -a _dry_args=()
+      for ((_i = 0; _i < args_count; _i++)); do
+        _dry_args+=("$(printf '%s' "$args_json" | jq -r --argjson idx "$_i" '.[$idx]')")
+      done
+      args_display=""
+      for _arg in "${_dry_args[@]}"; do
+        args_display+=" $(printf '%q' "$_arg")"
+      done
+      # Trim leading space
+      args_display="${args_display# }"
       printf '%s: node "%s/scripts/run-skill.mjs" %s %s\n' "$sid" "$PLUGIN_ROOT" "$skill" "$args_display"
     else
       printf '%s: node "%s/scripts/run-skill.mjs" %s\n' "$sid" "$PLUGIN_ROOT" "$skill"
     fi
   done
-  exit 0
+  # I01: emit lobster.run.completed on stderr (same as execution mode success path)
+  _emit_run_completed_and_exit 0 "${#TOPO_ORDER[@]}" 0
 fi
 
 # ---------------------------------------------------------------------------
 # Execution mode: run each step, write JSONL log, honor exit-code contract
+# C03: BRAIN_ROOT is validated here (only execution mode writes to the log)
 # ---------------------------------------------------------------------------
+if [[ -z "$BRAIN_ROOT" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT environment variable is not set."}\n'
+  _emit_run_completed_and_exit 2
+fi
+
 LOG_DATE="$(date -u +%Y-%m-%d)"
 LOG_DIR="${BRAIN_ROOT}/.brain/logs"
 LOG_FILE="${LOG_DIR}/lobster-${LOG_DATE}.jsonl"
@@ -336,11 +416,14 @@ for sid in "${TOPO_ORDER[@]}"; do
 
   step_exit=0
 
-  # Build args array from JSON array using mapfile (no bare read, no delimiter bugs)
+  # I03: use index-based extraction so embedded newlines in arg values are preserved as one arg
+  # mapfile -t splits on newlines which breaks multiline values; index loop is safe.
   declare -a step_args=()
   args_count="$(printf '%s' "$args_json" | jq 'length')"
   if [[ "$args_count" -gt 0 ]]; then
-    mapfile -t step_args < <(printf '%s' "$args_json" | jq -r '.[]')
+    for ((_j = 0; _j < args_count; _j++)); do
+      step_args+=("$(printf '%s' "$args_json" | jq -r --argjson idx "$_j" '.[$idx]')")
+    done
   fi
 
   if [[ "${#step_args[@]}" -gt 0 ]]; then
@@ -352,20 +435,17 @@ for sid in "${TOPO_ORDER[@]}"; do
   step_end_ms="$(_now_ms)"
   step_duration=$((step_end_ms - step_start_ms))
 
-  # Determine verdict
+  # I02: determine verdict WITHOUT modifying step_exit so the JSONL log preserves
+  # the actual exit code (e.g., 127 for command-not-found rather than coercing to 2)
   case "$step_exit" in
   0) verdict="allow" ;;
   1) verdict="advisory" ;;
-  2) verdict="block" ;;
-  *)
-    verdict="block"
-    step_exit=2
-    ;;
+  *) verdict="block" ;;
   esac
 
   STEPS_RUN=$((STEPS_RUN + 1))
 
-  # Write JSONL log entry
+  # Write JSONL log entry — use actual step_exit (not coerced) for diagnostic fidelity
   jq -nc \
     --arg step_id "$sid" \
     --arg verdict "$verdict" \
@@ -388,7 +468,8 @@ for sid in "${TOPO_ORDER[@]}"; do
       '{"ts": $ts, "event_type": "lobster.step.completed", "hook_name": $hook_name, "trace": $trace, "step_id": $step_id, "exit_code": $exit_code, "verdict": $verdict, "duration_ms": $duration_ms}'
   } >&2
 
-  if [[ "$step_exit" -eq 2 ]]; then
+  # I02: treat any non-{0,1} exit code as a block for flow control
+  if [[ "$step_exit" -ne 0 ]] && [[ "$step_exit" -ne 1 ]]; then
     # Block: stop immediately; remaining steps are skipped
     STEPS_SKIPPED=$((${#TOPO_ORDER[@]} - STEPS_RUN))
     _emit_run_completed_and_exit 2 "$STEPS_RUN" "$STEPS_SKIPPED"
