@@ -199,7 +199,7 @@ Message format uses `<placeholder>` for dynamic values.
 
 | Code | Severity | Exit | Raised By | Message Format |
 |------|----------|------|-----------|---------------|
-| E-LOBSTER-001 | broken | 2 | `bin/lobster-run` | `Circular dependency detected in workflow: <cycle>.` |
+| E-LOBSTER-001 | broken | 2 | `bin/lobster-run` | `Steps with unresolved dependencies (cycle present): <cycle>.` |
 | E-LOBSTER-002 | broken | 2 | `bin/lobster-run` | `Skill '<name>' not found in plugin manifest.` |
 | E-LOBSTER-003 | broken | 2 | `bin/lobster-run` | `Invalid workflow YAML: <error>.` |
 | E-LOBSTER-004 | broken | 2 | `bin/lobster-run` | `Unknown dependency '<name>' referenced by step '<id>'.` |

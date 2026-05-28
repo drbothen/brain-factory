@@ -115,10 +115,24 @@ while [[ $# -gt 0 ]]; do
     shift
     ;;
   --)
+    shift # consumes "--"
+    # C02 (Fix Burst 12): guard against empty args after "--" before second shift;
+    # without this guard, `lobster-run --` causes `shift` with $#==0 which returns 1
+    # and set -e aborts the script without emitting lobster.run.completed.
+    if [[ $# -eq 0 ]]; then
+      _emit_error "E-LOBSTER-008" "Missing workflow file argument after '--' separator."
+      _emit_run_completed_and_exit 2
+    fi
+    # C01 (Fix Burst 12): reject if WORKFLOW_FILE already set — sibling-sweep gap from
+    # Pass 11 H01 fix which only protected the *) branch.
+    # `lobster-run a.yaml -- b.yaml` must reject, not silently use b.yaml.
+    if [[ -n "$WORKFLOW_FILE" ]]; then
+      _emit_error "E-LOBSTER-007" "Multiple workflow files specified; only one workflow per invocation is supported."
+      _emit_run_completed_and_exit 2
+    fi
+    WORKFLOW_FILE="$1"
     shift
-    WORKFLOW_FILE="${1:-}"
-    shift
-    # S02: warn about extra args after workflow file
+    # Warn about extra args after workflow file
     if [[ $# -gt 0 ]]; then
       printf 'Warning: ignoring extra args after workflow file: %s\n' "$*" >&2
     fi
@@ -512,7 +526,9 @@ if [[ "${#TOPO_ORDER[@]}" -ne "${#STEP_IDS[@]}" ]]; then
     IFS=','
     printf '%s' "${cycle_members[*]}"
   )"
-  _emit_error "E-LOBSTER-001" "Circular dependency detected in workflow: ${cycle_csv}."
+  # S01 (Fix Burst 12): steps with in-degree > 0 may include non-cycle members
+  # (steps that merely depend ON cycle members). Rename message for accuracy.
+  _emit_error "E-LOBSTER-001" "Steps with unresolved dependencies (cycle present): ${cycle_csv}."
   _emit_run_completed_and_exit 2 0 "${#STEP_IDS[@]}"
 fi
 

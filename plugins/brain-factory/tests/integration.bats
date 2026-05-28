@@ -2010,6 +2010,70 @@ MOCK_EOF
   [[ "$output" == *".description"* ]]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 12 — Adversary Pass 13 findings
+# C01: "--" branch lacks multi-file guard (sibling-sweep gap from FB11 H01)
+# C02: "lobster-run --" crashes via set -e (bare shift on empty args)
+# S01: cycle message can include non-cycle members (message text fix)
+# ---------------------------------------------------------------------------
+
+# C01: workflow file before "--" then another after — E-LOBSTER-007, exit 2
+@test "BC_2_12_001: lobster-run rejects second workflow file after -- separator emits E-LOBSTER-007 exit 2 (C01/FB12)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml" -- "${FIXTURE_DIR}/diamond-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-007"* ]]
+}
+
+# C02: bare "--" with no following file → E-LOBSTER-008, exit 2, completion event emitted
+@test "BC_2_12_001: lobster-run bare -- emits E-LOBSTER-008 exit 2 and lobster.run.completed (C02/FB12)" {
+  _setup_lobster_env
+  # Capture stdout and stderr separately
+  local stdout_out stderr_out
+  stdout_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" -- 2>/dev/null || true)"
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" -- 2>&1 >/dev/null || true)"
+  _teardown_lobster_env
+  # stdout must contain E-LOBSTER-008
+  [[ "$stdout_out" == *"E-LOBSTER-008"* ]]
+  # lobster.run.completed must appear on stderr (not silently aborted by set -e)
+  local completed_event
+  completed_event="$(printf '%s' "$stderr_out" | grep 'lobster.run.completed' || true)"
+  [ -n "$completed_event" ]
+}
+
+# C02: exit code from bare "--" must be 2, not crash exit code
+@test "BC_2_12_001: lobster-run bare -- exits with code 2 (C02/FB12)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-008"* ]]
+}
+
+# S01: cycle message uses accurate "unresolved dependencies" phrasing
+@test "BC_2_12_001: lobster-run cycle message uses accurate unresolved-dependencies phrasing (S01/FB12)" {
+  _setup_lobster_env
+  local stdout_out
+  stdout_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml" 2>/dev/null || true)"
+  _teardown_lobster_env
+  [[ "$stdout_out" == *"E-LOBSTER-001"* ]]
+  # New message phrasing (S01 fix) — must NOT use old "Circular dependency detected" text
+  [[ "$stdout_out" == *"unresolved dependencies"* ]]
+  # Must still identify affected step IDs
+  [[ "$stdout_out" == *"step-a"* ]]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir
