@@ -134,9 +134,10 @@ while [[ $# -gt 0 ]]; do
     fi
     WORKFLOW_FILE="$1"
     shift
-    # Warn about extra args after workflow file
+    # P19-I01: reject extra positional args (sibling-sweep with other multi-arg paths).
     if [[ $# -gt 0 ]]; then
-      printf 'Warning: ignoring extra args after workflow file: %s\n' "$*" >&2
+      _emit_error "E-LOBSTER-007" "Extra positional arguments after workflow file: $*"
+      _emit_run_completed_and_exit 2
     fi
     break
     ;;
