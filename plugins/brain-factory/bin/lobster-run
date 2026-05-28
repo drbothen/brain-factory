@@ -74,7 +74,9 @@ _emit_run_completed_and_exit() {
   local exit_code="$1"
   local steps_run="${2:-0}"
   local steps_skipped="${3:-0}"
-  local workflow_path="${WORKFLOW_FILE:-unknown}"
+  # P16-L01: prefer original CLI workflow path over tmpfile (preserved before
+  # process-substitution buffering at line 206) for telemetry observability.
+  local workflow_path="${WORKFLOW_FILE_ORIG:-${WORKFLOW_FILE:-unknown}}"
   # S01: WORKFLOW_FILE is initialized to "" (set-but-empty); :- only substitutes on unset.
   # Use explicit empty-string check to handle both unset and empty cases.
   [[ -z "$workflow_path" ]] && workflow_path="unknown"
@@ -196,6 +198,8 @@ fi
 # If WORKFLOW_FILE is not a regular file, buffer its content into a temp file so
 # subsequent yq calls (parse, length, field extraction) can all read it.
 _WORKFLOW_TMPFILE=""
+# P16-L01: preserve original CLI-supplied path for telemetry before reassignment.
+WORKFLOW_FILE_ORIG="$WORKFLOW_FILE"
 if [[ ! -f "$WORKFLOW_FILE" ]]; then
   _WORKFLOW_TMPFILE="$(mktemp)"
   if ! cat "$WORKFLOW_FILE" >"$_WORKFLOW_TMPFILE" 2>/dev/null; then
@@ -462,7 +466,8 @@ for sid in "${STEP_IDS[@]}"; do
       # E-LOBSTER-004 for unknown dependency reference
       if [[ -z "${IN_DEGREE["$dep"]+isset}" ]]; then
         _emit_error "E-LOBSTER-004" "Unknown dependency '$dep' referenced by step '$sid'."
-        _emit_run_completed_and_exit 2
+        # P16-I01: parallel to cycle path (line ~532) — report steps_skipped accurately
+        _emit_run_completed_and_exit 2 0 "${#STEP_IDS[@]}"
       fi
       IN_DEGREE["$sid"]=$((IN_DEGREE["$sid"] + 1))
       if [[ -z "${DEPENDENTS["$dep"]}" ]]; then
