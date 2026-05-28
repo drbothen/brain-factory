@@ -38,13 +38,23 @@ Never write a source file or update the manifest without first checking manifest
 
 6. **Atomic manifest update.** Export `BRAIN_DIR` and source `${CLAUDE_PLUGIN_ROOT}/hooks/lib/manifest-write.sh`. Call `manifest_write '{"source_id":"<slug>","url":"<url>","topic":"<topic>","ingested_at":"<ts>","last_ingest":"<ts>","chunks":[],"embeddings_model":null}' "${BRAIN_DIR}/.brain/manifest.json"`. On failure (E-INGEST-008), delete the source file written in step 5 and exit with the error.
 
-7. **[STORY-017 stub] Wiki generation.** Wiki page generation from the ingested source is not implemented in this story. STORY-017 will replace this stub with the wiki generation and token-logging pipeline.
+7. **Wiki generation, token logging, and completion event.**
+
+   7a. Run `${CLAUDE_PLUGIN_ROOT}/scripts/check-token-threshold.sh "${BRAIN_DIR}" "${source_file}"`. If an advisory is emitted (stdout contains `"level":"warn"`), print the advisory message to the operator but continue — this script always exits 0.
+
+   7b. Run `${CLAUDE_PLUGIN_ROOT}/scripts/generate-wiki.sh "${BRAIN_DIR}" "${source_file}"`. Capture the JSON result envelope from stdout (fields: `pages_attempted`, `pages_created`, `pages_failed`, `failures`). On exit 1 (partial failure), note the failure for step 7e.
+
+   7c. Run `${CLAUDE_PLUGIN_ROOT}/scripts/log-tokens.sh "${BRAIN_DIR}" "${URL}" "${SLUG}" "${input_tokens}" "${output_tokens}" "${wiki_pages_created}" "${duration_seconds}"` where `wiki_pages_created` is the `pages_created` value from step 7b.
+
+   7d. Emit `ingest.url.completed` event via `${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh` with fields: `url`, `source_id` (the slug), `wiki_pages_created`, and `duration_seconds`.
+
+   7e. If `generate-wiki.sh` exited 1 (partial failure), exit the skill with code 1 (advisory — ingest succeeded but wiki generation was incomplete).
 
 8. **Report success.** Output: "Ingested <url> as <slug> in topic <topic>."
 
 ## Quality Bar
 
-- All 54 tests in `plugins/brain-factory/tests/ingest-url.bats` pass.
+- All tests in `plugins/brain-factory/tests/ingest-url.bats` pass.
 - `manifest-write.sh` is shellcheck-clean and shfmt-normalized.
 - No `find` or `ls` call on `sources/` during ingest.
 - Source file contains all 6 required frontmatter fields.

@@ -1,0 +1,12 @@
+{
+  "url": "https://example.com/short-article",
+  "topic": "ai",
+  "expected_slug": "short-article",
+  "word_count_approx": 45,
+  "description": "Short article fixture: < 500 words, expected to produce < 5 wiki pages. Used to exercise BC-2.02.002 EC-001 (E-INGEST-006 advisory when librarian produces fewer than 5 pages).",
+  "content": "---\ntitle: \"Short Article\"\nurl: \"https://example.com/short-article\"\ningested_at: \"2026-05-26T00:00:00Z\"\nsource_id: \"short-article\"\ntopic: \"ai\"\nembedding_status: pending\n---\n\n# Short Article\n\nThis is a brief summary with limited extractable concepts.\n\nThe main idea is simple. There are few concepts here. Insufficient substance to generate five distinct wiki pages covering concepts, people, frameworks, syntheses, and questions.\n",
+  "expected_wiki_pages_min": 0,
+  "expected_wiki_pages_max": 4,
+  "expected_advisory": "E-INGEST-006",
+  "test_vector_source": "BC-2.02.002 EC-001"
+}
