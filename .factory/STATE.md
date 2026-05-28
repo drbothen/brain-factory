@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-in-progress
+phase: phase-3-wave-4-story-004-in-progress
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,7 +51,7 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-032-delivered
+session_stage: phase-3-wave-4-story-004-in-progress
 session_continuity: "Wave 4 STORY-032 DELIVERED (PR #17, d610cf0). 17/43 stories delivered (98/264 pts). 38 BCs active. 717 tests on develop (714 passing). 17 PRs merged. Wave 4 remaining: STORY-004 + STORY-015 (parallel). Deferred: BC verdict schema drift (PO sweep), STORY-002 test naming, F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, STORY-006 AC exit codes, VP-003 field name. New deferred: SS-12 doc drift (architect), holdout-scenarios.md exit codes 3/4 (PO), VP-007 example fixtures (architect), BC-2.12.001 wording/EC-001 alignment (PO), STORY-032 body BC title drift (story-writer)."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-in-progress
+status: phase-3-wave-4-story-004-in-progress
 ---
 
 # brain-factory Pipeline STATE
@@ -90,7 +90,7 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-032 DELIVERED (Wave 4 story 2/4) — Wave 4 remaining: STORY-004 + STORY-015
+## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-004 IN PROGRESS (/brain:health six-dimensional convergence skill — Wave 4 story 3/4)
 
 **STORY-032 delivery summary (2026-05-28):**
 - Red Gate: 14 failing → 114 STORY-032 integration tests after all fix bursts
