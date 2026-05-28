@@ -1,0 +1,15 @@
+name: test-diamond
+description: "Diamond DAG for testing"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []
+  - id: step-b
+    skill: init
+    depends_on: [step-a]
+  - id: step-c
+    skill: init
+    depends_on: [step-a]
+  - id: step-d
+    skill: init
+    depends_on: [step-b, step-c]

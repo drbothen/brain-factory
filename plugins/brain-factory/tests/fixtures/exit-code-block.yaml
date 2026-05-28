@@ -1,0 +1,12 @@
+name: test-exit-block
+description: "One step exits 2 — pipeline stops immediately"
+steps:
+  - id: step-a
+    skill: mock-pass
+    depends_on: []
+  - id: step-b
+    skill: mock-block
+    depends_on: [step-a]
+  - id: step-c
+    skill: mock-pass
+    depends_on: [step-b]

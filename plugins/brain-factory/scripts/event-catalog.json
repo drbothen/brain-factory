@@ -281,5 +281,19 @@
     "severity": "warn",
     "fields": ["estimated_tokens", "threshold", "source_file"],
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.url.token_threshold_exceeded\",\"hook_name\":\"check-token-threshold.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"estimated_tokens\":\"55000\",\"threshold\":\"50000\",\"source_file\":\"sources/ai/large-article.md\"}"
+  },
+  {
+    "event_type": "lobster.step.completed",
+    "hook_name": "bin/lobster-run",
+    "severity": "info",
+    "fields": ["step_id", "exit_code", "verdict", "duration_ms"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"lobster.step.completed\",\"hook_name\":\"bin/lobster-run\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"step_id\":\"step-a\",\"exit_code\":0,\"verdict\":\"allow\",\"duration_ms\":123}"
+  },
+  {
+    "event_type": "lobster.run.completed",
+    "hook_name": "bin/lobster-run",
+    "severity": "info",
+    "fields": ["workflow", "exit_code", "steps_run", "steps_skipped"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"lobster.run.completed\",\"hook_name\":\"bin/lobster-run\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"workflow\":\"workflows/ingest-url.yaml\",\"exit_code\":0,\"steps_run\":3,\"steps_skipped\":0}"
   }
 ]

@@ -1,0 +1,12 @@
+name: test-exit-advisory
+description: "One step exits 1, rest exit 0 — pipeline continues"
+steps:
+  - id: step-a
+    skill: mock-pass
+    depends_on: []
+  - id: step-b
+    skill: mock-advisory
+    depends_on: [step-a]
+  - id: step-c
+    skill: mock-pass
+    depends_on: [step-b]

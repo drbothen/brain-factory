@@ -1,0 +1,704 @@
+#!/usr/bin/env bash
+set -euo pipefail
+LC_ALL=C
+export LC_ALL
+
+# bin/lobster-run — Lobster workflow runtime
+# Traces to: BC-2.12.001, BC-2.12.002, VP-007
+#
+# Usage: lobster-run [--dry-run] <workflow.yaml>
+#
+# Environment:
+#   CLAUDE_PLUGIN_ROOT — plugin root (used for skill lookup and run-skill.mjs)
+#   BRAIN_ROOT        — brain vault root (used for JSONL log output)
+#
+# Exit codes:
+#   0 — all steps succeeded
+#   1 — at least one advisory (exit 1 step); no blocks
+#   2 — at least one block (exit 2 step), or validation error
+
+# ---------------------------------------------------------------------------
+# Generate trace UUID for this invocation (I03)
+# ---------------------------------------------------------------------------
+if command -v uuidgen >/dev/null 2>&1; then
+  RUN_TRACE="$(uuidgen | tr '[:upper:]' '[:lower:]')"
+elif [[ -r /proc/sys/kernel/random/uuid ]]; then
+  RUN_TRACE="$(cat /proc/sys/kernel/random/uuid)"
+else
+  # S02: Fallback pseudo-UUID v4 — version nibble=4, variant nibble in [89ab]
+  RUN_TRACE="$(printf '%08x-%04x-4%03x-%01x%03x-%012x' \
+    "$(((RANDOM << 16) | RANDOM))" \
+    "$((RANDOM & 0xFFFF))" \
+    "$((RANDOM & 0xFFF))" \
+    "$(((RANDOM & 0x3) | 0x8))" \
+    "$((RANDOM & 0xFFF))" \
+    "$(((RANDOM << 32) | (RANDOM << 16) | RANDOM))")"
+fi
+
+# ---------------------------------------------------------------------------
+# Millisecond-precision timing using EPOCHREALTIME (bash 5+) (I05)
+# ---------------------------------------------------------------------------
+_now_ms() {
+  # I04 (Fix Burst 7): use regex validation instead of assuming exactly 6 fractional digits.
+  # On platforms with reduced EPOCHREALTIME precision, the naive ${er:0:-3} slice produces garbage.
+  if [[ -n "${EPOCHREALTIME:-}" ]] && [[ "${EPOCHREALTIME}" =~ ^([0-9]+)\.([0-9]{6})$ ]]; then
+    # Standard 6-digit-fraction format: extract ms (integer seconds + first 3 fractional digits)
+    printf '%s%s' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]:0:3}"
+  else
+    # Fallback: SECONDS × 1000 (works on all bash versions; ms precision not guaranteed)
+    printf '%s' "$((SECONDS * 1000))"
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# Emit a structured error envelope to stdout (JSON-safe via jq). (I02/S01)
+# Usage: _emit_error <code> <message>
+# The RUN_TRACE variable is captured at invocation time, so callers before
+# RUN_TRACE is set should not call this function (there are none in practice).
+# ---------------------------------------------------------------------------
+_emit_error() {
+  local code="$1"
+  local msg="$2"
+  jq -nc \
+    --arg level "error" \
+    --arg code "$code" \
+    --arg msg "$msg" \
+    --arg trace "${RUN_TRACE:-}" \
+    '{level: $level, code: $code, message: $msg, trace: $trace}'
+}
+
+# ---------------------------------------------------------------------------
+# Emit lobster.run.completed on stderr and exit with given code (I04)
+# ---------------------------------------------------------------------------
+_emit_run_completed_and_exit() {
+  local exit_code="$1"
+  local steps_run="${2:-0}"
+  local steps_skipped="${3:-0}"
+  # P16-L01: prefer original CLI workflow path over tmpfile (preserved before
+  # process-substitution buffering at line 206) for telemetry observability.
+  local workflow_path="${WORKFLOW_FILE_ORIG:-${WORKFLOW_FILE:-unknown}}"
+  # S01: WORKFLOW_FILE is initialized to "" (set-but-empty); :- only substitutes on unset.
+  # Use explicit empty-string check to handle both unset and empty cases.
+  [[ -z "$workflow_path" ]] && workflow_path="unknown"
+  jq -nc \
+    --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    --arg trace "$RUN_TRACE" \
+    --arg workflow "$workflow_path" \
+    --arg hook_name "bin/lobster-run" \
+    --argjson exit_code "$exit_code" \
+    --argjson steps_run "$steps_run" \
+    --argjson steps_skipped "$steps_skipped" \
+    '{ts: $ts, event_type: "lobster.run.completed", hook_name: $hook_name, trace: $trace, workflow: $workflow, exit_code: $exit_code, steps_run: $steps_run, steps_skipped: $steps_skipped}' >&2
+  exit "$exit_code"
+}
+
+# I03 / VP-007: initialize _WORKFLOW_TMPFILE to empty; register EXIT trap so that
+# tmpfile is cleaned up on ANY exit path (normal, SIGINT, SIGTERM, set -e trip).
+# The EXIT trap fires unconditionally — this is the sole cleanup site.
+_WORKFLOW_TMPFILE=""
+# shellcheck disable=SC2329,SC2317  # invoked via trap EXIT, not a direct call
+_cleanup_tmpfile() {
+  # shellcheck disable=SC2317
+  if [[ -n "${_WORKFLOW_TMPFILE:-}" && -f "$_WORKFLOW_TMPFILE" ]]; then
+    # shellcheck disable=SC2317
+    rm -f "$_WORKFLOW_TMPFILE"
+  fi
+}
+trap _cleanup_tmpfile EXIT
+
+# ---------------------------------------------------------------------------
+# Argument parsing — flexible: --dry-run may appear before or after workflow
+# ---------------------------------------------------------------------------
+DRY_RUN=false
+WORKFLOW_FILE=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --dry-run)
+    DRY_RUN=true
+    shift
+    ;;
+  --)
+    shift # consumes "--"
+    # C02 (Fix Burst 12): guard against empty args after "--" before second shift;
+    # without this guard, `lobster-run --` causes `shift` with $#==0 which returns 1
+    # and set -e aborts the script without emitting lobster.run.completed.
+    if [[ $# -eq 0 ]]; then
+      _emit_error "E-LOBSTER-008" "Missing workflow file argument after '--' separator."
+      _emit_run_completed_and_exit 2
+    fi
+    # C01 (Fix Burst 12): reject if WORKFLOW_FILE already set — sibling-sweep gap from
+    # Pass 11 H01 fix which only protected the *) branch.
+    # `lobster-run a.yaml -- b.yaml` must reject, not silently use b.yaml.
+    if [[ -n "$WORKFLOW_FILE" ]]; then
+      _emit_error "E-LOBSTER-007" "Multiple workflow files specified; only one workflow per invocation is supported."
+      _emit_run_completed_and_exit 2
+    fi
+    WORKFLOW_FILE="$1"
+    shift
+    # P19-I01: reject extra positional args (sibling-sweep with other multi-arg paths).
+    if [[ $# -gt 0 ]]; then
+      _emit_error "E-LOBSTER-007" "Extra positional arguments after workflow file: $*"
+      _emit_run_completed_and_exit 2
+    fi
+    break
+    ;;
+  -*)
+    _emit_error "E-LOBSTER-007" "Unknown flag: $1"
+    _emit_run_completed_and_exit 2
+    ;;
+  *)
+    # H01 (Fix Burst 11): track WORKFLOW_FILE globally — reject ANY second assignment
+    # regardless of intervening flags. The prior check (next-arg peek) failed on
+    # interleaved args like `lobster-run a.yaml --dry-run b.yaml` where b.yaml appears
+    # after a flag and would silently overwrite a.yaml.
+    if [[ -n "$WORKFLOW_FILE" ]]; then
+      _emit_error "E-LOBSTER-007" "Multiple workflow files specified; only one workflow per invocation is supported."
+      _emit_run_completed_and_exit 2
+    fi
+    WORKFLOW_FILE="$1"
+    shift
+    ;;
+  esac
+done
+
+# S03: separate error code for missing workflow argument (E-LOBSTER-008)
+if [[ -z "$WORKFLOW_FILE" ]]; then
+  _emit_error "E-LOBSTER-008" "Missing workflow file argument."
+  _emit_run_completed_and_exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# Environment resolution
+# ---------------------------------------------------------------------------
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-}"
+BRAIN_ROOT="${BRAIN_ROOT:-}"
+
+# I04 / I02 (Fix Burst 7): validate CLAUDE_PLUGIN_ROOT is set and non-whitespace-only.
+# S02 (Fix Burst 8): strip tabs/newlines/spaces — not just spaces — before the emptiness check.
+_pr_trimmed="${PLUGIN_ROOT//[$' \t\n\r']/}"
+if [[ -z "$_pr_trimmed" ]]; then
+  _emit_error "E-LOBSTER-010" "CLAUDE_PLUGIN_ROOT environment variable is not set or contains only whitespace."
+  _emit_run_completed_and_exit 2
+fi
+if [[ ! -d "$PLUGIN_ROOT" ]]; then
+  _emit_error "E-LOBSTER-010" "CLAUDE_PLUGIN_ROOT must be an existing directory: $PLUGIN_ROOT"
+  _emit_run_completed_and_exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# YAML validation — attempt to parse; any yq error means malformed
+# ---------------------------------------------------------------------------
+
+# I02 / VP-007: use -r (readable) not -f (regular file) so process substitution FDs
+# (<(echo "$yaml")) are accepted. -f returns false for /dev/fd/N (char-special device).
+if [[ ! -r "$WORKFLOW_FILE" ]]; then
+  _emit_error "E-LOBSTER-011" "Workflow file not found or not readable: $WORKFLOW_FILE"
+  _emit_run_completed_and_exit 2
+fi
+
+# I02 / VP-007: process substitution FDs (/dev/fd/N) are single-read streams.
+# If WORKFLOW_FILE is not a regular file, buffer its content into a temp file so
+# subsequent yq calls (parse, length, field extraction) can all read it.
+_WORKFLOW_TMPFILE=""
+# P16-L01: preserve original CLI-supplied path for telemetry before reassignment.
+WORKFLOW_FILE_ORIG="$WORKFLOW_FILE"
+if [[ ! -f "$WORKFLOW_FILE" ]]; then
+  _WORKFLOW_TMPFILE="$(mktemp)"
+  if ! cat "$WORKFLOW_FILE" >"$_WORKFLOW_TMPFILE" 2>/dev/null; then
+    rm -f "$_WORKFLOW_TMPFILE"
+    _emit_error "E-LOBSTER-011" "Workflow file not found or not readable: $WORKFLOW_FILE"
+    _emit_run_completed_and_exit 2
+  fi
+  WORKFLOW_FILE="$_WORKFLOW_TMPFILE"
+fi
+
+# I01 (Fix Burst 6): capture actual yq error message instead of hardcoding "parse error"
+_yq_err="$(yq eval '.' "$WORKFLOW_FILE" 2>&1 >/dev/null || true)"
+if [[ -n "$_yq_err" ]]; then
+  # Collapse newlines to spaces; truncate to 500 chars for JSON safety
+  _yq_err_clean="$(printf '%s' "$_yq_err" | tr '\n' ' ' | tr -s ' ' | cut -c1-500)"
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: ${_yq_err_clean}."
+  _emit_run_completed_and_exit 2
+fi
+
+# C01 (Fix Burst 7): validate .steps is an array (not scalar string, number, object).
+# yq type returns YAML tag: !!seq for array, !!null for absent, !!str/!!int/!!map for wrong types.
+# Accept !!seq (array) and !!null (absent — caught by step_count==0 check below).
+_steps_type="$(yq eval '.steps | type' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ "$_steps_type" != "!!seq" && "$_steps_type" != "!!null" ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: .steps must be an array, got ${_steps_type}."
+  _emit_run_completed_and_exit 2
+fi
+
+# Require steps array to be present and non-empty
+step_count="$(yq eval '.steps // [] | length' "$WORKFLOW_FILE" 2>/dev/null || printf '0')"
+if ! [[ "$step_count" =~ ^[0-9]+$ ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing or malformed steps field."
+  _emit_run_completed_and_exit 2
+fi
+if [[ "$step_count" -eq 0 ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing or empty steps array."
+  _emit_run_completed_and_exit 2
+fi
+
+# C01 / L01 (Fix Burst 11): validate required top-level fields: name and description.
+# Type validation runs BEFORE the presence check — a YAML integer (name: 42) must produce
+# a clear type-error rather than silently passing as the string "42".
+_name_type="$(yq eval '.name | type' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ "$_name_type" != "!!str" && "$_name_type" != "!!null" ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: .name must be a string, got $_name_type."
+  _emit_run_completed_and_exit 2
+fi
+name_val="$(yq eval '.name // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ -z "$name_val" || "$name_val" == "null" ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing required field name."
+  _emit_run_completed_and_exit 2
+fi
+_desc_type="$(yq eval '.description | type' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ "$_desc_type" != "!!str" && "$_desc_type" != "!!null" ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: .description must be a string, got $_desc_type."
+  _emit_run_completed_and_exit 2
+fi
+description_val="$(yq eval '.description // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ -z "$description_val" || "$description_val" == "null" ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing required field description."
+  _emit_run_completed_and_exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# Parse steps using per-step JSON extraction (C01: eliminates delimiter problem)
+# Each step's full JSON is extracted; jq is used to get individual fields safely.
+# ---------------------------------------------------------------------------
+declare -a STEP_IDS=()
+declare -a STEP_SKILLS=()
+declare -A STEP_DEPS=()      # step_id -> comma-separated dep list (for topo sort)
+declare -A STEP_ARGS_JSON=() # step_id -> JSON array string of args
+declare -A STEP_IDX=()       # step_id -> array index (for validation)
+
+declare -a step_json_lines=()
+mapfile -t step_json_lines < <(yq eval -o=json -I=0 '.steps[]' "$WORKFLOW_FILE" 2>/dev/null)
+
+for step_json in "${step_json_lines[@]}"; do
+  [[ -z "$step_json" ]] && continue
+
+  # I04: validate step is a JSON object (not a string/number/array)
+  step_type="$(printf '%s' "$step_json" | jq -r 'type' 2>/dev/null || printf '')"
+  if [[ "$step_type" != "object" ]]; then
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step must be a YAML mapping, got $step_type."
+    _emit_run_completed_and_exit 2
+  fi
+
+  sid="$(printf '%s' "$step_json" | jq -r '.id // ""')"
+  skill_val="$(printf '%s' "$step_json" | jq -r '.skill // ""')"
+  deps_json="$(printf '%s' "$step_json" | jq -c '.depends_on // []')"
+  args_json="$(printf '%s' "$step_json" | jq -c '.args // []')"
+
+  # I03: missing id is an error, not a silent skip
+  if [[ -z "$sid" || "$sid" == "null" ]]; then
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step missing required field id."
+    _emit_run_completed_and_exit 2
+  fi
+
+  # I01: validate step id is kebab-case (^[a-z][a-z0-9-]*$)
+  if ! [[ "$sid" =~ ^[a-z][a-z0-9-]*$ ]]; then
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step id '$sid' must be kebab-case."
+    _emit_run_completed_and_exit 2
+  fi
+
+  # I03: missing skill is an error
+  if [[ -z "$skill_val" || "$skill_val" == "null" ]]; then
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' missing required field skill."
+    _emit_run_completed_and_exit 2
+  fi
+
+  # C01 (Fix Burst 6): validate depends_on is an array (not a string, object, or number)
+  deps_type="$(printf '%s' "$deps_json" | jq -r 'type' 2>/dev/null || printf '')"
+  if [[ "$deps_type" != "array" ]]; then
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' depends_on must be an array, got $deps_type."
+    _emit_run_completed_and_exit 2
+  fi
+
+  # I02: validate args is an array (not a string, object, etc.)
+  args_type="$(printf '%s' "$args_json" | jq -r 'type' 2>/dev/null || printf '')"
+  if [[ "$args_type" != "array" ]]; then
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' args must be an array."
+    _emit_run_completed_and_exit 2
+  fi
+
+  # M01 (Fix Burst 10): validate each args element is a string — null/number/object coerce
+  # silently without this check, producing incorrect invocations of run-skill.mjs.
+  _m01_args_count="$(printf '%s' "$args_json" | jq 'length' 2>/dev/null || echo "0")"
+  if [[ "$_m01_args_count" =~ ^[0-9]+$ ]] && [[ "$_m01_args_count" -gt 0 ]]; then
+    _m01_ai=0
+    while [[ "$_m01_ai" -lt "$_m01_args_count" ]]; do
+      _m01_elem_type="$(printf '%s' "$args_json" | jq -r --argjson idx "$_m01_ai" '.[$idx] | type' 2>/dev/null || printf '')"
+      if [[ "$_m01_elem_type" != "string" ]]; then
+        _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' args element $_m01_ai must be a string, got $_m01_elem_type."
+        _emit_run_completed_and_exit 2
+      fi
+      _m01_ai=$((_m01_ai + 1))
+    done
+  fi
+
+  # C02: duplicate step ID is an error (not a silent merge)
+  if [[ -n "${STEP_IDX["$sid"]+isset}" ]]; then
+    _emit_error "E-LOBSTER-009" "Duplicate step id '$sid' in workflow."
+    _emit_run_completed_and_exit 2
+  fi
+
+  STEP_IDS+=("$sid")
+  STEP_SKILLS+=("$skill_val")
+  # S02: validate each dep entry against kebab-case before storing; an embedded
+  # comma in a dep value would silently split into two bogus entries at topo sort time.
+  # L02 (Fix Burst 9): use index-based extraction (parallel to args pattern) so an
+  # embedded newline in a dep value is preserved as a single entry rather than being
+  # split by mapfile -t into two phantom valid kebab-case entries.
+  _dep_count="$(printf '%s' "$deps_json" | jq 'length' 2>/dev/null || echo "0")"
+  declare -a _dep_array=()
+  if [[ "$_dep_count" =~ ^[0-9]+$ ]] && [[ "$_dep_count" -gt 0 ]]; then
+    _di=0
+    while [[ "$_di" -lt "$_dep_count" ]]; do
+      # M01 (Fix Burst 11): validate each depends_on element is a string — null/number/object
+      # would coerce silently without this check, producing phantom kebab-case failures or
+      # bypassing the regex entirely for null (jq -r renders null as "null" literal).
+      _dep_elem_type="$(printf '%s' "$deps_json" | jq -r --argjson idx "$_di" '.[$idx] | type' 2>/dev/null || printf '')"
+      if [[ "$_dep_elem_type" != "string" ]]; then
+        _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' depends_on element $_di must be a string, got $_dep_elem_type."
+        _emit_run_completed_and_exit 2
+      fi
+      _dep_val="$(printf '%s' "$deps_json" | jq -r --argjson idx "$_di" '.[$idx]')"
+      _dep_array+=("$_dep_val")
+      _di=$((_di + 1))
+    done
+  fi
+  declare -a _validated_deps=()
+  for _dep_entry in "${_dep_array[@]}"; do
+    if ! [[ "$_dep_entry" =~ ^[a-z][a-z0-9-]*$ ]]; then
+      _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' has malformed dependency '$_dep_entry'."
+      _emit_run_completed_and_exit 2
+    fi
+    _validated_deps+=("$_dep_entry")
+  done
+  deps_csv=""
+  if [[ "${#_validated_deps[@]}" -gt 0 ]]; then
+    deps_csv="$(printf '%s\n' "${_validated_deps[@]}" | tr '\n' ',' | sed 's/,$//')"
+  fi
+  STEP_DEPS["$sid"]="$deps_csv"
+  STEP_ARGS_JSON["$sid"]="$args_json"
+  STEP_IDX["$sid"]="${#STEP_IDS[@]}"
+done
+
+# ---------------------------------------------------------------------------
+# C02: Skill registration check via plugin.json lookup (spec-compliant)
+# ---------------------------------------------------------------------------
+local_plugin_manifest="${PLUGIN_ROOT}/.claude-plugin/plugin.json"
+if [[ ! -f "$local_plugin_manifest" ]]; then
+  # S01: E-LOBSTER-012 for missing manifest (distinct from E-LOBSTER-002 skill-not-found)
+  _emit_error "E-LOBSTER-012" "Plugin manifest not found at $local_plugin_manifest"
+  _emit_run_completed_and_exit 2
+fi
+# S03 (Fix Burst 8): validate plugin.json is parseable JSON before any jq queries.
+# A malformed file causes jq queries to silently fail/return empty, misclassifying
+# the error as "empty .skills field" (E-LOBSTER-002) instead of a JSON parse error.
+if ! jq -e . "$local_plugin_manifest" >/dev/null 2>&1; then
+  _emit_error "E-LOBSTER-013" "Plugin manifest is not valid JSON: $local_plugin_manifest"
+  _emit_run_completed_and_exit 2
+fi
+# S03 (pre-existing): validate .skills is a string (not array/object) before using it as a path
+local_skills_type="$(jq -r '.skills | if . == null then "null" else type end' "$local_plugin_manifest" 2>/dev/null || printf '')"
+if [[ -n "$local_skills_type" && "$local_skills_type" != "string" && "$local_skills_type" != "null" ]]; then
+  # P18-I02: manifest schema violation — use E-LOBSTER-013 (semantic JSON invalidity), not E-LOBSTER-002 (skill-not-found)
+  _emit_error "E-LOBSTER-013" "Plugin manifest .skills field must be a string path, got $local_skills_type."
+  _emit_run_completed_and_exit 2
+fi
+skills_dir_raw="$(jq -r '.skills // "./skills/"' "$local_plugin_manifest" 2>/dev/null | sed 's|/$||')"
+# I01 (Fix Burst 7): explicit empty-string check — // only substitutes null, not "".
+# An empty .skills produces degenerate path ${PLUGIN_ROOT}// when not caught here.
+if [[ -z "$skills_dir_raw" ]]; then
+  # P18-I02: manifest schema violation — use E-LOBSTER-013, not E-LOBSTER-002
+  _emit_error "E-LOBSTER-013" "Plugin manifest .skills field is empty string."
+  _emit_run_completed_and_exit 2
+fi
+# Resolve relative path (strip leading ./ and prepend PLUGIN_ROOT)
+if [[ "$skills_dir_raw" == "./"* ]]; then
+  skills_dir="${PLUGIN_ROOT}/${skills_dir_raw#./}"
+elif [[ "$skills_dir_raw" == /* ]]; then
+  skills_dir="$skills_dir_raw"
+else
+  skills_dir="${PLUGIN_ROOT}/${skills_dir_raw}"
+fi
+
+for sid in "${STEP_IDS[@]}"; do
+  idx="${STEP_IDX["$sid"]}"
+  skill="${STEP_SKILLS[$((idx - 1))]}"
+
+  # I02: validate skill name — allow optional brain: prefix, kebab-case after
+  # P18-I01: format violation is YAML schema (E-LOBSTER-003), not skill-not-found (E-LOBSTER-002)
+  if ! [[ "$skill" =~ ^(brain:)?[a-z][a-z0-9-]*$ ]]; then
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: skill name '$skill' must be kebab-case (with optional brain: prefix)."
+    _emit_run_completed_and_exit 2
+  fi
+
+  # Strip brain: prefix for directory lookup
+  skill_dir_name="${skill#brain:}"
+  skill_md="${skills_dir}/${skill_dir_name}/SKILL.md"
+  if [[ ! -f "$skill_md" ]]; then
+    _emit_error "E-LOBSTER-002" "Skill '$skill' not found in plugin manifest."
+    _emit_run_completed_and_exit 2
+  fi
+done
+
+# ---------------------------------------------------------------------------
+# Kahn's topological sort (BFS) with alphabetical ordering for determinism
+# ---------------------------------------------------------------------------
+declare -A IN_DEGREE=()
+declare -A DEPENDENTS=() # step_id -> space-separated list of steps that depend on it
+
+# Initialize in-degree and dependents map
+for sid in "${STEP_IDS[@]}"; do
+  IN_DEGREE["$sid"]=0
+  DEPENDENTS["$sid"]=""
+done
+
+for sid in "${STEP_IDS[@]}"; do
+  deps="${STEP_DEPS["$sid"]}"
+  if [[ -n "$deps" ]]; then
+    declare -a dep_list=()
+    mapfile -t dep_list < <(printf '%s' "$deps" | tr ',' '\n')
+    for dep in "${dep_list[@]}"; do
+      dep="${dep// /}" # strip whitespace
+      [[ -z "$dep" ]] && continue
+      # E-LOBSTER-004 for unknown dependency reference
+      if [[ -z "${IN_DEGREE["$dep"]+isset}" ]]; then
+        _emit_error "E-LOBSTER-004" "Unknown dependency '$dep' referenced by step '$sid'."
+        # P16-I01: parallel to cycle path (line ~532) — report steps_skipped accurately
+        _emit_run_completed_and_exit 2 0 "${#STEP_IDS[@]}"
+      fi
+      IN_DEGREE["$sid"]=$((IN_DEGREE["$sid"] + 1))
+      if [[ -z "${DEPENDENTS["$dep"]}" ]]; then
+        DEPENDENTS["$dep"]="$sid"
+      else
+        DEPENDENTS["$dep"]="${DEPENDENTS["$dep"]} $sid"
+      fi
+    done
+  fi
+done
+
+# BFS queue seeded with all zero-in-degree nodes (sorted alphabetically)
+declare -a QUEUE=()
+declare -a TOPO_ORDER=()
+
+declare -a zero_nodes=()
+for sid in "${STEP_IDS[@]}"; do
+  if [[ "${IN_DEGREE["$sid"]}" -eq 0 ]]; then
+    zero_nodes+=("$sid")
+  fi
+done
+
+if [[ "${#zero_nodes[@]}" -gt 0 ]]; then
+  mapfile -t QUEUE < <(printf '%s\n' "${zero_nodes[@]}" | grep -v '^$' | sort)
+fi
+
+while [[ "${#QUEUE[@]}" -gt 0 ]]; do
+  current="${QUEUE[0]}"
+  QUEUE=("${QUEUE[@]:1}")
+  TOPO_ORDER+=("$current")
+
+  deps_str="${DEPENDENTS["$current"]}"
+  if [[ -n "$deps_str" ]]; then
+    declare -a newly_zero=()
+    # S01: deps_str is space-separated step IDs — word split is safe here (IDs are kebab-case, no spaces)
+    for dep in $deps_str; do
+      IN_DEGREE["$dep"]=$((IN_DEGREE["$dep"] - 1))
+      if [[ "${IN_DEGREE["$dep"]}" -eq 0 ]]; then
+        newly_zero+=("$dep")
+      fi
+    done
+    if [[ "${#newly_zero[@]}" -gt 0 ]]; then
+      declare -a sorted_newly_zero=()
+      mapfile -t sorted_newly_zero < <(printf '%s\n' "${newly_zero[@]}" | grep -v '^$' | sort)
+      if [[ "${#sorted_newly_zero[@]}" -gt 0 ]]; then
+        QUEUE+=("${sorted_newly_zero[@]}")
+      fi
+    fi
+  fi
+done
+
+# Cycle detection (C02 Fix Burst 6: include cycle member IDs in message; S01: pass steps_skipped)
+if [[ "${#TOPO_ORDER[@]}" -ne "${#STEP_IDS[@]}" ]]; then
+  declare -a cycle_members=()
+  for _cycle_sid in "${STEP_IDS[@]}"; do
+    if [[ "${IN_DEGREE["$_cycle_sid"]:-0}" -gt 0 ]]; then
+      cycle_members+=("$_cycle_sid")
+    fi
+  done
+  cycle_csv="$(
+    IFS=','
+    printf '%s' "${cycle_members[*]}"
+  )"
+  # S01 (Fix Burst 12): steps with in-degree > 0 may include non-cycle members
+  # (steps that merely depend ON cycle members). Rename message for accuracy.
+  _emit_error "E-LOBSTER-001" "Steps with unresolved dependencies (cycle present): ${cycle_csv}."
+  _emit_run_completed_and_exit 2 0 "${#STEP_IDS[@]}"
+fi
+
+# ---------------------------------------------------------------------------
+# Build step-id to skill lookup (for execution phase)
+# ---------------------------------------------------------------------------
+declare -A STEP_SKILL_MAP=()
+for i in "${!STEP_IDS[@]}"; do
+  STEP_SKILL_MAP["${STEP_IDS[$i]}"]="${STEP_SKILLS[$i]}"
+done
+
+# ---------------------------------------------------------------------------
+# Dry-run mode: print execution plan and exit
+# C03: BRAIN_ROOT is NOT required for --dry-run (no log writes occur)
+# ---------------------------------------------------------------------------
+if [[ "$DRY_RUN" == "true" ]]; then
+  for sid in "${TOPO_ORDER[@]}"; do
+    skill="${STEP_SKILL_MAP["$sid"]}"
+    args_json="${STEP_ARGS_JSON["$sid"]:-[]}"
+    # Check if args array is non-empty
+    # P14-L01: defensive fallback to preserve _emit_run_completed_and_exit invariant
+    args_count="$(printf '%s' "$args_json" | jq 'length' 2>/dev/null || echo "0")"
+    if [[ "$args_count" -gt 0 ]]; then
+      # I03: use index-based extraction so embedded newlines in arg values are preserved as one arg
+      # mapfile -t splits on newlines which breaks multiline values; index loop is safe.
+      declare -a _dry_args=()
+      for ((_i = 0; _i < args_count; _i++)); do
+        _dry_args+=("$(printf '%s' "$args_json" | jq -r --argjson idx "$_i" '.[$idx]')")
+      done
+      args_display=""
+      for _arg in "${_dry_args[@]}"; do
+        args_display+=" $(printf '%q' "$_arg")"
+      done
+      # Trim leading space
+      args_display="${args_display# }"
+      # L01 (Fix Burst 9): shell-quote ALL components with printf %q for consistency.
+      # Double-quoting "$PLUGIN_ROOT" breaks if PLUGIN_ROOT contains a literal '"'.
+      # The quoted invocation string is built as a single unit containing the literal
+      # text "run-skill.mjs" so the pure-bash meta-test exclusion still works.
+      _q_invocation="node $(printf '%q' "${PLUGIN_ROOT}/scripts/run-skill.mjs") $(printf '%q' "$skill")" # node run-skill.mjs
+      printf '%s: %s %s\n' "$sid" "$_q_invocation" "$args_display"
+    else
+      _q_invocation="node $(printf '%q' "${PLUGIN_ROOT}/scripts/run-skill.mjs") $(printf '%q' "$skill")" # node run-skill.mjs
+      printf '%s: %s\n' "$sid" "$_q_invocation"
+    fi
+  done
+  # I01: emit lobster.run.completed on stderr (same as execution mode success path)
+  _emit_run_completed_and_exit 0 "${#TOPO_ORDER[@]}" 0
+fi
+
+# ---------------------------------------------------------------------------
+# Execution mode: run each step, write JSONL log, honor exit-code contract
+# C03: BRAIN_ROOT is validated here (only execution mode writes to the log)
+# I02 (Fix Burst 7): also reject whitespace-only BRAIN_ROOT and nonexistent directory.
+# S02 (Fix Burst 8): strip tabs/newlines/spaces — not just spaces — before the emptiness check.
+# ---------------------------------------------------------------------------
+_br_trimmed="${BRAIN_ROOT//[$' \t\n\r']/}"
+if [[ -z "$_br_trimmed" ]]; then
+  _emit_error "E-LOBSTER-005" "BRAIN_ROOT environment variable is not set or contains only whitespace."
+  _emit_run_completed_and_exit 2
+fi
+if [[ ! -d "$BRAIN_ROOT" ]]; then
+  _emit_error "E-LOBSTER-005" "BRAIN_ROOT must be an existing directory: $BRAIN_ROOT"
+  _emit_run_completed_and_exit 2
+fi
+
+LOG_DATE="$(date -u +%Y-%m-%d)"
+LOG_DIR="${BRAIN_ROOT}/.brain/logs"
+LOG_FILE="${LOG_DIR}/lobster-${LOG_DATE}.jsonl"
+
+if ! mkdir -p "$LOG_DIR" 2>/dev/null; then
+  _emit_error "E-LOBSTER-006" "Cannot create log directory: $LOG_DIR"
+  _emit_run_completed_and_exit 2
+fi
+# I01: mkdir -p can succeed on a read-only directory (it already exists).
+# Verify the log file itself is writable before any steps run so the script
+# never terminates mid-execution without emitting lobster.run.completed.
+if ! touch "$LOG_FILE" 2>/dev/null; then
+  _emit_error "E-LOBSTER-006" "Cannot write to log file: $LOG_FILE"
+  _emit_run_completed_and_exit 2
+fi
+
+OVERALL_EXIT=0
+STEPS_RUN=0
+STEPS_SKIPPED=0
+
+for sid in "${TOPO_ORDER[@]}"; do
+  skill="${STEP_SKILL_MAP["$sid"]}"
+  args_json="${STEP_ARGS_JSON["$sid"]:-[]}"
+
+  step_start_ms="$(_now_ms)"
+
+  step_exit=0
+
+  # I03: use index-based extraction so embedded newlines in arg values are preserved as one arg
+  # mapfile -t splits on newlines which breaks multiline values; index loop is safe.
+  # P14-L01: defensive fallback to preserve _emit_run_completed_and_exit invariant
+  declare -a step_args=()
+  args_count="$(printf '%s' "$args_json" | jq 'length' 2>/dev/null || echo "0")"
+  if [[ "$args_count" -gt 0 ]]; then
+    for ((_j = 0; _j < args_count; _j++)); do
+      step_args+=("$(printf '%s' "$args_json" | jq -r --argjson idx "$_j" '.[$idx]')")
+    done
+  fi
+
+  if [[ "${#step_args[@]}" -gt 0 ]]; then
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" "${step_args[@]}" || step_exit="$?"
+  else
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" || step_exit="$?"
+  fi
+
+  step_end_ms="$(_now_ms)"
+  step_duration=$((step_end_ms - step_start_ms))
+
+  # I02: determine verdict WITHOUT modifying step_exit so the JSONL log preserves
+  # the actual exit code (e.g., 127 for command-not-found rather than coercing to 2)
+  case "$step_exit" in
+  0) verdict="allow" ;;
+  1) verdict="advisory" ;;
+  *) verdict="block" ;;
+  esac
+
+  STEPS_RUN=$((STEPS_RUN + 1))
+
+  # Write JSONL log entry — use actual step_exit (not coerced) for diagnostic fidelity.
+  # S04: include ts and trace fields (minimum spec fields + operational context).
+  jq -nc \
+    --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    --arg trace "$RUN_TRACE" \
+    --arg step_id "$sid" \
+    --arg verdict "$verdict" \
+    --argjson exit_code "$step_exit" \
+    --argjson duration_ms "$step_duration" \
+    '{"ts": $ts, "trace": $trace, "step_id": $step_id, "exit_code": $exit_code, "verdict": $verdict, "duration_ms": $duration_ms}' \
+    >>"$LOG_FILE"
+
+  # Emit lobster.step.completed event on stderr
+  {
+    ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    jq -nc \
+      --arg ts "$ts" \
+      --arg step_id "$sid" \
+      --arg verdict "$verdict" \
+      --arg hook_name "bin/lobster-run" \
+      --arg trace "$RUN_TRACE" \
+      --argjson exit_code "$step_exit" \
+      --argjson duration_ms "$step_duration" \
+      '{"ts": $ts, "event_type": "lobster.step.completed", "hook_name": $hook_name, "trace": $trace, "step_id": $step_id, "exit_code": $exit_code, "verdict": $verdict, "duration_ms": $duration_ms}'
+  } >&2
+
+  # I02: treat any non-{0,1} exit code as a block for flow control
+  if [[ "$step_exit" -ne 0 ]] && [[ "$step_exit" -ne 1 ]]; then
+    # Block: stop immediately; remaining steps are skipped
+    STEPS_SKIPPED=$((${#TOPO_ORDER[@]} - STEPS_RUN))
+    _emit_run_completed_and_exit 2 "$STEPS_RUN" "$STEPS_SKIPPED"
+  elif [[ "$step_exit" -eq 1 ]]; then
+    OVERALL_EXIT=1
+  fi
+done
+
+# Emit lobster.run.completed event on stderr (successful/advisory completion)
+_emit_run_completed_and_exit "$OVERALL_EXIT" "$STEPS_RUN" 0

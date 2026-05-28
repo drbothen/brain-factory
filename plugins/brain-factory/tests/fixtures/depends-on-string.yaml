@@ -1,0 +1,9 @@
+name: test-depends-on-string
+description: "depends_on as string (invalid)"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []
+  - id: step-b
+    skill: init
+    depends_on: "step-a"

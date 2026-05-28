@@ -1,0 +1,6 @@
+name: test-missing-skill
+description: "References a skill that is not registered in plugin.json"
+steps:
+  - id: step-a
+    skill: brain-nonexistent-skill-xyz
+    depends_on: []

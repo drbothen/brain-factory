@@ -1,0 +1,9 @@
+name: args-null-test
+description: "Args with null element"
+steps:
+  - id: step-a
+    skill: init
+    args:
+      - --verbose
+      - null
+    depends_on: []

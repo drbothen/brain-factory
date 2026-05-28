@@ -1,0 +1,6 @@
+name: 42
+description: "Name field is an integer, not a string"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []

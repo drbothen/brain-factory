@@ -1,14 +1,14 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.2"
+version: "0.1.6"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 traces_to: prd/index.md
 created: 2026-05-15
-last_updated: 2026-05-18
+last_updated: 2026-05-28
 ---
 
 # brain-factory Error Taxonomy
@@ -199,9 +199,19 @@ Message format uses `<placeholder>` for dynamic values.
 
 | Code | Severity | Exit | Raised By | Message Format |
 |------|----------|------|-----------|---------------|
-| E-LOBSTER-001 | broken | 2 | `bin/lobster-run` | `Circular dependency detected in workflow: <cycle>.` |
+| E-LOBSTER-001 | broken | 2 | `bin/lobster-run` | `Steps with unresolved dependencies (cycle present): <cycle>.` |
 | E-LOBSTER-002 | broken | 2 | `bin/lobster-run` | `Skill '<name>' not found in plugin manifest.` |
 | E-LOBSTER-003 | broken | 2 | `bin/lobster-run` | `Invalid workflow YAML: <error>.` |
+| E-LOBSTER-004 | broken | 2 | `bin/lobster-run` | `Unknown dependency '<name>' referenced by step '<id>'.` |
+| E-LOBSTER-005 | broken | 2 | `bin/lobster-run` | `BRAIN_ROOT environment variable is not set.` |
+| E-LOBSTER-006 | broken | 2 | `bin/lobster-run` | `Cannot create log directory: <path>` |
+| E-LOBSTER-007 | broken | 2 | `bin/lobster-run` | `Unknown flag: <flag>` |
+| E-LOBSTER-008 | broken | 2 | `bin/lobster-run` | `Missing workflow file argument.` |
+| E-LOBSTER-009 | broken | 2 | `bin/lobster-run` | `Duplicate step id '<id>' in workflow.` |
+| E-LOBSTER-010 | broken | 2 | `bin/lobster-run` | `CLAUDE_PLUGIN_ROOT environment variable is not set.` |
+| E-LOBSTER-011 | broken | 2 | `bin/lobster-run` | `Workflow file not found: <path>` |
+| E-LOBSTER-012 | broken | 2 | `bin/lobster-run` | `Plugin manifest not found at <path>` |
+| E-LOBSTER-013 | broken | 2 | `bin/lobster-run` | `Plugin manifest is not valid JSON: <path>` |
 
 ---
 
@@ -276,6 +286,22 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.6 (2026-05-28)
+
+**CONTENT FIX (STORY-032 Fix Burst 8 — I02/S01/S03):** Registered E-LOBSTER-013. E-LOBSTER-013 covers plugin manifest present but not parseable as JSON (`Plugin manifest is not valid JSON: <path>`). Previously, a malformed plugin.json caused `jq` queries to silently return empty, misclassifying the error as "empty .skills field" (E-LOBSTER-002). This error is distinct from E-LOBSTER-012 (manifest file absent) and from E-LOBSTER-002 (manifest valid JSON but skill not found).
+
+### v0.1.5 (2026-05-27)
+
+**CONTENT FIX (STORY-032 Fix Burst 4 — S01):** Registered E-LOBSTER-012. E-LOBSTER-012 covers plugin manifest not found at `CLAUDE_PLUGIN_ROOT/.claude-plugin/plugin.json`. Previously this condition emitted E-LOBSTER-002 ("Skill not found in plugin manifest") which incorrectly conflated two distinct error classes: manifest absence and skill absence. E-LOBSTER-002 now exclusively covers skill-not-in-manifest. E-LOBSTER-012 exclusively covers the manifest file itself being absent.
+
+### v0.1.4 (2026-05-27)
+
+**CONTENT FIX (STORY-032 Fix Burst 3 — C02/I04/S01):** Registered E-LOBSTER-009, E-LOBSTER-010, and E-LOBSTER-011. E-LOBSTER-009 covers duplicate step IDs within a single workflow (previously misdiagnosed as a circular dependency). E-LOBSTER-010 covers missing `CLAUDE_PLUGIN_ROOT` environment variable (previously unvalidated — the script would silently fail at skill-manifest lookup). E-LOBSTER-011 covers workflow file not found (previously conflated with E-LOBSTER-003 "Invalid workflow YAML" since `yq eval` errors on nonexistent files).
+
+### v0.1.3 (2026-05-27)
+
+**CONTENT FIX (STORY-032 Fix Burst 2 — I01):** Registered E-LOBSTER-004 through E-LOBSTER-008. These error codes were emitted by `bin/lobster-run` since STORY-032 initial delivery but were absent from the canonical taxonomy. E-LOBSTER-004 covers unknown dependency references; E-LOBSTER-005 covers missing BRAIN_ROOT; E-LOBSTER-006 covers log directory creation failure; E-LOBSTER-007 covers unknown CLI flags; E-LOBSTER-008 (new, S03 fix) covers missing workflow file argument — replacing the incorrect prior behavior of emitting E-LOBSTER-003 for a missing argument.
 
 ### v0.1.2 (2026-05-18)
 

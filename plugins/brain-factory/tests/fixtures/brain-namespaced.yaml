@@ -1,0 +1,6 @@
+name: test-brain-namespace
+description: "Test brain: prefix is supported per BC-2.12.001 postcondition 2"
+steps:
+  - id: step-a
+    skill: brain:init
+    depends_on: []

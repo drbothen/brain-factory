@@ -1,0 +1,4 @@
+name: steps-as-object-test
+description: "Test steps as mapping object — should be rejected"
+steps:
+  a: 1

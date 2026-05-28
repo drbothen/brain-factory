@@ -1,0 +1,9 @@
+name: test-exit-all-pass
+description: "All steps exit 0"
+steps:
+  - id: step-a
+    skill: mock-pass
+    depends_on: []
+  - id: step-b
+    skill: mock-pass
+    depends_on: [step-a]
