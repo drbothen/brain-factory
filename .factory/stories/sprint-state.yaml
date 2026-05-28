@@ -21,7 +21,7 @@ total_points: 264
 current_wave: 4
 created: 2026-05-19
 last_updated: 2026-05-27
-in_progress_stories: []
+in_progress_stories: [STORY-032]
 completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038, STORY-016, STORY-002, STORY-006, STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-017]
 waves:
   - id: 1
@@ -211,7 +211,7 @@ waves:
         pr_number: 16
         merge_commit: b30dd35
       - id: STORY-032
-        status: pending
+        status: in_progress
         points: 8
         priority: P0
         epic: EPIC-07

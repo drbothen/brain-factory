@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-017-delivered
+phase: phase-3-wave-4-story-032-in-progress
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -44,15 +44,15 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 1: 4/4 (29 pts, gate PASSED). Wave 2: 3/3 (24 pts, gate PASSED 6/6). Wave 3: 8/8 (32 pts, gate PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925). Wave 4: 1/4 stories (STORY-017 delivered, 8/26 pts). 16/43 stories (90/264 pts). 36 BCs active."
+phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 1: 4/4 (29 pts, gate PASSED). Wave 2: 3/3 (24 pts, gate PASSED 6/6). Wave 3: 8/8 (32 pts, gate PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925). Wave 4: 1/4 stories delivered + STORY-032 in_progress (8/26 pts delivered). 16/43 stories (90/264 pts). 36 BCs active."
 wave_3_status: "GATE PASSED 6/6 — 2026-05-27 — 584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed), demo evidence PASS, holdout PASS (mean 0.925), state update PASS"
 wave_3_gate_result: "PASSED 6/6 — fix commits: e7824d0 (lifecycle+catalog) + 56e1ec7 (manifest schema) + 42ca028 (slug_count)"
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-017-delivered
-session_continuity: "FRESH-CONTEXT-READY — Wave 4 STORY-017 delivered (PR #16 merged b30dd35, 2026-05-27). 16/43 stories (90/264 pts). 36 BCs active. 631 tests on develop (628 passing). 16 PRs merged. Wave 4 remaining: STORY-032 + STORY-004 + STORY-015 (parallel). Deferred: BC verdict schema drift (PO sweep), STORY-002 test naming, F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, STORY-006 AC exit codes, VP-003 field name."
+session_stage: phase-3-wave-4-story-032-in-progress
+session_continuity: "Wave 4 STORY-032 IN PROGRESS (bin/lobster-run YAML parsing + toposort + exit-code contract). 16/43 stories delivered (90/264 pts). 36 BCs active. 631 tests on develop (628 passing). 16 PRs merged. Wave 4 remaining: STORY-032 (in_progress) + STORY-004 + STORY-015 (parallel). Deferred: BC verdict schema drift (PO sweep), STORY-002 test naming, F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, STORY-006 AC exit codes, VP-003 field name."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-017-delivered
+status: phase-3-wave-4-story-032-in-progress
 ---
 
 # brain-factory Pipeline STATE
@@ -90,7 +90,9 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-017 DELIVERED — Wave 4 1/4 stories (8/26 pts) — Next: STORY-032 + STORY-004 + STORY-015 (parallel)
+## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-032 IN PROGRESS (Wave 4 story 2/4) — bin/lobster-run YAML parsing + toposort + exit-code contract
+
+STORY-032 delivery started — Wave 4 story 2/4. Goal: bin/lobster-run YAML parsing, topological sort, exit-code contract (BC-2.12.001, BC-2.12.002).
 
 ---
 
@@ -98,8 +100,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ### Pipeline Position
 - Phase 3: TDD Implementation
-- Waves 1–3: COMPLETE + GATE PASSED; Wave 4: 1/4 (STORY-017 delivered)
-- 16/43 stories (90/264 points — 34%)
+- Waves 1–3: COMPLETE + GATE PASSED; Wave 4: 1/4 delivered + STORY-032 in_progress
+- 16/43 stories delivered (90/264 points — 34%)
 
 ### Wave 3 Integration Gate Results (2026-05-27) — GATE PASSED 6/6
 | Check | Result | Detail |
@@ -130,7 +132,7 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 - 36 BCs active (of 95 total)
 - 631 tests on develop (628 passing)
 - 16 PRs merged (#1-#16) + 3 Wave 3 gate fix commits
-- Waves 1–3 COMPLETE + GATE PASSED; Wave 4: 1/4 (STORY-017 delivered)
+- Waves 1–3 COMPLETE + GATE PASSED; Wave 4: 1/4 delivered + STORY-032 in_progress
 
 ### Git State to Verify
 - `git log --oneline origin/develop -3` should show Wave 3 gate fix commits at tip
@@ -154,7 +156,7 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 ### Resume Procedure for Fresh Context
 
 #### 1. Pipeline Position
-Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 1/4 stories (STORY-017 delivered). 16/43 stories delivered (90/264 pts). 36 BCs active. 631 tests on develop (628 passing).
+Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 1/4 delivered + STORY-032 in_progress (bin/lobster-run YAML parsing + toposort + exit-code contract). 16/43 stories delivered (90/264 pts). 36 BCs active. 631 tests on develop (628 passing).
 
 #### 2. Wave 4 Task List (CRITICAL — this is what to DO)
 
