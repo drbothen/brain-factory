@@ -549,7 +549,8 @@ if [[ "$DRY_RUN" == "true" ]]; then
     skill="${STEP_SKILL_MAP["$sid"]}"
     args_json="${STEP_ARGS_JSON["$sid"]:-[]}"
     # Check if args array is non-empty
-    args_count="$(printf '%s' "$args_json" | jq 'length')"
+    # P14-L01: defensive fallback to preserve _emit_run_completed_and_exit invariant
+    args_count="$(printf '%s' "$args_json" | jq 'length' 2>/dev/null || echo "0")"
     if [[ "$args_count" -gt 0 ]]; then
       # I03: use index-based extraction so embedded newlines in arg values are preserved as one arg
       # mapfile -t splits on newlines which breaks multiline values; index loop is safe.
@@ -624,8 +625,9 @@ for sid in "${TOPO_ORDER[@]}"; do
 
   # I03: use index-based extraction so embedded newlines in arg values are preserved as one arg
   # mapfile -t splits on newlines which breaks multiline values; index loop is safe.
+  # P14-L01: defensive fallback to preserve _emit_run_completed_and_exit invariant
   declare -a step_args=()
-  args_count="$(printf '%s' "$args_json" | jq 'length')"
+  args_count="$(printf '%s' "$args_json" | jq 'length' 2>/dev/null || echo "0")"
   if [[ "$args_count" -gt 0 ]]; then
     for ((_j = 0; _j < args_count; _j++)); do
       step_args+=("$(printf '%s' "$args_json" | jq -r --argjson idx "$_j" '.[$idx]')")
