@@ -1308,7 +1308,7 @@ steps:
 }
 
 # S03: .skills field as array in plugin.json → E-LOBSTER-002, exit 2
-@test "BC_2_12_001: lobster-run .skills as array in plugin manifest emits E-LOBSTER-002 exit 2 (S03)" {
+@test "BC_2_12_001: lobster-run .skills as array in plugin manifest emits E-LOBSTER-013 exit 2 (S03+P18I02)" {
   _setup_lobster_env
   # Overwrite plugin.json with .skills as an array (invalid type)
   printf '{"name":"brain-factory","skills":["./skills/"],"hooks":"hooks/hooks.json"}\n' \
@@ -1318,7 +1318,9 @@ steps:
     "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml"
   _teardown_lobster_env
   [ "$status" -eq 2 ]
-  [[ "$output" == *"E-LOBSTER-002"* ]]
+  # P18-I02: manifest schema violations now use E-LOBSTER-013 (semantic JSON invalidity),
+  # not E-LOBSTER-002 (which exclusively covers skill-not-found-in-manifest)
+  [[ "$output" == *"E-LOBSTER-013"* ]]
 }
 
 # S04: JSONL log entries contain ts and trace fields (operational observability)
@@ -1544,8 +1546,8 @@ steps:
   [[ "$output" == *"E-LOBSTER-003"* ]]
 }
 
-# I01: empty .skills string in plugin.json → E-LOBSTER-002, exit 2
-@test "BC_2_12_001: lobster-run empty .skills string in plugin manifest emits E-LOBSTER-002 exit 2 (I01)" {
+# I01: empty .skills string in plugin.json → E-LOBSTER-013, exit 2 (P18-I02 reclassified)
+@test "BC_2_12_001: lobster-run empty .skills string in plugin manifest emits E-LOBSTER-013 exit 2 (I01+P18I02)" {
   _setup_lobster_env
   # Overwrite plugin.json with .skills as empty string
   printf '{"name":"brain-factory","skills":"","hooks":"hooks/hooks.json"}\n' \
@@ -1555,7 +1557,8 @@ steps:
     "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml"
   _teardown_lobster_env
   [ "$status" -eq 2 ]
-  [[ "$output" == *"E-LOBSTER-002"* ]]
+  # P18-I02: manifest schema violations now use E-LOBSTER-013, not E-LOBSTER-002
+  [[ "$output" == *"E-LOBSTER-013"* ]]
 }
 
 # I02: whitespace-only BRAIN_ROOT → E-LOBSTER-005, exit 2

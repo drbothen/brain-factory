@@ -405,14 +405,16 @@ fi
 # S03 (pre-existing): validate .skills is a string (not array/object) before using it as a path
 local_skills_type="$(jq -r '.skills | if . == null then "null" else type end' "$local_plugin_manifest" 2>/dev/null || printf '')"
 if [[ -n "$local_skills_type" && "$local_skills_type" != "string" && "$local_skills_type" != "null" ]]; then
-  _emit_error "E-LOBSTER-002" "Plugin manifest .skills field must be a string path, got $local_skills_type."
+  # P18-I02: manifest schema violation — use E-LOBSTER-013 (semantic JSON invalidity), not E-LOBSTER-002 (skill-not-found)
+  _emit_error "E-LOBSTER-013" "Plugin manifest .skills field must be a string path, got $local_skills_type."
   _emit_run_completed_and_exit 2
 fi
 skills_dir_raw="$(jq -r '.skills // "./skills/"' "$local_plugin_manifest" 2>/dev/null | sed 's|/$||')"
 # I01 (Fix Burst 7): explicit empty-string check — // only substitutes null, not "".
 # An empty .skills produces degenerate path ${PLUGIN_ROOT}// when not caught here.
 if [[ -z "$skills_dir_raw" ]]; then
-  _emit_error "E-LOBSTER-002" "Plugin manifest .skills field is empty string."
+  # P18-I02: manifest schema violation — use E-LOBSTER-013, not E-LOBSTER-002
+  _emit_error "E-LOBSTER-013" "Plugin manifest .skills field is empty string."
   _emit_run_completed_and_exit 2
 fi
 # Resolve relative path (strip leading ./ and prepend PLUGIN_ROOT)
@@ -429,8 +431,9 @@ for sid in "${STEP_IDS[@]}"; do
   skill="${STEP_SKILLS[$((idx - 1))]}"
 
   # I02: validate skill name — allow optional brain: prefix, kebab-case after
+  # P18-I01: format violation is YAML schema (E-LOBSTER-003), not skill-not-found (E-LOBSTER-002)
   if ! [[ "$skill" =~ ^(brain:)?[a-z][a-z0-9-]*$ ]]; then
-    _emit_error "E-LOBSTER-002" "Skill '$skill' has invalid name (must be kebab-case with optional brain: prefix)."
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: skill name '$skill' must be kebab-case (with optional brain: prefix)."
     _emit_run_completed_and_exit 2
   fi
 
