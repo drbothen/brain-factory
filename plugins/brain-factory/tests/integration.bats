@@ -665,7 +665,6 @@ _teardown_lobster_env() {
   # Find JSONL log file
   local log_file
   log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' | head -1)"
-  _teardown_lobster_env
   [ "$exit_status" -eq 0 ]
   [ -n "$log_file" ]
   # Log file must contain required fields for each step
@@ -682,6 +681,9 @@ _teardown_lobster_env() {
   [ "$has_exit_code" -gt 0 ]
   [ "$has_verdict" -gt 0 ]
   [ "$has_duration" -gt 0 ]
+  # S05: assert verdict value is "allow" for a passing step
+  [[ "$step_a_line" == *'"verdict":"allow"'* ]]
+  _teardown_lobster_env
 }
 
 # AC-011 / VP-007: same workflow twice in --dry-run produces identical output (determinism)
@@ -727,13 +729,17 @@ _teardown_lobster_env() {
   # Verify all three steps ran by checking the JSONL log
   local log_file
   log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
-  _teardown_lobster_env
   [ "$exit_status" -eq 1 ]
   # All three steps must appear in log (pipeline continued after advisory)
   [ -n "$log_file" ]
   local step_c_line
   step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
   [ -n "$step_c_line" ]
+  # I06: step-b must have verdict "advisory" in log
+  local step_b_line
+  step_b_line="$(grep 'step-b' "$log_file" 2>/dev/null || true)"
+  [[ "$step_b_line" == *'"verdict":"advisory"'* ]]
+  _teardown_lobster_env
 }
 
 # AC-009 / BC-2.12.002 postcondition 3 + invariant 1: one step exits 2 → lobster exits 2 immediately
@@ -750,14 +756,19 @@ _teardown_lobster_env() {
   # Verify step-c was NOT executed (only step-a and step-b ran)
   local log_file
   log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
-  _teardown_lobster_env
   [ "$exit_status" -eq 2 ]
   # step-c must NOT appear in log — it was skipped
+  # S03: read log before teardown so the file still exists during assertions
   if [ -n "$log_file" ]; then
     local step_c_line
     step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
     [ -z "$step_c_line" ]
+    # I06: step-b must have verdict "block" in log
+    local step_b_line
+    step_b_line="$(grep 'step-b' "$log_file" 2>/dev/null || true)"
+    [[ "$step_b_line" == *'"verdict":"block"'* ]]
   fi
+  _teardown_lobster_env
 }
 
 # AC-010 / BC-2.12.001 invariant 1: bin/lobster-run is pure bash — no Node/Python/Ruby invocations
@@ -783,6 +794,31 @@ _teardown_lobster_env() {
   [ "$node_calls" -eq 0 ]
   [ "$python_calls" -eq 0 ]
   [ "$ruby_calls" -eq 0 ]
+}
+
+# C02: AC-010 / VP-022 prerequisite: bin/lobster-run has no bare 'read' calls
+@test "BC_2_12_001: bin/lobster-run has no bare 'read' calls (VP-022 prerequisite)" {
+  # grep exits 1 when no match (which is what we want — no bare read calls)
+  run grep -n '^\s*read ' "${PLUGIN_DIR}/bin/lobster-run"
+  [ "$status" -eq 1 ]
+}
+
+# C03: AC-004 / BC-2.12.001 EC-001: undefined dependency → E-LOBSTER-004, exit 2
+@test "BC_2_12_001: lobster-run undefined dependency reference emits E-LOBSTER-004 exit 2" {
+  _setup_lobster_env
+  # Add the init skill so SKILL.md check passes for step-a
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  # Create fixture with step-a depending on step-x (undefined)
+  local fixture_path
+  fixture_path="${LOBSTER_PLUGIN_ROOT}/undefined-dep.yaml"
+  printf 'name: test-undefined-dep\nsteps:\n  - id: step-a\n    skill: init\n    depends_on: [step-x]\n' > "$fixture_path"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "$fixture_path"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-004"* ]]
 }
 
 # AC-010 / BC-2.12.001 invariant 1: bin/lobster-run passes shellcheck

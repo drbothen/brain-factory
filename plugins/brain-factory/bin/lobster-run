@@ -16,17 +16,32 @@ set -euo pipefail
 #   2 — at least one block (exit 2 step), or validation error
 
 # ---------------------------------------------------------------------------
-# Argument parsing
+# Argument parsing — flexible: --dry-run may appear before or after workflow
 # ---------------------------------------------------------------------------
 DRY_RUN=false
 WORKFLOW_FILE=""
 
-if [[ "${1:-}" == "--dry-run" ]]; then
-  DRY_RUN=true
-  WORKFLOW_FILE="${2:-}"
-else
-  WORKFLOW_FILE="${1:-}"
-fi
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --dry-run)
+    DRY_RUN=true
+    shift
+    ;;
+  --)
+    shift
+    WORKFLOW_FILE="${1:-}"
+    break
+    ;;
+  -*)
+    printf '{"level":"error","code":"E-LOBSTER-007","message":"Unknown flag: %s"}\n' "$1"
+    exit 2
+    ;;
+  *)
+    WORKFLOW_FILE="$1"
+    shift
+    ;;
+  esac
+done
 
 if [[ -z "$WORKFLOW_FILE" ]]; then
   printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: no file argument provided."}\n'
@@ -39,6 +54,12 @@ fi
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-}"
 BRAIN_ROOT="${BRAIN_ROOT:-}"
 
+# Validate BRAIN_ROOT is set (I04)
+if [[ -z "$BRAIN_ROOT" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT environment variable is not set."}\n'
+  exit 2
+fi
+
 # ---------------------------------------------------------------------------
 # YAML validation — attempt to parse; any yq error means malformed
 # ---------------------------------------------------------------------------
@@ -47,40 +68,65 @@ if ! yq eval '.' "$WORKFLOW_FILE" >/dev/null 2>&1; then
   exit 2
 fi
 
-# Require steps array to be present and non-empty
-step_count="$(yq eval '.steps | length' "$WORKFLOW_FILE" 2>/dev/null || echo "0")"
+# Require steps array to be present and non-empty (C04: use .steps // [] for null safety)
+step_count="$(yq eval '.steps // [] | length' "$WORKFLOW_FILE" 2>/dev/null || printf '0')"
+if ! [[ "$step_count" =~ ^[0-9]+$ ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing or malformed steps field."}\n'
+  exit 2
+fi
 if [[ "$step_count" -eq 0 ]]; then
   printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing or empty steps array."}\n'
   exit 2
 fi
 
 # ---------------------------------------------------------------------------
-# Parse steps into parallel arrays: step_ids, step_skills, step_deps
+# Parse steps into parallel arrays using mapfile (C01: no bare 'read' calls)
 # Format per line: <id>|<skill>|<dep1,dep2,...>
 # ---------------------------------------------------------------------------
 declare -a STEP_IDS=()
 declare -a STEP_SKILLS=()
 declare -A STEP_DEPS=() # step_id -> comma-separated dep list
+declare -A STEP_ARGS=() # step_id -> space-separated quoted args (C05)
 declare -A STEP_IDX=()  # step_id -> array index (for validation)
 
-while IFS='|' read -r sid skill deps; do
+declare -a step_lines=()
+mapfile -t step_lines < <(yq eval '.steps[] | .id + "|" + .skill + "|" + ((.depends_on // []) | join(",")) + "|" + ((.args // []) | join(""))' "$WORKFLOW_FILE" 2>/dev/null)
+
+for raw_line in "${step_lines[@]}"; do
+  [[ -z "$raw_line" ]] && continue
+  # Split on | into 4 parts: id, skill, deps, args (using parameter expansion, no read)
+  sid="${raw_line%%|*}"
+  rest="${raw_line#*|}"
+  skill="${rest%%|*}"
+  rest2="${rest#*|}"
+  deps="${rest2%%|*}"
+  args_raw="${rest2#*|}"
+
   [[ -z "$sid" ]] && continue
   STEP_IDS+=("$sid")
   STEP_SKILLS+=("$skill")
   STEP_DEPS["$sid"]="$deps"
+  STEP_ARGS["$sid"]="$args_raw" # unit-separator delimited args
   STEP_IDX["$sid"]="${#STEP_IDS[@]}"
-done < <(yq eval '.steps[] | .id + "|" + .skill + "|" + (.depends_on | join(","))' "$WORKFLOW_FILE" 2>/dev/null)
+done
 
 # ---------------------------------------------------------------------------
-# Skill registration check — verify each step's skill has a SKILL.md
+# Skill registration check — validate name + verify SKILL.md exists (I07 + I01)
 # ---------------------------------------------------------------------------
 for sid in "${STEP_IDS[@]}"; do
   idx="${STEP_IDX["$sid"]}"
-  # Array is 1-indexed via the IDX counter; STEP_SKILLS is 0-indexed
   skill="${STEP_SKILLS[$((idx - 1))]}"
+
+  # I07: validate kebab-case skill name before filesystem check
+  if ! [[ "$skill" =~ ^[a-z][a-z0-9-]*$ ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-002","message":"Skill '\''%s'\'' has invalid name (must be kebab-case)."}\n' "$skill"
+    exit 2
+  fi
+
   skill_md="${PLUGIN_ROOT}/skills/${skill}/SKILL.md"
   if [[ ! -f "$skill_md" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-002","message":"Skill '"'"'%s'"'"' not found in plugin manifest."}\n' "$skill"
+    # I01: accurate message — filesystem check, not plugin.json
+    printf '{"level":"error","code":"E-LOBSTER-002","message":"Skill '\''%s'\'' not found in plugin skills directory."}\n' "$skill"
     exit 2
   fi
 done
@@ -100,23 +146,24 @@ done
 for sid in "${STEP_IDS[@]}"; do
   deps="${STEP_DEPS["$sid"]}"
   if [[ -n "$deps" ]]; then
-    while IFS=',' read -ra dep_list; do
-      for dep in "${dep_list[@]}"; do
-        dep="${dep// /}" # strip whitespace
-        [[ -z "$dep" ]] && continue
-        # Validate dep references a known step
-        if [[ -z "${IN_DEGREE["$dep"]+isset}" ]]; then
-          printf '{"level":"error","code":"E-LOBSTER-001","message":"Circular dependency detected in workflow."}\n'
-          exit 2
-        fi
-        IN_DEGREE["$sid"]=$((IN_DEGREE["$sid"] + 1))
-        if [[ -z "${DEPENDENTS["$dep"]}" ]]; then
-          DEPENDENTS["$dep"]="$sid"
-        else
-          DEPENDENTS["$dep"]="${DEPENDENTS["$dep"]} $sid"
-        fi
-      done
-    done <<<"$deps"
+    # C01: use mapfile + tr to split deps — no bare 'read' call
+    declare -a dep_list=()
+    mapfile -t dep_list < <(printf '%s' "$deps" | tr ',' '\n')
+    for dep in "${dep_list[@]}"; do
+      dep="${dep// /}" # strip whitespace
+      [[ -z "$dep" ]] && continue
+      # C03: E-LOBSTER-004 for unknown dependency reference (not misattributed as cycle)
+      if [[ -z "${IN_DEGREE["$dep"]+isset}" ]]; then
+        printf '{"level":"error","code":"E-LOBSTER-004","message":"Unknown dependency '\''%s'\'' referenced by step '\''%s'\''."}\n' "$dep" "$sid"
+        exit 2
+      fi
+      IN_DEGREE["$sid"]=$((IN_DEGREE["$sid"] + 1))
+      if [[ -z "${DEPENDENTS["$dep"]}" ]]; then
+        DEPENDENTS["$dep"]="$sid"
+      else
+        DEPENDENTS["$dep"]="${DEPENDENTS["$dep"]} $sid"
+      fi
+    done
   fi
 done
 
@@ -132,10 +179,11 @@ for sid in "${STEP_IDS[@]}"; do
   fi
 done
 
-# Sort alphabetically for determinism (VP-007)
-while IFS= read -r line; do
-  [[ -n "$line" ]] && QUEUE+=("$line")
-done < <(printf '%s\n' "${zero_nodes[@]}" | sort)
+# C01: use mapfile for sorting — no bare 'read' call
+# Guard: if zero_nodes is empty, cycle already guaranteed (handled below)
+if [[ "${#zero_nodes[@]}" -gt 0 ]]; then
+  mapfile -t QUEUE < <(printf '%s\n' "${zero_nodes[@]}" | grep -v '^$' | sort)
+fi
 
 while [[ "${#QUEUE[@]}" -gt 0 ]]; do
   # Dequeue first element
@@ -153,11 +201,13 @@ while [[ "${#QUEUE[@]}" -gt 0 ]]; do
         newly_zero+=("$dep")
       fi
     done
-    # Sort newly-zero nodes alphabetically before adding to queue
+    # Sort newly-zero nodes alphabetically before adding to queue (C01: mapfile)
     if [[ "${#newly_zero[@]}" -gt 0 ]]; then
-      while IFS= read -r line; do
-        [[ -n "$line" ]] && QUEUE+=("$line")
-      done < <(printf '%s\n' "${newly_zero[@]}" | sort)
+      declare -a sorted_newly_zero=()
+      mapfile -t sorted_newly_zero < <(printf '%s\n' "${newly_zero[@]}" | grep -v '^$' | sort)
+      if [[ "${#sorted_newly_zero[@]}" -gt 0 ]]; then
+        QUEUE+=("${sorted_newly_zero[@]}")
+      fi
     fi
   fi
 done
@@ -177,12 +227,19 @@ for i in "${!STEP_IDS[@]}"; do
 done
 
 # ---------------------------------------------------------------------------
-# Dry-run mode: print execution plan and exit
+# Dry-run mode: print execution plan and exit (C05: include args)
 # ---------------------------------------------------------------------------
 if [[ "$DRY_RUN" == "true" ]]; then
   for sid in "${TOPO_ORDER[@]}"; do
     skill="${STEP_SKILL_MAP["$sid"]}"
-    printf '%s: node "%s/scripts/run-skill.mjs" %s\n' "$sid" "$PLUGIN_ROOT" "$skill"
+    args_raw="${STEP_ARGS["$sid"]:-}"
+    if [[ -n "$args_raw" ]]; then
+      # Convert unit-separator delimited args back to space-separated for display
+      args_display="$(printf '%s' "$args_raw" | tr '\x1f' ' ')"
+      printf '%s: node "%s/scripts/run-skill.mjs" %s %s\n' "$sid" "$PLUGIN_ROOT" "$skill" "$args_display"
+    else
+      printf '%s: node "%s/scripts/run-skill.mjs" %s\n' "$sid" "$PLUGIN_ROOT" "$skill"
+    fi
   done
   exit 0
 fi
@@ -193,18 +250,51 @@ fi
 LOG_DATE="$(date -u +%Y-%m-%d)"
 LOG_DIR="${BRAIN_ROOT}/.brain/logs"
 LOG_FILE="${LOG_DIR}/lobster-${LOG_DATE}.jsonl"
-mkdir -p "$LOG_DIR"
+
+# S01: mkdir with error handling
+if ! mkdir -p "$LOG_DIR" 2>/dev/null; then
+  printf '{"level":"error","code":"E-LOBSTER-006","message":"Cannot create log directory: %s"}\n' "$LOG_DIR"
+  exit 2
+fi
 
 OVERALL_EXIT=0
+STEPS_RUN=0
+STEPS_SKIPPED=0
 
 for sid in "${TOPO_ORDER[@]}"; do
   skill="${STEP_SKILL_MAP["$sid"]}"
-  step_start="$SECONDS"
+  args_raw="${STEP_ARGS["$sid"]:-}"
+
+  # I03: millisecond-precision timing using EPOCHREALTIME (bash 5+)
+  # EPOCHREALTIME is a decimal like "1234567890.123456"
+  # Multiply by 1000 and truncate to get milliseconds.
+  if [[ -n "${EPOCHREALTIME:-}" ]]; then
+    step_start_ms="$(awk "BEGIN { printf \"%d\", ${EPOCHREALTIME} * 1000 }")"
+  else
+    step_start_ms="$((SECONDS * 1000))"
+  fi
 
   step_exit=0
-  node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" || step_exit="$?"
 
-  step_duration=$(((SECONDS - step_start) * 1000))
+  # C05: build args array from unit-separator delimited string
+  declare -a step_args=()
+  if [[ -n "$args_raw" ]]; then
+    mapfile -t step_args < <(printf '%s' "$args_raw" | tr '\x1f' '\n')
+  fi
+
+  if [[ "${#step_args[@]}" -gt 0 ]]; then
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" "${step_args[@]}" || step_exit="$?"
+  else
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" || step_exit="$?"
+  fi
+
+  # I03: compute duration in milliseconds
+  if [[ -n "${EPOCHREALTIME:-}" ]]; then
+    step_end_ms="$(awk "BEGIN { printf \"%d\", ${EPOCHREALTIME} * 1000 }")"
+    step_duration=$((step_end_ms - step_start_ms))
+  else
+    step_duration=$(((SECONDS * 1000) - step_start_ms))
+  fi
 
   # Determine verdict
   case "$step_exit" in
@@ -217,16 +307,62 @@ for sid in "${TOPO_ORDER[@]}"; do
     ;;
   esac
 
-  # Write JSONL entry
-  printf '{"step_id":"%s","exit_code":%d,"verdict":"%s","duration_ms":%d}\n' \
-    "$sid" "$step_exit" "$verdict" "$step_duration" >>"$LOG_FILE"
+  STEPS_RUN=$((STEPS_RUN + 1))
+
+  # I05: use jq to construct JSONL line safely (prevents injection via step_id/verdict)
+  jq -nc \
+    --arg step_id "$sid" \
+    --arg verdict "$verdict" \
+    --argjson exit_code "$step_exit" \
+    --argjson duration_ms "$step_duration" \
+    '{"step_id": $step_id, "exit_code": $exit_code, "verdict": $verdict, "duration_ms": $duration_ms}' \
+    >>"$LOG_FILE"
+
+  # I02: emit lobster.step.completed event on stderr
+  {
+    ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    jq -nc \
+      --arg ts "$ts" \
+      --arg step_id "$sid" \
+      --arg verdict "$verdict" \
+      --arg hook_name "bin/lobster-run" \
+      --argjson exit_code "$step_exit" \
+      --argjson duration_ms "$step_duration" \
+      '{"ts": $ts, "event_type": "lobster.step.completed", "hook_name": $hook_name, "trace": "00000000-0000-0000-0000-000000000000", "step_id": $step_id, "exit_code": $exit_code, "verdict": $verdict, "duration_ms": $duration_ms}'
+  } >&2
 
   if [[ "$step_exit" -eq 2 ]]; then
-    # Block: stop immediately
+    # Block: stop immediately; remaining steps are skipped
+    STEPS_SKIPPED=$((${#TOPO_ORDER[@]} - STEPS_RUN))
+    # I02: emit lobster.run.completed event on stderr
+    {
+      ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      jq -nc \
+        --arg ts "$ts" \
+        --arg workflow "$WORKFLOW_FILE" \
+        --arg hook_name "bin/lobster-run" \
+        --argjson exit_code 2 \
+        --argjson steps_run "$STEPS_RUN" \
+        --argjson steps_skipped "$STEPS_SKIPPED" \
+        '{"ts": $ts, "event_type": "lobster.run.completed", "hook_name": $hook_name, "trace": "00000000-0000-0000-0000-000000000000", "workflow": $workflow, "exit_code": $exit_code, "steps_run": $steps_run, "steps_skipped": $steps_skipped}'
+    } >&2
     exit 2
   elif [[ "$step_exit" -eq 1 ]]; then
     OVERALL_EXIT=1
   fi
 done
+
+# I02: emit lobster.run.completed event on stderr (successful/advisory completion)
+{
+  ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  jq -nc \
+    --arg ts "$ts" \
+    --arg workflow "$WORKFLOW_FILE" \
+    --arg hook_name "bin/lobster-run" \
+    --argjson exit_code "$OVERALL_EXIT" \
+    --argjson steps_run "$STEPS_RUN" \
+    --argjson steps_skipped 0 \
+    '{"ts": $ts, "event_type": "lobster.run.completed", "hook_name": $hook_name, "trace": "00000000-0000-0000-0000-000000000000", "workflow": $workflow, "exit_code": $exit_code, "steps_run": $steps_run, "steps_skipped": $steps_skipped}'
+} >&2
 
 exit "$OVERALL_EXIT"
