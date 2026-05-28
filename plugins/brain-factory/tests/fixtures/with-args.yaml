@@ -1,0 +1,10 @@
+name: test-with-args
+description: "Workflow with args to verify multi-arg forwarding"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []
+    args:
+      - --verbose
+      - --output=json
+      - "path with spaces"

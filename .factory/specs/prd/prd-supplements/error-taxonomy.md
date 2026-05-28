@@ -1,14 +1,14 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.2"
+version: "0.1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 traces_to: prd/index.md
 created: 2026-05-15
-last_updated: 2026-05-18
+last_updated: 2026-05-27
 ---
 
 # brain-factory Error Taxonomy
@@ -202,6 +202,11 @@ Message format uses `<placeholder>` for dynamic values.
 | E-LOBSTER-001 | broken | 2 | `bin/lobster-run` | `Circular dependency detected in workflow: <cycle>.` |
 | E-LOBSTER-002 | broken | 2 | `bin/lobster-run` | `Skill '<name>' not found in plugin manifest.` |
 | E-LOBSTER-003 | broken | 2 | `bin/lobster-run` | `Invalid workflow YAML: <error>.` |
+| E-LOBSTER-004 | broken | 2 | `bin/lobster-run` | `Unknown dependency '<name>' referenced by step '<id>'.` |
+| E-LOBSTER-005 | broken | 2 | `bin/lobster-run` | `BRAIN_ROOT environment variable is not set.` |
+| E-LOBSTER-006 | broken | 2 | `bin/lobster-run` | `Cannot create log directory: <path>` |
+| E-LOBSTER-007 | broken | 2 | `bin/lobster-run` | `Unknown flag: <flag>` |
+| E-LOBSTER-008 | broken | 2 | `bin/lobster-run` | `Missing workflow file argument.` |
 
 ---
 
@@ -276,6 +281,10 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.3 (2026-05-27)
+
+**CONTENT FIX (STORY-032 Fix Burst 2 — I01):** Registered E-LOBSTER-004 through E-LOBSTER-008. These error codes were emitted by `bin/lobster-run` since STORY-032 initial delivery but were absent from the canonical taxonomy. E-LOBSTER-004 covers unknown dependency references; E-LOBSTER-005 covers missing BRAIN_ROOT; E-LOBSTER-006 covers log directory creation failure; E-LOBSTER-007 covers unknown CLI flags; E-LOBSTER-008 (new, S03 fix) covers missing workflow file argument — replacing the incorrect prior behavior of emitting E-LOBSTER-003 for a missing argument.
 
 ### v0.1.2 (2026-05-18)
 

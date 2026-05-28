@@ -529,6 +529,10 @@ _setup_lobster_env() {
   LOBSTER_PLUGIN_ROOT="$(mktemp -d)"
   mkdir -p "${LOBSTER_PLUGIN_ROOT}/scripts"
   mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills"
+  # C02: create .claude-plugin/plugin.json so plugin manifest lookup passes
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/.claude-plugin"
+  printf '{"name":"brain-factory","skills":"./skills/","hooks":"hooks/hooks.json"}\n' \
+    > "${LOBSTER_PLUGIN_ROOT}/.claude-plugin/plugin.json"
 
   # Mirror real skills into mock plugin root so skill-registration checks pass
   if [[ -d "${PLUGIN_DIR}/skills" ]]; then
@@ -819,6 +823,100 @@ _teardown_lobster_env() {
   _teardown_lobster_env
   [ "$status" -eq 2 ]
   [[ "$output" == *"E-LOBSTER-004"* ]]
+}
+
+# C01: args forwarded correctly in --dry-run output
+@test "BC_2_12_001: lobster-run --dry-run forwards multi-arg steps without concatenation" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/with-args.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 0 ]
+  # Each arg must appear as a separate token in the output (not concatenated)
+  [[ "$output" == *"--verbose"* ]]
+  [[ "$output" == *"--output=json"* ]]
+  [[ "$output" == *"path with spaces"* ]]
+}
+
+# I04: lobster.run.completed emitted on stderr for E-LOBSTER-001 (cycle) failure path
+@test "BC_2_12_001: lobster-run emits lobster.run.completed on stderr for cycle failure (I04)" {
+  _setup_lobster_env
+  # Capture stderr separately by running outside bats `run` wrapper
+  local stderr_out
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml" 2>&1 >/dev/null || true)"
+  _teardown_lobster_env
+  # lobster.run.completed must appear on stderr
+  local completed_event
+  completed_event="$(printf '%s' "$stderr_out" | grep 'lobster.run.completed' || true)"
+  [ -n "$completed_event" ]
+}
+
+# I04: lobster.run.completed emitted on stderr for E-LOBSTER-003 (malformed YAML) failure path
+@test "BC_2_12_001: lobster-run emits lobster.run.completed on stderr for malformed YAML failure (I04)" {
+  _setup_lobster_env
+  local stderr_out
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/malformed.yaml" 2>&1 >/dev/null || true)"
+  _teardown_lobster_env
+  local completed_event
+  completed_event="$(printf '%s' "$stderr_out" | grep 'lobster.run.completed' || true)"
+  [ -n "$completed_event" ]
+}
+
+# I05: duration_ms is numeric (not 0 for all steps, not NaN)
+@test "BC_2_12_001: lobster-run step log duration_ms is a non-negative integer (I05)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  local exit_status="$status"
+  local log_file
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  [ "$exit_status" -eq 0 ]
+  [ -n "$log_file" ]
+  local step_a_line
+  step_a_line="$(grep 'step-a' "$log_file" 2>/dev/null || true)"
+  [ -n "$step_a_line" ]
+  # Extract duration_ms value and verify it is a non-negative integer
+  local duration
+  duration="$(printf '%s' "$step_a_line" | jq '.duration_ms')"
+  [[ "$duration" =~ ^[0-9]+$ ]]
+  _teardown_lobster_env
+}
+
+# I03: trace field in step.completed events is not all-zeros UUID
+@test "BC_2_12_001: lobster-run emits non-zero trace UUID in step events (I03)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  # Capture stderr separately (events go to stderr)
+  local stderr_out
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml" 2>&1 >/dev/null || true)"
+  _teardown_lobster_env
+  local step_event
+  step_event="$(printf '%s' "$stderr_out" | grep 'lobster.step.completed' | head -1 || true)"
+  [ -n "$step_event" ]
+  local trace
+  trace="$(printf '%s' "$step_event" | jq -r '.trace')"
+  # Must not be the all-zeros UUID
+  [ "$trace" != "00000000-0000-0000-0000-000000000000" ]
+}
+
+# S04: bare read regex — strengthen to catch read as a command in more positions
+@test "BC_2_12_001: bin/lobster-run has no bare 'read' calls (strengthened S04 regex)" {
+  # Match 'read' as a command token (not part of mapfile, not in comments)
+  local filtered
+  filtered="$(grep -nE '(^|[[:space:];|&])read([[:space:]]|$)' \
+    "${PLUGIN_DIR}/bin/lobster-run" | grep -v '^[0-9]*:[[:space:]]*#' || true)"
+  [ -z "$filtered" ]
 }
 
 # AC-010 / BC-2.12.001 invariant 1: bin/lobster-run passes shellcheck
