@@ -15,11 +15,12 @@ set -euo pipefail
 BRAIN_ROOT="${BRAIN_ROOT:-$PWD}"
 
 # Token budget constants (BC-2.01.006 Architecture Compliance Rule 4).
-# Changing these requires a BC update.
-# shellcheck disable=SC2034
-readonly TOKEN_BASELINE=50000          # 50K tokens — baseline reference, not evaluated at runtime
-readonly TOKEN_YELLOW_THRESHOLD=100000 # 2x baseline
-readonly TOKEN_RED_THRESHOLD=200000    # 4x baseline
+# Thresholds derive from TOKEN_BASELINE so the relationship is explicit.
+# Changing TOKEN_BASELINE automatically updates both thresholds.
+# Changing either threshold independently requires a BC update.
+readonly TOKEN_BASELINE=50000
+readonly TOKEN_YELLOW_THRESHOLD=$((TOKEN_BASELINE * 2)) # 100000 — 2x baseline
+readonly TOKEN_RED_THRESHOLD=$((TOKEN_BASELINE * 4))    # 200000 — 4x baseline
 
 # ---------------------------------------------------------------------------
 # _health_error: emit ADR-002 JSON error envelope to stdout and exit 2
@@ -241,7 +242,7 @@ reflection_detail="Brain state file healthy."
 
 if [[ ! -s "$state_file" ]]; then
   reflection_status="YELLOW"
-  reflection_detail="Brain STATE.md is empty — run /brain:health --repair to rebuild."
+  reflection_detail="Brain STATE.md is empty — re-run /brain:init or restore from backup."
 fi
 
 # ---------------------------------------------------------------------------
@@ -268,10 +269,85 @@ if [[ "$overall" != "RED" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# Compute last_checked timestamp (used for both JSON report and STATE.md writeback).
+# ---------------------------------------------------------------------------
+last_checked="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+# ---------------------------------------------------------------------------
+# Write computed health back to STATE.md frontmatter.
+# BC-2.01.006 v1.3 Postcondition 5: skill writes overall_health, last_health_check,
+# and dimensions.<name>.status back to .brain/STATE.md so the session-start hook
+# can read the cached state without re-running the full six-dimensional check.
+# Strategy: extract frontmatter → update with yq → reassemble with body preserved.
+# ---------------------------------------------------------------------------
+_writeback_state() {
+  local fm_tmp body_tmp new_state_tmp
+  fm_tmp="$(mktemp)"
+  body_tmp="$(mktemp)"
+  new_state_tmp="$(mktemp)"
+
+  # Extract frontmatter (content between first pair of --- markers, exclusive).
+  awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "$state_file" >"$fm_tmp"
+  # Extract body (everything after the closing --- of the frontmatter).
+  awk '/^---$/{n++; next} n>=2{print}' "$state_file" >"$body_tmp"
+
+  if command -v yq >/dev/null 2>&1; then
+    # Update overall_health and last_health_check.
+    yq e -i ".overall_health = \"${overall}\"" "$fm_tmp"
+    yq e -i ".last_health_check = \"${last_checked}\"" "$fm_tmp"
+    # Update each dimension status.
+    yq e -i ".dimensions.capture = \"${capture_status}\"" "$fm_tmp"
+    yq e -i ".dimensions.sources = \"${sources_status}\"" "$fm_tmp"
+    yq e -i ".dimensions.wiki = \"${wiki_status}\"" "$fm_tmp"
+    yq e -i ".dimensions.synthesis = \"${synthesis_status}\"" "$fm_tmp"
+    yq e -i ".dimensions.output = \"${output_status}\"" "$fm_tmp"
+    yq e -i ".dimensions.reflection = \"${reflection_status}\"" "$fm_tmp"
+  else
+    # awk fallback: rewrite frontmatter fields directly.
+    awk \
+      -v oh="${overall}" \
+      -v lhc="${last_checked}" \
+      -v cap="${capture_status}" \
+      -v src="${sources_status}" \
+      -v wki="${wiki_status}" \
+      -v syn="${synthesis_status}" \
+      -v out="${output_status}" \
+      -v ref="${reflection_status}" \
+      '{
+        if (/^overall_health:/) { print "overall_health: " oh }
+        else if (/^last_health_check:/) { print "last_health_check: \"" lhc "\"" }
+        else if (/^  capture:/) { print "  capture: " cap }
+        else if (/^  sources:/) { print "  sources: " src }
+        else if (/^  wiki:/) { print "  wiki: " wki }
+        else if (/^  synthesis:/) { print "  synthesis: " syn }
+        else if (/^  output:/) { print "  output: " out }
+        else if (/^  reflection:/) { print "  reflection: " ref }
+        else { print }
+      }' "$fm_tmp" >"${fm_tmp}.new"
+    mv "${fm_tmp}.new" "$fm_tmp"
+  fi
+
+  # Reassemble: frontmatter fences + updated fm + body.
+  {
+    printf '%s\n' '---'
+    cat "$fm_tmp"
+    printf '%s\n' '---'
+    cat "$body_tmp"
+  } >"$new_state_tmp"
+
+  # Atomic replace (mv is atomic on same filesystem).
+  mv "$new_state_tmp" "$state_file"
+
+  rm -f "$fm_tmp" "$body_tmp"
+}
+
+# Run writeback — advisory only: failure must not prevent the JSON report from emitting.
+_writeback_state 2>/dev/null || true
+
+# ---------------------------------------------------------------------------
 # Emit JSON report to stdout.
 # AC-001 / BC-2.01.006 postconditions 1-2
 # ---------------------------------------------------------------------------
-last_checked="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 jq -nc \
   --arg capture_status "$capture_status" \

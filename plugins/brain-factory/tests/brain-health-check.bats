@@ -45,12 +45,12 @@ _create_green_state_md() {
 ---
 overall_health: GREEN
 dimensions:
+  capture: GREEN
   sources: GREEN
   wiki: GREEN
-  briefs: GREEN
-  publishing: GREEN
-  voice: GREEN
-  structural: GREEN
+  synthesis: GREEN
+  output: GREEN
+  reflection: GREEN
 ---
 # Brain State
 All dimensions healthy.
@@ -64,15 +64,15 @@ _create_red_state_md() {
 ---
 overall_health: RED
 dimensions:
+  capture: GREEN
   sources: GREEN
   wiki: RED
-  briefs: GREEN
-  publishing: GREEN
-  voice: YELLOW
-  structural: GREEN
+  synthesis: GREEN
+  output: YELLOW
+  reflection: GREEN
 red_dimensions:
   - wiki: "3 broken wikilinks"
-  - voice: "5 avoid-list violations"
+  - output: "No content briefs generated"
 ---
 # Brain State
 Issues found.

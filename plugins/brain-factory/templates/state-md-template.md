@@ -1,3 +1,15 @@
+---
+overall_health: YELLOW
+last_health_check: ""
+dimensions:
+  capture: YELLOW
+  sources: GREEN
+  wiki: YELLOW
+  synthesis: YELLOW
+  output: YELLOW
+  reflection: GREEN
+---
+
 # Brain STATE
 
 Six-dimensional convergence tracking for this brain vault.

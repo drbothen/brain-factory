@@ -15,7 +15,7 @@ Never exit without emitting structured JSON — either the full six-dimensional 
 
 - Running outside a brain vault directory (no `.brain/STATE.md`) — check with `[ -f .brain/STATE.md ]` before invoking
 - Interpreting a YELLOW result as a failure — YELLOW is informational, not blocking
-- Modifying any file in the brain vault — this skill is READ-ONLY
+- Modifying any file in the brain vault EXCEPT `.brain/STATE.md` — the skill writes computed health back to STATE.md frontmatter (BC-2.01.006 v1.3 Postcondition 5); all other vault files are untouched
 
 ## Announce-at-Start
 
@@ -23,7 +23,7 @@ Never exit without emitting structured JSON — either the full six-dimensional 
 
 ## Procedure
 
-1. Set `BRAIN_ROOT` to the current brain vault directory (or use the `--brain-root` argument if provided).
+1. Set `BRAIN_ROOT` to the current brain vault directory (default: $PWD).
 2. Execute `bash "${CLAUDE_PLUGIN_ROOT}/skills/brain-health/run.sh"` with `BRAIN_ROOT` set.
 3. Parse the JSON output from stdout.
 4. If exit code is 2, display the `message` field from the error envelope and stop.
@@ -33,7 +33,7 @@ Never exit without emitting structured JSON — either the full six-dimensional 
 
 - Exit 0 with valid JSON health report: all six dimension keys present, each with `status` (GREEN/YELLOW/RED) and `detail` string.
 - Exit 2 with E-HEALTH-001 JSON envelope only when `.brain/STATE.md` is missing or unreadable.
-- No files written or modified during execution.
+- `.brain/STATE.md` frontmatter updated with computed `overall_health`, `last_health_check`, and six `dimensions` statuses (BC-2.01.006 v1.3 Postcondition 5); STATE.md body (markdown content) is preserved verbatim.
 - `last_checked` field is a valid ISO8601 UTC timestamp.
 
 ## Output
