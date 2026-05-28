@@ -1,0 +1,10 @@
+name: test-dep-null-element
+description: "depends_on array contains a null element"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []
+  - id: step-b
+    skill: init
+    depends_on:
+      - ~

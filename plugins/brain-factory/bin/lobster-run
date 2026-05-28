@@ -129,14 +129,16 @@ while [[ $# -gt 0 ]]; do
     _emit_run_completed_and_exit 2
     ;;
   *)
-    WORKFLOW_FILE="$1"
-    shift
-    # I01 (Fix Burst 9): reject additional positional args — multiple workflow files
-    # is a user error; silently discarding all but the first is worse than failing fast.
-    if [[ $# -gt 0 && "${1:-}" != "-"* ]]; then
+    # H01 (Fix Burst 11): track WORKFLOW_FILE globally — reject ANY second assignment
+    # regardless of intervening flags. The prior check (next-arg peek) failed on
+    # interleaved args like `lobster-run a.yaml --dry-run b.yaml` where b.yaml appears
+    # after a flag and would silently overwrite a.yaml.
+    if [[ -n "$WORKFLOW_FILE" ]]; then
       _emit_error "E-LOBSTER-007" "Multiple workflow files specified; only one workflow per invocation is supported."
       _emit_run_completed_and_exit 2
     fi
+    WORKFLOW_FILE="$1"
+    shift
     ;;
   esac
 done
@@ -219,10 +221,22 @@ if [[ "$step_count" -eq 0 ]]; then
   _emit_run_completed_and_exit 2
 fi
 
-# C01: validate required top-level fields: name and description
+# C01 / L01 (Fix Burst 11): validate required top-level fields: name and description.
+# Type validation runs BEFORE the presence check — a YAML integer (name: 42) must produce
+# a clear type-error rather than silently passing as the string "42".
+_name_type="$(yq eval '.name | type' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ "$_name_type" != "!!str" && "$_name_type" != "!!null" ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: .name must be a string, got $_name_type."
+  _emit_run_completed_and_exit 2
+fi
 name_val="$(yq eval '.name // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
 if [[ -z "$name_val" || "$name_val" == "null" ]]; then
   _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing required field name."
+  _emit_run_completed_and_exit 2
+fi
+_desc_type="$(yq eval '.description | type' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ "$_desc_type" != "!!str" && "$_desc_type" != "!!null" ]]; then
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: .description must be a string, got $_desc_type."
   _emit_run_completed_and_exit 2
 fi
 description_val="$(yq eval '.description // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
@@ -324,6 +338,14 @@ for step_json in "${step_json_lines[@]}"; do
   if [[ "$_dep_count" =~ ^[0-9]+$ ]] && [[ "$_dep_count" -gt 0 ]]; then
     _di=0
     while [[ "$_di" -lt "$_dep_count" ]]; do
+      # M01 (Fix Burst 11): validate each depends_on element is a string — null/number/object
+      # would coerce silently without this check, producing phantom kebab-case failures or
+      # bypassing the regex entirely for null (jq -r renders null as "null" literal).
+      _dep_elem_type="$(printf '%s' "$deps_json" | jq -r --argjson idx "$_di" '.[$idx] | type' 2>/dev/null || printf '')"
+      if [[ "$_dep_elem_type" != "string" ]]; then
+        _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' depends_on element $_di must be a string, got $_dep_elem_type."
+        _emit_run_completed_and_exit 2
+      fi
       _dep_val="$(printf '%s' "$deps_json" | jq -r --argjson idx "$_di" '.[$idx]')"
       _dep_array+=("$_dep_val")
       _di=$((_di + 1))

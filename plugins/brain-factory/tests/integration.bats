@@ -1920,6 +1920,96 @@ MOCK_EOF
   [[ "$trace_val" =~ ^[0-9a-f-]+$ ]]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 11 — Adversary Pass 11 findings
+# H01: interleaved positional+flag args bypass multi-file rejection
+# M01: depends_on element type not validated (sibling-sweep from FB10)
+# L01: top-level name/description lack type validation
+# ---------------------------------------------------------------------------
+
+# H01: interleaved workflow files (a.yaml --dry-run b.yaml) → E-LOBSTER-007, exit 2
+@test "BC_2_12_001: lobster-run interleaved workflow files emits E-LOBSTER-007 exit 2 (H01/FB11)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml" --dry-run "${FIXTURE_DIR}/diamond-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-007"* ]]
+}
+
+# H01: workflow file after flag does not silently overwrite first file
+@test "BC_2_12_001: lobster-run rejects second workflow file even after intervening flag (H01/FB11)" {
+  _setup_lobster_env
+  # Verify exit 2 (not 0 from b silently replacing a)
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml" --dry-run "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  # Must exit 2 — the second positional must be rejected, not used
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-007"* ]]
+}
+
+# M01: depends_on element null → E-LOBSTER-003, exit 2 (parallel to args null from FB10)
+@test "BC_2_12_001: lobster-run depends_on null element emits E-LOBSTER-003 exit 2 (M01/FB11)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/depends-on-null-element.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"depends_on element"* ]]
+  [[ "$output" == *"null"* ]]
+}
+
+# M01: depends_on null element error envelope contains trace field
+@test "BC_2_12_001: lobster-run depends_on null element error envelope contains trace field (M01/FB11)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/depends-on-null-element.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  local trace_val
+  trace_val="$(printf '%s' "$output" | head -1 | jq -r '.trace // ""' 2>/dev/null || true)"
+  [ -n "$trace_val" ]
+  [[ "$trace_val" =~ ^[0-9a-f-]+$ ]]
+}
+
+# L01: name as integer → E-LOBSTER-003, exit 2 (type validation before presence check)
+@test "BC_2_12_001: lobster-run name as integer emits E-LOBSTER-003 exit 2 (L01/FB11)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/name-as-integer.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *".name"* ]]
+}
+
+# L01: description as integer → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run description as integer emits E-LOBSTER-003 exit 2 (L01/FB11)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/description-as-integer.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *".description"* ]]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

@@ -1,0 +1,6 @@
+name: test-desc-type
+description: 99
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []
