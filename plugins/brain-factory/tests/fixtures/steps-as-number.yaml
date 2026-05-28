@@ -1,0 +1,3 @@
+name: steps-as-number-test
+description: "Test steps as numeric scalar — should be rejected"
+steps: 42

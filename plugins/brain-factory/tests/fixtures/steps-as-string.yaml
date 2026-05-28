@@ -1,0 +1,3 @@
+name: steps-as-string-test
+description: "Test steps as scalar string — should be rejected"
+steps: "not-an-array"

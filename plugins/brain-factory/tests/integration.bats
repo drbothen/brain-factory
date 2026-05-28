@@ -1502,6 +1502,145 @@ steps:
   [ "$tmpdir_after" -le "$tmpdir_before" ]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 7 — Adversary Pass 7 findings
+# C01: .steps as scalar silently produces exit 0 no-op
+# I01: empty .skills string in plugin.json passes through
+# I02: whitespace-only BRAIN_ROOT / CLAUDE_PLUGIN_ROOT passes -z check
+# I04: EPOCHREALTIME precision assumption (length-based slice)
+# O01: cycle test should assert no log file is created
+# ---------------------------------------------------------------------------
+
+# C01: .steps as string scalar → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run steps as string scalar emits E-LOBSTER-003 exit 2 (C01)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/steps-as-string.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+}
+
+# C01: .steps as number scalar → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run steps as number scalar emits E-LOBSTER-003 exit 2 (C01)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/steps-as-number.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+}
+
+# C01: .steps as mapping object → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run steps as mapping object emits E-LOBSTER-003 exit 2 (C01)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/steps-as-object.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+}
+
+# I01: empty .skills string in plugin.json → E-LOBSTER-002, exit 2
+@test "BC_2_12_001: lobster-run empty .skills string in plugin manifest emits E-LOBSTER-002 exit 2 (I01)" {
+  _setup_lobster_env
+  # Overwrite plugin.json with .skills as empty string
+  printf '{"name":"brain-factory","skills":"","hooks":"hooks/hooks.json"}\n' \
+    >"${LOBSTER_PLUGIN_ROOT}/.claude-plugin/plugin.json"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-002"* ]]
+}
+
+# I02: whitespace-only BRAIN_ROOT → E-LOBSTER-005, exit 2
+@test "BC_2_12_001: lobster-run whitespace-only BRAIN_ROOT emits E-LOBSTER-005 exit 2 (I02)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="   " \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-005"* ]]
+}
+
+# I02: BRAIN_ROOT set to nonexistent directory → E-LOBSTER-005, exit 2
+@test "BC_2_12_001: lobster-run nonexistent BRAIN_ROOT directory emits E-LOBSTER-005 exit 2 (I02)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="/nonexistent/path/that/does/not/exist-$(date +%s)" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-005"* ]]
+}
+
+# I02: whitespace-only CLAUDE_PLUGIN_ROOT → E-LOBSTER-010, exit 2
+# bats run splits env args on spaces, so we use a temp wrapper script that exports
+# the whitespace-only value and run it via bats' run to capture exit status.
+@test "BC_2_12_001: lobster-run whitespace-only CLAUDE_PLUGIN_ROOT emits E-LOBSTER-010 exit 2 (I02)" {
+  local lobster_bin="${PLUGIN_DIR}/bin/lobster-run"
+  local fixture_yaml="${PLUGIN_DIR}/tests/fixtures/linear-dag.yaml"
+  local wrapper
+  wrapper="$(mktemp)"
+  printf '#!/usr/bin/env bash\nexport CLAUDE_PLUGIN_ROOT="   "\nexport BRAIN_ROOT=/tmp\nexec "%s" "%s" 2>/dev/null\n' \
+    "$lobster_bin" "$fixture_yaml" >"$wrapper"
+  chmod +x "$wrapper"
+  run "$wrapper"
+  rm -f "$wrapper"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-010"* ]]
+}
+
+# I04: _now_ms returns a non-negative integer on reduced-precision platforms (regex guard)
+@test "BC_2_12_001: lobster-run _now_ms produces valid millisecond integer (I04 precision guard)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  local exit_status="$status"
+  local log_file
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  [ "$exit_status" -eq 0 ]
+  [ -n "$log_file" ]
+  local step_a_line
+  step_a_line="$(grep 'step-a' "$log_file" 2>/dev/null || true)"
+  [ -n "$step_a_line" ]
+  # duration_ms must be a non-negative integer (not "NaN" or garbage from slice)
+  local duration
+  duration="$(printf '%s' "$step_a_line" | jq '.duration_ms')"
+  [[ "$duration" =~ ^[0-9]+$ ]]
+  _teardown_lobster_env
+}
+
+# O01: cycle detection — no log file created (steps_run=0, no I/O to log dir)
+@test "BC_2_12_001: lobster-run cycle detected creates no log file entries (O01)" {
+  _setup_lobster_env
+  env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml" >/dev/null 2>&1 || true
+  # If a log file exists it must contain no step_id fields (no steps ran)
+  local log_file
+  log_file="${LOBSTER_BRAIN}/.brain/logs/lobster-$(date -u +%Y-%m-%d).jsonl"
+  if [ -f "$log_file" ]; then
+    local content
+    content="$(grep '"step_id"' "$log_file" 2>/dev/null || true)"
+    [ -z "$content" ]
+  fi
+  _teardown_lobster_env
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

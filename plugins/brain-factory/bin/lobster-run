@@ -39,12 +39,13 @@ fi
 # Millisecond-precision timing using EPOCHREALTIME (bash 5+) (I05)
 # ---------------------------------------------------------------------------
 _now_ms() {
-  if [[ -n "${EPOCHREALTIME:-}" ]]; then
-    # EPOCHREALTIME format: "1748000000.123456"
-    # Remove the decimal point and strip last 3 digits to get milliseconds
-    local er="${EPOCHREALTIME/./}"
-    printf '%s' "${er:0:-3}"
+  # I04 (Fix Burst 7): use regex validation instead of assuming exactly 6 fractional digits.
+  # On platforms with reduced EPOCHREALTIME precision, the naive ${er:0:-3} slice produces garbage.
+  if [[ -n "${EPOCHREALTIME:-}" ]] && [[ "${EPOCHREALTIME}" =~ ^([0-9]+)\.([0-9]{6})$ ]]; then
+    # Standard 6-digit-fraction format: extract ms (integer seconds + first 3 fractional digits)
+    printf '%s%s' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]:0:3}"
   else
+    # Fallback: SECONDS × 1000 (works on all bash versions; ms precision not guaranteed)
     printf '%s' "$((SECONDS * 1000))"
   fi
 }
@@ -129,9 +130,14 @@ fi
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-}"
 BRAIN_ROOT="${BRAIN_ROOT:-}"
 
-# I04: validate CLAUDE_PLUGIN_ROOT is set (required for skill lookup and run-skill.mjs)
-if [[ -z "$PLUGIN_ROOT" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-010","message":"CLAUDE_PLUGIN_ROOT environment variable is not set."}\n'
+# I04 / I02 (Fix Burst 7): validate CLAUDE_PLUGIN_ROOT is set and non-whitespace-only.
+# [[ -z "$VAR" ]] is false for VAR=" " (whitespace), so strip whitespace before testing.
+if [[ -z "${PLUGIN_ROOT// /}" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-010","message":"CLAUDE_PLUGIN_ROOT environment variable is not set or contains only whitespace."}\n'
+  _emit_run_completed_and_exit 2
+fi
+if [[ ! -d "$PLUGIN_ROOT" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-010","message":"CLAUDE_PLUGIN_ROOT must be an existing directory: %s"}\n' "$PLUGIN_ROOT"
   _emit_run_completed_and_exit 2
 fi
 
@@ -167,6 +173,16 @@ if [[ -n "$_yq_err" ]]; then
   _yq_err_clean="$(printf '%s' "$_yq_err" | tr '\n' ' ' | tr -s ' ' | cut -c1-500)"
   jq -nc --arg msg "Invalid workflow YAML: ${_yq_err_clean}." \
     '{level:"error",code:"E-LOBSTER-003",message:$msg}'
+  _emit_run_completed_and_exit 2
+fi
+
+# C01 (Fix Burst 7): validate .steps is an array (not scalar string, number, object).
+# yq type returns YAML tag: !!seq for array, !!null for absent, !!str/!!int/!!map for wrong types.
+# Accept !!seq (array) and !!null (absent — caught by step_count==0 check below).
+_steps_type="$(yq eval '.steps | type' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
+if [[ "$_steps_type" != "!!seq" && "$_steps_type" != "!!null" ]]; then
+  jq -nc --arg t "$_steps_type" \
+    '{level:"error",code:"E-LOBSTER-003",message:("Invalid workflow YAML: .steps must be an array, got " + $t + ".")}'
   _emit_run_completed_and_exit 2
 fi
 
@@ -299,6 +315,12 @@ if [[ -n "$local_skills_type" && "$local_skills_type" != "string" && "$local_ski
   _emit_run_completed_and_exit 2
 fi
 skills_dir_raw="$(jq -r '.skills // "./skills/"' "$local_plugin_manifest" 2>/dev/null | sed 's|/$||')"
+# I01 (Fix Burst 7): explicit empty-string check — // only substitutes null, not "".
+# An empty .skills produces degenerate path ${PLUGIN_ROOT}// when not caught here.
+if [[ -z "$skills_dir_raw" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-002","message":"Plugin manifest .skills field is empty string."}\n'
+  _emit_run_completed_and_exit 2
+fi
 # Resolve relative path (strip leading ./ and prepend PLUGIN_ROOT)
 if [[ "$skills_dir_raw" == "./"* ]]; then
   skills_dir="${PLUGIN_ROOT}/${skills_dir_raw#./}"
@@ -462,9 +484,14 @@ fi
 # ---------------------------------------------------------------------------
 # Execution mode: run each step, write JSONL log, honor exit-code contract
 # C03: BRAIN_ROOT is validated here (only execution mode writes to the log)
+# I02 (Fix Burst 7): also reject whitespace-only BRAIN_ROOT and nonexistent directory.
 # ---------------------------------------------------------------------------
-if [[ -z "$BRAIN_ROOT" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT environment variable is not set."}\n'
+if [[ -z "${BRAIN_ROOT// /}" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT environment variable is not set or contains only whitespace."}\n'
+  _emit_run_completed_and_exit 2
+fi
+if [[ ! -d "$BRAIN_ROOT" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT must be an existing directory: %s"}\n' "$BRAIN_ROOT"
   _emit_run_completed_and_exit 2
 fi
 
