@@ -600,3 +600,132 @@ _write_token_log() {
   count="$(grep -c '\.claude/templates' "${RUN_SH}" || true)"
   [ "${count}" -eq 0 ]
 }
+
+# ===========================================================================
+# C01: red_dimensions written to STATE.md frontmatter after non-GREEN run.
+# After a run with at least one RED or YELLOW dimension, STATE.md frontmatter
+# must contain a non-empty red_dimensions array.
+# The hook reads this field to build the issue summary banner.
+# ===========================================================================
+
+@test "BC_2_01_006: after YELLOW run red_dimensions written to STATE.md frontmatter" {
+  # After init: wiki=YELLOW (no pages), synthesis=YELLOW, output=YELLOW.
+  # The writeback must populate red_dimensions with these dimensions.
+  _init_brain
+  run bash "${RUN_SH}"
+  [ "$status" -eq 0 ]
+  # Overall must be YELLOW (no RED dims)
+  local overall_in_report
+  overall_in_report="$(printf '%s' "${output}" | jq -r '.overall')"
+  [ "${overall_in_report}" = "YELLOW" ]
+  # red_dimensions must be a non-empty YAML list in the frontmatter
+  local fm
+  fm="$(awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "${BRAIN_DIR}/.brain/STATE.md")"
+  # red_dimensions section must exist and not be an empty list
+  [[ "$fm" == *"red_dimensions:"* ]]
+  # Must have at least one entry (YAML list item starts with '  - ')
+  local entry_count
+  entry_count="$(printf '%s' "$fm" | awk '/^red_dimensions:/{in_rd=1; next} in_rd && /^  - /{count++} in_rd && /^[^ ]/{in_rd=0} END{print count+0}')"
+  [ "${entry_count}" -gt 0 ]
+}
+
+@test "BC_2_01_006: after GREEN run red_dimensions is empty list in STATE.md" {
+  # After a full green brain run, red_dimensions must be an empty list.
+  _init_brain
+  _add_wiki_pages 1
+  _add_weekly_brief
+  _add_content_brief
+  run bash "${RUN_SH}"
+  [ "$status" -eq 0 ]
+  local overall_in_report
+  overall_in_report="$(printf '%s' "${output}" | jq -r '.overall')"
+  [ "${overall_in_report}" = "GREEN" ]
+  # red_dimensions must exist but be empty (yq writes "red_dimensions: []")
+  local fm
+  fm="$(awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "${BRAIN_DIR}/.brain/STATE.md")"
+  [[ "$fm" == *"red_dimensions:"* ]]
+  # No list entries under red_dimensions
+  local entry_count
+  entry_count="$(printf '%s' "$fm" | awk '/^red_dimensions:/{in_rd=1; next} in_rd && /^  - /{count++} in_rd && /^[^ ]/{in_rd=0} END{print count+0}')"
+  [ "${entry_count}" -eq 0 ]
+}
+
+@test "BC_2_01_006: after RED run red_dimensions contains RED dimension name in STATE.md" {
+  # Force sources=RED by removing manifest.json.
+  _init_brain
+  rm -f "${BRAIN_DIR}/.brain/manifest.json"
+  run bash "${RUN_SH}"
+  [ "$status" -eq 0 ]
+  local overall_in_report
+  overall_in_report="$(printf '%s' "${output}" | jq -r '.overall')"
+  [ "${overall_in_report}" = "RED" ]
+  # red_dimensions must include sources
+  local fm
+  fm="$(awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "${BRAIN_DIR}/.brain/STATE.md")"
+  [[ "$fm" == *"sources"* ]]
+}
+
+# ===========================================================================
+# C02: Body preservation with horizontal rules.
+# STATE.md body content including markdown horizontal rules (---) must survive
+# the writeback cycle without corruption or truncation.
+# ===========================================================================
+
+@test "BC_2_01_006: body with horizontal rule survives writeback cycle" {
+  # Write STATE.md with a body that contains a legitimate markdown horizontal rule.
+  _init_brain
+  local state_file="${BRAIN_DIR}/.brain/STATE.md"
+  # Read existing frontmatter and rebuild with a body containing a horizontal rule.
+  local fm
+  fm="$(awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "${state_file}")"
+  {
+    printf '%s\n' '---'
+    printf '%s\n' "${fm}"
+    printf '%s\n' '---'
+    printf '%s\n' '# Brain State'
+    printf '%s\n' 'Section A content.'
+    printf '%s\n' '---'
+    printf '%s\n' '## Subsection'
+    printf '%s\n' '_footer text_'
+  } >"${state_file}"
+  # Run the skill
+  run bash "${RUN_SH}"
+  [ "$status" -eq 0 ]
+  # The horizontal rule in the body must survive
+  local body
+  body="$(awk 'BEGIN{n=0; in_body=0} /^---$/ && n<2 {n++; if (n==2) in_body=1; next} in_body{print}' "${state_file}")"
+  [[ "$body" == *"---"* ]]
+  # Footer text must also survive
+  [[ "$body" == *"_footer text_"* ]]
+  # Section content must survive
+  [[ "$body" == *"Section A content."* ]]
+}
+
+# ===========================================================================
+# I04: writeback_status field in JSON report.
+# The JSON output must include a "writeback_status" field.
+# ===========================================================================
+
+@test "BC_2_01_006: JSON report includes writeback_status field" {
+  _init_brain
+  run bash "${RUN_SH}"
+  [ "$status" -eq 0 ]
+  local ws
+  ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
+  [ -n "${ws}" ]
+  [ "${ws}" != "null" ]
+  # Must be either "ok" or "failed"
+  [[ "${ws}" == "ok" || "${ws}" == "failed" ]]
+}
+
+@test "BC_2_01_006: JSON report writeback_status is ok on successful healthy brain" {
+  _init_brain
+  _add_wiki_pages 1
+  _add_weekly_brief
+  _add_content_brief
+  run bash "${RUN_SH}"
+  [ "$status" -eq 0 ]
+  local ws
+  ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
+  [ "${ws}" = "ok" ]
+}

@@ -84,14 +84,16 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
   local brain_dir; brain_dir="${BATS_TEST_TMPDIR}/non-brain-dir"
   mkdir -p "$brain_dir"
 
-  # Run health on a non-brain directory — should exit 1 (RED) but not crash
-  CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
-    run bash "${PLUGIN_ROOT}/skills/health/run.sh" --brain "$brain_dir"
-  # Exit 1 (RED) is acceptable; exit 2 (crash) is not
-  refute [ "$status" -eq 2 ]
-  # Output must be structured (no raw stack traces)
+  # Run health on a non-brain directory — exits 2 (E-HEALTH-001: STATE.md missing),
+  # which is a structured error, not a crash. Any exit code other than raw bash crash
+  # (unhandled error) is acceptable; the output must always be parseable JSON.
+  BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
+    run bash "${PLUGIN_ROOT}/skills/brain-health/run.sh"
+  # Exit 2 (E-HEALTH-001) is the expected structured response for missing STATE.md.
+  # What we forbid is an unstructured bash crash (no JSON on stdout).
+  # Output must be structured JSON.
   run jq empty <<< "$output"
-  # At minimum, output is valid JSON or a formatted human-readable health report
+  # At minimum, output is valid JSON (either health report or E-HEALTH-001 envelope)
 }
 
 # --- BC-2.14.003: Upgrade migration idempotency ---
@@ -139,8 +141,8 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
   BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
     bash "${PLUGIN_ROOT}/skills/upgrade-brain/run.sh" --from 0.1 --to 0.2 --yes
 
-  CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
-    run bash "${PLUGIN_ROOT}/skills/health/run.sh" --brain "$brain_dir"
+  BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
+    run bash "${PLUGIN_ROOT}/skills/brain-health/run.sh"
   assert_success  # GREEN status = exit 0
 }
 ```

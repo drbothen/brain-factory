@@ -46,6 +46,20 @@ _health_error() {
 }
 
 # ---------------------------------------------------------------------------
+# Preflight: jq and yq are mandatory runtime dependencies.
+# Checked before any filesystem operations so failures emit a clean error,
+# not a cryptic "command not found" mid-script.
+# E-HEALTH-004 / E-HEALTH-005 — error-taxonomy.md HEALTH section.
+# ---------------------------------------------------------------------------
+if ! command -v jq >/dev/null 2>&1; then
+  _health_error "E-HEALTH-004" "jq is required for /brain:health. Install via your package manager."
+fi
+
+if ! command -v yq >/dev/null 2>&1; then
+  _health_error "E-HEALTH-005" "yq is required for /brain:health. Install via your package manager."
+fi
+
+# ---------------------------------------------------------------------------
 # Pre-flight check: .brain/STATE.md must exist and be readable.
 # AC-006 / BC-2.01.006 edge case EC-002
 # ---------------------------------------------------------------------------
@@ -276,9 +290,15 @@ last_checked="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 # ---------------------------------------------------------------------------
 # Write computed health back to STATE.md frontmatter.
 # BC-2.01.006 v1.3 Postcondition 5: skill writes overall_health, last_health_check,
-# and dimensions.<name>.status back to .brain/STATE.md so the session-start hook
-# can read the cached state without re-running the full six-dimensional check.
+# dimensions.<name>.status, and red_dimensions back to .brain/STATE.md so the
+# session-start hook can read the cached state without re-running all six dimensions.
 # Strategy: extract frontmatter → update with yq → reassemble with body preserved.
+#
+# Naming note: STATE.md frontmatter uses "last_health_check" (BC field name).
+# The JSON output uses "last_checked" (story AC-008 field name).
+# These are different surfaces with different field names by design.
+#
+# awk fallback removed: yq preflight above guarantees yq is available.
 # ---------------------------------------------------------------------------
 _writeback_state() {
   local fm_tmp body_tmp new_state_tmp
@@ -288,44 +308,60 @@ _writeback_state() {
 
   # Extract frontmatter (content between first pair of --- markers, exclusive).
   awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "$state_file" >"$fm_tmp"
-  # Extract body (everything after the closing --- of the frontmatter).
-  awk '/^---$/{n++; next} n>=2{print}' "$state_file" >"$body_tmp"
+  # Extract body (everything after the closing --- frontmatter delimiter).
+  # State machine: stop treating '---' as a delimiter after the second occurrence.
+  # This prevents legitimate markdown horizontal rules in the body from being stripped.
+  awk 'BEGIN{n=0; in_body=0} /^---$/ && n<2 {n++; if (n==2) in_body=1; next} in_body{print}' \
+    "$state_file" >"$body_tmp"
 
-  if command -v yq >/dev/null 2>&1; then
-    # Update overall_health and last_health_check.
-    yq e -i ".overall_health = \"${overall}\"" "$fm_tmp"
-    yq e -i ".last_health_check = \"${last_checked}\"" "$fm_tmp"
-    # Update each dimension status.
-    yq e -i ".dimensions.capture = \"${capture_status}\"" "$fm_tmp"
-    yq e -i ".dimensions.sources = \"${sources_status}\"" "$fm_tmp"
-    yq e -i ".dimensions.wiki = \"${wiki_status}\"" "$fm_tmp"
-    yq e -i ".dimensions.synthesis = \"${synthesis_status}\"" "$fm_tmp"
-    yq e -i ".dimensions.output = \"${output_status}\"" "$fm_tmp"
-    yq e -i ".dimensions.reflection = \"${reflection_status}\"" "$fm_tmp"
-  else
-    # awk fallback: rewrite frontmatter fields directly.
-    awk \
-      -v oh="${overall}" \
-      -v lhc="${last_checked}" \
-      -v cap="${capture_status}" \
-      -v src="${sources_status}" \
-      -v wki="${wiki_status}" \
-      -v syn="${synthesis_status}" \
-      -v out="${output_status}" \
-      -v ref="${reflection_status}" \
-      '{
-        if (/^overall_health:/) { print "overall_health: " oh }
-        else if (/^last_health_check:/) { print "last_health_check: \"" lhc "\"" }
-        else if (/^  capture:/) { print "  capture: " cap }
-        else if (/^  sources:/) { print "  sources: " src }
-        else if (/^  wiki:/) { print "  wiki: " wki }
-        else if (/^  synthesis:/) { print "  synthesis: " syn }
-        else if (/^  output:/) { print "  output: " out }
-        else if (/^  reflection:/) { print "  reflection: " ref }
-        else { print }
-      }' "$fm_tmp" >"${fm_tmp}.new"
-    mv "${fm_tmp}.new" "$fm_tmp"
-  fi
+  # Update overall_health and last_health_check.
+  yq e -i ".overall_health = \"${overall}\"" "$fm_tmp"
+  yq e -i ".last_health_check = \"${last_checked}\"" "$fm_tmp"
+  # Update each dimension status.
+  yq e -i ".dimensions.capture = \"${capture_status}\"" "$fm_tmp"
+  yq e -i ".dimensions.sources = \"${sources_status}\"" "$fm_tmp"
+  yq e -i ".dimensions.wiki = \"${wiki_status}\"" "$fm_tmp"
+  yq e -i ".dimensions.synthesis = \"${synthesis_status}\"" "$fm_tmp"
+  yq e -i ".dimensions.output = \"${output_status}\"" "$fm_tmp"
+  yq e -i ".dimensions.reflection = \"${reflection_status}\"" "$fm_tmp"
+  # Populate red_dimensions array: list dimensions with RED or YELLOW status.
+  # C01: skill populates this field so the session-start hook can build issue summaries
+  # without re-reading individual dimension artifacts.
+  yq e -i ".red_dimensions = []" "$fm_tmp"
+  local red_idx=0
+  local dim_name dim_status dim_detail
+  for dim_name in capture sources wiki synthesis output reflection; do
+    case "$dim_name" in
+    capture)
+      dim_status="$capture_status"
+      dim_detail="$capture_detail"
+      ;;
+    sources)
+      dim_status="$sources_status"
+      dim_detail="$sources_detail"
+      ;;
+    wiki)
+      dim_status="$wiki_status"
+      dim_detail="$wiki_detail"
+      ;;
+    synthesis)
+      dim_status="$synthesis_status"
+      dim_detail="$synthesis_detail"
+      ;;
+    output)
+      dim_status="$output_status"
+      dim_detail="$output_detail"
+      ;;
+    reflection)
+      dim_status="$reflection_status"
+      dim_detail="$reflection_detail"
+      ;;
+    esac
+    if [[ "$dim_status" == "RED" || "$dim_status" == "YELLOW" ]]; then
+      yq e -i ".red_dimensions[${red_idx}].\"${dim_name}\" = \"${dim_detail}\"" "$fm_tmp"
+      red_idx=$((red_idx + 1))
+    fi
+  done
 
   # Reassemble: frontmatter fences + updated fm + body.
   {
@@ -342,7 +378,11 @@ _writeback_state() {
 }
 
 # Run writeback — advisory only: failure must not prevent the JSON report from emitting.
-_writeback_state 2>/dev/null || true
+# Capture exit status explicitly; never swallow with '|| true' (CLAUDE.md §Forbidden).
+writeback_status="ok"
+if ! _writeback_state 2>/dev/null; then
+  writeback_status="failed"
+fi
 
 # ---------------------------------------------------------------------------
 # Emit JSON report to stdout.
@@ -364,6 +404,7 @@ jq -nc \
   --arg reflection_detail "$reflection_detail" \
   --arg overall "$overall" \
   --arg last_checked "$last_checked" \
+  --arg writeback_status "$writeback_status" \
   '{
     "dimensions": {
       "capture":    {"status": $capture_status,    "detail": $capture_detail},
@@ -374,7 +415,8 @@ jq -nc \
       "reflection": {"status": $reflection_status, "detail": $reflection_detail}
     },
     "overall": $overall,
-    "last_checked": $last_checked
+    "last_checked": $last_checked,
+    "writeback_status": $writeback_status
   }'
 
 exit 0

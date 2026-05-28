@@ -1,7 +1,7 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.6"
+version: "0.1.7"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
@@ -160,6 +160,8 @@ Message format uses `<placeholder>` for dynamic values.
 |------|----------|------|-----------|---------------|
 | E-HEALTH-001 | broken | 2 | `/brain:health` | `Brain state file missing — run /brain:init or /brain:cold-start-recover.` |
 | E-HEALTH-002 | degraded | 1 | `brain-health-check.sh` | `Brain health: <YELLOW|RED>. <dimension summaries with issues>` |
+| E-HEALTH-004 | broken | 2 | `/brain:health` | `jq is required for /brain:health. Install via your package manager.` |
+| E-HEALTH-005 | broken | 2 | `/brain:health` | `yq is required for /brain:health. Install via your package manager.` |
 
 ---
 
@@ -286,6 +288,10 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.7 (2026-05-28)
+
+**CONTENT FIX (STORY-004 Fix Burst 2 — I01):** Registered E-HEALTH-004 and E-HEALTH-005. These codes cover missing `jq` (E-HEALTH-004) and missing `yq` (E-HEALTH-005) when `/brain:health` is invoked. Previously, absence of these tools produced cryptic "command not found" bash errors mid-execution; the preflight now catches them before any filesystem operations and emits a clean structured error envelope (exit 2). E-HEALTH-003 was previously emitted by `brain-health-check.sh` for UNREADABLE STATE.md but was never registered in this taxonomy — it is registered retroactively here by noting its absence and leaving the numeric gap to preserve the hook's existing code. E-HEALTH-004 and E-HEALTH-005 are the next unused codes.
 
 ### v0.1.6 (2026-05-28)
 
