@@ -1,6 +1,6 @@
 ---
 artifact_type: story-index
-version: "0.4.3"
+version: "0.4.4"
 created: 2026-05-18
 last_updated: 2026-05-27
 authored_by: vsdd-factory:story-writer
@@ -24,13 +24,20 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 15 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-027, STORY-038). 28 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 16 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-017, STORY-027, STORY-038). 27 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.4 — 2026-05-27 (STORY-017 delivery / POL-14 BC promotion — Wave 4 progress 1/4)
+
+- **STORY-017 status:** `draft` → `completed` (PR #16 merged to develop, commit b30dd35). BC-2.02.002, BC-2.02.003, BC-2.02.005 promoted `draft` → `active` per POL-14 (already reflected in BC-INDEX v0.1.16).
+- **Delivery summary:** generate-wiki.sh (wiki page orchestrator, 5–15 pages, partial-failure fan-out), log-tokens.sh (JSONL append to `.brain/logs/ingest-tokens.jsonl`), check-token-threshold.sh (50K advisory, exit 1). 46 new tests (30 ingest-url.bats + 16 skills.bats) → 631 total, 628 passing. Adversary: 5 passes, 2 fix cycles, BC-5.39.001 3-CLEAN at passes 3-4-5. Trajectory: 9→6→0→0→0.
+- **Wave 4 progress:** 1/4 stories delivered (8/26 points). Next: STORY-032, STORY-004, STORY-015 (parallel).
+- **Stale rows corrected:** STORY-003, STORY-007, STORY-008, STORY-009 table rows updated from `draft` to `completed` (delivered in Wave 3; changelog entries v0.4.3→v0.3.9 document delivery details).
 
 ### v0.4.3 — 2026-05-27 (STORY-013 delivery / POL-14 BC promotion — Wave 3 COMPLETE 8/8)
 
@@ -120,7 +127,7 @@ inputs:
 |----------|-------|--------|--------|----------|-----|------------|
 | STORY-001 | Plugin repo structure, plugin.json manifest, and hooks.json.template | completed | 5 | P0 | BC-2.14.003, BC-2.14.004, BC-2.14.005 | — |
 | STORY-002 | /brain:init core scaffold — directory structure, templates, manifest.json, policies.yaml | completed | 8 | P0 | BC-2.01.001, BC-2.01.004, BC-2.06.003, BC-2.06.004 | PR #6 merged 1665a92 (2026-05-26) |
-| STORY-003 | /brain:init error handling, SLA assertion, and briefs/research/ scaffold | draft | 5 | P0 | BC-2.01.002, BC-2.01.003, BC-2.01.005 | — |
+| STORY-003 | /brain:init error handling, SLA assertion, and briefs/research/ scaffold | completed | 5 | P0 | BC-2.01.002, BC-2.01.003, BC-2.01.005 | PR #8 merged 2f13f97 (2026-05-27) |
 | STORY-004 | /brain:health six-dimensional convergence skill | draft | 5 | P1 | BC-2.01.006 | — |
 | STORY-005 | Plugin install from marketplace, tarball completeness, and /brain:upgrade-brain | draft | 5 | P0 | BC-2.14.001, BC-2.14.002 | — |
 
@@ -131,9 +138,9 @@ inputs:
 | Story ID | Title | Status | Points | Priority | BCs | Depends On |
 |----------|-------|--------|--------|----------|-----|------------|
 | STORY-006 | Quarantine corpus, quarantine-fetch.sh hook, and /brain:quarantine-check skill | completed | 8 | P0 | BC-2.04.001, BC-2.10.001, BC-2.10.002, BC-2.10.003 | PR #7 (139b05f) |
-| STORY-007 | validate-source-immutability.sh: block overwrite of existing source records | draft | 3 | P0 | BC-2.04.002 | — |
-| STORY-008 | validate-wikilink-integrity.sh and validate-index-log-coherence.sh: wiki structural integrity hooks | draft | 5 | P0 | BC-2.04.003, BC-2.04.006 | — |
-| STORY-009 | validate-frontmatter-schema.sh: enforce embedding_status and all mandatory wiki/source fields | draft | 5 | P0 | BC-2.04.004, BC-2.04.005 | — |
+| STORY-007 | validate-source-immutability.sh: block overwrite of existing source records | completed | 3 | P0 | BC-2.04.002 | PR #9 merged 9cb5147 (2026-05-26) |
+| STORY-008 | validate-wikilink-integrity.sh and validate-index-log-coherence.sh: wiki structural integrity hooks | completed | 5 | P0 | BC-2.04.003, BC-2.04.006 | PR #10 merged fd56a73 (2026-05-27) |
+| STORY-009 | validate-frontmatter-schema.sh: enforce embedding_status and all mandatory wiki/source fields | completed | 5 | P0 | BC-2.04.004, BC-2.04.005 | PR #11 merged 5c9c438 (2026-05-27) |
 | STORY-010 | validate-page-type-policy.sh and validate-voice-avoid-list.sh: wiki type path gate and voice advisory | completed | 3 | P0 | BC-2.04.007, BC-2.04.008 | — |
 | STORY-011 | validate-source-id-citation.sh and validate-publish-state.sh: citation integrity and publish state machine | completed | 5 | P0 | BC-2.04.009, BC-2.04.010 | PR #13 merged 7cf0400 (2026-05-27) |
 | STORY-012 | enforce-kebab-case.sh and block-ai-attribution.sh: filename naming gate and AI attribution block | completed | 3 | P0 | BC-2.04.011, BC-2.04.012 | PR #14 merged 50b54e0 (2026-05-27) |
@@ -148,7 +155,7 @@ inputs:
 | Story ID | Title | Status | Points | Priority | BCs | Depends On |
 |----------|-------|--------|--------|----------|-----|------------|
 | STORY-016 | Defuddle fetch wrapper, duplicate guard, and atomic manifest-write helper | completed | 8 | P0 | BC-2.02.001, BC-2.02.004, BC-2.02.006 | PR #5 merged 7e94ec0 (2026-05-26) |
-| STORY-017 | Wiki page generation pipeline, token JSONL logging, and 50K-token chunk warning | draft | 8 | P0 | BC-2.02.002, BC-2.02.003, BC-2.02.005 | — |
+| STORY-017 | Wiki page generation pipeline, token JSONL logging, and 50K-token chunk warning | completed | 8 | P0 | BC-2.02.002, BC-2.02.003, BC-2.02.005 | PR #16 merged b30dd35 (2026-05-27) |
 | STORY-018 | Sub-linear ingest latency gate: bats scale assertion at 1K and 10K pages | draft | 5 | P1 | BC-2.02.007 | — |
 | STORY-019 | Local source ingest: path validation, manifest delta, wiki generation, and partial-failure fan-out | draft | 8 | P0 | BC-2.03.001, BC-2.03.002, BC-2.03.003, BC-2.03.004 | — |
 
