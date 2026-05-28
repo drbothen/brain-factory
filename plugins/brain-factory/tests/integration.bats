@@ -1212,6 +1212,163 @@ MOCK_EOF
   [[ "$trace" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$ ]]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 5 — Adversary Pass 5 findings
+# I01: log-write failure emits E-LOBSTER-006 + lobster.run.completed
+# I02: VP-007 process substitution accepted by -r check
+# I03: brain: namespace prefix exercised
+# S01: empty WORKFLOW_FILE falls back to "unknown"
+# S02: dep entry with embedded comma → E-LOBSTER-003
+# S03: .skills as array → E-LOBSTER-002
+# S04: JSONL log entries contain ts and trace fields
+# ---------------------------------------------------------------------------
+
+# I01: read-only log directory → E-LOBSTER-006 + lobster.run.completed on stderr
+@test "BC_2_12_001: lobster-run read-only log dir emits E-LOBSTER-006 and lobster.run.completed (I01)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  # Create the log dir and make it read-only so touch "$LOG_FILE" fails
+  local readonly_log_dir
+  readonly_log_dir="${LOBSTER_BRAIN}/.brain/logs"
+  mkdir -p "$readonly_log_dir"
+  chmod 444 "$readonly_log_dir"
+  # Capture both stdout and stderr
+  local combined_out
+  combined_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml" 2>&1 || true)"
+  # Restore permissions so teardown can clean up
+  chmod 755 "$readonly_log_dir"
+  _teardown_lobster_env
+  # stdout must contain E-LOBSTER-006
+  [[ "$combined_out" == *"E-LOBSTER-006"* ]]
+  # stderr must contain lobster.run.completed
+  [[ "$combined_out" == *"lobster.run.completed"* ]]
+}
+
+# I02: process substitution <(echo "...") accepted as workflow source (VP-007)
+@test "BC_2_12_001: lobster-run accepts process substitution as workflow file (I02/VP-007)" {
+  _setup_lobster_env
+  # Add init skill so skill check passes
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  local yaml_content
+  yaml_content='name: ps-test
+description: "Process substitution test"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []'
+  # Run with process substitution — should NOT fail with E-LOBSTER-011
+  local ps_out ps_status
+  ps_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run <(printf '%s\n' "$yaml_content") 2>&1 || true)"
+  ps_status="${PIPESTATUS[0]:-$?}"
+  _teardown_lobster_env
+  # Must NOT emit E-LOBSTER-011 (file-not-found)
+  [[ "$ps_out" != *"E-LOBSTER-011"* ]]
+  # step-a should appear in dry-run output (execution plan was printed)
+  [[ "$ps_out" == *"step-a"* ]]
+}
+
+# I03: brain: namespace prefix is accepted and skill lookup strips it (BC-2.12.001 postcondition 2)
+@test "BC_2_12_001: lobster-run accepts brain: namespace prefix on skill names (I03)" {
+  _setup_lobster_env
+  # Add init skill under its real name (brain: is stripped for directory lookup)
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/brain-namespaced.yaml"
+  _teardown_lobster_env
+  # Must succeed (brain:init → init lookup passes)
+  [ "$status" -eq 0 ]
+  # dry-run output must show step-a
+  [[ "$output" == *"step-a"* ]]
+}
+
+# S02: dep entry with embedded comma → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run dep entry with embedded comma emits E-LOBSTER-003 exit 2 (S02)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  # Create fixture with a dep entry containing a comma (malformed)
+  local fixture_path
+  fixture_path="${LOBSTER_PLUGIN_ROOT}/bad-dep-comma.yaml"
+  # The dep entry "step-a,step-b" has an embedded comma — invalid kebab-case
+  printf 'name: test-bad-dep\ndescription: "Bad dep with comma"\nsteps:\n  - id: step-b\n    skill: init\n    depends_on:\n      - "step-a,step-b"\n  - id: step-a\n    skill: init\n    depends_on: []\n' >"$fixture_path"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "$fixture_path"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+}
+
+# S03: .skills field as array in plugin.json → E-LOBSTER-002, exit 2
+@test "BC_2_12_001: lobster-run .skills as array in plugin manifest emits E-LOBSTER-002 exit 2 (S03)" {
+  _setup_lobster_env
+  # Overwrite plugin.json with .skills as an array (invalid type)
+  printf '{"name":"brain-factory","skills":["./skills/"],"hooks":"hooks/hooks.json"}\n' \
+    >"${LOBSTER_PLUGIN_ROOT}/.claude-plugin/plugin.json"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-002"* ]]
+}
+
+# S04: JSONL log entries contain ts and trace fields (operational observability)
+@test "BC_2_12_001: lobster-run JSONL log entries contain ts and trace fields (S04)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  local exit_status="$status"
+  local log_file
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  [ "$exit_status" -eq 0 ]
+  [ -n "$log_file" ]
+  local step_a_line
+  step_a_line="$(grep 'step-a' "$log_file" 2>/dev/null || true)"
+  [ -n "$step_a_line" ]
+  # ts field must be present and non-empty
+  local ts_val
+  ts_val="$(printf '%s' "$step_a_line" | jq -r '.ts // ""')"
+  [ -n "$ts_val" ]
+  # trace field must be present and non-empty
+  local trace_val
+  trace_val="$(printf '%s' "$step_a_line" | jq -r '.trace // ""')"
+  [ -n "$trace_val" ]
+  # trace must not be the all-zeros UUID
+  [ "$trace_val" != "00000000-0000-0000-0000-000000000000" ]
+  _teardown_lobster_env
+}
+
+# S01: when WORKFLOW_FILE is initialized to "" (pre-arg-parse error path), completed event
+# shows "unknown" workflow — test the _emit_run_completed_and_exit path for missing arg
+@test "BC_2_12_001: lobster-run completed event shows unknown workflow when file arg missing (S01)" {
+  _setup_lobster_env
+  local stderr_out
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" 2>&1 >/dev/null || true)"
+  _teardown_lobster_env
+  # lobster.run.completed must appear on stderr
+  local completed_event
+  completed_event="$(printf '%s' "$stderr_out" | grep 'lobster.run.completed' || true)"
+  [ -n "$completed_event" ]
+  # workflow field must be "unknown" (not empty string)
+  local workflow_val
+  workflow_val="$(printf '%s' "$completed_event" | jq -r '.workflow')"
+  [ "$workflow_val" = "unknown" ]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

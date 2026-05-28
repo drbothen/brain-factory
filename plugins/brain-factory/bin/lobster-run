@@ -57,6 +57,11 @@ _emit_run_completed_and_exit() {
   local steps_run="${2:-0}"
   local steps_skipped="${3:-0}"
   local workflow_path="${WORKFLOW_FILE:-unknown}"
+  # S01: WORKFLOW_FILE is initialized to "" (set-but-empty); :- only substitutes on unset.
+  # Use explicit empty-string check to handle both unset and empty cases.
+  [[ -z "$workflow_path" ]] && workflow_path="unknown"
+  # I02 / VP-007: clean up the temp file created for process substitution buffering (if any).
+  [[ -n "${_WORKFLOW_TMPFILE:-}" ]] && rm -f "$_WORKFLOW_TMPFILE"
   jq -nc \
     --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     --arg trace "$RUN_TRACE" \
@@ -68,6 +73,10 @@ _emit_run_completed_and_exit() {
     '{ts: $ts, event_type: "lobster.run.completed", hook_name: $hook_name, trace: $trace, workflow: $workflow, exit_code: $exit_code, steps_run: $steps_run, steps_skipped: $steps_skipped}' >&2
   exit "$exit_code"
 }
+
+# I02 / VP-007: initialize _WORKFLOW_TMPFILE to empty so the cleanup in
+# _emit_run_completed_and_exit is safe even on early-exit paths (missing arg, etc.)
+_WORKFLOW_TMPFILE=""
 
 # ---------------------------------------------------------------------------
 # Argument parsing — flexible: --dry-run may appear before or after workflow
@@ -124,10 +133,25 @@ fi
 # YAML validation — attempt to parse; any yq error means malformed
 # ---------------------------------------------------------------------------
 
-# S01: check file existence before yq parse to give a precise error code
-if [[ ! -f "$WORKFLOW_FILE" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-011","message":"Workflow file not found: %s"}\n' "$WORKFLOW_FILE"
+# I02 / VP-007: use -r (readable) not -f (regular file) so process substitution FDs
+# (<(echo "$yaml")) are accepted. -f returns false for /dev/fd/N (char-special device).
+if [[ ! -r "$WORKFLOW_FILE" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-011","message":"Workflow file not found or not readable: %s"}\n' "$WORKFLOW_FILE"
   _emit_run_completed_and_exit 2
+fi
+
+# I02 / VP-007: process substitution FDs (/dev/fd/N) are single-read streams.
+# If WORKFLOW_FILE is not a regular file, buffer its content into a temp file so
+# subsequent yq calls (parse, length, field extraction) can all read it.
+_WORKFLOW_TMPFILE=""
+if [[ ! -f "$WORKFLOW_FILE" ]]; then
+  _WORKFLOW_TMPFILE="$(mktemp)"
+  if ! cat "$WORKFLOW_FILE" >"$_WORKFLOW_TMPFILE" 2>/dev/null; then
+    rm -f "$_WORKFLOW_TMPFILE"
+    printf '{"level":"error","code":"E-LOBSTER-011","message":"Workflow file not found or not readable: %s"}\n' "$WORKFLOW_FILE"
+    _emit_run_completed_and_exit 2
+  fi
+  WORKFLOW_FILE="$_WORKFLOW_TMPFILE"
 fi
 
 if ! yq eval '.' "$WORKFLOW_FILE" >/dev/null 2>&1; then
@@ -219,8 +243,22 @@ for step_json in "${step_json_lines[@]}"; do
 
   STEP_IDS+=("$sid")
   STEP_SKILLS+=("$skill_val")
-  # Build comma-separated deps string for topo sort compatibility
-  deps_csv="$(printf '%s' "$deps_json" | jq -r '.[]' | tr '\n' ',' | sed 's/,$//')"
+  # S02: validate each dep entry against kebab-case before storing; an embedded
+  # comma in a dep value would silently split into two bogus entries at topo sort time.
+  declare -a _dep_array=()
+  mapfile -t _dep_array < <(printf '%s' "$deps_json" | jq -r '.[]?' 2>/dev/null || true)
+  declare -a _validated_deps=()
+  for _dep_entry in "${_dep_array[@]}"; do
+    if ! [[ "$_dep_entry" =~ ^[a-z][a-z0-9-]*$ ]]; then
+      printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' has malformed dependency '\''%s'\''."}\n' "$sid" "$_dep_entry"
+      _emit_run_completed_and_exit 2
+    fi
+    _validated_deps+=("$_dep_entry")
+  done
+  deps_csv=""
+  if [[ "${#_validated_deps[@]}" -gt 0 ]]; then
+    deps_csv="$(printf '%s\n' "${_validated_deps[@]}" | tr '\n' ',' | sed 's/,$//')"
+  fi
   STEP_DEPS["$sid"]="$deps_csv"
   STEP_ARGS_JSON["$sid"]="$args_json"
   STEP_IDX["$sid"]="${#STEP_IDS[@]}"
@@ -234,6 +272,12 @@ if [[ ! -f "$local_plugin_manifest" ]]; then
   # S01: E-LOBSTER-012 for missing manifest (distinct from E-LOBSTER-002 skill-not-found)
   printf '{"level":"error","code":"E-LOBSTER-012","message":"Plugin manifest not found at %s"}\n' \
     "$local_plugin_manifest"
+  _emit_run_completed_and_exit 2
+fi
+# S03: validate .skills is a string (not array/object) before using it as a path
+local_skills_type="$(jq -r '.skills | if . == null then "null" else type end' "$local_plugin_manifest" 2>/dev/null || printf '')"
+if [[ -n "$local_skills_type" && "$local_skills_type" != "string" && "$local_skills_type" != "null" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-002","message":"Plugin manifest .skills field must be a string path, got %s."}\n' "$local_skills_type"
   _emit_run_completed_and_exit 2
 fi
 skills_dir_raw="$(jq -r '.skills // "./skills/"' "$local_plugin_manifest" 2>/dev/null | sed 's|/$||')"
@@ -403,6 +447,13 @@ if ! mkdir -p "$LOG_DIR" 2>/dev/null; then
   printf '{"level":"error","code":"E-LOBSTER-006","message":"Cannot create log directory: %s"}\n' "$LOG_DIR"
   _emit_run_completed_and_exit 2
 fi
+# I01: mkdir -p can succeed on a read-only directory (it already exists).
+# Verify the log file itself is writable before any steps run so the script
+# never terminates mid-execution without emitting lobster.run.completed.
+if ! touch "$LOG_FILE" 2>/dev/null; then
+  printf '{"level":"error","code":"E-LOBSTER-006","message":"Cannot write to log file: %s"}\n' "$LOG_FILE"
+  _emit_run_completed_and_exit 2
+fi
 
 OVERALL_EXIT=0
 STEPS_RUN=0
@@ -445,13 +496,16 @@ for sid in "${TOPO_ORDER[@]}"; do
 
   STEPS_RUN=$((STEPS_RUN + 1))
 
-  # Write JSONL log entry — use actual step_exit (not coerced) for diagnostic fidelity
+  # Write JSONL log entry — use actual step_exit (not coerced) for diagnostic fidelity.
+  # S04: include ts and trace fields (minimum spec fields + operational context).
   jq -nc \
+    --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    --arg trace "$RUN_TRACE" \
     --arg step_id "$sid" \
     --arg verdict "$verdict" \
     --argjson exit_code "$step_exit" \
     --argjson duration_ms "$step_duration" \
-    '{"step_id": $step_id, "exit_code": $exit_code, "verdict": $verdict, "duration_ms": $duration_ms}' \
+    '{"ts": $ts, "trace": $trace, "step_id": $step_id, "exit_code": $exit_code, "verdict": $verdict, "duration_ms": $duration_ms}' \
     >>"$LOG_FILE"
 
   # Emit lobster.step.completed event on stderr
