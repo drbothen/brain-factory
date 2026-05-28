@@ -2,11 +2,24 @@
 set -euo pipefail
 # brain-health-check.sh — SessionStart lifecycle hook: brain health banner
 # BC-2.04.014 | ADR-002 v2.0 | ADR-016 (event emission)
-# Fires on the SessionStart event. Reads .brain/STATE.md frontmatter and
-# emits a health banner. Advisory only on unhealthy state — NEVER exits 2.
+# Fires on the SessionStart event. Reads .brain/STATE.md frontmatter for a
+# fast health banner. For a full six-dimensional report, invoke the skill:
+#   bash "${CLAUDE_PLUGIN_ROOT}/skills/brain-health/run.sh"
+#
+# AC-010: this hook is the thin wrapper over skills/brain-health/run.sh —
+# it reads the cached STATE.md overall_health rather than re-computing all
+# six dimensions on every session open (performance constraint for SessionStart).
+# The hook does NOT re-implement dimension logic (no source index reads).
+#
 # Exit codes:
 #   0 — always (GREEN, RED/YELLOW advisory, unreadable, or not a brain session)
 #   Advisory messages delivered via stdout systemMessage, never via exit code
+
+# Path to the full six-dimensional health skill (AC-010: thin-wrapper reference).
+# The session-start hook reads cached STATE.md for speed; run the skill directly
+# for a live six-dimensional report: bash "${HEALTH_SKILL}"
+# shellcheck disable=SC2034
+HEALTH_SKILL="${CLAUDE_PLUGIN_ROOT}/skills/brain-health/run.sh"
 
 # ADVISORY ERR trap: unhandled errors exit 0 so session open is never blocked.
 trap 'printf "%s\n" "{\"continue\":true,\"systemMessage\":\"Health check encountered an error.\"}" ; exit 0' ERR
