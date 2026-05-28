@@ -60,8 +60,6 @@ _emit_run_completed_and_exit() {
   # S01: WORKFLOW_FILE is initialized to "" (set-but-empty); :- only substitutes on unset.
   # Use explicit empty-string check to handle both unset and empty cases.
   [[ -z "$workflow_path" ]] && workflow_path="unknown"
-  # I02 / VP-007: clean up the temp file created for process substitution buffering (if any).
-  [[ -n "${_WORKFLOW_TMPFILE:-}" ]] && rm -f "$_WORKFLOW_TMPFILE"
   jq -nc \
     --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     --arg trace "$RUN_TRACE" \
@@ -74,9 +72,17 @@ _emit_run_completed_and_exit() {
   exit "$exit_code"
 }
 
-# I02 / VP-007: initialize _WORKFLOW_TMPFILE to empty so the cleanup in
-# _emit_run_completed_and_exit is safe even on early-exit paths (missing arg, etc.)
+# I03 / VP-007: initialize _WORKFLOW_TMPFILE to empty; register EXIT trap so that
+# tmpfile is cleaned up on ANY exit path (normal, SIGINT, SIGTERM, set -e trip).
+# The EXIT trap fires unconditionally — this is the sole cleanup site.
 _WORKFLOW_TMPFILE=""
+# shellcheck disable=SC2329  # invoked via trap EXIT, not a direct call
+_cleanup_tmpfile() {
+  if [[ -n "${_WORKFLOW_TMPFILE:-}" && -f "$_WORKFLOW_TMPFILE" ]]; then
+    rm -f "$_WORKFLOW_TMPFILE"
+  fi
+}
+trap _cleanup_tmpfile EXIT
 
 # ---------------------------------------------------------------------------
 # Argument parsing — flexible: --dry-run may appear before or after workflow
@@ -154,8 +160,13 @@ if [[ ! -f "$WORKFLOW_FILE" ]]; then
   WORKFLOW_FILE="$_WORKFLOW_TMPFILE"
 fi
 
-if ! yq eval '.' "$WORKFLOW_FILE" >/dev/null 2>&1; then
-  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: parse error."}\n'
+# I01 (Fix Burst 6): capture actual yq error message instead of hardcoding "parse error"
+_yq_err="$(yq eval '.' "$WORKFLOW_FILE" 2>&1 >/dev/null || true)"
+if [[ -n "$_yq_err" ]]; then
+  # Collapse newlines to spaces; truncate to 500 chars for JSON safety
+  _yq_err_clean="$(printf '%s' "$_yq_err" | tr '\n' ' ' | tr -s ' ' | cut -c1-500)"
+  jq -nc --arg msg "Invalid workflow YAML: ${_yq_err_clean}." \
+    '{level:"error",code:"E-LOBSTER-003",message:$msg}'
   _emit_run_completed_and_exit 2
 fi
 
@@ -225,6 +236,13 @@ for step_json in "${step_json_lines[@]}"; do
   # I03: missing skill is an error
   if [[ -z "$skill_val" || "$skill_val" == "null" ]]; then
     printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' missing required field skill."}\n' "$sid"
+    _emit_run_completed_and_exit 2
+  fi
+
+  # C01 (Fix Burst 6): validate depends_on is an array (not a string, object, or number)
+  deps_type="$(printf '%s' "$deps_json" | jq -r 'type' 2>/dev/null || printf '')"
+  if [[ "$deps_type" != "array" ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' depends_on must be an array, got %s."}\n' "$sid" "$deps_type"
     _emit_run_completed_and_exit 2
   fi
 
@@ -384,10 +402,21 @@ while [[ "${#QUEUE[@]}" -gt 0 ]]; do
   fi
 done
 
-# Cycle detection
+# Cycle detection (C02 Fix Burst 6: include cycle member IDs in message; S01: pass steps_skipped)
 if [[ "${#TOPO_ORDER[@]}" -ne "${#STEP_IDS[@]}" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-001","message":"Circular dependency detected in workflow."}\n'
-  _emit_run_completed_and_exit 2
+  declare -a cycle_members=()
+  for _cycle_sid in "${STEP_IDS[@]}"; do
+    if [[ "${IN_DEGREE["$_cycle_sid"]:-0}" -gt 0 ]]; then
+      cycle_members+=("$_cycle_sid")
+    fi
+  done
+  cycle_csv="$(
+    IFS=','
+    printf '%s' "${cycle_members[*]}"
+  )"
+  jq -nc --arg msg "Circular dependency detected in workflow: ${cycle_csv}." \
+    '{level:"error",code:"E-LOBSTER-001",message:$msg}'
+  _emit_run_completed_and_exit 2 0 "${#STEP_IDS[@]}"
 fi
 
 # ---------------------------------------------------------------------------

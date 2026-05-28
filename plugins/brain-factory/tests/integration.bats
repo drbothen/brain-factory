@@ -1369,6 +1369,139 @@ steps:
   [ "$workflow_val" = "unknown" ]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 6 — Adversary Pass 6 findings
+# C01: depends_on lacks type validation (parallel to args)
+# C02: E-LOBSTER-001 message missing <cycle> substitution
+# I01: E-LOBSTER-003 hardcodes "parse error" instead of yq error
+# I03: No EXIT trap — tmpfile leaks on abnormal termination
+# S01: Validation-failure paths report steps_run=0/steps_skipped=0
+# S02: Cycle test doesn't assert cycle members in message
+# ---------------------------------------------------------------------------
+
+# C01: depends_on as string → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run depends_on as string emits E-LOBSTER-003 exit 2 (C01)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/depends-on-string.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"depends_on"* ]]
+  [[ "$output" == *"string"* ]]
+}
+
+# C01: depends_on as object → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run depends_on as object emits E-LOBSTER-003 exit 2 (C01)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/depends-on-object.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"depends_on"* ]]
+  [[ "$output" == *"object"* ]]
+}
+
+# C01: depends_on as number → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run depends_on as number emits E-LOBSTER-003 exit 2 (C01)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/depends-on-number.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  [[ "$output" == *"depends_on"* ]]
+  [[ "$output" == *"number"* ]]
+}
+
+# C02: cycle message includes the cycle member step IDs
+@test "BC_2_12_001: lobster-run cycle message includes cycle member step IDs (C02/S02)" {
+  _setup_lobster_env
+  local stdout_out
+  stdout_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml" 2>/dev/null || true)"
+  _teardown_lobster_env
+  # Error code must be present
+  [[ "$stdout_out" == *"E-LOBSTER-001"* ]]
+  # Cycle message must identify cycle members (step-a and step-b)
+  [[ "$stdout_out" == *"step-a"* ]]
+  [[ "$stdout_out" == *"step-b"* ]]
+}
+
+# C02/S01: cycle detection failure path — lobster.run.completed reports steps_skipped = step count
+@test "BC_2_12_001: lobster-run cycle failure completed event reports steps_skipped = step count (C02/S01)" {
+  _setup_lobster_env
+  local stderr_out
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml" 2>&1 >/dev/null || true)"
+  _teardown_lobster_env
+  local completed_event
+  completed_event="$(printf '%s' "$stderr_out" | grep 'lobster.run.completed' || true)"
+  [ -n "$completed_event" ]
+  local steps_run steps_skipped
+  steps_run="$(printf '%s' "$completed_event" | jq '.steps_run')"
+  steps_skipped="$(printf '%s' "$completed_event" | jq '.steps_skipped')"
+  # Cycle: 2 steps total, 0 ran, 2 skipped
+  [ "$steps_run" -eq 0 ]
+  [ "$steps_skipped" -eq 2 ]
+}
+
+# I01: malformed YAML error message contains actual yq error detail (not hardcoded "parse error")
+@test "BC_2_12_001: lobster-run malformed YAML error message contains actual yq error detail (I01)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/malformed.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+  # Message must contain actual yq error content beyond the generic prefix.
+  # The old hardcoded text was exactly "Invalid workflow YAML: parse error."
+  # The new message must be longer (it embeds the real yq stderr).
+  local msg
+  msg="$(printf '%s' "$output" | jq -r '.message' 2>/dev/null || printf '%s' "$output")"
+  local generic_sentinel="Invalid workflow YAML: parse error."
+  local generic_len="${#generic_sentinel}"
+  local actual_len="${#msg}"
+  [ "$actual_len" -gt "$generic_len" ]
+}
+
+# I03: EXIT trap prevents tmpfile leak — process substitution run leaves no orphan tmpfile
+@test "BC_2_12_001: lobster-run EXIT trap cleans up tmpfile on normal exit (I03)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/init"
+  printf -- '---\nname: init\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/init/SKILL.md"
+  local yaml_content
+  yaml_content='name: trap-test
+description: "EXIT trap cleanup test"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []'
+  # Snapshot tmpdir before and after
+  local tmpdir_before tmpdir_after
+  tmpdir_before="$(ls /tmp/ 2>/dev/null | wc -l | tr -d ' ')"
+  env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run <(printf '%s\n' "$yaml_content") >/dev/null 2>&1 || true
+  tmpdir_after="$(ls /tmp/ 2>/dev/null | wc -l | tr -d ' ')"
+  _teardown_lobster_env
+  # tmpfile count must not have grown (EXIT trap cleaned up)
+  [ "$tmpdir_after" -le "$tmpdir_before" ]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

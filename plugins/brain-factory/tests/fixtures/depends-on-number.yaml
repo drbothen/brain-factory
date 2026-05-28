@@ -1,0 +1,6 @@
+name: test-depends-on-number
+description: "depends_on as number (invalid)"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: 42

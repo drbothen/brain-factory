@@ -1,0 +1,10 @@
+name: test-depends-on-object
+description: "depends_on as object (invalid)"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: []
+  - id: step-b
+    skill: init
+    depends_on:
+      a: step-a
