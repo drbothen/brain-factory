@@ -1641,6 +1641,120 @@ steps:
   _teardown_lobster_env
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032 Fix Burst 8 — Adversary Pass 8 findings
+# I01: unknown flag bypasses _emit_run_completed_and_exit
+# I02: JSON injection in error envelopes (28 unescaped printf sites → _emit_error)
+# S01: trace field missing in stdout error envelopes (resolved by I02 _emit_error)
+# S02: whitespace stripping only handles spaces (tab/newline bypass)
+# S03: malformed plugin.json misclassified as "empty skills field" → E-LOBSTER-013
+# ---------------------------------------------------------------------------
+
+# I01: unknown flag emits E-LOBSTER-007 AND lobster.run.completed on stderr
+@test "BC_2_12_001: lobster-run unknown flag emits E-LOBSTER-007 and lobster.run.completed (I01)" {
+  _setup_lobster_env
+  local stderr_out
+  stderr_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --unknownflag "${FIXTURE_DIR}/linear-dag.yaml" 2>&1 >/dev/null || true)"
+  local stdout_out
+  stdout_out="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --unknownflag "${FIXTURE_DIR}/linear-dag.yaml" 2>/dev/null || true)"
+  _teardown_lobster_env
+  # stdout must contain E-LOBSTER-007
+  [[ "$stdout_out" == *"E-LOBSTER-007"* ]]
+  # stderr must contain lobster.run.completed
+  [[ "$stderr_out" == *"lobster.run.completed"* ]]
+}
+
+# I01: unknown flag exits 2
+@test "BC_2_12_001: lobster-run unknown flag exits 2 (I01)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --unknownflag "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-007"* ]]
+}
+
+# I02: error envelope is valid JSON even with double quotes in CLAUDE_PLUGIN_ROOT
+@test "BC_2_12_001: error envelope is valid JSON even with quotes in env vars (I02)" {
+  local wrapper
+  wrapper="$(mktemp)"
+  # Use a wrapper script to set CLAUDE_PLUGIN_ROOT to a value containing a double-quote
+  # (env assignment in bats run splits on spaces; wrapper avoids that)
+  printf '#!/usr/bin/env bash\nexport CLAUDE_PLUGIN_ROOT='"'"'/foo"bar'"'"'\nexport BRAIN_ROOT=/tmp\nexec "%s" /nonexistent-missing.yaml 2>/dev/null\n' \
+    "${PLUGIN_DIR}/bin/lobster-run" >"$wrapper"
+  chmod +x "$wrapper"
+  run "$wrapper"
+  rm -f "$wrapper"
+  # Exit must be 2 (error path)
+  [ "$status" -eq 2 ]
+  # The error envelope on stdout must be parseable JSON (not broken by the quote in the env var)
+  printf '%s' "$output" | head -1 | jq -e . >/dev/null
+}
+
+# S01: error envelope contains trace field (resolved by _emit_error helper)
+@test "BC_2_12_001: error envelope from _emit_error contains trace field (S01)" {
+  _setup_lobster_env
+  # Trigger an error path (missing workflow file → E-LOBSTER-011)
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/does-not-exist.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  # The error envelope on stdout must contain a trace field
+  local trace_val
+  trace_val="$(printf '%s' "$output" | head -1 | jq -r '.trace // ""' 2>/dev/null || true)"
+  [ -n "$trace_val" ]
+}
+
+# S02: tab-only BRAIN_ROOT is rejected as E-LOBSTER-005 (not treated as non-empty)
+@test "BC_2_12_001: lobster-run tab-only BRAIN_ROOT emits E-LOBSTER-005 exit 2 (S02)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  local wrapper
+  wrapper="$(mktemp)"
+  # Must use a wrapper because bats `run env` can't embed a literal tab in a value
+  printf '#!/usr/bin/env bash\nexport CLAUDE_PLUGIN_ROOT="%s"\nexport BRAIN_ROOT=$'"'"'\t\t'"'"'\nexec "%s" "%s/exit-code-all-pass.yaml" 2>/dev/null\n' \
+    "${LOBSTER_PLUGIN_ROOT}" "${LOBSTER_BIN}" "${FIXTURE_DIR}" >"$wrapper"
+  chmod +x "$wrapper"
+  run "$wrapper"
+  rm -f "$wrapper"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-005"* ]]
+}
+
+# S03: malformed plugin.json emits E-LOBSTER-013 exit 2 (not E-LOBSTER-002)
+@test "BC_2_12_001: malformed plugin.json emits E-LOBSTER-013 exit 2 (S03)" {
+  _setup_lobster_env
+  # Overwrite plugin.json with malformed JSON
+  printf 'NOT_JSON{' >"${LOBSTER_PLUGIN_ROOT}/.claude-plugin/plugin.json"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-013"* ]]
+}
+
+# S03: malformed plugin.json does NOT emit E-LOBSTER-002 (wrong error class)
+@test "BC_2_12_001: malformed plugin.json does not emit E-LOBSTER-002 (wrong error class) (S03)" {
+  _setup_lobster_env
+  printf 'NOT_JSON{' >"${LOBSTER_PLUGIN_ROOT}/.claude-plugin/plugin.json"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  # Must emit E-LOBSTER-013, NOT E-LOBSTER-002
+  [[ "$output" != *"E-LOBSTER-002"* ]]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

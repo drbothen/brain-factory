@@ -51,6 +51,23 @@ _now_ms() {
 }
 
 # ---------------------------------------------------------------------------
+# Emit a structured error envelope to stdout (JSON-safe via jq). (I02/S01)
+# Usage: _emit_error <code> <message>
+# The RUN_TRACE variable is captured at invocation time, so callers before
+# RUN_TRACE is set should not call this function (there are none in practice).
+# ---------------------------------------------------------------------------
+_emit_error() {
+  local code="$1"
+  local msg="$2"
+  jq -nc \
+    --arg level "error" \
+    --arg code "$code" \
+    --arg msg "$msg" \
+    --arg trace "${RUN_TRACE:-}" \
+    '{level: $level, code: $code, message: $msg, trace: $trace}'
+}
+
+# ---------------------------------------------------------------------------
 # Emit lobster.run.completed on stderr and exit with given code (I04)
 # ---------------------------------------------------------------------------
 _emit_run_completed_and_exit() {
@@ -108,8 +125,8 @@ while [[ $# -gt 0 ]]; do
     break
     ;;
   -*)
-    printf '{"level":"error","code":"E-LOBSTER-007","message":"Unknown flag: %s"}\n' "$1"
-    exit 2
+    _emit_error "E-LOBSTER-007" "Unknown flag: $1"
+    _emit_run_completed_and_exit 2
     ;;
   *)
     WORKFLOW_FILE="$1"
@@ -120,7 +137,7 @@ done
 
 # S03: separate error code for missing workflow argument (E-LOBSTER-008)
 if [[ -z "$WORKFLOW_FILE" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-008","message":"Missing workflow file argument."}\n'
+  _emit_error "E-LOBSTER-008" "Missing workflow file argument."
   _emit_run_completed_and_exit 2
 fi
 
@@ -131,13 +148,14 @@ PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-}"
 BRAIN_ROOT="${BRAIN_ROOT:-}"
 
 # I04 / I02 (Fix Burst 7): validate CLAUDE_PLUGIN_ROOT is set and non-whitespace-only.
-# [[ -z "$VAR" ]] is false for VAR=" " (whitespace), so strip whitespace before testing.
-if [[ -z "${PLUGIN_ROOT// /}" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-010","message":"CLAUDE_PLUGIN_ROOT environment variable is not set or contains only whitespace."}\n'
+# S02 (Fix Burst 8): strip tabs/newlines/spaces — not just spaces — before the emptiness check.
+_pr_trimmed="${PLUGIN_ROOT//[$' \t\n\r']/}"
+if [[ -z "$_pr_trimmed" ]]; then
+  _emit_error "E-LOBSTER-010" "CLAUDE_PLUGIN_ROOT environment variable is not set or contains only whitespace."
   _emit_run_completed_and_exit 2
 fi
 if [[ ! -d "$PLUGIN_ROOT" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-010","message":"CLAUDE_PLUGIN_ROOT must be an existing directory: %s"}\n' "$PLUGIN_ROOT"
+  _emit_error "E-LOBSTER-010" "CLAUDE_PLUGIN_ROOT must be an existing directory: $PLUGIN_ROOT"
   _emit_run_completed_and_exit 2
 fi
 
@@ -148,7 +166,7 @@ fi
 # I02 / VP-007: use -r (readable) not -f (regular file) so process substitution FDs
 # (<(echo "$yaml")) are accepted. -f returns false for /dev/fd/N (char-special device).
 if [[ ! -r "$WORKFLOW_FILE" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-011","message":"Workflow file not found or not readable: %s"}\n' "$WORKFLOW_FILE"
+  _emit_error "E-LOBSTER-011" "Workflow file not found or not readable: $WORKFLOW_FILE"
   _emit_run_completed_and_exit 2
 fi
 
@@ -160,7 +178,7 @@ if [[ ! -f "$WORKFLOW_FILE" ]]; then
   _WORKFLOW_TMPFILE="$(mktemp)"
   if ! cat "$WORKFLOW_FILE" >"$_WORKFLOW_TMPFILE" 2>/dev/null; then
     rm -f "$_WORKFLOW_TMPFILE"
-    printf '{"level":"error","code":"E-LOBSTER-011","message":"Workflow file not found or not readable: %s"}\n' "$WORKFLOW_FILE"
+    _emit_error "E-LOBSTER-011" "Workflow file not found or not readable: $WORKFLOW_FILE"
     _emit_run_completed_and_exit 2
   fi
   WORKFLOW_FILE="$_WORKFLOW_TMPFILE"
@@ -189,23 +207,23 @@ fi
 # Require steps array to be present and non-empty
 step_count="$(yq eval '.steps // [] | length' "$WORKFLOW_FILE" 2>/dev/null || printf '0')"
 if ! [[ "$step_count" =~ ^[0-9]+$ ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing or malformed steps field."}\n'
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing or malformed steps field."
   _emit_run_completed_and_exit 2
 fi
 if [[ "$step_count" -eq 0 ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing or empty steps array."}\n'
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing or empty steps array."
   _emit_run_completed_and_exit 2
 fi
 
 # C01: validate required top-level fields: name and description
 name_val="$(yq eval '.name // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
 if [[ -z "$name_val" || "$name_val" == "null" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing required field name."}\n'
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing required field name."
   _emit_run_completed_and_exit 2
 fi
 description_val="$(yq eval '.description // ""' "$WORKFLOW_FILE" 2>/dev/null || printf '')"
 if [[ -z "$description_val" || "$description_val" == "null" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing required field description."}\n'
+  _emit_error "E-LOBSTER-003" "Invalid workflow YAML: missing required field description."
   _emit_run_completed_and_exit 2
 fi
 
@@ -228,7 +246,7 @@ for step_json in "${step_json_lines[@]}"; do
   # I04: validate step is a JSON object (not a string/number/array)
   step_type="$(printf '%s' "$step_json" | jq -r 'type' 2>/dev/null || printf '')"
   if [[ "$step_type" != "object" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step must be a YAML mapping, got %s."}\n' "$step_type"
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step must be a YAML mapping, got $step_type."
     _emit_run_completed_and_exit 2
   fi
 
@@ -239,39 +257,39 @@ for step_json in "${step_json_lines[@]}"; do
 
   # I03: missing id is an error, not a silent skip
   if [[ -z "$sid" || "$sid" == "null" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step missing required field id."}\n'
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step missing required field id."
     _emit_run_completed_and_exit 2
   fi
 
   # I01: validate step id is kebab-case (^[a-z][a-z0-9-]*$)
   if ! [[ "$sid" =~ ^[a-z][a-z0-9-]*$ ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step id '\''%s'\'' must be kebab-case."}\n' "$sid"
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step id '$sid' must be kebab-case."
     _emit_run_completed_and_exit 2
   fi
 
   # I03: missing skill is an error
   if [[ -z "$skill_val" || "$skill_val" == "null" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' missing required field skill."}\n' "$sid"
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' missing required field skill."
     _emit_run_completed_and_exit 2
   fi
 
   # C01 (Fix Burst 6): validate depends_on is an array (not a string, object, or number)
   deps_type="$(printf '%s' "$deps_json" | jq -r 'type' 2>/dev/null || printf '')"
   if [[ "$deps_type" != "array" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' depends_on must be an array, got %s."}\n' "$sid" "$deps_type"
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' depends_on must be an array, got $deps_type."
     _emit_run_completed_and_exit 2
   fi
 
   # I02: validate args is an array (not a string, object, etc.)
   args_type="$(printf '%s' "$args_json" | jq -r 'type' 2>/dev/null || printf '')"
   if [[ "$args_type" != "array" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' args must be an array."}\n' "$sid"
+    _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' args must be an array."
     _emit_run_completed_and_exit 2
   fi
 
   # C02: duplicate step ID is an error (not a silent merge)
   if [[ -n "${STEP_IDX["$sid"]+isset}" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-009","message":"Duplicate step id '\''%s'\'' in workflow."}\n' "$sid"
+    _emit_error "E-LOBSTER-009" "Duplicate step id '$sid' in workflow."
     _emit_run_completed_and_exit 2
   fi
 
@@ -284,7 +302,7 @@ for step_json in "${step_json_lines[@]}"; do
   declare -a _validated_deps=()
   for _dep_entry in "${_dep_array[@]}"; do
     if ! [[ "$_dep_entry" =~ ^[a-z][a-z0-9-]*$ ]]; then
-      printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: step '\''%s'\'' has malformed dependency '\''%s'\''."}\n' "$sid" "$_dep_entry"
+      _emit_error "E-LOBSTER-003" "Invalid workflow YAML: step '$sid' has malformed dependency '$_dep_entry'."
       _emit_run_completed_and_exit 2
     fi
     _validated_deps+=("$_dep_entry")
@@ -304,21 +322,27 @@ done
 local_plugin_manifest="${PLUGIN_ROOT}/.claude-plugin/plugin.json"
 if [[ ! -f "$local_plugin_manifest" ]]; then
   # S01: E-LOBSTER-012 for missing manifest (distinct from E-LOBSTER-002 skill-not-found)
-  printf '{"level":"error","code":"E-LOBSTER-012","message":"Plugin manifest not found at %s"}\n' \
-    "$local_plugin_manifest"
+  _emit_error "E-LOBSTER-012" "Plugin manifest not found at $local_plugin_manifest"
   _emit_run_completed_and_exit 2
 fi
-# S03: validate .skills is a string (not array/object) before using it as a path
+# S03 (Fix Burst 8): validate plugin.json is parseable JSON before any jq queries.
+# A malformed file causes jq queries to silently fail/return empty, misclassifying
+# the error as "empty .skills field" (E-LOBSTER-002) instead of a JSON parse error.
+if ! jq -e . "$local_plugin_manifest" >/dev/null 2>&1; then
+  _emit_error "E-LOBSTER-013" "Plugin manifest is not valid JSON: $local_plugin_manifest"
+  _emit_run_completed_and_exit 2
+fi
+# S03 (pre-existing): validate .skills is a string (not array/object) before using it as a path
 local_skills_type="$(jq -r '.skills | if . == null then "null" else type end' "$local_plugin_manifest" 2>/dev/null || printf '')"
 if [[ -n "$local_skills_type" && "$local_skills_type" != "string" && "$local_skills_type" != "null" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-002","message":"Plugin manifest .skills field must be a string path, got %s."}\n' "$local_skills_type"
+  _emit_error "E-LOBSTER-002" "Plugin manifest .skills field must be a string path, got $local_skills_type."
   _emit_run_completed_and_exit 2
 fi
 skills_dir_raw="$(jq -r '.skills // "./skills/"' "$local_plugin_manifest" 2>/dev/null | sed 's|/$||')"
 # I01 (Fix Burst 7): explicit empty-string check — // only substitutes null, not "".
 # An empty .skills produces degenerate path ${PLUGIN_ROOT}// when not caught here.
 if [[ -z "$skills_dir_raw" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-002","message":"Plugin manifest .skills field is empty string."}\n'
+  _emit_error "E-LOBSTER-002" "Plugin manifest .skills field is empty string."
   _emit_run_completed_and_exit 2
 fi
 # Resolve relative path (strip leading ./ and prepend PLUGIN_ROOT)
@@ -336,7 +360,7 @@ for sid in "${STEP_IDS[@]}"; do
 
   # I02: validate skill name — allow optional brain: prefix, kebab-case after
   if ! [[ "$skill" =~ ^(brain:)?[a-z][a-z0-9-]*$ ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-002","message":"Skill '\''%s'\'' has invalid name (must be kebab-case with optional brain: prefix)."}\n' "$skill"
+    _emit_error "E-LOBSTER-002" "Skill '$skill' has invalid name (must be kebab-case with optional brain: prefix)."
     _emit_run_completed_and_exit 2
   fi
 
@@ -344,7 +368,7 @@ for sid in "${STEP_IDS[@]}"; do
   skill_dir_name="${skill#brain:}"
   skill_md="${skills_dir}/${skill_dir_name}/SKILL.md"
   if [[ ! -f "$skill_md" ]]; then
-    printf '{"level":"error","code":"E-LOBSTER-002","message":"Skill '\''%s'\'' not found in plugin manifest."}\n' "$skill"
+    _emit_error "E-LOBSTER-002" "Skill '$skill' not found in plugin manifest."
     _emit_run_completed_and_exit 2
   fi
 done
@@ -371,7 +395,7 @@ for sid in "${STEP_IDS[@]}"; do
       [[ -z "$dep" ]] && continue
       # E-LOBSTER-004 for unknown dependency reference
       if [[ -z "${IN_DEGREE["$dep"]+isset}" ]]; then
-        printf '{"level":"error","code":"E-LOBSTER-004","message":"Unknown dependency '\''%s'\'' referenced by step '\''%s'\''."}\n' "$dep" "$sid"
+        _emit_error "E-LOBSTER-004" "Unknown dependency '$dep' referenced by step '$sid'."
         _emit_run_completed_and_exit 2
       fi
       IN_DEGREE["$sid"]=$((IN_DEGREE["$sid"] + 1))
@@ -485,13 +509,15 @@ fi
 # Execution mode: run each step, write JSONL log, honor exit-code contract
 # C03: BRAIN_ROOT is validated here (only execution mode writes to the log)
 # I02 (Fix Burst 7): also reject whitespace-only BRAIN_ROOT and nonexistent directory.
+# S02 (Fix Burst 8): strip tabs/newlines/spaces — not just spaces — before the emptiness check.
 # ---------------------------------------------------------------------------
-if [[ -z "${BRAIN_ROOT// /}" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT environment variable is not set or contains only whitespace."}\n'
+_br_trimmed="${BRAIN_ROOT//[$' \t\n\r']/}"
+if [[ -z "$_br_trimmed" ]]; then
+  _emit_error "E-LOBSTER-005" "BRAIN_ROOT environment variable is not set or contains only whitespace."
   _emit_run_completed_and_exit 2
 fi
 if [[ ! -d "$BRAIN_ROOT" ]]; then
-  printf '{"level":"error","code":"E-LOBSTER-005","message":"BRAIN_ROOT must be an existing directory: %s"}\n' "$BRAIN_ROOT"
+  _emit_error "E-LOBSTER-005" "BRAIN_ROOT must be an existing directory: $BRAIN_ROOT"
   _emit_run_completed_and_exit 2
 fi
 
@@ -500,14 +526,14 @@ LOG_DIR="${BRAIN_ROOT}/.brain/logs"
 LOG_FILE="${LOG_DIR}/lobster-${LOG_DATE}.jsonl"
 
 if ! mkdir -p "$LOG_DIR" 2>/dev/null; then
-  printf '{"level":"error","code":"E-LOBSTER-006","message":"Cannot create log directory: %s"}\n' "$LOG_DIR"
+  _emit_error "E-LOBSTER-006" "Cannot create log directory: $LOG_DIR"
   _emit_run_completed_and_exit 2
 fi
 # I01: mkdir -p can succeed on a read-only directory (it already exists).
 # Verify the log file itself is writable before any steps run so the script
 # never terminates mid-execution without emitting lobster.run.completed.
 if ! touch "$LOG_FILE" 2>/dev/null; then
-  printf '{"level":"error","code":"E-LOBSTER-006","message":"Cannot write to log file: %s"}\n' "$LOG_FILE"
+  _emit_error "E-LOBSTER-006" "Cannot write to log file: $LOG_FILE"
   _emit_run_completed_and_exit 2
 fi
 

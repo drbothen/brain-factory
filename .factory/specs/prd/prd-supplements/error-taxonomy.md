@@ -1,14 +1,14 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.5"
+version: "0.1.6"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
 phase: phase-1b
 traces_to: prd/index.md
 created: 2026-05-15
-last_updated: 2026-05-27
+last_updated: 2026-05-28
 ---
 
 # brain-factory Error Taxonomy
@@ -211,6 +211,7 @@ Message format uses `<placeholder>` for dynamic values.
 | E-LOBSTER-010 | broken | 2 | `bin/lobster-run` | `CLAUDE_PLUGIN_ROOT environment variable is not set.` |
 | E-LOBSTER-011 | broken | 2 | `bin/lobster-run` | `Workflow file not found: <path>` |
 | E-LOBSTER-012 | broken | 2 | `bin/lobster-run` | `Plugin manifest not found at <path>` |
+| E-LOBSTER-013 | broken | 2 | `bin/lobster-run` | `Plugin manifest is not valid JSON: <path>` |
 
 ---
 
@@ -285,6 +286,10 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.6 (2026-05-28)
+
+**CONTENT FIX (STORY-032 Fix Burst 8 — I02/S01/S03):** Registered E-LOBSTER-013. E-LOBSTER-013 covers plugin manifest present but not parseable as JSON (`Plugin manifest is not valid JSON: <path>`). Previously, a malformed plugin.json caused `jq` queries to silently return empty, misclassifying the error as "empty .skills field" (E-LOBSTER-002). This error is distinct from E-LOBSTER-012 (manifest file absent) and from E-LOBSTER-002 (manifest valid JSON but skill not found).
 
 ### v0.1.5 (2026-05-27)
 
