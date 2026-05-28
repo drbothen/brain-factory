@@ -1,0 +1,9 @@
+name: test-cycle
+description: "Cycle DAG for testing"
+steps:
+  - id: step-a
+    skill: init
+    depends_on: [step-b]
+  - id: step-b
+    skill: init
+    depends_on: [step-a]

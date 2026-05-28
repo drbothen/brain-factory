@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# bin/lobster-run — Lobster workflow runtime
+# Traces to: BC-2.12.001, BC-2.12.002, VP-007
+#
+# Usage: lobster-run [--dry-run] <workflow.yaml>
+#
+# Environment:
+#   CLAUDE_PLUGIN_ROOT — plugin root (used for skill lookup and run-skill.mjs)
+#   BRAIN_ROOT        — brain vault root (used for JSONL log output)
+#
+# Exit codes:
+#   0 — all steps succeeded
+#   1 — at least one advisory (exit 1 step); no blocks
+#   2 — at least one block (exit 2 step), or validation error
+
+# ---------------------------------------------------------------------------
+# Argument parsing
+# ---------------------------------------------------------------------------
+DRY_RUN=false
+WORKFLOW_FILE=""
+
+if [[ "${1:-}" == "--dry-run" ]]; then
+  DRY_RUN=true
+  WORKFLOW_FILE="${2:-}"
+else
+  WORKFLOW_FILE="${1:-}"
+fi
+
+if [[ -z "$WORKFLOW_FILE" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: no file argument provided."}\n'
+  exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# Environment resolution
+# ---------------------------------------------------------------------------
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-}"
+BRAIN_ROOT="${BRAIN_ROOT:-}"
+
+# ---------------------------------------------------------------------------
+# YAML validation — attempt to parse; any yq error means malformed
+# ---------------------------------------------------------------------------
+if ! yq eval '.' "$WORKFLOW_FILE" >/dev/null 2>&1; then
+  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: parse error."}\n'
+  exit 2
+fi
+
+# Require steps array to be present and non-empty
+step_count="$(yq eval '.steps | length' "$WORKFLOW_FILE" 2>/dev/null || echo "0")"
+if [[ "$step_count" -eq 0 ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-003","message":"Invalid workflow YAML: missing or empty steps array."}\n'
+  exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# Parse steps into parallel arrays: step_ids, step_skills, step_deps
+# Format per line: <id>|<skill>|<dep1,dep2,...>
+# ---------------------------------------------------------------------------
+declare -a STEP_IDS=()
+declare -a STEP_SKILLS=()
+declare -A STEP_DEPS=() # step_id -> comma-separated dep list
+declare -A STEP_IDX=()  # step_id -> array index (for validation)
+
+while IFS='|' read -r sid skill deps; do
+  [[ -z "$sid" ]] && continue
+  STEP_IDS+=("$sid")
+  STEP_SKILLS+=("$skill")
+  STEP_DEPS["$sid"]="$deps"
+  STEP_IDX["$sid"]="${#STEP_IDS[@]}"
+done < <(yq eval '.steps[] | .id + "|" + .skill + "|" + (.depends_on | join(","))' "$WORKFLOW_FILE" 2>/dev/null)
+
+# ---------------------------------------------------------------------------
+# Skill registration check — verify each step's skill has a SKILL.md
+# ---------------------------------------------------------------------------
+for sid in "${STEP_IDS[@]}"; do
+  idx="${STEP_IDX["$sid"]}"
+  # Array is 1-indexed via the IDX counter; STEP_SKILLS is 0-indexed
+  skill="${STEP_SKILLS[$((idx - 1))]}"
+  skill_md="${PLUGIN_ROOT}/skills/${skill}/SKILL.md"
+  if [[ ! -f "$skill_md" ]]; then
+    printf '{"level":"error","code":"E-LOBSTER-002","message":"Skill '"'"'%s'"'"' not found in plugin manifest."}\n' "$skill"
+    exit 2
+  fi
+done
+
+# ---------------------------------------------------------------------------
+# Kahn's topological sort (BFS) with alphabetical ordering for determinism
+# ---------------------------------------------------------------------------
+declare -A IN_DEGREE=()
+declare -A DEPENDENTS=() # step_id -> space-separated list of steps that depend on it
+
+# Initialize in-degree and dependents map
+for sid in "${STEP_IDS[@]}"; do
+  IN_DEGREE["$sid"]=0
+  DEPENDENTS["$sid"]=""
+done
+
+for sid in "${STEP_IDS[@]}"; do
+  deps="${STEP_DEPS["$sid"]}"
+  if [[ -n "$deps" ]]; then
+    while IFS=',' read -ra dep_list; do
+      for dep in "${dep_list[@]}"; do
+        dep="${dep// /}" # strip whitespace
+        [[ -z "$dep" ]] && continue
+        # Validate dep references a known step
+        if [[ -z "${IN_DEGREE["$dep"]+isset}" ]]; then
+          printf '{"level":"error","code":"E-LOBSTER-001","message":"Circular dependency detected in workflow."}\n'
+          exit 2
+        fi
+        IN_DEGREE["$sid"]=$((IN_DEGREE["$sid"] + 1))
+        if [[ -z "${DEPENDENTS["$dep"]}" ]]; then
+          DEPENDENTS["$dep"]="$sid"
+        else
+          DEPENDENTS["$dep"]="${DEPENDENTS["$dep"]} $sid"
+        fi
+      done
+    done <<<"$deps"
+  fi
+done
+
+# BFS queue seeded with all zero-in-degree nodes (sorted alphabetically)
+declare -a QUEUE=()
+declare -a TOPO_ORDER=()
+
+# Collect zero-in-degree nodes sorted alphabetically
+declare -a zero_nodes=()
+for sid in "${STEP_IDS[@]}"; do
+  if [[ "${IN_DEGREE["$sid"]}" -eq 0 ]]; then
+    zero_nodes+=("$sid")
+  fi
+done
+
+# Sort alphabetically for determinism (VP-007)
+while IFS= read -r line; do
+  [[ -n "$line" ]] && QUEUE+=("$line")
+done < <(printf '%s\n' "${zero_nodes[@]}" | sort)
+
+while [[ "${#QUEUE[@]}" -gt 0 ]]; do
+  # Dequeue first element
+  current="${QUEUE[0]}"
+  QUEUE=("${QUEUE[@]:1}")
+  TOPO_ORDER+=("$current")
+
+  # Reduce in-degree of all dependents; enqueue those that reach 0
+  deps_str="${DEPENDENTS["$current"]}"
+  if [[ -n "$deps_str" ]]; then
+    declare -a newly_zero=()
+    for dep in $deps_str; do
+      IN_DEGREE["$dep"]=$((IN_DEGREE["$dep"] - 1))
+      if [[ "${IN_DEGREE["$dep"]}" -eq 0 ]]; then
+        newly_zero+=("$dep")
+      fi
+    done
+    # Sort newly-zero nodes alphabetically before adding to queue
+    if [[ "${#newly_zero[@]}" -gt 0 ]]; then
+      while IFS= read -r line; do
+        [[ -n "$line" ]] && QUEUE+=("$line")
+      done < <(printf '%s\n' "${newly_zero[@]}" | sort)
+    fi
+  fi
+done
+
+# Cycle detection: if topo order doesn't include all steps, there is a cycle
+if [[ "${#TOPO_ORDER[@]}" -ne "${#STEP_IDS[@]}" ]]; then
+  printf '{"level":"error","code":"E-LOBSTER-001","message":"Circular dependency detected in workflow."}\n'
+  exit 2
+fi
+
+# ---------------------------------------------------------------------------
+# Build step-id to skill lookup (for execution phase)
+# ---------------------------------------------------------------------------
+declare -A STEP_SKILL_MAP=()
+for i in "${!STEP_IDS[@]}"; do
+  STEP_SKILL_MAP["${STEP_IDS[$i]}"]="${STEP_SKILLS[$i]}"
+done
+
+# ---------------------------------------------------------------------------
+# Dry-run mode: print execution plan and exit
+# ---------------------------------------------------------------------------
+if [[ "$DRY_RUN" == "true" ]]; then
+  for sid in "${TOPO_ORDER[@]}"; do
+    skill="${STEP_SKILL_MAP["$sid"]}"
+    printf '%s: node "%s/scripts/run-skill.mjs" %s\n' "$sid" "$PLUGIN_ROOT" "$skill"
+  done
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Execution mode: run each step, write JSONL log, honor exit-code contract
+# ---------------------------------------------------------------------------
+LOG_DATE="$(date -u +%Y-%m-%d)"
+LOG_DIR="${BRAIN_ROOT}/.brain/logs"
+LOG_FILE="${LOG_DIR}/lobster-${LOG_DATE}.jsonl"
+mkdir -p "$LOG_DIR"
+
+OVERALL_EXIT=0
+
+for sid in "${TOPO_ORDER[@]}"; do
+  skill="${STEP_SKILL_MAP["$sid"]}"
+  step_start="$SECONDS"
+
+  step_exit=0
+  node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" || step_exit="$?"
+
+  step_duration=$(((SECONDS - step_start) * 1000))
+
+  # Determine verdict
+  case "$step_exit" in
+  0) verdict="allow" ;;
+  1) verdict="advisory" ;;
+  2) verdict="block" ;;
+  *)
+    verdict="block"
+    step_exit=2
+    ;;
+  esac
+
+  # Write JSONL entry
+  printf '{"step_id":"%s","exit_code":%d,"verdict":"%s","duration_ms":%d}\n' \
+    "$sid" "$step_exit" "$verdict" "$step_duration" >>"$LOG_FILE"
+
+  if [[ "$step_exit" -eq 2 ]]; then
+    # Block: stop immediately
+    exit 2
+  elif [[ "$step_exit" -eq 1 ]]; then
+    OVERALL_EXIT=1
+  fi
+done
+
+exit "$OVERALL_EXIT"

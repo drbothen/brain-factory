@@ -505,6 +505,301 @@ _make_restricted_path() {
   rm -rf "$brain_dir"
 }
 
+# ---------------------------------------------------------------------------
+# STORY-032: bin/lobster-run — YAML parsing, topological sort, exit-code contract
+# Traces to: BC-2.12.001, BC-2.12.002, VP-007
+# ---------------------------------------------------------------------------
+
+# Helper: set up a lobster test environment with a mock CLAUDE_PLUGIN_ROOT.
+# Sets LOBSTER_BIN, LOBSTER_BRAIN, LOBSTER_PLUGIN_ROOT, FIXTURE_DIR in caller scope.
+# Creates a mock scripts/run-skill.mjs that exits based on skill name:
+#   mock-pass     → exit 0
+#   mock-advisory → exit 1
+#   mock-block    → exit 2
+#   (anything else) → exit 0
+_setup_lobster_env() {
+  LOBSTER_BIN="${PLUGIN_DIR}/bin/lobster-run"
+  FIXTURE_DIR="${PLUGIN_DIR}/tests/fixtures"
+
+  # Temp brain root with required log dir
+  LOBSTER_BRAIN="$(mktemp -d)"
+  mkdir -p "${LOBSTER_BRAIN}/.brain/logs"
+
+  # Temp plugin root with a mock scripts/run-skill.mjs
+  LOBSTER_PLUGIN_ROOT="$(mktemp -d)"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/scripts"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills"
+
+  # Mirror real skills into mock plugin root so skill-registration checks pass
+  if [[ -d "${PLUGIN_DIR}/skills" ]]; then
+    for skill_dir in "${PLUGIN_DIR}/skills"/*/; do
+      skill_name="$(basename "$skill_dir")"
+      mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/${skill_name}"
+      if [[ -f "${skill_dir}/SKILL.md" ]]; then
+        cp "${skill_dir}/SKILL.md" "${LOBSTER_PLUGIN_ROOT}/skills/${skill_name}/SKILL.md"
+      fi
+    done
+  fi
+
+  # Mock run-skill.mjs: exit code determined by skill name suffix
+  cat > "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs" <<'MOCK_EOF'
+#!/usr/bin/env node
+const skill = process.argv[2] || "";
+if (skill === "mock-advisory") {
+  process.exit(1);
+} else if (skill === "mock-block") {
+  process.exit(2);
+} else {
+  process.exit(0);
+}
+MOCK_EOF
+  chmod +x "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs"
+}
+
+_teardown_lobster_env() {
+  rm -rf "${LOBSTER_BRAIN:-}" "${LOBSTER_PLUGIN_ROOT:-}"
+}
+
+# AC-001 / BC-2.12.001 / VP-007: linear DAG executes in dependency order (--dry-run)
+@test "BC_2_12_001: lobster-run linear DAG executes steps in dependency order (--dry-run)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  # Must exit 0
+  [ "$status" -eq 0 ]
+  # step-a must appear before step-b, step-b before step-c
+  local pos_a pos_b pos_c
+  pos_a="$(printf '%s\n' "$output" | grep -n 'step-a' | head -1 | cut -d: -f1)"
+  pos_b="$(printf '%s\n' "$output" | grep -n 'step-b' | head -1 | cut -d: -f1)"
+  pos_c="$(printf '%s\n' "$output" | grep -n 'step-c' | head -1 | cut -d: -f1)"
+  # All three step IDs must appear in output
+  [ -n "$pos_a" ]
+  [ -n "$pos_b" ]
+  [ -n "$pos_c" ]
+  # Order constraint: a < b < c
+  [ "$pos_a" -lt "$pos_b" ]
+  [ "$pos_b" -lt "$pos_c" ]
+}
+
+# AC-001 / BC-2.12.001: diamond DAG — A before B and C, both before D (--dry-run)
+@test "BC_2_12_001: lobster-run diamond DAG A before B and C, both before D (--dry-run)" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/diamond-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 0 ]
+  local pos_a pos_b pos_c pos_d
+  pos_a="$(printf '%s\n' "$output" | grep -n 'step-a' | head -1 | cut -d: -f1)"
+  pos_b="$(printf '%s\n' "$output" | grep -n 'step-b' | head -1 | cut -d: -f1)"
+  pos_c="$(printf '%s\n' "$output" | grep -n 'step-c' | head -1 | cut -d: -f1)"
+  pos_d="$(printf '%s\n' "$output" | grep -n 'step-d' | head -1 | cut -d: -f1)"
+  [ -n "$pos_a" ]
+  [ -n "$pos_b" ]
+  [ -n "$pos_c" ]
+  [ -n "$pos_d" ]
+  # a before b and c; b and c before d
+  [ "$pos_a" -lt "$pos_b" ]
+  [ "$pos_a" -lt "$pos_c" ]
+  [ "$pos_b" -lt "$pos_d" ]
+  [ "$pos_c" -lt "$pos_d" ]
+}
+
+# AC-002 / BC-2.12.001: --dry-run prints invocation command with node scripts/run-skill.mjs
+@test "BC_2_12_001: lobster-run --dry-run prints node scripts/run-skill.mjs invocation per step" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 0 ]
+  # Output must contain the run-skill.mjs invocation pattern
+  [[ "$output" == *"run-skill.mjs"* ]]
+}
+
+# AC-004 / BC-2.12.001 EC-001: cycle in depends_on → E-LOBSTER-001, exit 2
+@test "BC_2_12_001: lobster-run cycle in depends_on emits E-LOBSTER-001 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/cycle-dag.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-001"* ]]
+}
+
+# AC-003 / BC-2.12.001 EC-002: missing skill → E-LOBSTER-002, exit 2
+@test "BC_2_12_001: lobster-run missing skill emits E-LOBSTER-002 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/missing-skill.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-002"* ]]
+}
+
+# AC-005 / BC-2.12.001 EC-003: malformed YAML → E-LOBSTER-003, exit 2
+@test "BC_2_12_001: lobster-run malformed YAML emits E-LOBSTER-003 exit 2" {
+  _setup_lobster_env
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/malformed.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-LOBSTER-003"* ]]
+}
+
+# AC-006 / BC-2.12.001: step results written to .brain/logs/lobster-YYYY-MM-DD.jsonl
+@test "BC_2_12_001: lobster-run writes step results to .brain/logs/lobster-YYYY-MM-DD.jsonl" {
+  _setup_lobster_env
+  # Add mock-pass as a registered skill so skill-check passes
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  local exit_status="$status"
+  # Find JSONL log file
+  local log_file
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' | head -1)"
+  _teardown_lobster_env
+  [ "$exit_status" -eq 0 ]
+  [ -n "$log_file" ]
+  # Log file must contain required fields for each step
+  local step_a_line
+  step_a_line="$(grep 'step-a' "$log_file" 2>/dev/null || true)"
+  [ -n "$step_a_line" ]
+  # Each line must have step_id, exit_code, verdict, duration_ms
+  local has_step_id has_exit_code has_verdict has_duration
+  has_step_id="$(printf '%s' "$step_a_line" | grep -c '"step_id"' || true)"
+  has_exit_code="$(printf '%s' "$step_a_line" | grep -c '"exit_code"' || true)"
+  has_verdict="$(printf '%s' "$step_a_line" | grep -c '"verdict"' || true)"
+  has_duration="$(printf '%s' "$step_a_line" | grep -c '"duration_ms"' || true)"
+  [ "$has_step_id" -gt 0 ]
+  [ "$has_exit_code" -gt 0 ]
+  [ "$has_verdict" -gt 0 ]
+  [ "$has_duration" -gt 0 ]
+}
+
+# AC-011 / VP-007: same workflow twice in --dry-run produces identical output (determinism)
+@test "BC_2_12_001: lobster-run --dry-run same workflow twice produces identical output (VP-007)" {
+  _setup_lobster_env
+  # lobster-run must exist and be executable — fail here at Red Gate if not
+  [ -f "${LOBSTER_BIN}" ]
+  [ -x "${LOBSTER_BIN}" ]
+  local out1 out2
+  out1="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml")"
+  out2="$(env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${FIXTURE_DIR}/linear-dag.yaml")"
+  _teardown_lobster_env
+  [ "$out1" = "$out2" ]
+}
+
+# AC-007 / BC-2.12.002 postcondition 1: all steps exit 0 → lobster exits 0
+@test "BC_2_12_002: lobster-run all steps exit 0 → lobster exits 0" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  _teardown_lobster_env
+  [ "$status" -eq 0 ]
+}
+
+# AC-008 / BC-2.12.002 postcondition 2: one step exits 1, none exit 2 → lobster exits 1; pipeline continues
+@test "BC_2_12_002: lobster-run one step exits 1 and none exit 2 → lobster exits 1 all steps ran" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-advisory"
+  printf -- '---\nname: mock-advisory\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-advisory/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-advisory.yaml"
+  local exit_status="$status"
+  # Verify all three steps ran by checking the JSONL log
+  local log_file
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  _teardown_lobster_env
+  [ "$exit_status" -eq 1 ]
+  # All three steps must appear in log (pipeline continued after advisory)
+  [ -n "$log_file" ]
+  local step_c_line
+  step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
+  [ -n "$step_c_line" ]
+}
+
+# AC-009 / BC-2.12.002 postcondition 3 + invariant 1: one step exits 2 → lobster exits 2 immediately
+@test "BC_2_12_002: lobster-run one step exits 2 → lobster exits 2 and skips remaining steps" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-block"
+  printf -- '---\nname: mock-block\n---\n' > "${LOBSTER_PLUGIN_ROOT}/skills/mock-block/SKILL.md"
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-block.yaml"
+  local exit_status="$status"
+  # Verify step-c was NOT executed (only step-a and step-b ran)
+  local log_file
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  _teardown_lobster_env
+  [ "$exit_status" -eq 2 ]
+  # step-c must NOT appear in log — it was skipped
+  if [ -n "$log_file" ]; then
+    local step_c_line
+    step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
+    [ -z "$step_c_line" ]
+  fi
+}
+
+# AC-010 / BC-2.12.001 invariant 1: bin/lobster-run is pure bash — no Node/Python/Ruby invocations
+@test "BC_2_12_001: lobster-run is pure bash — no node/python/ruby calls in the script itself" {
+  # bin/lobster-run must exist and be a bash script
+  [ -f "${PLUGIN_DIR}/bin/lobster-run" ]
+  # Shebang must be #!/usr/bin/env bash
+  local shebang
+  shebang="$(head -1 "${PLUGIN_DIR}/bin/lobster-run")"
+  [ "$shebang" = "#!/usr/bin/env bash" ]
+  # set -euo pipefail must appear within first 10 lines
+  local pipefail_found
+  pipefail_found="$(head -10 "${PLUGIN_DIR}/bin/lobster-run" | grep -c 'set -euo pipefail' || true)"
+  [ "$pipefail_found" -gt 0 ]
+  # The script must not invoke node/python/ruby as a top-level command in its own logic
+  # (child skill invocations use node, but they are invoked via run-skill.mjs — the test
+  # checks that lobster-run's own logic does not shell out to interpreters directly)
+  local node_calls python_calls ruby_calls
+  # Exclude lines that are comments and the canonical child-skill invocation pattern
+  node_calls="$(grep -v '^\s*#' "${PLUGIN_DIR}/bin/lobster-run" | grep -v 'run-skill\.mjs' | grep -c '\bnode\b' || true)"
+  python_calls="$(grep -v '^\s*#' "${PLUGIN_DIR}/bin/lobster-run" | grep -c '\bpython[23]\?\b' || true)"
+  ruby_calls="$(grep -v '^\s*#' "${PLUGIN_DIR}/bin/lobster-run" | grep -c '\bruby\b' || true)"
+  [ "$node_calls" -eq 0 ]
+  [ "$python_calls" -eq 0 ]
+  [ "$ruby_calls" -eq 0 ]
+}
+
+# AC-010 / BC-2.12.001 invariant 1: bin/lobster-run passes shellcheck
+@test "BC_2_12_001: bin/lobster-run passes shellcheck" {
+  [ -f "${PLUGIN_DIR}/bin/lobster-run" ]
+  run shellcheck "${PLUGIN_DIR}/bin/lobster-run"
+  [ "$status" -eq 0 ]
+}
+
+# AC-010 / BC-2.12.001 invariant 1: bin/lobster-run passes shfmt
+@test "BC_2_12_001: bin/lobster-run passes shfmt normalization" {
+  [ -f "${PLUGIN_DIR}/bin/lobster-run" ]
+  run shfmt -d -i 2 "${PLUGIN_DIR}/bin/lobster-run"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir
