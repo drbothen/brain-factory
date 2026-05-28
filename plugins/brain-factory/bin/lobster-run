@@ -96,9 +96,11 @@ _emit_run_completed_and_exit() {
 # tmpfile is cleaned up on ANY exit path (normal, SIGINT, SIGTERM, set -e trip).
 # The EXIT trap fires unconditionally — this is the sole cleanup site.
 _WORKFLOW_TMPFILE=""
-# shellcheck disable=SC2329  # invoked via trap EXIT, not a direct call
+# shellcheck disable=SC2329,SC2317  # invoked via trap EXIT, not a direct call
 _cleanup_tmpfile() {
+  # shellcheck disable=SC2317
   if [[ -n "${_WORKFLOW_TMPFILE:-}" && -f "$_WORKFLOW_TMPFILE" ]]; then
+    # shellcheck disable=SC2317
     rm -f "$_WORKFLOW_TMPFILE"
   fi
 }
