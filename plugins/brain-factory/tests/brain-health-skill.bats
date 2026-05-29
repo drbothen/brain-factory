@@ -695,10 +695,20 @@ _write_token_log() {
   local overall_in_report
   overall_in_report="$(printf '%s' "${output}" | jq -r '.overall')"
   [ "${overall_in_report}" = "RED" ]
-  # red_dimensions must include sources
+  # red_dimensions block must contain an entry keyed "sources".
+  # Using an awk-based structural check (not a simple substring) so the test
+  # does NOT pass tautologically against the init-template which already has
+  # "sources: GREEN" in the dimensions map before the skill runs.
   local fm
   fm="$(awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "${BRAIN_DIR}/.brain/STATE.md")"
-  [[ "$fm" == *"sources"* ]]
+  [[ "$fm" == *"red_dimensions:"* ]]
+  local sources_in_red
+  sources_in_red="$(printf '%s' "$fm" | awk '
+    /^red_dimensions:/{in_rd=1; next}
+    in_rd && /^[a-z]/{in_rd=0}
+    in_rd && /^  - sources:/{print "yes"; exit}
+  ')"
+  [ "$sources_in_red" = "yes" ]
 }
 
 # ===========================================================================

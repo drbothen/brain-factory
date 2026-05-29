@@ -173,6 +173,52 @@ _create_malformed_state_md() {
 }
 
 # ===========================================================================
+# BC-2.04.014 v1.6 schema structural assertions — GREEN path.
+# Locks the exact hookSpecificOutput shape introduced in implementer commit
+# 34b8c17: systemMessage (not message), additionalContext (not code),
+# hookEventName present, no unhealthy_state/red_dimensions on GREEN.
+# Note: stdout is captured directly (not via 'run') to exclude stderr JSONL events.
+# ===========================================================================
+
+@test "test_BC_2_04_014_green_stdout_has_continue_true" {
+  _create_green_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)"
+  [ "$(printf '%s' "$stdout_json" | jq -r '.continue')" = "true" ]
+}
+
+@test "test_BC_2_04_014_green_stdout_has_systemMessage_not_message" {
+  _create_green_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm has_message
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)"
+  # systemMessage field must be present and non-empty
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage // empty')"
+  [ -n "$sm" ]
+  # Legacy 'message' top-level field must be absent (BC v1.6 renamed it)
+  has_message="$(printf '%s' "$stdout_json" | jq 'has("message")')"
+  [ "$has_message" = "false" ]
+}
+
+@test "test_BC_2_04_014_green_stdout_hookEventName_is_SessionStart" {
+  _create_green_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)"
+  [ "$(printf '%s' "$stdout_json" | jq -r '.hookSpecificOutput.hookEventName')" = "SessionStart" ]
+}
+
+@test "test_BC_2_04_014_green_stdout_additionalContext_contains_GREEN" {
+  _create_green_state_md "${BRAIN_DIR}"
+  local payload stdout_json ac
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)"
+  ac="$(printf '%s' "$stdout_json" | jq -r '.hookSpecificOutput.additionalContext')"
+  [[ "$ac" == *"GREEN"* ]]
+}
+
+# ===========================================================================
 # AC-012 / BC-2.04.014 postconditions on RED state:
 # RED STATE.md → exit 0; stdout contains E-HEALTH-002 in systemMessage.
 # ADR-002 v2.0: advisory visibility requires exit 0 + systemMessage.
@@ -216,6 +262,48 @@ _create_malformed_state_md() {
 }
 
 # ===========================================================================
+# BC-2.04.014 v1.6 schema structural assertions — RED/YELLOW path.
+# Locks hookSpecificOutput.additionalContext="E-HEALTH-002", unhealthy_state=true,
+# and red_dimensions as a non-empty JSON array (not absent, not a string).
+# Note: stdout is captured directly (not via 'run') to exclude stderr JSONL events.
+# ===========================================================================
+
+@test "test_BC_2_04_014_red_stdout_has_continue_true" {
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  [ "$(printf '%s' "$stdout_json" | jq -r '.continue')" = "true" ]
+}
+
+@test "test_BC_2_04_014_red_stdout_additionalContext_is_E_HEALTH_002" {
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  [ "$(printf '%s' "$stdout_json" | jq -r '.hookSpecificOutput.additionalContext')" = "E-HEALTH-002" ]
+}
+
+@test "test_BC_2_04_014_red_stdout_unhealthy_state_is_true" {
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  [ "$(printf '%s' "$stdout_json" | jq -r '.hookSpecificOutput.unhealthy_state')" = "true" ]
+}
+
+@test "test_BC_2_04_014_red_stdout_red_dimensions_is_nonempty_array" {
+  # red_dimensions must be a JSON array with at least one entry.
+  # The fixture has wiki=RED and output=YELLOW.
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  [ "$(printf '%s' "$stdout_json" | jq '.hookSpecificOutput.red_dimensions | type')" = '"array"' ]
+  [ "$(printf '%s' "$stdout_json" | jq '.hookSpecificOutput.red_dimensions | length')" -gt 0 ]
+}
+
+# ===========================================================================
 # AC-014 / BC-2.04.014 edge case EC-002:
 # Malformed STATE.md → exit 0; stdout contains "unreadable" in systemMessage.
 # ADR-002 v2.0: advisory visibility requires exit 0 + systemMessage.
@@ -238,6 +326,29 @@ _create_malformed_state_md() {
   payload="$(_session_start_payload "${BRAIN_DIR}")"
   run bash -c "printf '%s' '${payload}' | CLAUDE_PLUGIN_ROOT='${PLUGIN_DIR}' BRAIN_DIR='${BRAIN_DIR}' bash '${HOOK}'"
   [ "$status" -eq 0 ]
+}
+
+# ===========================================================================
+# BC-2.04.014 v1.6 schema structural assertions — UNREADABLE (EC-002) path.
+# Locks hookSpecificOutput.additionalContext="E-HEALTH-003" and
+# unhealthy_state=true for the malformed-STATE.md code path.
+# Note: stdout is captured directly (not via 'run') to exclude stderr JSONL events.
+# ===========================================================================
+
+@test "test_BC_2_04_014_unreadable_stdout_additionalContext_is_E_HEALTH_003" {
+  _create_malformed_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  [ "$(printf '%s' "$stdout_json" | jq -r '.hookSpecificOutput.additionalContext')" = "E-HEALTH-003" ]
+}
+
+@test "test_BC_2_04_014_unreadable_stdout_unhealthy_state_is_true" {
+  _create_malformed_state_md "${BRAIN_DIR}"
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  [ "$(printf '%s' "$stdout_json" | jq -r '.hookSpecificOutput.unhealthy_state')" = "true" ]
 }
 
 # ===========================================================================
