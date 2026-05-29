@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-7-pending
+phase: phase-3-wave-4-story-004-pass-8-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-7-pending
-session_continuity: "Pass 6 FAIL (1C+2I+1S+2O) — fix burst 6 applied (3 commits on feature/STORY-004: 7784cfb fix, 9fe29ce test, 40de399 fix). Paper-fix exposed + closed: Pass-4 F-P4-O01 inherit_errexit-in-if-context false assumption surfaced by test 45 (FAIL→PASS); replaced with explicit per-call || guards. Tests 45/45 + 22/22 on feature/STORY-004 at 40de399. Streak 0/3. NEXT ACTION: dispatch adversary Pass 7. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-8-pending
+session_continuity: "Pass 7 PASS (0C+0I+0S+0O) — first clean pass — streak 1/3. Fresh-context audit verified: 10 yq calls in _writeback_state each have paired per-call || guard; writeback_status enum (ok/failed) consistent across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + bats; writeback surface 4-field consistent across all surfaces; all AC-001 through AC-010 + Postcondition 5 have bats coverage; no drift from canonical dim names, skill dir, or locked decisions; all DI-001 through DI-006 remain correctly out-of-scope. Tests 45/45 + 22/22 on feature/STORY-004 at 40de399 (unchanged). NEXT ACTION: dispatch adversary Pass 8 (need second consecutive PASS for streak 2/3). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-7-pending
+status: phase-3-wave-4-story-004-pass-8-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,16 +90,16 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 7 PENDING — Fix Burst 6 Complete (paper-fix exposed + closed)
+## TOP OF STACK — STORY-004 Pass 8 PENDING — Streak 1/3 (first clean pass — Pass 7 PASS)
 
 **NEXT ACTION (for fresh session resuming here):**
 1. Verify worktree: `git worktree list` — should show STORY-004 at `40de399`
 2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
 3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 7 (fresh context, streak 0/3, need 3-CLEAN per BC-5.39.001)
+4. Dispatch adversary for Pass 8 (fresh context, streak 1/3, need second consecutive PASS for streak 2/3)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
 
-**STORY-004 cascade state:** Pass 6 FAIL (1C+2I+1S+2O). Fix burst 6 applied (3 commits on feature/STORY-004 — 7784cfb/9fe29ce/40de399). Paper-fix exposed + closed: test 45 (yq-failure) initially FAILED, exposing that Pass-4 F-P4-O01 inherit_errexit-in-if-context fix was insufficient; 40de399 replaced false assumption with explicit per-call guards; test 45 PASS. Tests 45/45 + 22/22 on worktree at 40de399. Streak 0/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 7 PASS (0C+0I+0S+0O) — first clean pass — streak 1/3. No fix burst applied. Worktree tip remains 40de399. Tests 45/45 + 22/22. Pass 7 fresh-context audit verified: 10 yq calls in _writeback_state each have paired per-call || guard (count match), writeback_status enum consistent across all surfaces, all ACs have bats coverage, no drift from canonical dim names or locked decisions, all DI-001 through DI-006 correctly remain out-of-scope. BC-5.39.001 requires 3 consecutive clean passes; streak now 1/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
@@ -108,6 +108,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 **D-018 — STORY-004 fix burst 5 complete (2026-05-28):** Pass 5 FAIL (1I+3O) closed by 2-commit fix burst on feature/STORY-004: 9ac5ebf (fix — SKILL.md Quality Bar + Red Flags + run.sh:296 comment block enumerate 4-field writeback surface + drop volatile v1.3 pin per TD-VSDD-091; closes F-P5-I01 TD-VSDD-060 sibling-sweep miss from fix burst 4), b8ea25c (test — brain-health-check.bats:214 stale comment swept wire→output + new AC-008 within-5s delta test added; closes F-P5-O02 + F-P5-O03; test count 43→44). F-P5-O04 deferred — cross-story STORY-005 AC-004/Test Vector exit-code drift; impl + test correct; spec narrative only; see DI-004. Tests 44/44 + 22/22 pass at b8ea25c. Streak 0/3. Pass 6 next.
 
 **D-019 — STORY-004 fix burst 6 complete + paper-fix exposed + closed (2026-05-28):** Pass 6 FAIL (1C+2I+1S+2O) closed by 3-commit fix burst on feature/STORY-004. F-P6-C01 (CRITICAL): 2-step closure — 7784cfb renamed pre-yq sentinel `yq_parse_error` → `failed` (BC-2.01.006 enum compliance); 9fe29ce added test 45 "malformed YAML in well-fenced frontmatter triggers writeback_status=failed" (RED GATE: initially FAILED — exposing that Pass-4 F-P4-O01 shopt inherit_errexit fix was based on false assumption); 40de399 replaced false inherit_errexit-in-if-context reliance with explicit per-call `|| { _writeback_failure_reason="failed"; return 1; }` guards; test 45 transitioned FAIL → PASS. F-P6-I01: SKILL.md Output JSON schema + Quality Bar extended. F-P6-I02: 3 volatile v1.x version pins swept from bats test comments (TD-VSDD-091). F-P6-O02: SKILL.md Procedure step 2 writeback sub-bullet added. F-P6-S01 deferred → DI-005. F-P6-O01 [process-gap] deferred → DI-006. Tests 45/45 + 22/22 pass at 40de399. Streak 0/3. Pass 7 next. Cycle lesson codified: shopt -s inherit_errexit does NOT propagate set -e into functions invoked via if-conditional context (POSIX errexit-context rule); use explicit per-call guards.
+
+**D-020 — STORY-004 Pass 7 PASS — first clean pass — streak 1/3 (2026-05-28):** Pass 7 adversary verdict: PASS — 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION + 0 OBSERVATION. Fresh-context read-only audit. No fix burst. Worktree tip remains 40de399. Verification details: (1) 10 yq calls inside _writeback_state (run.sh lines 359, 364, 370, 375, 380, 385, 390, 395, 403, 438) — each has a paired `|| { _writeback_failure_reason="failed"; return 1; }` guard (count match confirmed); (2) writeback_status enum 3-value consistency verified across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + bats; (3) writeback surface 4-field consistency (overall_health, last_health_check, dimensions, red_dimensions) verified across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + brain-health-check.sh; (4) all AC-001 through AC-010 + Postcondition 5 have bats coverage; (5) no drift from canonical dim names (capture/sources/wiki/synthesis/output/reflection), canonical skill dir (skills/brain-health/), or locked decisions; (6) all previously-deferred DI-001 through DI-006 remain out-of-scope and correctly skipped. BC-5.39.001 streak advances to 1/3. Pass 8 next (need second consecutive PASS).
 
 ---
 

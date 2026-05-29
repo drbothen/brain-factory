@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-story-004-pass-7-pending
-session_stage: phase-3-wave-4-story-004-pass-7-pending
+session_phase: phase-3-wave-4-story-004-pass-8-pending
+session_stage: phase-3-wave-4-story-004-pass-8-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -94,24 +94,24 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-story-004-pass-7-pending
+status: phase-3-wave-4-story-004-pass-8-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 6 FAIL — fix burst 6 applied (40de399; paper-fix exposed + closed). Pass 7 pending."
-story_004_cascade_streak: "0/3 — Pass 6 FAIL (1C+2I+1S+2O) — fix burst 6 applied (paper-fix exposed + closed) — Pass 7 next"
+wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 7 PASS (0C+0I+0S+0O) — first clean pass — streak 1/3. Pass 8 pending."
+story_004_cascade_streak: "1/3 — Pass 7 PASS (0C+0I+0S+0O) — first clean pass — Pass 8 next (need second consecutive PASS for streak 2/3)"
 story_004_worktree_tip: 40de399
 total_stories_delivered: 17
 total_bcs_active: 38
 total_tests_on_develop: 717
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 7 Pending — Fix Burst 6 Complete
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 8 Pending — Streak 1/3 (Pass 7 PASS — first clean)
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-28):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 6 FAIL — fix burst 6 applied (tip `40de399`; paper-fix exposed + closed). Tests 45/45 + 22/22 passing on feature/STORY-004. Streak 0/3. NEXT ACTION: dispatch adversary Pass 7. 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
+**Current state (as of 2026-05-28):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 7 PASS (0C+0I+0S+0O) — first clean pass — streak 1/3. Worktree tip `40de399` (unchanged). Tests 45/45 + 22/22 passing on feature/STORY-004. NEXT ACTION: dispatch adversary Pass 8 (need second consecutive PASS for streak 2/3). 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
 
 ### Step 1 — Read documents in this exact order
 
@@ -165,8 +165,8 @@ Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `40de399`. S
 **3d. PENDING — STORY-015 (wave 4 story 4/4):**
 Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
 
-**3e. TOP-OF-STACK — STORY-004 adversary Pass 7:**
-Streak 0/3. Fix burst 6 applied (worktree tip `40de399`; paper-fix exposed + closed). All Pass 6 non-deferred findings fixed. Dispatch adversary for Pass 7. Need 3 consecutive clean passes (0C+0I) for BC-5.39.001 convergence.
+**3e. TOP-OF-STACK — STORY-004 adversary Pass 8:**
+Streak 1/3 (Pass 7 PASS — first clean pass). Worktree tip `40de399` (no fix burst applied — Pass 7 was read-only audit). Dispatch adversary for Pass 8. Need second consecutive PASS (0C+0I) for streak 2/3. BC-5.39.001 requires 3 consecutive clean passes for convergence.
 
 **3f. Develop tip verification:**
 ```bash
@@ -206,7 +206,8 @@ gh pr list --state open               # none open
 | Fix burst 5 | applied (b8ea25c) | 2 commits — F-P5-I01/O02/O03 closed; F-P5-O04 deferred to DI-004 (see §Pass 5 Findings Fixed below) |
 | Pass 6 | FAIL — 1C + 2I + 1S + 2O | Paper-fix exposed: test 45 (yq-failure) initially FAIL, exposing Pass-4 F-P4-O01 false assumption about inherit_errexit-in-if-context |
 | Fix burst 6 | applied (40de399) | 3 commits — 7784cfb (sentinel rename + SKILL.md Output schema + Procedure), 9fe29ce (test 45 yq-failure coverage + volatile pin sweep), 40de399 (explicit per-call yq guards; test 45 FAIL→PASS). Paper-fix exposed and closed. See §Pass 6 Findings Fixed below |
-| **Pass 7** | **PENDING** | **Streak 0/3 — this is the next action** |
+| Pass 7 | PASS — 0C + 0I + 0S + 0O | First clean pass. Streak advances 0/3 → 1/3. Fresh-context read-only audit. No fix burst. Worktree tip 40de399 (unchanged). 10 yq guards verified, enum consistency verified, AC coverage verified, no drift. See §Pass 7 Verification below |
+| **Pass 8** | **PENDING** | **Streak 1/3 — need second consecutive PASS for streak 2/3** |
 
 ### Locked Decisions (DO NOT RE-LITIGATE)
 
@@ -319,15 +320,34 @@ All 4 findings closed (2I + 2O — no streak reset contributions beyond the two 
 | `.factory/stories/dependency-graph.md` | Path update — P3: confirmed propagation via F-P3-C02 |
 | `.factory/specs/architecture/ARCH-INDEX.md` | Path update CAP-001 (P3: F-P3-C02 via 8423447) |
 
-### Adversary Dispatch Template for Pass 7
+### Pass 7 Verification (fresh-context audit — read-only — PASS)
+
+Pass 7 adversary verdict: PASS — 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION + 0 OBSERVATION. No fix burst. Worktree tip remains 40de399.
+
+| Check | Result | Detail |
+|-------|--------|--------|
+| yq call count in _writeback_state | PASS | 10 yq calls confirmed (run.sh lines 359, 364, 370, 375, 380, 385, 390, 395, 403, 438) |
+| Per-call || guard count | PASS | 10 guards — each yq call has paired `\|\| { _writeback_failure_reason="failed"; return 1; }` — count matches yq call count |
+| writeback_status enum 3-value consistency | PASS | `ok` / `failed` / `skipped_malformed_frontmatter` consistent across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + bats |
+| writeback surface 4-field consistency | PASS | `overall_health`, `last_health_check`, `dimensions`, `red_dimensions` consistent across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + brain-health-check.sh |
+| AC bats coverage | PASS | AC-001 through AC-010 + Postcondition 5 all have bats coverage |
+| Canonical dim names | PASS | `capture/sources/wiki/synthesis/output/reflection` — no drift detected |
+| Canonical skill dir | PASS | `skills/brain-health/` — no drift detected |
+| Locked decisions | PASS | All 5 locked decisions confirmed in place; no re-litigation |
+| DI-001 through DI-006 | PASS | All 6 deferred items remain out-of-scope and correctly skipped |
+| Test 45 (yq-failure) | PASS | Explicit per-call guards confirmed load-bearing; test assertion uses locked enum value "failed" |
+
+Streak progression: P3 FAIL (3C+4I) → P4 FAIL (0C+2I) → P5 FAIL (0C+1I) → P6 FAIL (1C+2I+1S+2O, paper-fix exposed + closed) → P7 PASS (streak 1/3).
+
+### Adversary Dispatch Template for Pass 8
 
 Use this exact framing when dispatching the adversary. Fresh context, no prior conversation, provide the already-fixed list so adversary doesn't re-report closed findings.
 
 ```
 cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 &&
 
-Fresh-Context Adversarial Review — STORY-004 Pass 7
-Zero prior context. Streak: 0/3. Need 3 consecutive 0C+0I passes for convergence (BC-5.39.001).
+Fresh-Context Adversarial Review — STORY-004 Pass 8
+Zero prior context. Streak: 1/3 (Pass 7 PASS). Need 2 more consecutive 0C+0I passes for convergence (BC-5.39.001).
 
 Story: STORY-004 — /brain:health six-dimensional convergence skill
 Files to review:
@@ -349,6 +369,7 @@ PASS 5: I01(SKILL.md-Quality-Bar+Red-Flags+run.sh-comment-4-field-writeback-enum
 PASS 5 DEFERRED (cross-story, do NOT re-raise for STORY-004): O04(STORY-005-AC-004/TestVector-exit-1-drift — tracked as DI-004; impl+test correct; spec-narrative-only)
 PASS 6: C01(writeback_status-pre-yq-sentinel-yq_parse_error→failed+inherit_errexit-in-if-context-paper-fix-actual-close 7784cfb+9fe29ce+40de399), I01(SKILL.md-Output-JSON-schema+Quality-Bar-writeback_status-enum 7784cfb), I02(bats-3-volatile-v1.x-version-pins-swept 9fe29ce), O02(SKILL.md-Procedure-step-2-writeback-sub-bullet 7784cfb)
 PASS 6 DEFERRED (do NOT re-raise for STORY-004): S01(yq-dim_detail-shell-escape-latent — DI-005; no special chars in current codebase), O01([process-gap]-grep-closure-validation-gate-codification — DI-006; defer to post-merge cycle-sweep)
+PASS 7: PASS — 0 findings. Nothing new to close. Fresh-context audit verified all Pass-6 closures load-bearing; 10 yq guards count-match confirmed; enum + surface consistency confirmed; AC coverage confirmed; no novel defects.
 
 Note: Locked architectural decisions — DO NOT re-raise as open:
 - Canonical skill dir: skills/brain-health/ (finalized)
@@ -384,7 +405,7 @@ Find NEW defects only. CRITICAL findings block progression. IMPORTANT findings m
 |---|-------|-----|--------|-------|
 | 1 | STORY-017 | 8 | DONE — PR #16 (b30dd35) | Wiki page generation pipeline; 5 passes 2 fix bursts |
 | 2 | STORY-032 | 8 | DONE — PR #17 (d610cf0) | bin/lobster-run; 22 passes 14 fix bursts; longest cascade |
-| 3 | STORY-004 | 5 | IN PROGRESS — Pass 7 pending | /brain:health skill; 6 passes 6 fix bursts (paper-fix exposed + closed); streak 0/3 |
+| 3 | STORY-004 | 5 | IN PROGRESS — Pass 8 pending | /brain:health skill; 7 passes 6 fix bursts (Pass 7 PASS — first clean — streak 1/3) |
 | 4 | STORY-015 | 5 | NOT STARTED | Hook meta-lint; begin after STORY-004 or parallel |
 
 ---
