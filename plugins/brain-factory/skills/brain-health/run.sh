@@ -435,7 +435,9 @@ _writeback_state() {
       ;;
     esac
     if [[ "$dim_status" == "RED" || "$dim_status" == "YELLOW" ]]; then
-      yq e -i ".red_dimensions[${red_idx}].\"${dim_name}\" = \"${dim_detail}\"" "$fm_tmp" ||
+      local escaped_detail="${dim_detail//\\/\\\\}"
+      escaped_detail="${escaped_detail//\"/\\\"}"
+      yq e -i ".red_dimensions[${red_idx}].\"${dim_name}\" = \"${escaped_detail}\"" "$fm_tmp" ||
         {
           _writeback_failure_reason="failed"
           return 1

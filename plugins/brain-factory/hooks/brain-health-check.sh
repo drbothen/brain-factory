@@ -96,8 +96,8 @@ fi
 # ---------------------------------------------------------------------------
 if [[ -z "$overall_health" ]] || [[ "$overall_health" == "null" ]]; then
   emit_event "brain.health.checked" "overall_state=UNREADABLE"
-  jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-    '{"continue":true,"systemMessage":"Brain STATE.md unreadable — run /brain:health for diagnosis.","hookSpecificOutput":{"hookEventName":"SessionStart","code":"E-HEALTH-003","trace":$trace,"overall_state":"UNREADABLE"}}'
+  jq -cn \
+    '{"continue":true,"systemMessage":"Brain STATE.md unreadable — run /brain:health for diagnosis.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"E-HEALTH-003","unhealthy_state":true}}'
   exit 0
 fi
 
@@ -106,8 +106,8 @@ fi
 # ---------------------------------------------------------------------------
 if [[ "$overall_health" == "GREEN" ]]; then
   emit_event "brain.health.checked" "overall_state=GREEN"
-  jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-    '{"continue":true,"trace":$trace,"message":"Brain health: GREEN. All dimensions healthy."}'
+  jq -cn \
+    '{"continue":true,"systemMessage":"Brain health: GREEN. All dimensions healthy.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"overall_health: GREEN"}}'
   exit 0
 fi
 
@@ -139,10 +139,15 @@ if [[ -n "$issues_summary" ]]; then
   issue_msg="Brain health: ${overall_health}. Issues: ${issues_summary}"
 fi
 
+# Build red_dimensions JSON array from dims_csv (e.g. "wiki,output" → ["wiki","output"]).
+dims_array="[]"
+if [[ -n "$dims_csv" ]]; then
+  dims_array="$(printf '%s' "$dims_csv" | jq -Rc 'split(",") | map(select(length > 0))')" || dims_array="[]"
+fi
+
 emit_event "brain.health.checked" "overall_state=${overall_health}" "red_dimensions=${dims_csv}"
 jq -cn \
   --arg msg "$issue_msg" \
-  --arg state "$overall_health" \
-  --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-  '{"continue":true,"systemMessage":$msg,"hookSpecificOutput":{"hookEventName":"SessionStart","code":"E-HEALTH-002","trace":$trace,"overall_state":$state}}'
+  --argjson rdims "$dims_array" \
+  '{"continue":true,"systemMessage":$msg,"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"E-HEALTH-002","unhealthy_state":true,"red_dimensions":$rdims}}'
 exit 0
