@@ -729,3 +729,98 @@ _write_token_log() {
   ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
   [ "${ws}" = "ok" ]
 }
+
+# ===========================================================================
+# F-P3-I02: Malformed-frontmatter writeback safeguard (commit dd48972).
+# _writeback_state must abort and set writeback_status="skipped_malformed_frontmatter"
+# when STATE.md has fewer than two '---' delimiter lines, and must NOT modify the
+# file. Tests lock the safeguard against regression.
+# BC-2.01.006 v1.3 Postcondition 5 — writeback precondition check.
+# ===========================================================================
+
+@test "BC_2_01_006: zero-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged" {
+  # Arrange: init brain to create directory structure, then overwrite STATE.md
+  # with a body-only file containing NO '---' frontmatter markers at all.
+  _init_brain
+  local state_file="${BRAIN_DIR}/.brain/STATE.md"
+  # Write a body-only STATE.md (no frontmatter whatsoever — zero '---' lines).
+  printf '%s\n' \
+    '# Brain State' \
+    '' \
+    'This file has no frontmatter delimiters at all.' \
+    '' \
+    'Some additional body content here.' \
+    >"${state_file}"
+
+  # Capture byte-exact content before running the skill.
+  local before_content
+  before_content="$(cat -- "${state_file}")"
+
+  # Act: run the skill.
+  run bash "${RUN_SH}"
+
+  # Assert: skill exits 0 (advisory-only — writeback failure does NOT abort the report).
+  [ "$status" -eq 0 ]
+
+  # Assert: writeback_status is "skipped_malformed_frontmatter".
+  local ws
+  ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
+  [ "${ws}" = "skipped_malformed_frontmatter" ]
+
+  # Assert: writeback_error field is PRESENT and non-empty (diagnostic surfaced).
+  local we
+  we="$(printf '%s' "${output}" | jq -r '.writeback_error // empty')"
+  [ -n "${we}" ]
+
+  # Assert: STATE.md is byte-identical to the fixture (file was NOT touched).
+  local after_content
+  after_content="$(cat -- "${state_file}")"
+  [ "${after_content}" = "${before_content}" ]
+}
+
+@test "BC_2_01_006: one-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged" {
+  # Arrange: init brain to create directory structure, then overwrite STATE.md
+  # with a single '---' opening marker but no closing '---'.
+  _init_brain
+  local state_file="${BRAIN_DIR}/.brain/STATE.md"
+  # Write a STATE.md with exactly one '---' line (unclosed frontmatter).
+  printf '%s\n' \
+    '---' \
+    'overall_health: GREEN' \
+    'last_health_check: "2026-01-01T00:00:00Z"' \
+    '' \
+    '# Brain State' \
+    '' \
+    'Body content following the unclosed frontmatter opener.' \
+    >"${state_file}"
+
+  # Verify the fixture really has exactly one '---' line (precondition sanity).
+  local marker_count
+  marker_count="$(grep -c '^---$' -- "${state_file}")"
+  [ "${marker_count}" -eq 1 ]
+
+  # Capture byte-exact content before running the skill.
+  local before_content
+  before_content="$(cat -- "${state_file}")"
+
+  # Act: run the skill.
+  run bash "${RUN_SH}"
+
+  # Assert: skill exits 0 (writeback failure is advisory — JSON report still emits).
+  [ "$status" -eq 0 ]
+
+  # Assert: writeback_status is "skipped_malformed_frontmatter".
+  local ws
+  ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
+  [ "${ws}" = "skipped_malformed_frontmatter" ]
+
+  # Assert: writeback_error field is PRESENT and non-empty.
+  local we
+  we="$(printf '%s' "${output}" | jq -r '.writeback_error // empty')"
+  [ -n "${we}" ]
+
+  # Assert: STATE.md is byte-identical to the fixture (file was NOT touched).
+  local after_content
+  after_content="$(cat -- "${state_file}")"
+  [ "${after_content}" = "${before_content}" ]
+}
