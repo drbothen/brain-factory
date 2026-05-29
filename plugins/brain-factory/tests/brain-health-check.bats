@@ -211,7 +211,7 @@ _create_malformed_state_md() {
   stderr_out="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>&1 1>/dev/null)" || true
   # The JSONL line for brain.health.checked must contain red_dimensions.
   [[ "$stderr_out" == *"red_dimensions"* ]]
-  # And the value must be non-empty (wiki and voice are failing in the fixture).
+  # And the value must be non-empty (wiki and output are failing in the fixture).
   [[ "$stderr_out" != *'"red_dimensions":""'* ]]
 }
 

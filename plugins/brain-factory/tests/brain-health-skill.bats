@@ -376,6 +376,42 @@ _write_token_log() {
   [[ "${last_checked}" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]
 }
 
+@test "BC_2_01_006: last_checked is within 5 seconds of invocation time (AC-008 delta)" {
+  _init_brain
+
+  # Capture lower bound before invocation.
+  local before
+  before="$(date -u +%s)"
+
+  run bash "${RUN_SH}"
+  [ "$status" -eq 0 ]
+
+  # Capture upper bound after invocation.
+  local after
+  after="$(date -u +%s)"
+
+  local last_checked
+  last_checked="$(printf '%s' "${output}" | jq -r '.last_checked')"
+  [ -n "${last_checked}" ]
+  [ "${last_checked}" != "null" ]
+
+  # Parse to epoch — handle GNU date (Linux) and BSD date (macOS).
+  local last_epoch
+  if last_epoch="$(date -u -d "${last_checked}" +%s 2>/dev/null)"; then
+    : # GNU date succeeded
+  else
+    # macOS BSD date: -j prevents updating the system clock, -f specifies format.
+    last_epoch="$(date -u -j -f "%Y-%m-%dT%H:%M:%SZ" "${last_checked}" +%s 2>/dev/null)" \
+      || { echo "Cannot parse last_checked timestamp: ${last_checked}"; return 1; }
+  fi
+
+  # last_epoch must fall within the [before, after] window captured around the call.
+  (( last_epoch >= before ))
+  (( last_epoch <= after ))
+  # Overall wall-clock span of the test must itself be ≤ 5 seconds (sanity guard).
+  (( (after - before) <= 5 ))
+}
+
 # ===========================================================================
 # AC-009 / BC-2.01.006 edge case EC-002 / VP-024:
 # Non-brain directory (no .brain/STATE.md) → skill callable without crash.
