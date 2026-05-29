@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.3"
+version: "1.4"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -38,7 +38,7 @@ removal_reason: null
 2. Structured JSON is emitted to stdout: `{"dimensions": {"capture": {"status": "GREEN|YELLOW|RED", "detail": "..."}, "sources": {...}, "wiki": {...}, "synthesis": {...}, "output": {...}, "reflection": {...}}, "overall": "GREEN|YELLOW|RED", "last_checked": "<ISO8601>"}`.
 3. Overall status is RED if any dimension is RED; YELLOW if any dimension is YELLOW and none are RED; GREEN only if all dimensions are GREEN.
 4. If the 30-day trailing average token cost in `.brain/logs/ingest-tokens.jsonl` exceeds 2x the 50K-token baseline, the token budget alert is surfaced in the `sources` dimension detail (status YELLOW or RED depending on severity).
-5. After computing the health report, the skill writes back `overall_health` and `dimensions` to `.brain/STATE.md` YAML frontmatter so that `brain-health-check.sh` can read the cached result on the next SessionStart without re-running the full dimensional analysis. The write uses `yq` to update the frontmatter in-place. If STATE.md is unreadable (EC-002), this postcondition is not reached.
+5. After computing the health report, the skill writes back `overall_health`, `last_health_check`, `dimensions` (each of the six dimension entries), and `red_dimensions` to `.brain/STATE.md` YAML frontmatter so that `brain-health-check.sh` can read the cached result on the next SessionStart without re-running the full dimensional analysis. The write uses `yq` to update the frontmatter in-place. If STATE.md is unreadable (EC-002), this postcondition is not reached. If STATE.md frontmatter is malformed (fewer than 2 `---` markers, or yq parse failure inside well-fenced frontmatter), the writeback is skipped with `writeback_status` set to `"skipped_malformed_frontmatter"` or `"failed"` respectively, the original STATE.md is preserved byte-identical, and a diagnostic is surfaced in the JSON report's `writeback_error` field.
 
 ## Invariants
 
@@ -98,6 +98,10 @@ STORY-004
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
 
 ## Changelog
+
+### v1.4 (2026-05-28)
+
+**Pass-4 Postcondition 5 enumeration completeness (F-P4-O02):** Postcondition 5 now enumerates all four field categories the skill writes (`overall_health`, `last_health_check`, `dimensions`, `red_dimensions`) rather than the two-category undersell from v1.3. Also codifies the malformed-frontmatter safeguard introduced in commit dd48972 (F-P3-I02) and the inherit_errexit yq-failure protection introduced in commit 5c8430a (F-P4-O01): `writeback_status` emits `"skipped_malformed_frontmatter"` or `"failed"` with a `writeback_error` diagnostic; original STATE.md preserved byte-identical on either skip/fail path. The hook `brain-health-check.sh` already consumes `red_dimensions` per BC-2.04.014 — this entry brings the BC body in line with the load-bearing implementation surface.
 
 ### v1.3 (2026-05-28)
 
