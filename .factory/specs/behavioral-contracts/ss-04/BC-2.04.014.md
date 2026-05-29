@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.5"
+version: "1.6"
 status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -12,7 +12,7 @@ subsystem: "SS-04"
 capability: "CAP-004"
 lifecycle_status: active
 introduced: v0.1.0
-modified: ["2026-05-28"]
+modified: ["2026-05-28", "2026-05-29"]
 ---
 
 # Behavioral Contract BC-2.04.014: `brain-health-check.sh` surfaces convergence state on SessionStart (always exits 0; advisory delivered via systemMessage)
@@ -47,6 +47,7 @@ modified: ["2026-05-28"]
 1. This hook NEVER exits 2 (a SessionStart block would prevent the session from opening — unacceptable).
 2. The banner is concise: one line per RED/YELLOW dimension, showing dimension name and issue summary.
 3. The six canonical dimension names used in `.brain/STATE.md` frontmatter and any banner output are: `capture`, `sources`, `wiki`, `synthesis`, `output`, `reflection` — per BC-2.01.006 invariant 1 and `docs/planning/llm-second-brain-phased-build-plan.md` §Six-dimensional convergence. Any test fixture or STATE.md content using other names (e.g., `briefs`, `publishing`, `voice`, `structural`) is non-conformant.
+4. This hook NEVER exits 1 (per ADR-002 v2.0: exit 1 stderr goes to the debug log only and is NOT shown to the operator; advisories MUST be delivered via stdout `systemMessage` field + exit 0). Hook exit code is exactly 0 across all execution paths.
 
 ## Edge Cases
 
@@ -86,6 +87,10 @@ modified: ["2026-05-28"]
 - BC-2.01.006 — related to (/brain:health skill surfaces the same dimensions)
 
 ## Changelog
+
+### v1.6 (2026-05-29)
+
+**INVARIANT COMPLETENESS FIX (F-P10-I02):** Added Invariant 4 codifying that this hook NEVER exits 1, per ADR-002 v2.0 (exit 1 stderr is debug-log only and not shown to the operator; advisories must be delivered via stdout `systemMessage` + exit 0). Pass 9 (v1.5) had swept all other BC sections to "ALWAYS exits 0" semantics — H1 title, Description, Postconditions, EC-002, Canonical Test Vectors, and Verification Properties were all updated. Invariants was the only section not updated, creating a spec-vs-test asymmetry: `test_BC_2_04_014_hook_never_exits_1` (brain-health-check.bats lines 119–124) already enforced the property; the BC now documents the invariant the test verifies. No other BC sections required changes — Pass-9's sweep was otherwise complete. Sibling sweep per TD-VSDD-060: BC-2.04.008 (`exit 1` advisory on PostToolUse), BC-2.04.013 (`exit 1` on Stop), and BC-2.04.016 (generic hook contract enumerating 0/1/2) all correctly retain `exit 1` semantics for their respective non-SessionStart hooks and are unaffected.
 
 ### v1.5 (2026-05-28)
 
