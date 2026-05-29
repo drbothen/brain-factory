@@ -714,8 +714,8 @@ _write_token_log() {
   ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
   [ -n "${ws}" ]
   [ "${ws}" != "null" ]
-  # Must be either "ok" or "failed"
-  [[ "${ws}" == "ok" || "${ws}" == "failed" ]]
+  # Must be one of the three valid writeback_status enum values (BC-2.01.006 v1.4 Postcondition 5)
+  [[ "${ws}" == "ok" || "${ws}" == "failed" || "${ws}" == "skipped_malformed_frontmatter" ]]
 }
 
 @test "BC_2_01_006: JSON report writeback_status is ok on successful healthy brain" {
