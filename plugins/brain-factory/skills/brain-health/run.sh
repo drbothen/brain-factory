@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# inherit_errexit: make set -e propagate into subshells (including function calls
-# from if-conditional context). Without this, yq failures inside _writeback_state
-# are silently swallowed when the function is called as `if ! _writeback_state`.
+# inherit_errexit: propagate set -e into subshells. Does NOT affect functions called
+# via 'if !' / '&&' / '||' — bash's POSIX errexit-context rule explicitly disables
+# set -e for the duration of any command whose exit status is being tested in a
+# conditional. Per-call '|| { _writeback_failure_reason="failed"; return 1; }' guards
+# inside _writeback_state handle yq failure detection directly.
 shopt -s inherit_errexit
 
 # /brain:health — six-dimensional convergence health check
@@ -348,26 +350,61 @@ _writeback_state() {
   awk 'BEGIN{n=0; in_body=0} /^---$/ && n<2 {n++; if (n==2) in_body=1; next} in_body{print}' \
     "$state_file" >"$body_tmp"
 
-  # Set failure reason before yq calls so any early exit via inherit_errexit carries
-  # the correct discriminator. Overwritten to "" on successful reassembly.
-  # Value must be a member of the locked enum {ok, failed, skipped_malformed_frontmatter}
-  # per BC-2.01.006 Postcondition 5 + LOCKED DECISION #6.
-  _writeback_failure_reason="failed"
-
   # Update overall_health and last_health_check.
-  yq e -i ".overall_health = \"${overall}\"" "$fm_tmp"
-  yq e -i ".last_health_check = \"${last_checked}\"" "$fm_tmp"
+  # Per-call guards are required: bash disables set -e inside _writeback_state when this
+  # function is called via 'if ! _writeback_state' (POSIX errexit-context rule). Each yq
+  # call must test its own exit code directly. On failure, set the locked-enum sentinel
+  # and return 1 so the caller's failure branch fires.
+  # Enum {ok, failed, skipped_malformed_frontmatter} per BC-2.01.006 Postcondition 5.
+  yq e -i ".overall_health = \"${overall}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
+  yq e -i ".last_health_check = \"${last_checked}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
   # Update each dimension status.
-  yq e -i ".dimensions.capture = \"${capture_status}\"" "$fm_tmp"
-  yq e -i ".dimensions.sources = \"${sources_status}\"" "$fm_tmp"
-  yq e -i ".dimensions.wiki = \"${wiki_status}\"" "$fm_tmp"
-  yq e -i ".dimensions.synthesis = \"${synthesis_status}\"" "$fm_tmp"
-  yq e -i ".dimensions.output = \"${output_status}\"" "$fm_tmp"
-  yq e -i ".dimensions.reflection = \"${reflection_status}\"" "$fm_tmp"
+  yq e -i ".dimensions.capture = \"${capture_status}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
+  yq e -i ".dimensions.sources = \"${sources_status}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
+  yq e -i ".dimensions.wiki = \"${wiki_status}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
+  yq e -i ".dimensions.synthesis = \"${synthesis_status}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
+  yq e -i ".dimensions.output = \"${output_status}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
+  yq e -i ".dimensions.reflection = \"${reflection_status}\"" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
   # Populate red_dimensions array: list dimensions with RED or YELLOW status.
   # C01: skill populates this field so the session-start hook can build issue summaries
   # without re-reading individual dimension artifacts.
-  yq e -i ".red_dimensions = []" "$fm_tmp"
+  yq e -i ".red_dimensions = []" "$fm_tmp" ||
+    {
+      _writeback_failure_reason="failed"
+      return 1
+    }
   local red_idx=0
   local dim_name dim_status dim_detail
   for dim_name in capture sources wiki synthesis output reflection; do
@@ -398,13 +435,14 @@ _writeback_state() {
       ;;
     esac
     if [[ "$dim_status" == "RED" || "$dim_status" == "YELLOW" ]]; then
-      yq e -i ".red_dimensions[${red_idx}].\"${dim_name}\" = \"${dim_detail}\"" "$fm_tmp"
+      yq e -i ".red_dimensions[${red_idx}].\"${dim_name}\" = \"${dim_detail}\"" "$fm_tmp" ||
+        {
+          _writeback_failure_reason="failed"
+          return 1
+        }
       red_idx=$((red_idx + 1))
     fi
   done
-
-  # All yq mutations succeeded — clear the failure reason set before the yq block.
-  _writeback_failure_reason=""
 
   # Reassemble: frontmatter fences + updated fm + body.
   {
