@@ -100,10 +100,12 @@ timestamp matching the current invocation time (within 5 seconds).
 (traces to BC-2.01.006 postcondition 2)
 
 **AC-009** — When invoked from a non-brain directory (no `.brain/STATE.md`), the skill
-exits at most 1 (not 2) for a soft-fail, or exits 2 only when the error is
-unrecoverable (per E-HEALTH-001). It does NOT crash with an unhandled bash error
-(no `set -e` unexpected exit on missing file reads). Structured JSON is always emitted.
-(traces to BC-2.01.006 edge case EC-002; VP-024 health-callable test)
+emits a structured E-HEALTH-001 error envelope to stdout
+(`{"level":"error","code":"E-HEALTH-001","message":"Brain state file missing — run \`/brain:init\` or \`/brain:cold-start-recover\`.","trace":"<uuid>"}`)
+and exits 2. The skill never crashes with an unhandled bash error (no bare `set -e`
+unexpected exit on missing file reads). The exit-code contract is binary: 0 (success)
+or 2 (unrecoverable error); no exit 1 path exists in this skill.
+(traces to BC-2.01.006 edge case EC-002; VP-024 health-callable test; brain-health-skill.bats lines 423-432)
 
 **AC-010** — `brain-health-check.sh` hook (registered in `hooks.json` under
 `SessionStart`) displays a human-readable health summary on session start. The hook
@@ -120,16 +122,18 @@ does NOT execute `skills/brain-health/run.sh` inline on every SessionStart. The
    `.brain/STATE.md`, returns a hardcoded `{"overall":"GREEN",...}` — stub skeleton only.
    Note: canonical directory is `skills/brain-health/` (not `skills/health/`). See BC-DIMENSION-RECONCILIATION.md §3.
 
-2. **[failing test — Red Gate]** Write `tests/integration.bats` additions (extend from
-   STORY-003's integration.bats):
-   - `@test "/brain:health: healthy brain returns GREEN overall"` — fails (stub returns wrong shape)
-   - `@test "/brain:health: overall RED when any dimension is RED"` — fails
-   - `@test "/brain:health: overall YELLOW when any dimension is YELLOW and no RED"` — fails
-   - `@test "/brain:health: missing STATE.md emits E-HEALTH-001 exit 2"` — fails
-   - `@test "/brain:health: brand-new brain wiki=YELLOW sources=GREEN"` — fails
-   - `@test "/brain:health: token alert surfaces when trailing avg exceeds 2x baseline"` — fails
-   - `@test "/brain:health: status values are GREEN/YELLOW/RED uppercase only"` — fails
-   - `@test "/brain:health: callable without crash on non-brain dir (VP-024)"` — fails
+2. **[failing test — Red Gate]** Write `plugins/brain-factory/tests/brain-health-skill.bats`
+   (standalone bats file for the brain-health skill — does NOT extend `tests/integration.bats`;
+   hook tests for `brain-health-check.sh` are separate in `brain-health-check.bats`).
+   Tests follow the `BC_2_01_006: <description>` naming convention. Representative
+   test categories that must all fail before implementation (Red Gate):
+   - Happy-path: healthy brain with full STATE.md, recent ingests — overall GREEN, exit 0
+   - Aggregation: one dimension forced RED → overall RED; all GREEN one YELLOW → overall YELLOW
+   - Error path: missing STATE.md → E-HEALTH-001 JSON envelope on stdout, exit 2
+   - Brand-new brain edge case: no wiki pages → wiki YELLOW; no ingest log → sources GREEN
+   - Token budget alert: 30-day trailing average > 2× baseline (> 100000) → sources YELLOW
+   - Status enum constraint: all six dimension status values match `^(GREEN|YELLOW|RED)$`
+   - VP-024 callable: invoked from non-brain dir → exits 2, no unhandled bash crash, stdout is valid JSON
 
 3. **[impl]** Implement dimension logic in `skills/brain-health/run.sh`:
 
@@ -188,7 +192,7 @@ does NOT execute `skills/brain-health/run.sh` inline on every SessionStart. The
 | One dimension forced RED | `overall:RED` | unit-test | BC-2.01.006 postcondition 3 |
 | All GREEN, one YELLOW | `overall:YELLOW` | unit-test | BC-2.01.006 postcondition 3 |
 | All GREEN | `overall:GREEN` | unit-test | BC-2.01.006 postcondition 3 |
-| Non-brain dir | Callable, no crash; returns non-2 exit or structured error | VP-024 | VP-024 health-callable |
+| Non-brain dir | E-HEALTH-001 JSON envelope on stdout, exit 2; no unhandled bash crash | VP-024 | VP-024 health-callable |
 
 ## Verification Evidence
 
@@ -265,7 +269,7 @@ STORY-003 completed the init skill with full error handling. Two lessons carry f
 | SS-01 subsystem design (partial re-read) | ~800 |
 | BC-2.01.006 | ~1,200 |
 | VP-024 (health-callable test) | ~1,500 |
-| STORY-002 and STORY-003 integration.bats (to extend) | ~2,000 |
+| brain-health-skill.bats (new file, test categories + helpers) | ~2,000 |
 | Test output context | ~500 |
 | **Total** | **~9,000** |
 
