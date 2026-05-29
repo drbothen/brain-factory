@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.4"
+version: "1.5"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -25,7 +25,7 @@ removal_reason: null
 
 ## Description
 
-`/brain:health` is the operator's primary diagnostic tool. It reads `.brain/STATE.md` and the brain's directory structure and emits a structured JSON report covering the six convergence dimensions: Capture / Sources / Wiki / Synthesis / Output / Reflection. Each dimension has a status value (GREEN / YELLOW / RED) and a detail string. The skill also fires the `brain-health-check.sh` hook, which displays the same summary on SessionStart.
+`/brain:health` is the operator's primary diagnostic tool. It reads `.brain/STATE.md` and the brain's directory structure and emits a structured JSON report covering the six convergence dimensions: Capture / Sources / Wiki / Synthesis / Output / Reflection. Each dimension has a status value (GREEN / YELLOW / RED) and a detail string. The `brain-health-check.sh` hook (BC-2.04.014) independently surfaces the same summary on SessionStart by reading the cached `overall_health`, `dimensions`, and `red_dimensions` values that this skill writes to `.brain/STATE.md` frontmatter (Postcondition 5); the hook is SessionStart-event-driven per the Claude Code lifecycle and is never invoked by the skill.
 
 ## Preconditions
 
@@ -98,6 +98,10 @@ STORY-004
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
 
 ## Changelog
+
+### v1.5 (2026-05-28)
+
+**Pass-8 Description prose correction (F-P8-I01):** Description sentence corrected — the skill does NOT fire the `brain-health-check.sh` hook (hook is SessionStart-event-driven per Claude Code lifecycle, not skill-driven). The skill writes the writeback surface to `.brain/STATE.md` frontmatter (Postcondition 5); the hook independently reads the cached values (`overall_health`, `dimensions`, `red_dimensions`) on next SessionStart. The cache-decoupled architecture was codified by BC-DIMENSION-RECONCILIATION.md and is reflected in AC-010 (STORY-004) and BC-2.04.014 preconditions; the Description prose previously contradicted it. Closes partial-fix regression from v1.3 → v1.4 burst.
 
 ### v1.4 (2026-05-28)
 
