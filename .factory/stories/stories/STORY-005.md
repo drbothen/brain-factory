@@ -66,7 +66,7 @@ files, `scripts/defuddle-fetch.mjs`, `scripts/quarantine.mjs`, and
 under the plugin installation directory. The tarball does NOT ship planning artifacts.
 (traces to BC-2.14.001 invariant 3)
 
-**AC-004** — After installation, invoking `skills/health/run.sh` on a non-brain directory
+**AC-004** — After installation, invoking `skills/brain-health/run.sh` on a non-brain directory
 exits with code 0 or 1 (RED is acceptable), but NOT 2 (crash). The output is parseable
 JSON (not a raw bash stack trace).
 (traces to BC-2.14.001 postcondition 3; VP-024 health-callable test)
@@ -161,7 +161,7 @@ YELLOW is acceptable; RED is not unless the brain was already in RED state befor
 | Count SKILL.md files | ≥ 26 | happy-path | BC-2.14.001 invariant 2 |
 | Count AGENT.md files | ≥ 14 | happy-path | BC-2.14.001 invariant 2 |
 | Find `*planning*` in plugin dir | No output | happy-path | BC-2.14.001 invariant 3 |
-| `health/run.sh` on non-brain dir | Exit ≤ 1; valid JSON output | happy-path | BC-2.14.001 postcondition 3 |
+| `brain-health/run.sh` on non-brain dir | Exit ≤ 1; valid JSON output | happy-path | BC-2.14.001 postcondition 3 |
 | v0.1 brain → upgrade to v0.2 | `briefs/research/` created; CHANGELOG updated; exit 0 | happy-path | BC-2.14.002 postconditions 1–4 |
 | Upgrade twice (idempotency) | State sha256 unchanged on second run | idempotency | BC-2.14.002 invariant 2 |
 | Unknown schema version | E-UPGRADE-001; exit 2 | error | BC-2.14.002 EC-001 |
@@ -230,7 +230,7 @@ Files to create/modify:
 | `plugins/brain-factory/tests/helpers.bash` | Create | `setup_v01_fixture_brain()` helper |
 | `plugins/brain-factory/tests/upgrade.bats` | Modify | Add VP-024 assertions |
 
-Files NOT to modify: `tests/integration.bats`, `skills/init/run.sh`, `skills/health/run.sh`,
+Files NOT to modify: `tests/integration.bats`, `skills/init/run.sh`, `skills/brain-health/run.sh`,
 `.factory/` tree, `docs/planning/`.
 
 ## Previous Story Intelligence

@@ -106,16 +106,19 @@ unrecoverable (per E-HEALTH-001). It does NOT crash with an unhandled bash error
 (traces to BC-2.01.006 edge case EC-002; VP-024 health-callable test)
 
 **AC-010** — `brain-health-check.sh` hook (registered in `hooks.json` under
-`SessionStart`) invokes the health skill and displays a human-readable summary on
-session start. The hook is a wrapper over `skills/health/run.sh` — it does NOT
-re-implement the six-dimensional logic.
-(traces to BC-2.01.006 postcondition 2 and the hook's SessionStart registration in
-BC-2.14.005 / hooks.json)
+`SessionStart`) displays a human-readable health summary on session start. The hook
+reads `overall_health` from `.brain/STATE.md` frontmatter (written by the last
+`/brain:health` invocation) — it does NOT re-implement the six-dimensional logic and
+does NOT execute `skills/brain-health/run.sh` inline on every SessionStart. The
+`/brain:health` skill is responsible for updating `overall_health` and `dimensions`
+in STATE.md frontmatter after each run (see postcondition 5 added below).
+(traces to BC-2.01.006 postconditions 1–2; BC-2.04.014 description; hooks.json SessionStart registration)
 
 ## Tasks
 
-1. **[stub]** Create `plugins/brain-factory/skills/health/run.sh` stub: reads
+1. **[stub]** Create `plugins/brain-factory/skills/brain-health/run.sh` stub: reads
    `.brain/STATE.md`, returns a hardcoded `{"overall":"GREEN",...}` — stub skeleton only.
+   Note: canonical directory is `skills/brain-health/` (not `skills/health/`). See BC-DIMENSION-RECONCILIATION.md §3.
 
 2. **[failing test — Red Gate]** Write `tests/integration.bats` additions (extend from
    STORY-003's integration.bats):
@@ -128,16 +131,16 @@ BC-2.14.005 / hooks.json)
    - `@test "/brain:health: status values are GREEN/YELLOW/RED uppercase only"` — fails
    - `@test "/brain:health: callable without crash on non-brain dir (VP-024)"` — fails
 
-3. **[impl]** Implement dimension logic in `skills/health/run.sh`:
+3. **[impl]** Implement dimension logic in `skills/brain-health/run.sh`:
 
    *Capture dimension:* GREEN if `inbox/` directory exists and is readable; YELLOW if
    more than 50 unprocessed items in `inbox/` (suggest process-inbox); RED if `inbox/`
    missing.
 
-   *Sources dimension:* GREEN if at least 1 source in `manifest.json`; YELLOW if 0 or
-   if token alert threshold exceeded; RED if `manifest.json` missing or invalid JSON.
-   Token budget alert: compute 30-day trailing average from `.brain/logs/ingest-tokens.jsonl`
-   (each line: `{"date":"...","tokens":NNN}`); alert if average > 100000.
+   *Sources dimension:* (precedence order — first matching condition wins)
+   1. RED if `manifest.json` missing or invalid JSON.
+   2. GREEN with detail "No ingest history yet." if `ingest-tokens.jsonl` is missing — brand-new brain, no history yet (BC-2.01.006 EC-001 / AC-004). Source count is NOT checked in this state.
+   3. If `ingest-tokens.jsonl` exists: compute 30-day trailing average from each line `{"date":"...","tokens":NNN}` using awk. RED if avg > 200000 (4x baseline). YELLOW with "token budget" in detail if avg > 100000 (2x baseline). YELLOW "No sources ingested yet" if source_count == 0. GREEN with source count otherwise.
 
    *Wiki dimension:* GREEN if wiki page count > 0 (non-index/log .md files under `wiki/`);
    YELLOW if count = 0.
@@ -157,12 +160,14 @@ BC-2.14.005 / hooks.json)
    and compute the 30-day trailing average. If the file does not exist, skip. If it exists
    but is empty, skip. Emit YELLOW detail string with actual average when > 100000.
 
-6. **[impl]** Update `brain-health-check.sh` stub (created in STORY-001) to call
-   `skills/health/run.sh` and display the `overall` status on session start.
+6. **[impl]** Implement STATE.md frontmatter write-back in `skills/brain-health/run.sh`:
+   after computing the health report, use `yq` to update `overall_health` and `dimensions`
+   in `.brain/STATE.md` YAML frontmatter so the SessionStart hook reads the cached result.
+   This satisfies BC-2.01.006 postcondition 5.
 
 7. **[green]** Run all health bats tests. All pass.
 
-8. **[green]** Run `shellcheck plugins/brain-factory/skills/health/run.sh` and
+8. **[green]** Run `shellcheck plugins/brain-factory/skills/brain-health/run.sh` and
    `shellcheck plugins/brain-factory/hooks/brain-health-check.sh`.
 
 9. **[green]** Run `shfmt -d -i 2` on both files.
@@ -185,8 +190,8 @@ BC-2.14.005 / hooks.json)
 
 | VP | Property | Test Location |
 |----|----------|---------------|
-| VP-024 | `/brain:health` callable without crash after install | `tests/integration.bats` |
-| VP-024 | Health returns structured JSON (not raw stack traces) | `tests/integration.bats` jq assertion |
+| VP-024 | `/brain:health` callable without crash after install | `tests/brain-health-skill.bats` |
+| VP-024 | Health returns structured JSON (not raw stack traces) | `tests/brain-health-skill.bats` jq assertion |
 
 ## Architecture Compliance Rules
 
@@ -197,9 +202,7 @@ From `architecture/subsystems/SS-01-brain-init-scaffold.md`:
    dimension requires a BC update.
 2. **Status values are exactly three uppercase strings:** `"GREEN"`, `"YELLOW"`, `"RED"`.
    No other values allowed. The bats test checks via `[[ "$status" =~ ^(GREEN|YELLOW|RED)$ ]]`.
-3. **`brain-health-check.sh` must be a thin wrapper** — it calls `skills/health/run.sh`
-   and parses `overall` from the JSON output to produce a human-readable session start
-   message. It does NOT duplicate the dimension logic.
+3. **`brain-health-check.sh` reads cached STATE.md, not skill output inline** — the hook reads `overall_health` from `.brain/STATE.md` YAML frontmatter. The `/brain:health` skill is responsible for writing `overall_health` and `dimensions` back to STATE.md frontmatter after each run (BC-2.01.006 postcondition 5). The hook does NOT call `skills/brain-health/run.sh` inline on every SessionStart. The canonical skill path is `skills/brain-health/run.sh` (not `skills/health/run.sh`).
 4. **Token budget baseline is 50,000 tokens.** The 2× alert threshold is 100,000.
    4× threshold (200,000) triggers RED. These values are constants in `run.sh`, not
    configuration — changing them requires a BC update.
@@ -230,10 +233,11 @@ Files to create/modify:
 
 | Path | Action | Notes |
 |------|--------|-------|
-| `plugins/brain-factory/skills/health/run.sh` | Create | Six-dimensional JSON output; `#!/usr/bin/env bash`; `set -euo pipefail` |
-| `plugins/brain-factory/skills/health/SKILL.md` | Replace stub | Full SKILL.md with all 6 sections |
-| `plugins/brain-factory/hooks/brain-health-check.sh` | Modify | Replace stub with thin wrapper calling health/run.sh |
-| `plugins/brain-factory/tests/integration.bats` | Modify | Add 8 health skill bats tests |
+| `plugins/brain-factory/skills/brain-health/run.sh` | Create | Six-dimensional JSON output; `#!/usr/bin/env bash`; `set -euo pipefail` |
+| `plugins/brain-factory/skills/brain-health/SKILL.md` | Replace stub | Full SKILL.md with all 6 sections |
+| `plugins/brain-factory/hooks/brain-health-check.sh` | Modify | Reads `overall_health` from STATE.md frontmatter; does NOT call run.sh inline |
+| `plugins/brain-factory/tests/brain-health-skill.bats` | Create | Red Gate bats tests for brain-health/run.sh (supersedes integration.bats additions) |
+| `plugins/brain-factory/templates/state-md-template.md` | Modify | Add frontmatter with `overall_health` and canonical `dimensions` map |
 
 Files NOT to modify: `tests/upgrade.bats`, `tests/skills.bats`, `skills/init/run.sh`,
 `.factory/` tree, `docs/planning/`.
@@ -265,7 +269,7 @@ Within 20% of 200K-token context. No split required.
 
 ## Out of Scope
 
-- `brain-health-check.sh` full SessionStart behavior beyond calling health/run.sh — EPIC-02
+- `brain-health-check.sh` SessionStart hook behavior beyond reading cached STATE.md — EPIC-02
 - Token instrumentation (writing to `ingest-tokens.jsonl`) — EPIC-08
 - `/brain:cold-start-recover` skill (referenced in E-HEALTH-001 message) — future story
 - Six-dimensional STATE.md tracking schema (the content; STATE.md template is in STORY-002)

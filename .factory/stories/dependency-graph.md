@@ -109,7 +109,7 @@ All direct dependency edges. Sorted by source story ID. Format:
 - STORY-003 → STORY-004 [frontmatter-confirmed] (STORY-004 extends `tests/integration.bats` from STORY-003; uses `local-dev-test.sh` patterns for test harness setup)
 - STORY-003 → STORY-005 [frontmatter-confirmed] (STORY-005 exercises the full init including error paths from STORY-003 to confirm post-upgrade health)
 - STORY-003 → STORY-022 [frontmatter-confirmed] (STORY-022 validates SKILL.md stubs from all 5 EPIC-01 stories; STORY-003 replaces the init SKILL.md stub)
-- STORY-004 → STORY-005 [frontmatter-confirmed] (STORY-005 wire-tests health callable via `skills/health/run.sh` delivered by STORY-004)
+- STORY-004 → STORY-005 [frontmatter-confirmed] (STORY-005 wire-tests health callable via `skills/brain-health/run.sh` delivered by STORY-004)
 - STORY-004 → STORY-022 [frontmatter-confirmed] (STORY-022 validates all 14 AGENT.md and 26 SKILL.md artifacts; STORY-004 delivers health SKILL.md)
 - STORY-005 → STORY-022 [frontmatter-confirmed] (STORY-022 meta-lints all plugin artifacts including those from STORY-005; all 5 EPIC-01 stories must be complete)
 
