@@ -435,6 +435,192 @@ _create_malformed_state_md() {
 # Structural check — PASSES against the existing hooks.json.
 # ===========================================================================
 
+# ===========================================================================
+# F16-01 / BC-2.04.014 v1.6: systemMessage Issues format structural lock.
+# RED path must produce "Brain health: RED. Issues: wiki: <detail>; output: <detail>"
+# — colon-space between name and detail, semicolon-space between entries.
+# Old formats ("wiki (", "wiki,") must be absent.
+# ===========================================================================
+
+@test "test_BC_2_04_014_red_systemMessage_starts_with_health_status_issues_clause" {
+  # Lock: systemMessage must begin with "Brain health: RED. Issues: "
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  # Must start with "Brain health: RED. Issues: "
+  [[ "$sm" == "Brain health: RED. Issues: "* ]]
+}
+
+@test "test_BC_2_04_014_red_systemMessage_uses_colon_space_name_detail_separator" {
+  # Lock: "wiki: " (colon-space) between dimension name and its detail.
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  # The fixture has wiki: RED with detail "3 broken wikilinks"
+  [[ "$sm" == *"wiki: "* ]]
+}
+
+@test "test_BC_2_04_014_red_systemMessage_uses_semicolon_space_entry_separator" {
+  # Lock: "; output: " (semicolon-space) between consecutive entries.
+  # The fixture has 2 entries: wiki and output.
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  [[ "$sm" == *"; output: "* ]]
+}
+
+@test "test_BC_2_04_014_red_systemMessage_rejects_old_paren_format" {
+  # Explicit rejection: old "wiki (" format must NOT appear.
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  # Must NOT contain "wiki (" — the old parenthetical format
+  [[ "$sm" != *"wiki ("* ]]
+}
+
+@test "test_BC_2_04_014_red_systemMessage_rejects_old_comma_format" {
+  # Explicit rejection: old "wiki," (bare comma separator) format must NOT appear.
+  _create_red_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  # Must NOT contain "wiki," — the old comma-delimited format
+  [[ "$sm" != *"wiki,"* ]]
+}
+
+# ===========================================================================
+# F16-02 / BC-2.04.014 EC-001: skipped path stdout is exactly {"continue":true}.
+# No systemMessage, no message, no trace — only the "continue" key.
+# ===========================================================================
+
+@test "test_BC_2_04_014_skipped_stdout_has_only_continue_key" {
+  # Non-brain dir — no .brain/STATE.md.
+  local payload stdout_json keys_count has_only_continue
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" bash "${HOOK}" 2>/dev/null)"
+  # jq .keys returns the sorted key array; length must be 1
+  keys_count="$(printf '%s' "$stdout_json" | jq 'keys | length')"
+  [ "$keys_count" -eq 1 ]
+  # The single key must be "continue"
+  has_only_continue="$(printf '%s' "$stdout_json" | jq 'keys == ["continue"]')"
+  [ "$has_only_continue" = "true" ]
+}
+
+@test "test_BC_2_04_014_skipped_stdout_continue_value_is_true" {
+  # Non-brain dir — continue must be boolean true, not string "true".
+  local payload stdout_json
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" bash "${HOOK}" 2>/dev/null)"
+  [ "$(printf '%s' "$stdout_json" | jq '.continue')" = "true" ]
+  [ "$(printf '%s' "$stdout_json" | jq 'type')" = '"object"' ]
+}
+
+@test "test_BC_2_04_014_skipped_stdout_has_no_systemMessage" {
+  # Explicit absence: skipped path must NOT include a systemMessage field.
+  local payload stdout_json has_sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" bash "${HOOK}" 2>/dev/null)"
+  has_sm="$(printf '%s' "$stdout_json" | jq 'has("systemMessage")')"
+  [ "$has_sm" = "false" ]
+}
+
+# ===========================================================================
+# F16-03 / BC-2.04.014 v1.6: YELLOW/RED with empty red_dimensions fallback.
+# When red_dimensions: [] (empty array), issues summary cannot be built from it.
+# The hook must fall back to: "Issues: (no dimensional detail available...)"
+# Fixture: overall_health YELLOW, all dimensions GREEN, red_dimensions: [].
+# ===========================================================================
+
+_create_yellow_empty_red_dims_state_md() {
+  local dir="$1"
+  mkdir -p "${dir}/.brain"
+  cat >"${dir}/.brain/STATE.md" <<'EOF'
+---
+overall_health: YELLOW
+dimensions:
+  capture: GREEN
+  sources: GREEN
+  wiki: GREEN
+  synthesis: GREEN
+  output: GREEN
+  reflection: GREEN
+red_dimensions: []
+---
+# Brain State
+Dimensions all show GREEN but overall health is degraded.
+EOF
+}
+
+@test "test_BC_2_04_014_yellow_empty_red_dims_systemMessage_contains_fallback_clause" {
+  # When red_dimensions is an empty array and all dimensions are GREEN,
+  # issues_summary is empty → fallback "(no dimensional detail available" must appear.
+  _create_yellow_empty_red_dims_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  [[ "$sm" == *"(no dimensional detail available"* ]]
+}
+
+@test "test_BC_2_04_014_yellow_empty_red_dims_systemMessage_still_has_issues_clause" {
+  # The "Issues:" clause must still be present even with empty red_dimensions.
+  _create_yellow_empty_red_dims_state_md "${BRAIN_DIR}"
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+  stdout_json="$(printf '%s' "${payload}" | CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  [[ "$sm" == *"Brain health: YELLOW. Issues: "* ]]
+}
+
+# ===========================================================================
+# F16-04 / BC-2.04.014 EC-002: yq-absent guard — single-fence malformed YAML.
+# When yq is absent from PATH and STATE.md has < 2 '---' markers,
+# overall_health must be treated as UNREADABLE (not GREEN, not parsed).
+# Approach: strip yq from PATH prefix; system executables remain available.
+# ===========================================================================
+
+@test "test_BC_2_04_014_yq_empty_return_on_malformed_yaml_yields_UNREADABLE_not_GREEN" {
+  # Construct STATE.md with only 1 '---' marker and literal "overall_health: GREEN".
+  # When yq returns empty (exit 1) on parse failure, overall_health="" via the
+  # `|| overall_health=""` guard → UNREADABLE path. Tests the critical guard:
+  # yq present + returns empty → UNREADABLE (not GREEN, not skipped).
+  # Approach: shadow yq with a failing wrapper to simulate yq encountering bad YAML.
+  mkdir -p "${BRAIN_DIR}/.brain"
+  printf '%s\n' '---' 'overall_health: GREEN' '# Malformed - no closing fence' >"${BRAIN_DIR}/.brain/STATE.md"
+
+  local payload stdout_json sm
+  payload="$(_session_start_payload "${BRAIN_DIR}")"
+
+  # Create a fake yq that exits 1 (no output) to simulate yq parse failure.
+  # Shadow the real yq by prepending a fake_bin to PATH; all other tools remain available.
+  local fake_bin
+  fake_bin="$(mktemp -d)"
+  printf '#!/bin/bash\nexit 1\n' >"${fake_bin}/yq"
+  chmod +x "${fake_bin}/yq"
+
+  stdout_json="$(printf '%s' "${payload}" | PATH="${fake_bin}:${PATH}" CLAUDE_PLUGIN_ROOT="${PLUGIN_DIR}" BRAIN_DIR="${BRAIN_DIR}" bash "${HOOK}" 2>/dev/null)" || true
+  rm -rf "$fake_bin"
+
+  sm="$(printf '%s' "$stdout_json" | jq -r '.systemMessage')"
+  # Must be UNREADABLE path — not GREEN
+  [[ "$sm" == *"unreadable"* ]]
+  # additionalContext must be E-HEALTH-003, not the GREEN path value
+  local ac
+  ac="$(printf '%s' "$stdout_json" | jq -r '.hookSpecificOutput.additionalContext')"
+  [ "$ac" = "E-HEALTH-003" ]
+}
+
+# ===========================================================================
+
 @test "test_BC_2_04_014_hooks_json_SessionStart_entry_includes_brain_health_check" {
   run python3 -c "
 import json, sys
