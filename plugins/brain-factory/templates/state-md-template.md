@@ -31,7 +31,7 @@ RED when inbox directory is missing (run `/brain:init` to repair).
 Tracks `manifest.json` (source index) and 30-day trailing token cost. GREEN when
 sources are indexed and token budget is within baseline; YELLOW when token cost
 exceeds 2× baseline or no sources are indexed yet; RED when manifest is missing
-or corrupt, or when token cost exceeds 4× baseline.
+or corrupt, or when token cost exceeds 3× baseline.
 
 | Metric | Value |
 |--------|-------|
