@@ -10,7 +10,7 @@ phase: 2
 points: 5
 priority: P1
 subsystems: [SS-01]
-behavioral_contracts: [BC-2.01.006]
+behavioral_contracts: [BC-2.01.006, BC-2.04.014]
 vps: [VP-024]
 dependencies: [STORY-001, STORY-002, STORY-003]
 blocks: [STORY-005]
@@ -44,6 +44,7 @@ through log files manually.
 | BC ID | Title | Priority |
 |-------|-------|----------|
 | BC-2.01.006 | `/brain:health` reports six-dimensional convergence state in structured JSON | P1 |
+| BC-2.04.014 | `brain-health-check.sh` surfaces convergence state on SessionStart (always exits 0; advisory delivered via systemMessage) | P1 |
 
 ## Acceptance Criteria
 
@@ -118,7 +119,7 @@ reads `overall_health` from `.brain/STATE.md` frontmatter (written by the last
 does NOT execute `skills/brain-health/run.sh` inline on every SessionStart. The
 `/brain:health` skill is responsible for updating `overall_health`, `last_health_check`,
 `dimensions`, and `red_dimensions` in STATE.md frontmatter after each run (see postcondition 5).
-(traces to BC-2.01.006 postconditions 1–2; BC-2.04.014 description; hooks.json SessionStart registration)
+(traces to BC-2.01.006 postconditions 1–2; BC-2.04.014 postcondition 1 [hook exits 0, reads STATE.md frontmatter written by /brain:health]; BC-2.04.014 invariant 4 [hook never exits 1 — advisories via systemMessage + exit 0])
 
 ## Tasks
 
@@ -271,7 +272,7 @@ STORY-003 completed the init skill with full error handling. Two lessons carry f
 |-----------|-----------------|
 | This story spec | ~3,000 |
 | SS-01 subsystem design (partial re-read) | ~800 |
-| BC-2.01.006 | ~1,200 |
+| BC-2.01.006 + BC-2.04.014 (2 BCs) | ~2,000 |
 | VP-024 (health-callable test) | ~1,500 |
 | brain-health-skill.bats (new file, test categories + helpers) | ~2,000 |
 | Test output context | ~500 |
