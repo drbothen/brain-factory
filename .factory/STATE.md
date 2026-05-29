@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-4-pending
+phase: phase-3-wave-4-story-004-pass-5-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-4-pending
-session_continuity: "Pass 3 FAIL (3C+4I+3O) — fix burst 3 applied (5 commits on feature/STORY-004: cfb5851 spec, 1a49569 stories, 8423447 arch, dd48972 fix, 773bcc1 test). Tests 43/43 + 22/22 on feature/STORY-004 at 773bcc1. Streak 0/3. NEXT ACTION: dispatch adversary Pass 4. Wave 4: 2/4 stories delivered. 17/43 total stories (98/264 pts). 38 BCs active. PO decisions locked — canonical skill dir brain-health/, six dimensions, AC-010 design. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-5-pending
+session_continuity: "Pass 4 FAIL (2I+2O) — fix burst 4 applied (4 commits on feature/STORY-004: 5c8430a fix, 8ef4e32 spec, f54db70 test, b1c3c43 stories). Tests 43/43 + 22/22 on feature/STORY-004 at b1c3c43. Streak 0/3. NEXT ACTION: dispatch adversary Pass 5. Wave 4: 2/4 stories delivered. 17/43 total stories (98/264 pts). 38 BCs active. PO decisions locked — canonical skill dir brain-health/, six dimensions, AC-010 design. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-4-pending
+status: phase-3-wave-4-story-004-pass-5-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,16 +90,32 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 4 PENDING — Fix Burst 3 Complete
+## TOP OF STACK — STORY-004 Pass 5 PENDING — Fix Burst 4 Complete
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `773bcc1`
+1. Verify worktree: `git worktree list` — should show STORY-004 at `b1c3c43`
 2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 43/43
 3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 4 (fresh context, streak 0/3, need 3-CLEAN per BC-5.39.001)
+4. Dispatch adversary for Pass 5 (fresh context, streak 0/3, need 3-CLEAN per BC-5.39.001)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
 
-**STORY-004 cascade state:** Pass 3 FAIL (3C+4I+3O). Fix burst 3 applied (5 commits on feature/STORY-004 — cfb5851/1a49569/8423447/dd48972/773bcc1). All P3 non-OBS findings fixed. Tests 43/43 + 22/22 on worktree at 773bcc1. Streak 0/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 4 FAIL (2I+2O). Fix burst 4 applied (4 commits on feature/STORY-004 — 5c8430a/8ef4e32/f54db70/b1c3c43). All P4 non-OBS findings fixed. Tests 43/43 + 22/22 on worktree at b1c3c43. Streak 0/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+
+---
+
+**D-017 — STORY-004 fix burst 4 complete (2026-05-28):** Pass 4 FAIL (2I+2O) closed by 4-commit fix burst on feature/STORY-004: 5c8430a (fix — event-catalog.json voice→output canonical sweep + run.sh inherit_errexit + RETURN trap), 8ef4e32 (spec — BC-2.01.006 v1.4 Postcondition 5 enumerates 4 writeback fields), f54db70 (test — bats whitelist extended to include skipped_malformed_frontmatter), b1c3c43 (stories — STORY-004 AC narrative + Task #6 + Architecture Compliance Rule 3 updated). Tests 43/43 + 22/22 pass at b1c3c43. Pass 5 next.
+
+---
+
+## Drift Items (process-gap deferrals — not blocking STORY-004)
+
+These items were identified during adversarial passes as out-of-STORY-004-scope process-gaps. Deferred per Cycle-Closing Checklist S-7.02. Each has a target and owner.
+
+| ID | Finding | Origin | Defer Reason | Target | Owner |
+|----|---------|--------|--------------|--------|-------|
+| DI-001 | BC frontmatter `status: draft` vs `lifecycle_status: active` divergence — project-wide inconsistency in BC files | F-P3-O01 (Pass 3 OBSERVATION) | Out-of-STORY-004-scope; project-wide pattern needing dedicated PO sweep across all 95 BCs | Post-STORY-004-PR-merge or next maintenance sweep | product-owner |
+| DI-002 | `argument-hint: ""` project-wide in SKILL.md files vs Meta-Lint Contract requiring non-empty value | F-P3-O02 (Pass 3 OBSERVATION) | Out-of-STORY-004-scope; project-wide pattern requiring meta-lint rule clarification or SKILL.md sweep | Post-STORY-004-PR-merge or next maintenance sweep | product-owner + test-writer |
+| DI-003 | BC-2.04.014 v1.4 exit-code narrative prose says "exits 1 (advisory)" in at least one location; ADR-002 v2.0 + actual hook + bats test `test_BC_2_04_014_hook_never_exits_1` all require exit 0 — spec narrative drift | F-P4-noted (Pass 4 adversary OUT-OF-STORY-004-SCOPE note; STORY-013 ownership) | BC narrative drift only; implementation and test are correct (ADR-002 v2.0 + hook + bats enforce exit 0); amendment is spec-only and not blocking STORY-004 merge | Post-STORY-004-PR-merge or next maintenance sweep | product-owner (STORY-013 BC owner) |
 
 ---
 
