@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-story-004-pass-12-pending
-session_stage: phase-3-wave-4-story-004-pass-12-pending
+session_phase: phase-3-wave-4-story-004-pass-13-pending
+session_stage: phase-3-wave-4-story-004-pass-13-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-29T00:00:00
+last_updated: 2026-05-29T12:00:00
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,24 +94,24 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-story-004-pass-12-pending
+status: phase-3-wave-4-story-004-pass-13-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 11 FAIL (3H+3M+1O) — streak 0/3. Fix burst 11 applied (2 commits: 97630bd+b2f339c). Pass 12 pending."
-story_004_cascade_streak: "0/3 — Pass 11 FAIL (3H+3M+1O) — fix burst 11 applied (2 commits) — Pass 12 next (need 3 consecutive PASS from 0/3 for convergence)"
-story_004_worktree_tip: b2f339c
+wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 12 FAIL (2H+2M+1L) — streak 0/3. Fix burst 12 applied (4 commits: 624dc86+9be3702+e8504ef+6030583). DI-004 RETIRED. Pass 13 pending."
+story_004_cascade_streak: "0/3 — Pass 12 FAIL (2H+2M+1L) — fix burst 12 applied (4 commits) — DI-004 RETIRED — Pass 13 next (need 3 consecutive PASS from 0/3 for convergence)"
+story_004_worktree_tip: 6030583
 total_stories_delivered: 17
 total_bcs_active: 38
 total_tests_on_develop: 717
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 12 Pending — Streak 0/3 (Pass 11 fix burst 11 closed 3H+3M+1O)
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 13 Pending — Streak 0/3 (Pass 12 fix burst 12 closed 2H+2M+1L — DI-004 RETIRED)
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 11 FAIL (3H+3M+1O) — streak 0/3. Fix burst 11 applied (2 commits: 97630bd+b2f339c). Worktree tip `b2f339c`. Tests 45/45 + 22/22 passing on feature/STORY-004. NEXT ACTION: dispatch adversary Pass 12 (need 3 consecutive PASS from 0/3 for convergence). 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
+**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 12 FAIL (2H+2M+1L) — streak 0/3. Fix burst 12 applied (4 commits: 624dc86+9be3702+e8504ef+6030583). DI-004 RETIRED. Worktree tip `6030583`. Tests 45/45 + 22/22 passing on feature/STORY-004. NEXT ACTION: dispatch adversary Pass 13 (need 3 consecutive PASS from 0/3 for convergence). 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
 
 ### Step 1 — Read documents in this exact order
 
@@ -135,9 +135,9 @@ git log --oneline origin/develop -3
 git worktree list
 # Expected: shows /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 [feature/STORY-004]
 
-# Check 3: STORY-004 worktree tip commit is b2f339c
+# Check 3: STORY-004 worktree tip commit is 6030583
 git -C /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 log --oneline origin/develop..HEAD | head -5
-# Expected: b2f339c at tip, 27 commits ahead of develop
+# Expected: 6030583 at tip, 31 commits ahead of develop
 
 # Check 4: Tests pass on the worktree
 cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004
@@ -160,13 +160,13 @@ Wave 1: STORY-001/014/027/038 (PRs #1-#4, gate PASSED). Wave 2: STORY-016/002/00
 - STORY-032 (PR #17, d610cf0): bin/lobster-run pure-bash workflow runtime. 22 passes, 14 fix bursts — longest cascade in project history. 3-CLEAN at passes 20-21-22. BCs BC-2.12.001/002 active. User explicitly approved continuing to convergence rather than relaxing the bar.
 
 **3c. IN PROGRESS — STORY-004 adversarial cascade (wave 4 story 3/4):**
-Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `b2f339c`. See §STORY-004 Cascade Detail below — this is the primary current work.
+Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `6030583`. See §STORY-004 Cascade Detail below — this is the primary current work.
 
 **3d. PENDING — STORY-015 (wave 4 story 4/4):**
 Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
 
-**3e. TOP-OF-STACK — STORY-004 adversary Pass 12:**
-Streak 0/3 (Pass 11 FAIL — 3H+3M+1O). Worktree tip `b2f339c` (fix burst 11 applied — 2 commits: 97630bd + b2f339c). DI-003 RETIRED. Dispatch adversary for Pass 12. Need 3 consecutive clean PASS (0C+0I) from 0/3 for convergence. BC-5.39.001 requires 3 consecutive clean passes. NOTE: STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT pre-merge states per POL-14 — do not flag as findings.
+**3e. TOP-OF-STACK — STORY-004 adversary Pass 13:**
+Streak 0/3 (Pass 12 FAIL — 2H+2M+1L). Worktree tip `6030583` (fix burst 12 applied — 4 commits: 624dc86 + 9be3702 + e8504ef + 6030583). DI-003 and DI-004 RETIRED. Dispatch adversary for Pass 13. Need 3 consecutive clean PASS (0C+0I) from 0/3 for convergence. BC-5.39.001 requires 3 consecutive clean passes. NOTE: STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT pre-merge states per POL-14 — do not flag as findings.
 
 **3f. Develop tip verification:**
 ```bash
@@ -185,7 +185,7 @@ gh pr list --state open               # none open
 **Key BC:** BC-2.01.006 (status: draft, will promote to active at PR merge per POL-14)
 **Worktree:** `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004`
 **Branch:** `feature/STORY-004`
-**Worktree tip:** `b2f339c` — "arch(STORY-004): pass-11 fix burst — VP-024 Counterexample failure-mode + status partial"
+**Worktree tip:** `6030583` — "arch(STORY-004): pass-12 fix burst — VP-024 prose+bats test name+assertion comment relaxed to GREEN/YELLOW (3 sites)"
 
 ### Cascade History Table
 
@@ -215,7 +215,9 @@ gh pr list --state open               # none open
 | Fix burst 10 | 3 commits (9cbcb22 + ac9dc62 + 658f712) | 9cbcb22 (stories — AC-009 rewrite phantom exit-1 removed; Task #2 ref updated to brain-health-skill.bats BC_2_01_006), ac9dc62 (spec — BC-2.04.014 v1.5→v1.6 Invariant 4 NEVER exits 1 codified), 658f712 (arch — VP-024 prose updated E-HEALTH-001 exit 2 not RED status). Tests 45/45 + 22/22. Lesson 4 refined. |
 | Pass 11 | FAIL — 3 HIGH + 3 MEDIUM + 1 OBSERVATION — STREAK REMAINS 0/3 | F-P11-01 (HIGH): STORY-004 line 258 `health/run.sh` → `brain-health/run.sh` sibling-sweep miss. F-P11-02 (HIGH): AC-009 volatile trace pin `lines 423-432` per TD-VSDD-091. F-P11-03 (HIGH): VP-024 Counterexample failure-mode ambiguous — raw stack trace, no JSON envelope, exit 2 IS expected. F-P11-04 (MEDIUM): VP-024 status:proposed inconsistent with partial implementation. F-P11-05 (MEDIUM): STORY-004 frontmatter status:draft — CORRECTLY DEFERRED (POL-14: promotes to done at PR merge). F-P11-06 (MEDIUM): BC-2.01.006 status:draft — CORRECTLY DEFERRED (POL-14: promotes to active at PR merge). F-P11-O01 (OBSERVATION): historical reconciliation doc line refs — NO-ACTION (TD-VSDD-091 justified citation). |
 | Fix burst 11 | 2 commits (97630bd + b2f339c) | 97630bd (stories — STORY-004 line 258 `health/run.sh`→`brain-health/run.sh`; AC-009 volatile trace pin replaced with stable test name per TD-VSDD-091). b2f339c (arch — VP-024 Counterexample failure-mode: raw stack trace, no JSON envelope, exit 2 expected; VP-024 status proposed→partial with status_detail). F-P11-05/06 deferred per POL-14. Tests 45/45 + 22/22. Lesson 5 codified. |
-| **Pass 12** | **PENDING** | **Streak 0/3 (Pass 11 FAIL) — need 3 consecutive PASS for convergence** |
+| Pass 12 | FAIL — 2 HIGH + 2 MEDIUM + 1 LOW — STREAK REMAINS 0/3 | F12-01 (HIGH): STORY-005 AC-004 + 2 Test Vectors "exit ≤ 1" — conflicts with locked exit-code contract (exit 2 non-brain dir per VP-024 + bats). F12-02 (HIGH): STORY-004 AC-005 RED threshold 200K vs BC-2.16.002 150K/3x; Compliance Rule 4 + Task #3 + run.sh constant misaligned. F12-03 (MEDIUM): bats:418 stale comment block references STORY-005 exit ≤ 1 narrative — obsolete after DI-004 closure. F12-04 (MEDIUM): VP-024 prose still references GREEN/YELLOW only in 3 locations — impl handles both GREEN and YELLOW. F12-05 (LOW): STORY-004 line 22 inline comment references outdated BC lifecycle status wording vs POL-14. |
+| Fix burst 12 | 4 commits (624dc86 + 9be3702 + e8504ef + 6030583) | 624dc86 (spec — STORY-004 AC-005 + Compliance Rule 4 + Task #3 aligned with BC-2.16.002 RED threshold 150K/3x; line 22 POL-14 inline comment updated; BC wins per Source-of-Truth precedence rule 1). 9be3702 (fix — run.sh RED threshold constant 200000→150000; bats:418 stale comment rewritten). e8504ef (stories — STORY-005 AC-004 + 2 Test Vectors aligned with locked exit-code contract: exit 2 on non-brain dir; exit 0 for GREEN/YELLOW; DI-004 RETIRED). 6030583 (arch — VP-024 prose + bats test name + assertion comment relaxed to GREEN/YELLOW, 3 sites swept). Tests 45/45 + 22/22 at 6030583. Lesson 6 codified. |
+| **Pass 13** | **PENDING** | **Streak 0/3 (Pass 12 FAIL) — need 3 consecutive PASS for convergence** |
 
 ### Locked Decisions (DO NOT RE-LITIGATE)
 
@@ -336,6 +338,11 @@ All 4 findings closed (2I + 2O — no streak reset contributions beyond the two 
 | `.factory/specs/architecture/verification-properties/VP-024-plugin-lifecycle.md` | P10: prose preamble updated E-HEALTH-001 exit 2 not RED status (F-P10-I03, 658f712) |
 | `.factory/stories/stories/STORY-004.md` | P11: line 258 `health/run.sh`→`brain-health/run.sh` sibling-sweep miss (F-P11-01, 97630bd); AC-009 volatile trace pin replaced with stable test name per TD-VSDD-091 (F-P11-02, 97630bd) |
 | `.factory/specs/architecture/verification-properties/VP-024-plugin-lifecycle.md` | P11: Counterexample failure-mode clarified (raw stack trace, no JSON envelope, exit 2 IS expected); status proposed→partial with status_detail (F-P11-03+04, b2f339c) |
+| `.factory/stories/stories/STORY-004.md` | P12: AC-005 RED threshold 200K→150K tokens; Compliance Rule 4 updated to cite BC-2.16.002 150K/3x; Task #3 wording updated; line 22 POL-14 inline comment updated (F12-02+F12-05, 624dc86) |
+| `plugins/brain-factory/skills/brain-health/run.sh` | P12: RED threshold constant 200000→150000 (F12-02, 9be3702) |
+| `plugins/brain-factory/tests/brain-health-skill.bats` | P12: bats:418 stale comment block rewritten; references DI-004 RETIRED (F12-03, 9be3702) |
+| `.factory/stories/stories/STORY-005.md` | P12: AC-004 rewritten "exit 0 for GREEN/YELLOW states; exit 2 for non-brain-directory (E-HEALTH-001)"; 2 Test Vectors aligned with locked exit-code contract (F12-01, e8504ef) — DI-004 RETIRED |
+| `.factory/specs/architecture/verification-properties/VP-024-plugin-lifecycle.md` | P12: prose + bats test name + assertion comment at 3 sites relaxed to GREEN/YELLOW (F12-04, 6030583) |
 
 ### Pass 7 Verification (fresh-context audit — read-only — PASS)
 
@@ -409,7 +416,19 @@ All 4 IMPORTANT findings closed. Root cause: Lesson L4 meta-irony — Pass-9 fix
 | F-P11-06 | MEDIUM | DEFERRED | (no commit) | BC-2.01.006 frontmatter `status: draft` — CORRECT per per-story delivery protocol. BC promotes `draft → active` at PR merge per POL-14 auto-promotion rule. False positive class for pre-merge adversary review. |
 | F-P11-O01 | OBSERVATION | NO-ACTION | (no commit) | BC-DIMENSION-RECONCILIATION.md line refs are pass-report-changelog-class — they reference past burst SHAs and are immutable audit trail per TD-VSDD-091. Historical references in changelog rows are valid and must not be retroactively removed. |
 
-### Adversary Dispatch Template for Pass 12
+### Pass 12 Findings Fixed in Fix Burst 12 (commits 624dc86, 9be3702, e8504ef, 6030583)
+
+2 HIGH + 2 MEDIUM + 1 LOW all closed. DI-004 RETIRED. Root cause: BC-2.16.002 token threshold (150K/3x RED) conflicted with STORY-004 AC-005 (200K); per Source-of-Truth precedence rule 1, BC is authoritative for contract semantics — story and impl had to be amended to match.
+
+| Finding | Severity | Closure Commit | Notes |
+|---------|----------|----------------|-------|
+| F12-01 | HIGH | e8504ef | STORY-005 AC-004 rewritten: "exit ≤ 1" → "exit 0 for GREEN/YELLOW states; exit 2 for non-brain-directory (E-HEALTH-001)". Test Vectors §Non-Brain-Dir and §GREEN-State rows aligned to locked exit-code contract. **DI-004 RETIRED** — cross-story spec drift closed in-scope per L5/Rule 4 application. |
+| F12-02 | HIGH | 624dc86 + 9be3702 | STORY-004 AC-005 rewritten: RED threshold 200K tokens → 150K tokens (aligns with BC-2.16.002 RED at 150K/3x). Compliance Rule 4 updated to cite BC-2.16.002 150K/3x constraint explicitly. Task #3 wording updated. run.sh constant `200000` → `150000` (9be3702). BC-2.16.002 is authoritative per Source-of-Truth precedence rule 1. |
+| F12-03 | MEDIUM | 9be3702 | bats:418 stale comment block referencing "STORY-005 exit ≤ 1 narrative" rewritten to reflect locked contract (DI-004 RETIRED, exit 2 for non-brain dir confirmed). |
+| F12-04 | MEDIUM | 6030583 | VP-024 prose: 3 sites that referenced "GREEN/YELLOW" only relaxed to explicitly include both GREEN and YELLOW states as exit 0. Bats test name and assertion comment updated to match. |
+| F12-05 | LOW | 624dc86 | STORY-004 line 22 inline comment updated from stale BC lifecycle status wording to POL-14 phrasing ("promotes draft→active at PR merge per POL-14"). |
+
+### Adversary Dispatch Template for Pass 13
 
 Use this exact framing when dispatching the adversary. Fresh context, no prior conversation, provide the already-fixed list so adversary doesn't re-report closed findings.
 
@@ -438,7 +457,7 @@ PASS 2: C01(red_dimensions), C02(body-extraction-state-machine), C03(VP-024-BRAI
 PASS 3: C01(BC-2.01.006-v1.3-Postcondition-5 cfb5851), C02(skills/brain-health/-path-propagation 1a49569+8423447), C03(E-HEALTH-003-error-taxonomy cfb5851), I01(task3-sources-precedence-ladder 1a49569), I02(malformed-frontmatter-writeback-safeguard dd48972+773bcc1), I03(stderr-capture-writeback_error dd48972), I04(same-fs-mktemp-atomicity dd48972)
 PASS 4: I01(event-catalog-voice→output-canonical-sweep 5c8430a), I02(bats-whitelist-skipped_malformed_frontmatter f54db70), O01(run.sh-inherit_errexit+RETURN-trap 5c8430a [NOTE: paper-fix — actual fix at 40de399]), O02(BC-2.01.006-v1.4-Postcondition5-4-fields+safeguard 8ef4e32+b1c3c43)
 PASS 5: I01(SKILL.md-Quality-Bar+Red-Flags+run.sh-comment-4-field-writeback-enumeration+drop-v1.3-pin 9ac5ebf), O02(brain-health-check.bats:214-stale-comment-swept b8ea25c), O03(AC-008-within-5s-delta-test-added b8ea25c)
-PASS 5 DEFERRED (cross-story, do NOT re-raise): O04(STORY-005-AC-004/TestVector-exit-1-drift — DI-004; impl+test correct)
+PASS 5 DEFERRED (RETIRED — DI-004 closed at Pass 12 fix burst 12 e8504ef): O04(STORY-005-AC-004/TestVector-exit-1-drift — RETIRED; STORY-005 aligned to locked exit-code contract at e8504ef; do NOT re-raise)
 PASS 6: C01(writeback_status-pre-yq-sentinel-rename+per-call-guards 7784cfb+9fe29ce+40de399), I01(SKILL.md-Output-JSON-schema+Quality-Bar 7784cfb), I02(bats-3-volatile-pins-swept 9fe29ce), O02(SKILL.md-Procedure-writeback-sub-bullet 7784cfb)
 PASS 6 DEFERRED: S01(yq-dim_detail-shell-escape — DI-005), O01([process-gap]-grep-closure-gate — DI-006)
 PASS 7: PASS — 0 findings. All Pass-6 closures load-bearing; 10 yq guards confirmed; enum+surface+AC coverage confirmed.
@@ -448,13 +467,15 @@ PASS 10: I01(STORY-004-AC-009-phantom-exit-1-removed+Task2-ref-updated 9cbcb22),
 PASS 11: H01(STORY-004-line258-health/run.sh→brain-health/run.sh 97630bd), H02(AC-009-volatile-trace-pin→stable-test-name-per-TD-VSDD-091 97630bd), H03(VP-024-Counterexample-failure-mode-raw-stack-trace-no-JSON-envelope-exit2-expected b2f339c), M04(VP-024-status-proposed→partial-with-status_detail b2f339c)
 PASS 11 DEFERRED (POL-14, do NOT re-raise): M05(STORY-004-frontmatter-status:draft-pre-merge-correct), M06(BC-2.01.006-status:draft-pre-merge-correct)
 PASS 11 NO-ACTION: O01(BC-DIMENSION-RECONCILIATION-line-refs-are-changelog-class-per-TD-VSDD-091)
+PASS 12: H01(STORY-005-AC-004+2-Test-Vectors-exit-1-drift-RETIRED-DI-004 e8504ef), H02(STORY-004-AC-005+Compliance-Rule-4+Task3+run.sh-RED-threshold-200K→150K-per-BC-2.16.002 624dc86+9be3702), M03(bats:418-stale-comment-rewritten 9be3702), M04(VP-024-prose-3-sites-relaxed-to-GREEN/YELLOW 6030583), L05(STORY-004-line22-POL-14-inline-comment 624dc86)
 
 Note: Locked architectural decisions — DO NOT re-raise as open:
 - Canonical skill dir: skills/brain-health/ (finalized)
 - Canonical six dimensions: capture/sources/wiki/synthesis/output/reflection (BC-2.01.006)
 - AC-010: hook reads STATE.md cache; skill writes back — cache-decoupled architecture; BC-2.04.014 SessionStart-event-driven; codified in BC-2.01.006 v1.6
 - BC-2.04.014 exit-code: hook exits 0 (ADR-002 v2.0; BC-2.04.014 v1.6 fully aligned with Invariant 4; DI-003 RETIRED — do NOT re-raise)
-- STORY-005 AC-004/Test Vector "exit ≤ 1": known cross-story narrative drift DI-004; impl+bats correct; do NOT re-raise
+- STORY-005 AC-004/Test Vector exit-code: DI-004 RETIRED at e8504ef — STORY-005 AC-004 + Test Vectors now aligned with locked contract (exit 2 non-brain dir, exit 0 GREEN/YELLOW); do NOT re-raise
+- BC-2.16.002 RED threshold: 150K tokens / 3x ingest volume (NOT 200K); STORY-004 AC-005 + run.sh constant now aligned — do NOT re-raise
 - writeback_status enum values: `ok`/`failed`/`skipped_malformed_frontmatter` (three values)
 - inherit_errexit does NOT propagate set -e into bash functions called via if-conditional — closed by explicit per-call guards at 40de399; do NOT re-raise
 - STORY-004 frontmatter `status: draft` — CORRECT (pre-merge state; POL-14 promotes to done at PR merge); do NOT flag
@@ -485,7 +506,7 @@ Find NEW defects only. CRITICAL findings block progression. IMPORTANT findings m
 |---|-------|-----|--------|-------|
 | 1 | STORY-017 | 8 | DONE — PR #16 (b30dd35) | Wiki page generation pipeline; 5 passes 2 fix bursts |
 | 2 | STORY-032 | 8 | DONE — PR #17 (d610cf0) | bin/lobster-run; 22 passes 14 fix bursts; longest cascade |
-| 3 | STORY-004 | 5 | IN PROGRESS — Pass 11 pending | /brain:health skill; 10 passes 10 fix bursts (Pass 10 FAIL 4I; fix burst 10: STORY-004 AC-009+Task#2 + BC-2.04.014 v1.6 Invariant 4 + VP-024 prose; L4 meta-irony lesson codified) |
+| 3 | STORY-004 | 5 | IN PROGRESS — Pass 13 pending | /brain:health skill; 12 passes 12 fix bursts (Pass 12 FAIL 2H+2M+1L; fix burst 12: STORY-004 AC-005+Compliance Rule 4+run.sh RED 200K→150K per BC-2.16.002 + STORY-005 AC-004+2 Test Vectors aligned (DI-004 RETIRED) + VP-024 prose 3 sites; L6 BC-vs-story precedence lesson codified) |
 | 4 | STORY-015 | 5 | NOT STARTED | Hook meta-lint; begin after STORY-004 or parallel |
 
 ---

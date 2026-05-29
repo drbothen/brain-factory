@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-29T00:00:00
+last_updated: 2026-05-29T12:00:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-12-pending
+phase: phase-3-wave-4-story-004-pass-13-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-12-pending
-session_continuity: "Pass 11 FAIL (3I+3M+1O) — streak 0/3. Fix burst 11 applied (2 commits on feature/STORY-004): 97630bd (stories — STORY-004 line 258 health/run.sh→brain-health/run.sh sibling-sweep miss; AC-009 volatile trace pin replaced with stable test name per TD-VSDD-091), b2f339c (arch — VP-024 Counterexample failure-mode clarified raw stack trace no JSON envelope; VP-024 status proposed→partial with status_detail). F-P11-05 (STORY-004 frontmatter status:draft) + F-P11-06 (BC-2.01.006 status:draft) correctly deferred — both promote per POL-14 at PR merge. F-P11-O01 OBSERVATION no-action (historical reconciliation doc, line refs are pass-report-changelog-class per TD-VSDD-091). Tests 45/45 + 22/22 at b2f339c. Cycle Lesson 5 codified (slow-rotting spec drift; fresh-context findings authoritative per Rule 4). NEXT ACTION: dispatch adversary Pass 12 (need 3 consecutive PASS from 0/3). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-13-pending
+session_continuity: "Pass 12 FAIL (2H+2M+1L) — streak 0/3. Fix burst 12 applied (4 commits on feature/STORY-004): 624dc86 (spec — STORY-004 AC-005+Compliance Rule 4+Task#3 RED threshold 200K→150K+line22 POL-14 comment; BC-2.16.002 wins per Source-of-Truth precedence rule 1), 9be3702 (fix — run.sh RED threshold constant 200000→150000+bats:418 stale comment rewritten), e8504ef (stories — STORY-005 AC-004+2 Test Vectors aligned with locked exit-code contract; DI-004 RETIRED), 6030583 (arch — VP-024 prose+bats test name+assertion comment relaxed to GREEN/YELLOW, 3 sites). F12-01 (HIGH) DI-004 RETIRED. F12-02 (HIGH) STORY-004 AC-005+Compliance Rule 4+run.sh RED threshold aligned to BC-2.16.002. F12-03 (MEDIUM) bats:418 stale comment. F12-04 (MEDIUM) VP-024 prose 3 sites. F12-05 (LOW) line 22 POL-14 comment. Tests 45/45+22/22 at tip 6030583. Cycle Lesson 6 codified (BC supersedes story spec for contract semantics per Source-of-Truth precedence rule 1). NEXT ACTION: dispatch adversary Pass 13 (streak 0/3, need 3 consecutive PASS). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-12-pending
+status: phase-3-wave-4-story-004-pass-13-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,18 +90,18 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 12 PENDING — Streak 0/3 (Pass 11 fix burst 11 closed 3H+3M+1O)
+## TOP OF STACK — STORY-004 Pass 13 PENDING — Streak 0/3 (Pass 12 fix burst 12 closed 2H+2M+1L — DI-004 RETIRED)
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `b2f339c`
+1. Verify worktree: `git worktree list` — should show STORY-004 at `6030583`
 2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
 3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 12 (fresh context, streak 0/3 after Pass 11 FAIL, need 3 consecutive PASS for convergence)
+4. Dispatch adversary for Pass 13 (fresh context, streak 0/3 after Pass 12 FAIL, need 3 consecutive PASS for convergence)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
-6. DI-003 is RETIRED — do not re-raise BC-2.04.014 narrative drift; fully closed at 50fa61c
+6. DI-003 and DI-004 are RETIRED — do not re-raise BC-2.04.014 narrative drift or STORY-005 exit codes; fully closed
 7. STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT — both promote per POL-14 at PR merge; do not flag as findings
 
-**STORY-004 cascade state:** Pass 11 FAIL (3H+3M+1O) — streak 0/3. Fix burst 11 applied (2 commits: 97630bd + b2f339c). Worktree tip b2f339c. Tests 45/45 + 22/22. F-P11-01 (STORY-004 line 258 health/run.sh→brain-health/run.sh sibling-sweep miss), F-P11-02 (AC-009 volatile trace pin→stable test name per TD-VSDD-091), F-P11-03 (VP-024 Counterexample failure-mode clarified raw stack trace), F-P11-04 (VP-024 status proposed→partial), F-P11-05/06 deferred per POL-14 (correct draft status until PR merge), F-P11-O01 no-action. Cycle Lesson 5 codified. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 12 FAIL (2H+2M+1L) — streak 0/3. Fix burst 12 applied (4 commits: 624dc86 + 9be3702 + e8504ef + 6030583). Worktree tip 6030583. Tests 45/45 + 22/22. F12-01 (HIGH, DI-004 RETIRED): STORY-005 AC-004+2 Test Vectors aligned with locked exit-code contract. F12-02 (HIGH): STORY-004 AC-005+Compliance Rule 4+Task#3+run.sh RED threshold 200K→150K per BC-2.16.002. F12-03 (MEDIUM): bats:418 stale comment. F12-04 (MEDIUM): VP-024 prose 3 sites. F12-05 (LOW): line 22 POL-14 comment. Cycle Lesson 6 codified (BC supersedes story spec for contract semantics). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
@@ -121,6 +121,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 **D-024 — STORY-004 Pass 11 FAIL + fix burst 11 applied + POL-14 clarification — streak 0/3 (2026-05-29):** Pass 11 adversary verdict: FAIL — 3 HIGH + 3 MEDIUM + 1 OBSERVATION. Fix burst 11 (2 commits on feature/STORY-004): 97630bd (stories — STORY-004 line 258 `health/run.sh` → `brain-health/run.sh` sibling-sweep miss; AC-009 volatile trace pin `lines 423-432` replaced with stable test name per TD-VSDD-091), b2f339c (arch — VP-024 Counterexample failure-mode clarified: raw stack trace + no JSON envelope + exit 2 IS expected; VP-024 status proposed→partial with status_detail). POL-14 clarification: F-P11-05 (STORY-004 frontmatter status:draft) and F-P11-06 (BC-2.01.006 frontmatter status:draft) are CORRECTLY deferred — both promote to done/active at PR merge per POL-14 auto-promotion rule; adversary finding these as defects in a pre-merge PR-creation-pending story is a false positive class; added guidance to TOP-OF-STACK dispatch note. F-P11-O01 (historical reconciliation doc) no-action per TD-VSDD-091 justified citation. Tests 45/45 + 22/22 at b2f339c. Cycle Lesson 5 codified: cascade depth reflects slow-rotting spec drift; fresh-context findings should be closed mid-cascade per Rule 4 rather than deferred. Pass 12 next. Streak 0/3.
 
+**D-025 — STORY-004 Pass 12 FAIL + fix burst 12 applied + DI-004 RETIRED — streak 0/3 (2026-05-29):** Pass 12 adversary verdict: FAIL — 2 HIGH + 2 MEDIUM + 1 LOW. Fix burst 12 (4 commits on feature/STORY-004): 624dc86 (spec — STORY-004 AC-005 Compliance Rule 4 Task #3 aligned with BC-2.16.002 RED threshold 150K/3x; line 22 POL-14 inline comment updated; BC-2.16.002 wins over STORY-004 per Source-of-Truth precedence rule 1 — BC is authoritative for contract semantics), 9be3702 (fix — run.sh RED threshold constant 200000 → 150000; bats:418 stale comment block rewritten), e8504ef (stories — STORY-005 AC-004 + 2 Test Vectors aligned with locked exit-code contract: exit 2 on non-brain dir, exit 0 for GREEN/YELLOW; DI-004 RETIRED), 6030583 (arch — VP-024 prose + bats test name + assertion comment relaxed to GREEN/YELLOW, 3 sites swept). F12-01 (HIGH) closed at e8504ef — DI-004 RETIRED. F12-02 (HIGH) closed at 624dc86 + 9be3702. F12-03 (MEDIUM) closed at 9be3702. F12-04 (MEDIUM) closed at 6030583. F12-05 (LOW) closed at 624dc86. Remaining DIs: DI-001/002/005/006. Tests 45/45 + 22/22 at tip 6030583. Cycle Lesson 6 codified: BC supersedes story spec for contract semantics per Source-of-Truth precedence rule 1; fresh-context cascade catches BC-vs-story collisions that initial implementation review missed. Pass 13 next. Streak 0/3.
+
 ---
 
 ## Drift Items (process-gap deferrals — not blocking STORY-004)
@@ -132,7 +134,7 @@ These items were identified during adversarial passes as out-of-STORY-004-scope 
 | DI-001 | BC frontmatter `status: draft` vs `lifecycle_status: active` divergence — project-wide inconsistency in BC files | F-P3-O01 (Pass 3 OBSERVATION) | Out-of-STORY-004-scope; project-wide pattern needing dedicated PO sweep across all 95 BCs | Post-STORY-004-PR-merge or next maintenance sweep | product-owner |
 | DI-002 | `argument-hint: ""` project-wide in SKILL.md files vs Meta-Lint Contract requiring non-empty value | F-P3-O02 (Pass 3 OBSERVATION) | Out-of-STORY-004-scope; project-wide pattern requiring meta-lint rule clarification or SKILL.md sweep | Post-STORY-004-PR-merge or next maintenance sweep | product-owner + test-writer |
 | DI-003 | ~~BC-2.04.014 v1.4 exit-code narrative prose says "exits 1 (advisory)"; ADR-002 v2.0 + hook + bats all require exit 0 — spec narrative drift~~ | F-P4-noted | **RETIRED** — fully closed at 50fa61c (Pass 9 fix burst 9): BC-2.04.014 v1.4→v1.5 full ADR-002 v2.0 + native CC schema rewrite; all prose aligned to exit 0. Lessons.md Lesson 4 codifies the reconciliation-completeness rule that prevented earlier closure. | CLOSED 2026-05-28 | product-owner (closed in-scope Pass 9) |
-| DI-004 | STORY-005 AC-004 / Test Vector says "exit ≤ 1" but VP-024 + brain-health-skill.bats + impl all require exit 2 for unhealthy state — cross-story spec narrative drift | F-P5-O04 (Pass 5 adversary OBSERVATION; STORY-005 ownership) | Implementation and test are correct; spec narrative drift only in STORY-005; cross-story scope makes this STORY-005-owner responsibility; does not block STORY-004 merge | STORY-005 wave-gate or next maintenance sweep | product-owner (STORY-005 BC owner) |
+| DI-004 | ~~STORY-005 AC-004 / Test Vector says "exit ≤ 1" but VP-024 + brain-health-skill.bats + impl all require exit 2 for unhealthy state — cross-story spec narrative drift~~ | F-P5-O04 (Pass 5 adversary OBSERVATION) | **RETIRED** — fully closed at e8504ef (Pass 12 fix burst 12): STORY-005 AC-004 + 2 Test Vectors aligned with locked exit-code contract (exit 2 on non-brain dir; exit 0 GREEN/YELLOW). Lesson L5 application: cross-story spec drift closed in-scope mid-cascade per Rule 4. | CLOSED 2026-05-29 | story-writer (closed in-scope Pass 12) |
 | DI-005 | yq dim_detail shell-escape latent risk — yq inline interpolation of dim_detail string; currently no `"` or `\` in any detail string so risk is latent only; no test vectors exercise special chars | F-P6-S01 (Pass 6 adversary SUGGESTION) | Latent risk only at current time; no special characters in any dim_detail value in codebase; fix requires dedicated story to add escape helper + test vectors; not blocking STORY-004 merge | Post-STORY-004-PR-merge follow-up story | implementer + test-writer |
 | DI-006 | [process-gap] Recommends codifying "grep swept token across plugin tree" as a formal closure-validation gate — recurring sibling-sweep miss pattern (TD-VSDD-060) detected across multiple passes | F-P6-O01 (Pass 6 adversary OBSERVATION; process-gap tag) | Adversary fresh-context audit currently catches sibling-sweep misses (demonstrated in Passes 4, 5, 6); codifying as a closure gate is process polish; defer to post-merge cycle-lessons sweep per S-7.02 | Post-STORY-004-PR-merge cycle-lessons sweep | state-manager + orchestrator |
 
