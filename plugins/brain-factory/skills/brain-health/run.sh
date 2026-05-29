@@ -301,12 +301,33 @@ last_checked="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 # awk fallback removed: yq preflight above guarantees yq is available.
 # ---------------------------------------------------------------------------
 _writeback_state() {
+  local state_dir
+  state_dir="$(dirname -- "$state_file")"
+
+  # F-P3-I02: Precondition check — STATE.md must have at least two '---' markers
+  # (one opening, one closing frontmatter fence). Fewer than 2 means malformed
+  # frontmatter; proceeding would silently destroy the body on reassembly.
+  # Set _writeback_failure_reason (script-scope) before returning 1 so the caller
+  # can discriminate without fragile stderr string-matching.
+  local marker_count
+  marker_count="$(grep -c '^---$' -- "$state_file" 2>/dev/null || true)"
+  if [[ "$marker_count" -lt 2 ]]; then
+    _writeback_failure_reason="skipped_malformed_frontmatter"
+    printf 'STATE.md has %d frontmatter delimiter(s); need ≥ 2. Skipping writeback to prevent body destruction.\n' \
+      "$marker_count" >&2
+    return 1
+  fi
+
+  # F-P3-I04: Create temp files in the same directory as STATE.md, not $TMPDIR.
+  # This guarantees mv is an in-filesystem rename (atomic) even when brain vault
+  # is on an external disk, encrypted volume, or network mount.
   local fm_tmp body_tmp new_state_tmp
-  fm_tmp="$(mktemp)"
-  body_tmp="$(mktemp)"
-  new_state_tmp="$(mktemp)"
+  fm_tmp="$(mktemp -- "${state_dir}/.brain-health-fm.XXXXXX")"
+  body_tmp="$(mktemp -- "${state_dir}/.brain-health-body.XXXXXX")"
+  new_state_tmp="$(mktemp -- "${state_dir}/.brain-health-new.XXXXXX")"
 
   # Extract frontmatter (content between first pair of --- markers, exclusive).
+  # Note: awk does not support '--' end-of-options; $state_file is safe (never starts with '-').
   awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "$state_file" >"$fm_tmp"
   # Extract body (everything after the closing --- frontmatter delimiter).
   # State machine: stop treating '---' as a delimiter after the second occurrence.
@@ -366,22 +387,39 @@ _writeback_state() {
   # Reassemble: frontmatter fences + updated fm + body.
   {
     printf '%s\n' '---'
-    cat "$fm_tmp"
+    cat -- "$fm_tmp"
     printf '%s\n' '---'
-    cat "$body_tmp"
+    cat -- "$body_tmp"
   } >"$new_state_tmp"
 
-  # Atomic replace (mv is atomic on same filesystem).
-  mv "$new_state_tmp" "$state_file"
+  # Atomic replace: mv within the same directory is a rename syscall (atomic).
+  # F-P3-I04: same-directory mktemp above guarantees this property.
+  mv -- "$new_state_tmp" "$state_file"
 
-  rm -f "$fm_tmp" "$body_tmp"
+  rm -f -- "$fm_tmp" "$body_tmp"
 }
 
 # Run writeback — advisory only: failure must not prevent the JSON report from emitting.
-# Capture exit status explicitly; never swallow with '|| true' (CLAUDE.md §Forbidden).
+# F-P3-I03: capture stderr to a temp file instead of swallowing with 2>/dev/null.
+# The captured diagnostic is surfaced in the JSON report as writeback_error so operators
+# can debug writeback failures without verbose mode. CLAUDE.md §Error handling:
+# "No set +e to silence errors. Capture the exit code into a variable and branch."
+# _writeback_failure_reason is set by _writeback_state on non-ok exit; used here to
+# determine the specific status value without fragile stderr string-matching.
 writeback_status="ok"
-if ! _writeback_state 2>/dev/null; then
-  writeback_status="failed"
+writeback_error=""
+_writeback_failure_reason=""
+writeback_stderr_tmp="$(mktemp)"
+if ! _writeback_state 2>"$writeback_stderr_tmp"; then
+  writeback_error="$(cat -- "$writeback_stderr_tmp" 2>/dev/null || true)"
+  rm -f -- "$writeback_stderr_tmp"
+  if [[ -n "$_writeback_failure_reason" ]]; then
+    writeback_status="$_writeback_failure_reason"
+  else
+    writeback_status="failed"
+  fi
+else
+  rm -f -- "$writeback_stderr_tmp"
 fi
 
 # ---------------------------------------------------------------------------
@@ -405,6 +443,7 @@ jq -nc \
   --arg overall "$overall" \
   --arg last_checked "$last_checked" \
   --arg writeback_status "$writeback_status" \
+  --arg writeback_error "$writeback_error" \
   '{
     "dimensions": {
       "capture":    {"status": $capture_status,    "detail": $capture_detail},
@@ -417,6 +456,6 @@ jq -nc \
     "overall": $overall,
     "last_checked": $last_checked,
     "writeback_status": $writeback_status
-  }'
+  } | if $writeback_error != "" then . + {"writeback_error": $writeback_error} else . end'
 
 exit 0
