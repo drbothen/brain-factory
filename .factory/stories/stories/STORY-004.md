@@ -90,7 +90,7 @@ If it exceeds `150000` (3x), status is `RED`.
 
 **AC-006** — When `.brain/STATE.md` is missing or unreadable, the skill exits 2 and
 emits:
-`{"level":"error","code":"E-HEALTH-001","message":"Brain state file missing — run \`/brain:init\` or \`/brain:cold-start-recover\`.","trace":"<uuid>"}`.
+`{"level":"error","code":"E-HEALTH-001","message":"Brain state file missing or unreadable — run \`/brain:init\` or \`/brain:cold-start-recover\`.","trace":"<uuid>"}`.
 (traces to BC-2.01.006 edge case EC-002)
 
 **AC-007** — When the brain has 0 wiki pages (no markdown files under `wiki/`
@@ -106,7 +106,7 @@ timestamp matching the current invocation time (within 5 seconds).
 
 **AC-009** — When invoked from a non-brain directory (no `.brain/STATE.md`), the skill
 emits a structured E-HEALTH-001 error envelope to stdout
-(`{"level":"error","code":"E-HEALTH-001","message":"Brain state file missing — run \`/brain:init\` or \`/brain:cold-start-recover\`.","trace":"<uuid>"}`)
+(`{"level":"error","code":"E-HEALTH-001","message":"Brain state file missing or unreadable — run \`/brain:init\` or \`/brain:cold-start-recover\`.","trace":"<uuid>"}`)
 and exits 2. The skill never crashes with an unhandled bash error (no bare `set -e`
 unexpected exit on missing file reads). The exit-code contract is binary: 0 (success)
 or 2 (unrecoverable error); no exit 1 path exists in this skill.

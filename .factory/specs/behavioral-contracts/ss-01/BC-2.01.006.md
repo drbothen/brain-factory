@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.8"
+version: "1.9"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -50,7 +50,7 @@ removal_reason: null
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
 | EC-001 | `.brain/logs/ingest-tokens.jsonl` does not exist yet (brand-new brain) | Sources dimension reports GREEN with detail "No ingest history yet." Token budget check skipped. |
-| EC-002 | `.brain/STATE.md` is missing or unreadable | Skill exits 2 with E-HEALTH-001: "Brain state file missing — run `/brain:init` or `/brain:cold-start-recover`." |
+| EC-002 | `.brain/STATE.md` is missing or unreadable | Skill exits 2 with E-HEALTH-001: "Brain state file missing or unreadable — run `/brain:init` or `/brain:cold-start-recover`." |
 | EC-003 | Brain has 0 wiki pages (no ingests yet) | Wiki dimension reports YELLOW with detail "No wiki pages yet — ingest your first source." |
 | EC-004 | `.brain/STATE.md` exists but has fewer than 2 `---` markers (malformed frontmatter fence) | Writeback skipped; `writeback_status` = `"skipped_malformed_frontmatter"` in stdout JSON; original STATE.md preserved byte-identical; dimensional JSON report still emitted (Postcondition 2) with writeback_status field set. References Postcondition 5. |
 | EC-005 | `.brain/STATE.md` has well-fenced YAML frontmatter but `yq` fails to parse it (e.g., tab-indented YAML, duplicate keys) | Writeback fails; `writeback_status` = `"failed"` in stdout JSON; `writeback_error` field populated with yq diagnostic string; original STATE.md preserved byte-identical; dimensional JSON report still emitted (Postcondition 2). References Postcondition 5. |
@@ -103,6 +103,10 @@ STORY-004
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
 
 ## Changelog
+
+### v1.9 (2026-05-29)
+
+**EC-002 MESSAGE ALIGNMENT (F17-02):** EC-002 expected behavior updated from `"Brain state file missing — run \`/brain:init\` or \`/brain:cold-start-recover\`."` to `"Brain state file missing or unreadable — run \`/brain:init\` or \`/brain:cold-start-recover\`."` to match the Pass-13 implementation extension (readability check `-r` added to `run.sh`) and the corresponding error-taxonomy.md E-HEALTH-001 update in v0.1.10. The condition "missing or unreadable" was always the intended semantic; the spec wording lagged the implementation.
 
 ### v1.8 (2026-05-29)
 

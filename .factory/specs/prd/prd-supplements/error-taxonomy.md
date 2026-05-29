@@ -1,7 +1,7 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.9"
+version: "0.1.10"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
@@ -158,7 +158,7 @@ Message format uses `<placeholder>` for dynamic values.
 
 | Code | Severity | Exit | Raised By | Message Format |
 |------|----------|------|-----------|---------------|
-| E-HEALTH-001 | broken | 2 | `/brain:health` | `Brain state file missing — run /brain:init or /brain:cold-start-recover.` |
+| E-HEALTH-001 | broken | 2 | `/brain:health` | `Brain state file missing or unreadable — run /brain:init or /brain:cold-start-recover.` |
 | E-HEALTH-002 | degraded | 0 | `brain-health-check.sh` | `Brain health: <YELLOW|RED>. Issues: <name>: <detail>; ...` (delivered via `systemMessage` field; hook exits 0 per ADR-002 v2.0) |
 | E-HEALTH-003 | cosmetic | 0 | `brain-health-check.sh` | `Brain STATE.md unreadable — run /brain:health for diagnosis.` |
 | E-HEALTH-004 | broken | 2 | `/brain:health` | `jq is required for /brain:health. Install via your package manager.` |
@@ -289,6 +289,12 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.10 (2026-05-29)
+
+**E-HEALTH-001 MESSAGE ALIGNMENT (F17-02):** E-HEALTH-001 message updated from `"Brain state file missing — run /brain:init or /brain:cold-start-recover."` to `"Brain state file missing or unreadable — run /brain:init or /brain:cold-start-recover."` to match the Pass-13 implementation extension that added a `-r` readability check (i.e., the condition is triggered by either a missing OR an unreadable STATE.md). The prior "missing" wording was accurate for the original missing-file path but became incomplete once the readability guard was added. The implementation (`run.sh`) and the spec (error-taxonomy, BC-2.01.006 EC-002, STORY-004 AC-006/AC-009) are now consistent on the "missing or unreadable" phrasing.
+
+TD-VSDD-060 sibling-sweep: all HEALTH error rows verified — only E-HEALTH-001 message required update; E-HEALTH-002 through E-HEALTH-005 unchanged.
 
 ### v0.1.9 (2026-05-28)
 
