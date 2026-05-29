@@ -414,9 +414,9 @@ _write_token_log() {
 
 # ===========================================================================
 # AC-009 / BC-2.01.006 edge case EC-002 / VP-024:
-# Non-brain directory (no .brain/STATE.md) → skill callable without crash.
-# Must exit ≤ 1 for a soft-fail, or exit 2 only when EC-002 applies.
-# Structured JSON always emitted. No unhandled bash error crash.
+# Non-brain directory (no .brain/STATE.md) → skill emits E-HEALTH-001 error envelope.
+# Must exit exactly 2 — no exit 0/1 path on a non-brain dir (per Pass-11 contract lock).
+# Structured JSON envelope always emitted on stdout. No unhandled bash error crash.
 # FAILS before implementation.
 # ===========================================================================
 

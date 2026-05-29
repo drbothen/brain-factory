@@ -26,7 +26,7 @@ BRAIN_ROOT="${BRAIN_ROOT:-$PWD}"
 # Changing either threshold independently requires a BC update.
 readonly TOKEN_BASELINE=50000
 readonly TOKEN_YELLOW_THRESHOLD=$((TOKEN_BASELINE * 2)) # 100000 — 2x baseline
-readonly TOKEN_RED_THRESHOLD=$((TOKEN_BASELINE * 4))    # 200000 — 4x baseline
+readonly TOKEN_RED_THRESHOLD=$((TOKEN_BASELINE * 3))    # 150000 — 3x baseline
 
 # ---------------------------------------------------------------------------
 # _health_error: emit ADR-002 JSON error envelope to stdout and exit 2
@@ -173,7 +173,7 @@ if [[ "$sources_status" != "RED" ]]; then
 
     if [[ "$token_avg" -gt "$TOKEN_RED_THRESHOLD" ]]; then
       sources_status="RED"
-      sources_detail="30-day trailing average ${token_avg} tokens: token budget critical (exceeds 4x baseline ${TOKEN_RED_THRESHOLD}). Reduce ingest frequency."
+      sources_detail="30-day trailing average ${token_avg} tokens: token budget critical (exceeds 3x baseline ${TOKEN_RED_THRESHOLD}). Reduce ingest frequency."
     elif [[ "$token_avg" -gt "$TOKEN_YELLOW_THRESHOLD" ]]; then
       sources_status="YELLOW"
       sources_detail="30-day trailing average ${token_avg} tokens: token budget alert (exceeds 2x baseline ${TOKEN_YELLOW_THRESHOLD})."
