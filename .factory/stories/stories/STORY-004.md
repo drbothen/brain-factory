@@ -105,7 +105,7 @@ emits a structured E-HEALTH-001 error envelope to stdout
 and exits 2. The skill never crashes with an unhandled bash error (no bare `set -e`
 unexpected exit on missing file reads). The exit-code contract is binary: 0 (success)
 or 2 (unrecoverable error); no exit 1 path exists in this skill.
-(traces to BC-2.01.006 edge case EC-002; VP-024 health-callable test; brain-health-skill.bats lines 423-432)
+(traces to BC-2.01.006 edge case EC-002; VP-024 health-callable test; brain-health-skill.bats `BC_2_01_006: non-brain dir invocation does not crash (VP-024 health-callable)`)
 
 **AC-010** — `brain-health-check.sh` hook (registered in `hooks.json` under
 `SessionStart`) displays a human-readable health summary on session start. The hook
@@ -255,7 +255,7 @@ Files NOT to modify: `tests/upgrade.bats`, `tests/skills.bats`, `skills/init/run
 STORY-003 completed the init skill with full error handling. Two lessons carry forward:
 
 1. The `_die` helper pattern (emit JSON to stdout, exit 2) applies here too. Define a
-   local `_health_error` helper in `health/run.sh` for E-HEALTH-001.
+   local `_health_error` helper in `brain-health/run.sh` for E-HEALTH-001.
 2. The `local-dev-test.sh` from STORY-003 performs a full init on a temp brain. The health
    skill tests should reuse that temp brain setup pattern rather than re-inventing it —
    extract a `setup_temp_brain()` helper into `tests/helpers.bash` that both test files
