@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# inherit_errexit: make set -e propagate into subshells (including function calls
+# from if-conditional context). Without this, yq failures inside _writeback_state
+# are silently swallowed when the function is called as `if ! _writeback_state`.
+shopt -s inherit_errexit
 
 # /brain:health — six-dimensional convergence health check
 # Usage: BRAIN_ROOT=/path/to/brain bash run.sh
@@ -326,6 +330,15 @@ _writeback_state() {
   body_tmp="$(mktemp -- "${state_dir}/.brain-health-body.XXXXXX")"
   new_state_tmp="$(mktemp -- "${state_dir}/.brain-health-new.XXXXXX")"
 
+  # F-P4-O01: local EXIT trap to clean up temp files even when inherit_errexit
+  # causes an early exit from a yq failure. Without this trap, a yq parse error
+  # on malformed YAML inside well-fenced frontmatter would leave .brain-health-*.XXXXXX
+  # files behind. The trap fires on any exit path (normal, early-return-via-set-e, or
+  # explicit return 1). fm_tmp/body_tmp/new_state_tmp are local so the trap closure
+  # captures their values at definition time via the outer function scope.
+  # shellcheck disable=SC2064  # intentional: expand variables now, not at trap time
+  trap "rm -f -- '${fm_tmp}' '${body_tmp}' '${new_state_tmp}'" RETURN
+
   # Extract frontmatter (content between first pair of --- markers, exclusive).
   # Note: awk does not support '--' end-of-options; $state_file is safe (never starts with '-').
   awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "$state_file" >"$fm_tmp"
@@ -334,6 +347,10 @@ _writeback_state() {
   # This prevents legitimate markdown horizontal rules in the body from being stripped.
   awk 'BEGIN{n=0; in_body=0} /^---$/ && n<2 {n++; if (n==2) in_body=1; next} in_body{print}' \
     "$state_file" >"$body_tmp"
+
+  # Set failure reason before yq calls so any early exit via inherit_errexit carries
+  # the correct discriminator. Overwritten to "" on successful reassembly.
+  _writeback_failure_reason="yq_parse_error"
 
   # Update overall_health and last_health_check.
   yq e -i ".overall_health = \"${overall}\"" "$fm_tmp"
@@ -383,6 +400,9 @@ _writeback_state() {
       red_idx=$((red_idx + 1))
     fi
   done
+
+  # All yq mutations succeeded — clear the failure reason set before the yq block.
+  _writeback_failure_reason=""
 
   # Reassemble: frontmatter fences + updated fm + body.
   {
