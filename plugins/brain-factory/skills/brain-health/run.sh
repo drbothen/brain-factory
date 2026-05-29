@@ -67,13 +67,13 @@ fi
 
 # ---------------------------------------------------------------------------
 # Pre-flight check: .brain/STATE.md must exist and be readable.
-# AC-006 / BC-2.01.006 edge case EC-002
+# AC-006 / BC-2.01.006 edge case EC-002: missing OR unreadable → E-HEALTH-001 + exit 2
 # ---------------------------------------------------------------------------
 state_file="${BRAIN_ROOT}/.brain/STATE.md"
 
-if [[ ! -f "$state_file" ]]; then
+if [[ ! -f "$state_file" ]] || [[ ! -r "$state_file" ]]; then
   _health_error "E-HEALTH-001" \
-    "Brain state file missing — run \`/brain:init\` or \`/brain:cold-start-recover\`."
+    "Brain state file missing or unreadable — run \`/brain:init\` or \`/brain:cold-start-recover\`."
 fi
 
 # ---------------------------------------------------------------------------

@@ -247,7 +247,7 @@ _write_token_log() {
 # ===========================================================================
 # AC-005 / BC-2.01.006 postcondition 4:
 # Token avg > 100K (2x baseline) → sources YELLOW with "token budget" in detail.
-# Token avg > 200K (4x baseline) → sources RED.
+# Token avg > 150K (3x baseline) → sources RED.
 # FAILS before implementation.
 # ===========================================================================
 
@@ -264,9 +264,9 @@ _write_token_log() {
   [[ "${sources_detail}" == *"token budget"* ]]
 }
 
-@test "BC_2_01_006: token avg over 200K sources=RED" {
+@test "BC_2_01_006: token avg over 150K sources=RED" {
   _init_brain
-  # Write 5 entries at 210,000 tokens each (4x+ the 50K baseline)
+  # Write 5 entries at 210,000 tokens each (4x+ the 50K baseline, above 3x RED threshold)
   _write_token_log 5 210000
   run bash "${RUN_SH}"
   [ "$status" -eq 0 ]
