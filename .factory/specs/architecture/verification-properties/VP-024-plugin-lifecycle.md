@@ -34,7 +34,7 @@ exist.
 all applicable migration steps for the version delta (e.g., v0.1→v0.2 migration adds
 `briefs/research/` if absent). Migration steps are idempotent: running the migration
 script twice produces the same outcome as running it once. After migration, the brain
-vault passes `/brain:health` with GREEN status.
+vault passes `/brain:health` with exit 0 (GREEN or YELLOW status both acceptable per BC-2.01.006 postcondition 1; the verification property is exit 0 success, not a specific dimension status).
 
 ## Verification Mechanism
 
@@ -138,7 +138,7 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
     "Migration is not idempotent: file state changed between first and second run"
 }
 
-@test "upgrade-brain: brain passes health GREEN status after migration" {
+@test "upgrade-brain: brain passes health check (exit 0) after migration (GREEN or YELLOW both valid)" {
   local brain_dir; brain_dir="${BATS_TEST_TMPDIR}/brain-post-upgrade-test"
   setup_v01_fixture_brain "$brain_dir"
 
@@ -147,7 +147,7 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
 
   BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
     run bash "${PLUGIN_ROOT}/skills/brain-health/run.sh"
-  assert_success  # GREEN status = exit 0
+  assert_success  # exit 0 = health check passed (GREEN or YELLOW both valid per BC-2.01.006 postcondition 1)
 }
 ```
 
