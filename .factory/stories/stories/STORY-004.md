@@ -19,7 +19,7 @@ inputs:
   - behavioral-contracts/ss-01/BC-2.01.006.md
   - architecture/verification-properties/VP-024-plugin-lifecycle.md
 input-hash: ""
-# BC status: BC-2.01.006 assigned; status=draft per Spec-First Gate S-7.01 until PO review
+# BC status: BC-2.01.006 assigned; status=draft per Spec-First Gate S-7.01 until PR merge per POL-14
 ---
 
 # STORY-004: /brain:health six-dimensional convergence skill
@@ -82,7 +82,7 @@ The token budget check is skipped — no error and no YELLOW from a missing log 
 **AC-005** — When the 30-day trailing average token cost from `.brain/logs/ingest-tokens.jsonl`
 exceeds `100000` (2x the 50K baseline), the `sources` dimension reports at minimum
 `YELLOW` with a detail string containing "token budget" and the actual average.
-If it exceeds `200000` (4x), status is `RED`.
+If it exceeds `150000` (3x), status is `RED`.
 (traces to BC-2.01.006 postcondition 4)
 
 **AC-006** — When `.brain/STATE.md` is missing or unreadable, the skill exits 2 and
@@ -144,7 +144,7 @@ does NOT execute `skills/brain-health/run.sh` inline on every SessionStart. The
    *Sources dimension:* (precedence order — first matching condition wins)
    1. RED if `manifest.json` missing or invalid JSON.
    2. GREEN with detail "No ingest history yet." if `ingest-tokens.jsonl` is missing — brand-new brain, no history yet (BC-2.01.006 EC-001 / AC-004). Source count is NOT checked in this state.
-   3. If `ingest-tokens.jsonl` exists: compute 30-day trailing average from each line `{"date":"...","tokens":NNN}` using awk. RED if avg > 200000 (4x baseline). YELLOW with "token budget" in detail if avg > 100000 (2x baseline). YELLOW "No sources ingested yet" if source_count == 0. GREEN with source count otherwise.
+   3. If `ingest-tokens.jsonl` exists: compute 30-day trailing average from each line `{"date":"...","tokens":NNN}` using awk. RED if avg > 150000 (3x baseline). YELLOW with "token budget" in detail if avg > 100000 (2x baseline). YELLOW "No sources ingested yet" if source_count == 0. GREEN with source count otherwise.
 
    *Wiki dimension:* GREEN if wiki page count > 0 (non-index/log .md files under `wiki/`);
    YELLOW if count = 0.
@@ -212,7 +212,7 @@ From `architecture/subsystems/SS-01-brain-init-scaffold.md`:
    No other values allowed. The bats test checks via `[[ "$status" =~ ^(GREEN|YELLOW|RED)$ ]]`.
 3. **`brain-health-check.sh` reads cached STATE.md, not skill output inline** — the hook reads `overall_health` from `.brain/STATE.md` YAML frontmatter. The `/brain:health` skill is responsible for writing `overall_health`, `last_health_check`, `dimensions`, and `red_dimensions` back to STATE.md frontmatter after each run (BC-2.01.006 postcondition 5). On writeback failure, `writeback_status` is set to `"skipped_malformed_frontmatter"` (malformed frontmatter guard) or `"failed"` (yq failure), the `writeback_error` field is populated in the JSON report, and the original STATE.md is preserved byte-identical. The hook does NOT call `skills/brain-health/run.sh` inline on every SessionStart. The canonical skill path is `skills/brain-health/run.sh` (not `skills/health/run.sh`).
 4. **Token budget baseline is 50,000 tokens.** The 2× alert threshold is 100,000.
-   4× threshold (200,000) triggers RED. These values are constants in `run.sh`, not
+   3× threshold (150,000) triggers RED. These values are constants in `run.sh`, not
    configuration — changing them requires a BC update.
 5. **`awk`-based JSONL parsing** for `.brain/logs/ingest-tokens.jsonl`. Do not use
    `jq` for the trailing-average computation (jq slurp on a large JSONL file is slower
