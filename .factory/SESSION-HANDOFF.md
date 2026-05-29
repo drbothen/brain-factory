@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-story-004-pass-5-pending
-session_stage: phase-3-wave-4-story-004-pass-5-pending
+session_phase: phase-3-wave-4-story-004-pass-6-pending
+session_stage: phase-3-wave-4-story-004-pass-6-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -94,24 +94,24 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-story-004-pass-5-pending
+status: phase-3-wave-4-story-004-pass-6-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 4 FAIL — fix burst 4 applied (b1c3c43). Pass 5 pending."
-story_004_cascade_streak: "0/3 — Pass 4 FAIL (2I+2O) — fix burst 4 applied — Pass 5 next"
-story_004_worktree_tip: b1c3c43
+wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 5 FAIL — fix burst 5 applied (b8ea25c). Pass 6 pending."
+story_004_cascade_streak: "0/3 — Pass 5 FAIL (1I+3O) — fix burst 5 applied — Pass 6 next"
+story_004_worktree_tip: b8ea25c
 total_stories_delivered: 17
 total_bcs_active: 38
 total_tests_on_develop: 717
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 5 Pending — Fix Burst 4 Complete
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 6 Pending — Fix Burst 5 Complete
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-28):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 4 FAIL — fix burst 4 applied (tip `b1c3c43`). Tests 43/43 + 22/22 passing on feature/STORY-004. Streak 0/3. NEXT ACTION: dispatch adversary Pass 5. 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
+**Current state (as of 2026-05-28):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 5 FAIL — fix burst 5 applied (tip `b8ea25c`). Tests 44/44 + 22/22 passing on feature/STORY-004. Streak 0/3. NEXT ACTION: dispatch adversary Pass 6. 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
 
 ### Step 1 — Read documents in this exact order
 
@@ -135,14 +135,14 @@ git log --oneline origin/develop -3
 git worktree list
 # Expected: shows /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 [feature/STORY-004]
 
-# Check 3: STORY-004 worktree tip commit is b1c3c43
+# Check 3: STORY-004 worktree tip commit is b8ea25c
 git -C /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 log --oneline origin/develop..HEAD | head -5
-# Expected: b1c3c43 at tip, 12 commits ahead of develop
+# Expected: b8ea25c at tip, 14 commits ahead of develop
 
 # Check 4: Tests pass on the worktree
 cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004
 bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3
-# Expected: 43 tests, 43 passed, 0 failed
+# Expected: 44 tests, 44 passed, 0 failed
 bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3
 # Expected: 22 tests, 22 passed, 0 failed
 shellcheck plugins/brain-factory/skills/brain-health/run.sh plugins/brain-factory/hooks/brain-health-check.sh
@@ -160,13 +160,13 @@ Wave 1: STORY-001/014/027/038 (PRs #1-#4, gate PASSED). Wave 2: STORY-016/002/00
 - STORY-032 (PR #17, d610cf0): bin/lobster-run pure-bash workflow runtime. 22 passes, 14 fix bursts — longest cascade in project history. 3-CLEAN at passes 20-21-22. BCs BC-2.12.001/002 active. User explicitly approved continuing to convergence rather than relaxing the bar.
 
 **3c. IN PROGRESS — STORY-004 adversarial cascade (wave 4 story 3/4):**
-Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `b1c3c43`. See §STORY-004 Cascade Detail below — this is the primary current work.
+Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `b8ea25c`. See §STORY-004 Cascade Detail below — this is the primary current work.
 
 **3d. PENDING — STORY-015 (wave 4 story 4/4):**
 Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
 
-**3e. TOP-OF-STACK — STORY-004 adversary Pass 5:**
-Streak 0/3. Fix burst 4 applied (worktree tip `b1c3c43`). All Pass 4 non-OBS findings fixed. Dispatch adversary for Pass 5. Need 3 consecutive clean passes (0C+0I) for BC-5.39.001 convergence.
+**3e. TOP-OF-STACK — STORY-004 adversary Pass 6:**
+Streak 0/3. Fix burst 5 applied (worktree tip `b8ea25c`). All Pass 5 non-deferred findings fixed. Dispatch adversary for Pass 6. Need 3 consecutive clean passes (0C+0I) for BC-5.39.001 convergence.
 
 **3f. Develop tip verification:**
 ```bash
@@ -185,7 +185,7 @@ gh pr list --state open               # none open
 **Key BC:** BC-2.01.006 (status: draft, will promote to active at PR merge per POL-14)
 **Worktree:** `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004`
 **Branch:** `feature/STORY-004`
-**Worktree tip:** `b1c3c43` — "stories(STORY-004): pass-4 fix burst — STORY-004 body writeback enumeration completeness"
+**Worktree tip:** `b8ea25c` — "test(STORY-004): pass-5 fix burst — retire-vocab comment sweep + AC-008 within-5s delta coverage"
 
 ### Cascade History Table
 
@@ -202,7 +202,9 @@ gh pr list --state open               # none open
 | Fix burst 3 | applied (773bcc1) | 5 commits — all 7 non-OBS findings closed (see §Pass 3 Findings Fixed below) |
 | Pass 4 | FAIL — 2I + 2O | TD-VSDD-060 sibling-sweep gaps from P3 (event-catalog dim name, bats whitelist); + BC writeback enum completeness |
 | Fix burst 4 | applied (b1c3c43) | 4 commits — all 4 findings closed (see §Pass 4 Findings Fixed below) |
-| **Pass 5** | **PENDING** | **Streak 0/3 — this is the next action** |
+| Pass 5 | FAIL — 1I + 3O | TD-VSDD-060 sibling-sweep miss from fix burst 4 (SKILL.md + run.sh comment enumeration) + 1 deferred cross-story OBS |
+| Fix burst 5 | applied (b8ea25c) | 2 commits — F-P5-I01/O02/O03 closed; F-P5-O04 deferred to DI-004 (see §Pass 5 Findings Fixed below) |
+| **Pass 6** | **PENDING** | **Streak 0/3 — this is the next action** |
 
 ### Locked Decisions (DO NOT RE-LITIGATE)
 
@@ -269,15 +271,26 @@ All 4 findings closed (2I + 2O — no streak reset contributions beyond the two 
 | F-P4-O01 | OBSERVATION | 5c8430a | `shopt -s inherit_errexit` enabled in run.sh + RETURN trap added for temp-file cleanup. yq failures inside _writeback_state now propagate to writeback_status="failed" with writeback_error diagnostic. Closes silent partial-write hazard. |
 | F-P4-O02 | OBSERVATION | 8ef4e32 + b1c3c43 | BC-2.01.006 v1.4 Postcondition 5 enumerates 4 fields (overall_health, last_health_check, dimensions, red_dimensions) + safeguard semantics codified. STORY-004 body AC narrative + Task #6 + Architecture Compliance Rule 3 updated to match. |
 
-### Files Modified (STORY-004 worktree state at b1c3c43)
+### Pass 5 Findings Fixed in Fix Burst 5 (commits 9ac5ebf, b8ea25c)
+
+3 of 4 findings closed (1I + 2O fixed; 1O deferred cross-story):
+
+| Finding | Severity | Closure Commit | Notes |
+|---------|----------|----------------|-------|
+| F-P5-I01 | IMPORTANT | 9ac5ebf | SKILL.md Quality Bar + Red Flags + run.sh:296 comment block now enumerate all 4 writeback fields (overall_health, last_health_check, dimensions, red_dimensions). Dropped volatile `v1.3` pin per TD-VSDD-091. TD-VSDD-060 sibling-sweep miss from fix burst 4. |
+| F-P5-O02 | OBSERVATION | b8ea25c | brain-health-check.bats:214 stale comment "wiki and voice" swept to "wiki and output" — canonical dimension name alignment. |
+| F-P5-O03 | OBSERVATION | b8ea25c | New AC-008 within-5s delta test added to brain-health-skill.bats. Previous test was format+presence only; now includes load-bearing temporal assertion. Test count 43 → 44. |
+| F-P5-O04 | OBSERVATION | DEFERRED (DI-004) | STORY-005 AC-004 / Test Vector says "exit ≤ 1" but VP-024 + impl + brain-health-skill.bats require exit 2. Cross-story scope — STORY-005 owner responsibility. Impl + test correct; spec narrative drift only. Target: STORY-005 wave-gate or maintenance sweep. |
+
+### Files Modified (STORY-004 worktree state at b8ea25c)
 
 | File | Change Summary |
 |------|---------------|
-| `plugins/brain-factory/skills/brain-health/run.sh` | ~360 lines — six-dimensional skill; writeback fixed (C01); body extraction state machine (C02); I01 preflight; I03 awk fallback removed; I04 writeback_status captured; P3: _writeback_state malformed-frontmatter safeguard + stderr capture + same-fs mktemp; P4: shopt inherit_errexit + RETURN trap (F-P4-O01) |
-| `plugins/brain-factory/skills/brain-health/SKILL.md` | Full 6-section per meta-lint contract; `--brain-root` flag removed (I05) |
+| `plugins/brain-factory/skills/brain-health/run.sh` | ~360 lines — six-dimensional skill; writeback fixed (C01); body extraction state machine (C02); I01 preflight; I03 awk fallback removed; I04 writeback_status captured; P3: _writeback_state malformed-frontmatter safeguard + stderr capture + same-fs mktemp; P4: shopt inherit_errexit + RETURN trap (F-P4-O01); P5: run.sh:296 comment block enumerates 4-field writeback surface (F-P5-I01 9ac5ebf) |
+| `plugins/brain-factory/skills/brain-health/SKILL.md` | Full 6-section per meta-lint contract; `--brain-root` flag removed (I05); P5: Quality Bar + Red Flags enumerate 4-field writeback surface + volatile v1.3 pin dropped (F-P5-I01 9ac5ebf) |
 | `plugins/brain-factory/hooks/brain-health-check.sh` | Reads cached STATE.md health fields per AC-010 rework |
-| `plugins/brain-factory/tests/brain-health-skill.bats` | 43 tests (+2 from P3: malformed-frontmatter writeback safeguard; P4: line 718 whitelist extended to include skipped_malformed_frontmatter — F-P4-I02) |
-| `plugins/brain-factory/tests/brain-health-check.bats` | 22 tests; fixtures updated by PO for canonical dimension names |
+| `plugins/brain-factory/tests/brain-health-skill.bats` | 44 tests (+2 from P3: malformed-frontmatter writeback safeguard; P4: line 718 whitelist extended; P5: new AC-008 within-5s delta test — F-P5-O03 b8ea25c) |
+| `plugins/brain-factory/tests/brain-health-check.bats` | 22 tests; fixtures updated by PO for canonical dimension names; P5: line 214 stale comment fixed (F-P5-O02 b8ea25c) |
 | `plugins/brain-factory/templates/state-md-template.md` | Health frontmatter fields added (PO fix burst 1) |
 | `scripts/event-catalog.json` | P4: red_dimensions example `voice` → canonical `output` (F-P4-I01 TD-VSDD-060 sweep) |
 | `.factory/specs/behavioral-contracts/ss-01/BC-2.01.006.md` | v1.3 — Postcondition 5 writeback added (P3: F-P3-C01); v1.4 — Postcondition 5 enumerates 4 fields + safeguard semantics (P4: F-P4-O02, 8ef4e32) |
@@ -291,14 +304,14 @@ All 4 findings closed (2I + 2O — no streak reset contributions beyond the two 
 | `.factory/stories/dependency-graph.md` | Path update — P3: confirmed propagation via F-P3-C02 |
 | `.factory/specs/architecture/ARCH-INDEX.md` | Path update CAP-001 (P3: F-P3-C02 via 8423447) |
 
-### Adversary Dispatch Template for Pass 5
+### Adversary Dispatch Template for Pass 6
 
 Use this exact framing when dispatching the adversary. Fresh context, no prior conversation, provide the already-fixed list so adversary doesn't re-report closed findings.
 
 ```
 cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 &&
 
-Fresh-Context Adversarial Review — STORY-004 Pass 5
+Fresh-Context Adversarial Review — STORY-004 Pass 6
 Zero prior context. Streak: 0/3. Need 3 consecutive 0C+0I passes for convergence (BC-5.39.001).
 
 Story: STORY-004 — /brain:health six-dimensional convergence skill
@@ -317,12 +330,15 @@ PASS 1: C01(orig-path-names), C02(dimension-names), C03(AC-010-hook-design), I01
 PASS 2: C01(red_dimensions), C02(body-extraction-state-machine), C03(VP-024-BRAIN_ROOT), I01(preflight-checks), I03(awk-fallback-removed), I04(writeback_status-captured)
 PASS 3: C01(BC-2.01.006-v1.3-Postcondition-5 cfb5851), C02(skills/brain-health/-path-propagation 1a49569+8423447), C03(E-HEALTH-003-error-taxonomy cfb5851), I01(task3-sources-precedence-ladder 1a49569), I02(malformed-frontmatter-writeback-safeguard dd48972+773bcc1), I03(stderr-capture-writeback_error dd48972), I04(same-fs-mktemp-atomicity dd48972)
 PASS 4: I01(event-catalog-voice→output-canonical-sweep 5c8430a), I02(bats-whitelist-skipped_malformed_frontmatter f54db70), O01(run.sh-inherit_errexit+RETURN-trap 5c8430a), O02(BC-2.01.006-v1.4-Postcondition5-4-fields+safeguard 8ef4e32+b1c3c43)
+PASS 5: I01(SKILL.md-Quality-Bar+Red-Flags+run.sh-comment-4-field-writeback-enumeration+drop-v1.3-pin 9ac5ebf), O02(brain-health-check.bats:214-stale-comment-swept b8ea25c), O03(AC-008-within-5s-delta-test-added 43→44-tests b8ea25c)
+PASS 5 DEFERRED (cross-story, do NOT re-raise for STORY-004): O04(STORY-005-AC-004/TestVector-exit-1-drift — tracked as DI-004; impl+test correct; spec-narrative-only)
 
 Note: Locked architectural decisions — DO NOT re-raise as open:
 - Canonical skill dir: skills/brain-health/ (finalized)
 - Canonical six dimensions: capture/sources/wiki/synthesis/output/reflection (BC-2.01.006)
 - AC-010: hook reads STATE.md cache; skill writes back (not inline invocation)
 - BC-2.04.014 exit-code: hook exits 0 (ADR-002 v2.0 is authoritative; any prose saying exit 1 is known drift tracked as DI-003 in STATE.md — do NOT re-raise for STORY-004)
+- STORY-005 AC-004/Test Vector "exit ≤ 1" wording: known cross-story narrative drift tracked as DI-004; impl + bats tests require exit 2 correctly; do NOT re-raise for STORY-004
 
 Find NEW defects only. CRITICAL findings block progression. IMPORTANT findings must be fixed before next pass. OBSERVATION findings are advisory (no streak reset). Output: structured finding list with severity, location, description.
 ```
@@ -349,7 +365,7 @@ Find NEW defects only. CRITICAL findings block progression. IMPORTANT findings m
 |---|-------|-----|--------|-------|
 | 1 | STORY-017 | 8 | DONE — PR #16 (b30dd35) | Wiki page generation pipeline; 5 passes 2 fix bursts |
 | 2 | STORY-032 | 8 | DONE — PR #17 (d610cf0) | bin/lobster-run; 22 passes 14 fix bursts; longest cascade |
-| 3 | STORY-004 | 5 | IN PROGRESS — Pass 5 pending | /brain:health skill; 4 passes 4 fix bursts; streak 0/3 |
+| 3 | STORY-004 | 5 | IN PROGRESS — Pass 6 pending | /brain:health skill; 5 passes 5 fix bursts; streak 0/3 |
 | 4 | STORY-015 | 5 | NOT STARTED | Hook meta-lint; begin after STORY-004 or parallel |
 
 ---
