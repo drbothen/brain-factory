@@ -173,10 +173,11 @@ does NOT execute `skills/brain-health/run.sh` inline on every SessionStart. The
    after computing the health report, use `yq` to update `overall_health`, `last_health_check`,
    `dimensions`, and `red_dimensions` in `.brain/STATE.md` YAML frontmatter so the SessionStart
    hook reads the cached result. If STATE.md frontmatter is malformed (fewer than 2 `---` markers),
-   skip the write and set `writeback_status: "skipped_malformed_frontmatter"` in the JSON report.
-   If `yq` fails inside well-fenced frontmatter, set `writeback_status: "failed"` and surface the
-   error in the `writeback_error` field of the JSON report. The original STATE.md must be preserved
-   byte-identical on any writeback failure. This satisfies BC-2.01.006 postcondition 5.
+   skip the write and set `writeback_status: "skipped_malformed_frontmatter"` in the JSON report;
+   the `writeback_error` field contains a malformed-frontmatter diagnostic. If `yq` fails inside
+   well-fenced frontmatter, set `writeback_status: "failed"` and surface the yq error in the
+   `writeback_error` field. In both non-ok cases, the original STATE.md must be preserved
+   byte-identical. This satisfies BC-2.01.006 postcondition 5.
 
 7. **[green]** Run all health bats tests. All pass.
 
