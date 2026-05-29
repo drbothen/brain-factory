@@ -350,7 +350,9 @@ _writeback_state() {
 
   # Set failure reason before yq calls so any early exit via inherit_errexit carries
   # the correct discriminator. Overwritten to "" on successful reassembly.
-  _writeback_failure_reason="yq_parse_error"
+  # Value must be a member of the locked enum {ok, failed, skipped_malformed_frontmatter}
+  # per BC-2.01.006 Postcondition 5 + LOCKED DECISION #6.
+  _writeback_failure_reason="failed"
 
   # Update overall_health and last_health_check.
   yq e -i ".overall_health = \"${overall}\"" "$fm_tmp"
