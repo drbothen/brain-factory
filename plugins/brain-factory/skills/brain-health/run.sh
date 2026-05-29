@@ -332,12 +332,12 @@ _writeback_state() {
   body_tmp="$(mktemp -- "${state_dir}/.brain-health-body.XXXXXX")"
   new_state_tmp="$(mktemp -- "${state_dir}/.brain-health-new.XXXXXX")"
 
-  # F-P4-O01: local EXIT trap to clean up temp files even when inherit_errexit
-  # causes an early exit from a yq failure. Without this trap, a yq parse error
-  # on malformed YAML inside well-fenced frontmatter would leave .brain-health-*.XXXXXX
-  # files behind. The trap fires on any exit path (normal, early-return-via-set-e, or
-  # explicit return 1). fm_tmp/body_tmp/new_state_tmp are local so the trap closure
-  # captures their values at definition time via the outer function scope.
+  # F-P4-O01: RETURN trap to clean up temp files on any function-exit path
+  # (success or any per-call yq guard failure). The trap is function-scoped — it
+  # fires whenever _writeback_state returns, regardless of the exit path. Without
+  # this trap, a yq parse error on malformed YAML inside well-fenced frontmatter
+  # would leave .brain-health-*.XXXXXX files behind. fm_tmp/body_tmp/new_state_tmp
+  # are local so the trap closure captures their values at definition time.
   # shellcheck disable=SC2064  # intentional: expand variables now, not at trap time
   trap "rm -f -- '${fm_tmp}' '${body_tmp}' '${new_state_tmp}'" RETURN
 
