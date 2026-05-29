@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-story-004-pass-10-pending
-session_stage: phase-3-wave-4-story-004-pass-10-pending
+session_phase: phase-3-wave-4-story-004-pass-11-pending
+session_stage: phase-3-wave-4-story-004-pass-11-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-28T18:00:00
+last_updated: 2026-05-29T00:00:00
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,24 +94,24 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-story-004-pass-10-pending
+status: phase-3-wave-4-story-004-pass-11-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 9 FAIL (4C+3I+1O+1pg) — streak 0/3. Fix burst 9 applied (3 commits: 50fa61c+ae22310+aad5374). DI-003 RETIRED. Pass 10 pending."
-story_004_cascade_streak: "0/3 — Pass 9 FAIL (4C+3I+1O+1pg) — fix burst 9 applied (3 commits) — DI-003 RETIRED — Pass 10 next (need 3 consecutive PASS from 0/3 for convergence)"
-story_004_worktree_tip: aad5374
+wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 10 FAIL (4I) — streak 0/3. Fix burst 10 applied (3 commits: 9cbcb22+ac9dc62+658f712). Pass 11 pending."
+story_004_cascade_streak: "0/3 — Pass 10 FAIL (4I) — fix burst 10 applied (3 commits) — Pass 11 next (need 3 consecutive PASS from 0/3 for convergence)"
+story_004_worktree_tip: 658f712
 total_stories_delivered: 17
 total_bcs_active: 38
 total_tests_on_develop: 717
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 10 Pending — Streak 0/3 (Pass 9 fix burst closed DI-003 + 4C+3I)
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 11 Pending — Streak 0/3 (Pass 10 fix burst 10 closed 4I)
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-28):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 9 FAIL (4C+3I+1O+1pg) — streak 0/3. Fix burst 9 applied (3 commits: 50fa61c+ae22310+aad5374). Worktree tip `aad5374`. Tests 45/45 + 22/22 passing on feature/STORY-004. DI-003 RETIRED. NEXT ACTION: dispatch adversary Pass 10 (need 3 consecutive PASS from 0/3 for convergence). 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
+**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 10 FAIL (4I) — streak 0/3. Fix burst 10 applied (3 commits: 9cbcb22+ac9dc62+658f712). Worktree tip `658f712`. Tests 45/45 + 22/22 passing on feature/STORY-004. NEXT ACTION: dispatch adversary Pass 11 (need 3 consecutive PASS from 0/3 for convergence). 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
 
 ### Step 1 — Read documents in this exact order
 
@@ -135,9 +135,9 @@ git log --oneline origin/develop -3
 git worktree list
 # Expected: shows /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 [feature/STORY-004]
 
-# Check 3: STORY-004 worktree tip commit is aad5374
+# Check 3: STORY-004 worktree tip commit is 658f712
 git -C /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 log --oneline origin/develop..HEAD | head -5
-# Expected: aad5374 at tip, 22 commits ahead of develop
+# Expected: 658f712 at tip, 25 commits ahead of develop
 
 # Check 4: Tests pass on the worktree
 cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004
@@ -160,13 +160,13 @@ Wave 1: STORY-001/014/027/038 (PRs #1-#4, gate PASSED). Wave 2: STORY-016/002/00
 - STORY-032 (PR #17, d610cf0): bin/lobster-run pure-bash workflow runtime. 22 passes, 14 fix bursts — longest cascade in project history. 3-CLEAN at passes 20-21-22. BCs BC-2.12.001/002 active. User explicitly approved continuing to convergence rather than relaxing the bar.
 
 **3c. IN PROGRESS — STORY-004 adversarial cascade (wave 4 story 3/4):**
-Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `aad5374`. See §STORY-004 Cascade Detail below — this is the primary current work.
+Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `658f712`. See §STORY-004 Cascade Detail below — this is the primary current work.
 
 **3d. PENDING — STORY-015 (wave 4 story 4/4):**
 Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
 
-**3e. TOP-OF-STACK — STORY-004 adversary Pass 10:**
-Streak 0/3 (Pass 9 FAIL — 4C+3I+1O+1pg). Worktree tip `aad5374` (fix burst 9 applied — 3 commits: 50fa61c + ae22310 + aad5374). DI-003 RETIRED. Dispatch adversary for Pass 10. Need 3 consecutive clean PASS (0C+0I) from 0/3 for convergence. BC-5.39.001 requires 3 consecutive clean passes.
+**3e. TOP-OF-STACK — STORY-004 adversary Pass 11:**
+Streak 0/3 (Pass 10 FAIL — 4I). Worktree tip `658f712` (fix burst 10 applied — 3 commits: 9cbcb22 + ac9dc62 + 658f712). DI-003 RETIRED. Dispatch adversary for Pass 11. Need 3 consecutive clean PASS (0C+0I) from 0/3 for convergence. BC-5.39.001 requires 3 consecutive clean passes.
 
 **3f. Develop tip verification:**
 ```bash
@@ -185,7 +185,7 @@ gh pr list --state open               # none open
 **Key BC:** BC-2.01.006 (status: draft, will promote to active at PR merge per POL-14)
 **Worktree:** `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004`
 **Branch:** `feature/STORY-004`
-**Worktree tip:** `aad5374` — "fix(STORY-004): pass-9 fix burst — state-md-template body canonical dimensions + remove hook HEALTH_SKILL paper-fix"
+**Worktree tip:** `658f712` — "arch(STORY-004): pass-10 fix burst — VP-024 prose updated to match test code (E-HEALTH-001 exit 2, not RED status)"
 
 ### Cascade History Table
 
@@ -211,7 +211,9 @@ gh pr list --state open               # none open
 | Fix burst 8 | 2 commits (03a34d3 + ddea4fa) | 03a34d3 (spec): BC-2.01.006 v1.4 → v1.5 — Description rewritten to reflect cache-decoupled hook architecture (SessionStart-event-driven per BC-2.04.014, NOT skill-fired). Sibling sweep clean. ddea4fa (fix): run.sh:335 trap comment corrected EXIT → RETURN (doc/code alignment, no behavior change). Tests 45/45 + 22/22 at ddea4fa. |
 | Pass 9 | FAIL — 4C + 3I + 1O + 1pg — STREAK REMAINS 0/3 | F-P9-C01+C02 (BC-2.04.014 v1.4 full ADR-002 v2.0 rewrite — H1/Description/Postconditions/EC-002/Test Vectors/VP/CC schema all misaligned), F-P9-C03 (error-taxonomy E-HEALTH-002 exit 1→0), F-P9-C04 (state-md-template body legacy dim names), F-P9-I01 (BC-2.04.014 Description six-dim banner), F-P9-I02+I03 (BC-2.01.006 Postcondition 2 JSON + Canonical Test Vectors writeback enum + EC-004/005), F-P9-I05 (hook HEALTH_SKILL unused var). O09-PG01: reconciliation-completeness lesson (→ Lesson 4 in lessons.md). DI-003 RETIRED. |
 | Fix burst 9 | 3 commits (50fa61c + ae22310 + aad5374) | 50fa61c (spec — BC-2.04.014 v1.4→v1.5 full rewrite; BC-2.01.006 v1.5→v1.6; error-taxonomy v0.1.8→v0.1.9), ae22310 (arch — SS-04 exit-code 0/1→0), aad5374 (fix — state-md-template body canonical dims + hook paper-fix). Tests 45/45 + 22/22. DI-003 RETIRED. |
-| **Pass 10** | **PENDING** | **Streak 0/3 (Pass 9 FAIL) — need 3 consecutive PASS for convergence** |
+| Pass 10 | FAIL — 0C + 4I + 0S + 0O — STREAK REMAINS 0/3 | F-P10-I01 (AC-009 phantom "exits at most 1" path; Task #2 integration.bats ref), F-P10-I02 (BC-2.04.014 missing Invariant 4 NEVER exits 1), F-P10-I03 (VP-024 prose stale "RED status on non-brain dir" vs exit 2), F-P10-I04 (Task #2 test ref brain-health-skill.bats BC_2_01_006 naming). Meta-irony: Lesson L4 was cited by Pass-9 fix burst but not applied to its own sweeps (adjacent sections in same files). |
+| Fix burst 10 | 3 commits (9cbcb22 + ac9dc62 + 658f712) | 9cbcb22 (stories — AC-009 rewrite phantom exit-1 removed; Task #2 ref updated to brain-health-skill.bats BC_2_01_006), ac9dc62 (spec — BC-2.04.014 v1.5→v1.6 Invariant 4 NEVER exits 1 codified), 658f712 (arch — VP-024 prose updated E-HEALTH-001 exit 2 not RED status). Tests 45/45 + 22/22. Lesson 4 refined. |
+| **Pass 11** | **PENDING** | **Streak 0/3 (Pass 10 FAIL) — need 3 consecutive PASS for convergence** |
 
 ### Locked Decisions (DO NOT RE-LITIGATE)
 
@@ -327,6 +329,9 @@ All 4 findings closed (2I + 2O — no streak reset contributions beyond the two 
 | `.factory/stories/stories/STORY-037.md` | Path update (brain-health/) — P3: confirmed propagation via F-P3-C02 |
 | `.factory/stories/dependency-graph.md` | Path update — P3: confirmed propagation via F-P3-C02 |
 | `.factory/specs/architecture/ARCH-INDEX.md` | Path update CAP-001 (P3: F-P3-C02 via 8423447) |
+| `.factory/stories/stories/STORY-004.md` | P10: AC-009 phantom exit-1 removed + Task #2 ref updated to brain-health-skill.bats BC_2_01_006 (F-P10-I01+I04, 9cbcb22) |
+| `.factory/specs/behavioral-contracts/ss-04/BC-2.04.014.md` | P10: v1.5→v1.6 Invariant 4 NEVER exits 1 codified (F-P10-I02, ac9dc62) |
+| `.factory/specs/architecture/verification-properties/VP-024-plugin-lifecycle.md` | P10: prose preamble updated E-HEALTH-001 exit 2 not RED status (F-P10-I03, 658f712) |
 
 ### Pass 7 Verification (fresh-context audit — read-only — PASS)
 
@@ -375,15 +380,26 @@ All actionable findings closed; DI-003 RETIRED:
 | O09-O01 | OBSERVATION | 50fa61c | BC-2.04.014 red_dimensions array/CSV alignment — covered by PO sweep at 50fa61c. |
 | O09-O02 | OBSERVATION | 50fa61c | BC-2.01.006 Edge Cases EC-004+EC-005 — covered at 50fa61c. |
 
-### Adversary Dispatch Template for Pass 10
+### Pass 10 Findings Fixed in Fix Burst 10 (commits 9cbcb22, ac9dc62, 658f712)
+
+All 4 IMPORTANT findings closed. Root cause: Lesson L4 meta-irony — Pass-9 fix burst cited L4 but did not apply L4 to its own sweeps of adjacent sections in the same files.
+
+| Finding | Severity | Closure Commit | Notes |
+|---------|----------|----------------|-------|
+| F-P10-I01 | IMPORTANT | 9cbcb22 | STORY-004 AC-009 rewrite: phantom "exits at most 1" path removed. AC-009 now matches impl (E-HEALTH-001 triggers exit 2 per VP-024) + BC-2.04.014 v1.6 (Invariant 4 NEVER exits 1) + VP-024 (exit 2 confirmed) + bats (test asserts exit 2). Adjacent to Task #3 swept by Pass-9 fix burst — missed because reconciliation did not sweep WHOLE file. |
+| F-P10-I02 | IMPORTANT | ac9dc62 | BC-2.04.014 v1.5→v1.6: Invariant 4 added — "NEVER exits 1 (advisory); exit codes are 0 (success) and 2 (block) per ADR-002 v2.0." Codifies the exit-code contract that was now present in BC body but not in the Invariants section. Pass-9 fix burst v1.5 rewrote H1/Description/Postconditions/EC-002/Test Vectors but missed Invariants (adjacent section). L4 meta-irony manifest. |
+| F-P10-I03 | IMPORTANT | 658f712 | VP-024 prose preamble updated: stale narrative "returns RED status when invoked outside a brain directory" removed; preamble now accurately states E-HEALTH-001 produces exit code 2, matching the test code already updated in prior passes. Prose was adjacent to the test-code snippet updated by Pass-9 fix burst — missed because reconciliation swept test code but not prose preamble in the same file. |
+| F-P10-I04 | IMPORTANT | 9cbcb22 | STORY-004 Task #2 test file reference updated: obsolete `tests/integration.bats` reference replaced with `plugins/brain-factory/tests/brain-health-skill.bats` with test prefix `BC_2_01_006`. Adjacent to Task #3 swept by Pass-9 fix burst. Same root cause as F-P10-I01. |
+
+### Adversary Dispatch Template for Pass 11
 
 Use this exact framing when dispatching the adversary. Fresh context, no prior conversation, provide the already-fixed list so adversary doesn't re-report closed findings.
 
 ```
 cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 &&
 
-Fresh-Context Adversarial Review — STORY-004 Pass 10
-Zero prior context. Streak: 0/3 (Pass 9 FAIL — 4C+3I+1O+1pg). Need 3 consecutive 0C+0I passes for convergence (BC-5.39.001).
+Fresh-Context Adversarial Review — STORY-004 Pass 11
+Zero prior context. Streak: 0/3 (Pass 10 FAIL — 4I). Need 3 consecutive 0C+0I passes for convergence (BC-5.39.001).
 
 Story: STORY-004 — /brain:health six-dimensional convergence skill
 Files to review:
@@ -394,7 +410,8 @@ Files to review:
 - plugins/brain-factory/tests/brain-health-check.bats
 - .factory/stories/stories/STORY-004.md
 - .factory/specs/behavioral-contracts/ss-01/BC-2.01.006.md (now v1.6)
-- .factory/specs/behavioral-contracts/ss-04/BC-2.04.014.md (now v1.5)
+- .factory/specs/behavioral-contracts/ss-04/BC-2.04.014.md (now v1.6)
+- .factory/specs/architecture/verification-properties/VP-024-plugin-lifecycle.md
 
 Already confirmed CLOSED (do not re-report):
 PASS 1: C01(orig-path-names), C02(dimension-names), C03(AC-010-hook-design), I01-I08 (per-fix-burst-1), S01-S03 (per-fix-burst-1 PO)
@@ -408,12 +425,13 @@ PASS 6 DEFERRED: S01(yq-dim_detail-shell-escape — DI-005), O01([process-gap]-g
 PASS 7: PASS — 0 findings. All Pass-6 closures load-bearing; 10 yq guards confirmed; enum+surface+AC coverage confirmed.
 PASS 8: I01(BC-2.01.006-v1.5-Description-cache-decoupled-hook-NOT-skill-fired 03a34d3), O01(run.sh-335-trap-comment-EXIT→RETURN ddea4fa)
 PASS 9: C01+C02(BC-2.04.014-v1.5-full-ADR-002-v2.0-rewrite 50fa61c — DI-003 RETIRED), C03(error-taxonomy-E-HEALTH-002-exit-1→0 50fa61c), C04(state-md-template-body-canonical-six-dims aad5374), I01(BC-2.04.014-Description 50fa61c), I02+I03(BC-2.01.006-v1.6-Postcondition2-JSON+Canonical-Test-Vectors-writeback-enum+EC-004/005 50fa61c), I05(hook-HEALTH_SKILL-unused-var-removed aad5374), architect-sibling(SS-04-exit-code-0/1→0 ae22310)
+PASS 10: I01(STORY-004-AC-009-phantom-exit-1-removed+Task2-ref-updated 9cbcb22), I02(BC-2.04.014-v1.6-Invariant4-NEVER-exits-1 ac9dc62), I03(VP-024-prose-E-HEALTH-001-exit-2-not-RED-status 658f712), I04(Task2-brain-health-skill.bats-BC_2_01_006-naming 9cbcb22)
 
 Note: Locked architectural decisions — DO NOT re-raise as open:
 - Canonical skill dir: skills/brain-health/ (finalized)
 - Canonical six dimensions: capture/sources/wiki/synthesis/output/reflection (BC-2.01.006)
 - AC-010: hook reads STATE.md cache; skill writes back — cache-decoupled architecture; BC-2.04.014 SessionStart-event-driven; codified in BC-2.01.006 v1.6
-- BC-2.04.014 exit-code: hook exits 0 (ADR-002 v2.0; BC-2.04.014 v1.5 fully aligned; DI-003 RETIRED — do NOT re-raise)
+- BC-2.04.014 exit-code: hook exits 0 (ADR-002 v2.0; BC-2.04.014 v1.6 fully aligned with Invariant 4; DI-003 RETIRED — do NOT re-raise)
 - STORY-005 AC-004/Test Vector "exit ≤ 1": known cross-story narrative drift DI-004; impl+bats correct; do NOT re-raise
 - writeback_status enum values: `ok`/`failed`/`skipped_malformed_frontmatter` (three values)
 - inherit_errexit does NOT propagate set -e into bash functions called via if-conditional — closed by explicit per-call guards at 40de399; do NOT re-raise
@@ -443,7 +461,7 @@ Find NEW defects only. CRITICAL findings block progression. IMPORTANT findings m
 |---|-------|-----|--------|-------|
 | 1 | STORY-017 | 8 | DONE — PR #16 (b30dd35) | Wiki page generation pipeline; 5 passes 2 fix bursts |
 | 2 | STORY-032 | 8 | DONE — PR #17 (d610cf0) | bin/lobster-run; 22 passes 14 fix bursts; longest cascade |
-| 3 | STORY-004 | 5 | IN PROGRESS — Pass 10 pending | /brain:health skill; 9 passes 9 fix bursts (Pass 9 FAIL 4C+3I; fix burst 9: BC-2.04.014 v1.5 + BC-2.01.006 v1.6 + error-taxonomy v0.1.9 + SS-04 + state-md-template + hook; DI-003 RETIRED) |
+| 3 | STORY-004 | 5 | IN PROGRESS — Pass 11 pending | /brain:health skill; 10 passes 10 fix bursts (Pass 10 FAIL 4I; fix burst 10: STORY-004 AC-009+Task#2 + BC-2.04.014 v1.6 Invariant 4 + VP-024 prose; L4 meta-irony lesson codified) |
 | 4 | STORY-015 | 5 | NOT STARTED | Hook meta-lint; begin after STORY-004 or parallel |
 
 ---
