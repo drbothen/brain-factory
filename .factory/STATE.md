@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-29T14:00:00
+last_updated: 2026-05-29T16:30:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-14-pending
+phase: phase-3-wave-4-story-004-pass-15-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-14-pending
-session_continuity: "Pass 13 FAIL (4M+3L+2DI) — streak 0/3. Fix burst 13 applied (3 commits on feature/STORY-004): 7fe85f0 (fix — run.sh -r readability check; BC-2.01.006 EC-002 missing-OR-unreadable complete; bats test name 200K→150K Pass-12 propagation), 0bd4612 (spec — BC-2.01.006 v1.6→v1.7 Canonical Test Vector citations match actual bats @test names), 15aa87e (stories — STORY-004 AC-001 JSON includes writeback_status + AC-007 _template* exclusion documented + dep-graph STORY-002→STORY-004 + STORY-003→STORY-004 standalone bats edges). F13-01 (MEDIUM) bats test name 200K→150K propagation. F13-02 (MEDIUM) BC-2.01.006 Canonical Test Vector citations. F13-03 (MEDIUM) STORY-004 AC-001 writeback_status in JSON. F13-04 (MEDIUM) run.sh -r readability check. F13-05 (LOW) AC-007 _template* exclusion. F13-06 (LOW) dep-graph standalone bats edges. F13-07 (LOW, intent verification) DEFERRED. DI-007 + DI-008 tentatively added (pending verification). Tests 45/45+22/22 at tip 15aa87e. Cycle Lesson 7 codified (BC Canonical Test Vector citations must reference actual @test declarations). NEXT ACTION: dispatch adversary Pass 14 (streak 0/3, need 3 consecutive PASS). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-15-pending
+session_continuity: "Pass 14 LARGELY INVALID (adversary read stale factory-artifacts at f85dc89 instead of STORY-004 worktree) — 3 real findings closed in fix burst 14 (2 commits on feature/STORY-004): 9b25092 (stories — STORY-004 frontmatter behavioral_contracts: [BC-2.01.006, BC-2.04.014] + Behavioral Contracts table row + AC-010 trace anchored to BC-2.04.014 P1+I4), d52e6f4 (fix — state-md-template.md line 34 4x baseline → 3x baseline sibling-sweep miss from Pass-12). 9 of 12 claimed Pass-14 findings BOGUS (F14-01 through F14-05, F14-07 through F14-10) — verified via direct inspection: BC-2.01.006 v1.7 present on worktree, AC-001 writeback_status present, AC-005 uses 150K/3x, skills/brain-health/ paths correct. Tests 45/45+22/22 at tip d52e6f4. Streak 0/3. Dispatch protocol fixed for Pass 15: use absolute worktree paths /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/... — do NOT use /Users/jmagady/Dev/brain-factory/.factory/... (stale factory-artifacts tree). Cycle Lesson 8 codified. NEXT ACTION: dispatch adversary Pass 15 WITH EXPLICIT WORKTREE-ABSOLUTE PATHS. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-14-pending
+status: phase-3-wave-4-story-004-pass-15-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,20 +90,20 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 14 PENDING — Streak 0/3 (Pass 13 fix burst 13 closed 4M+3L — DI-007+DI-008 tentative)
+## TOP OF STACK — STORY-004 Pass 15 PENDING — Streak 0/3 (Pass 14 LARGELY INVALID — adversary tool path issue — fix burst 14 closes 3 real findings)
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `15aa87e`
+1. Verify worktree: `git worktree list` — should show STORY-004 at `d52e6f4`
 2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
 3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 14 (fresh context, streak 0/3 after Pass 13 FAIL, need 3 consecutive PASS for convergence)
+4. Dispatch adversary for Pass 15 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree at f85dc89)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
 6. DI-003 and DI-004 are RETIRED — do not re-raise BC-2.04.014 narrative drift or STORY-005 exit codes; fully closed
 7. STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT — both promote per POL-14 at PR merge; do not flag as findings
 8. F13-07 deferred (hook reference test paper-fix risk; intent verification pending) — can be addressed in PR review or follow-up
-9. DI-007 (BC-2.04.014 postcondition exit-1 contradiction) and DI-008 (token alert message format drift) are TENTATIVE — pending verification
+9. DI-007 and DI-008 remain tentative — Pass 14 was BOGUS so neither confirmed nor denied; Pass 15 adversary to evaluate
 
-**STORY-004 cascade state:** Pass 13 FAIL (4M+3L+2DI) — streak 0/3. Fix burst 13 applied (3 commits: 7fe85f0 + 0bd4612 + 15aa87e). Worktree tip 15aa87e. Tests 45/45 + 22/22. F13-01 (MEDIUM): bats test name 200K→150K (Pass-12 propagation). F13-02 (MEDIUM): BC-2.01.006 v1.7 Canonical Test Vector citations match actual bats @test names. F13-03 (MEDIUM): STORY-004 AC-001 JSON example includes writeback_status. F13-04 (MEDIUM): run.sh -r readability check (EC-002 missing-OR-unreadable complete). F13-05 (LOW): AC-007 _template* exclusion documented. F13-06 (LOW): dep-graph STORY-002→STORY-004 + STORY-003→STORY-004 standalone bats edges. F13-07 (LOW) DEFERRED. Cycle Lesson 7 codified (citation drift — BC Canonical Test Vector citations must reference actual @test declarations). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 14 LARGELY INVALID (adversary read stale factory-artifacts tree at f85dc89 instead of STORY-004 worktree — 9 of 12 findings BOGUS). Fix burst 14 applied (2 commits on feature/STORY-004): 9b25092 (stories — STORY-004 frontmatter behavioral_contracts: [BC-2.01.006, BC-2.04.014] + Behavioral Contracts table row + AC-010 trace anchored to BC-2.04.014 P1+I4), d52e6f4 (fix — state-md-template.md line 34 4x baseline → 3x baseline sibling-sweep miss from Pass-12). Worktree tip d52e6f4. Tests 45/45 + 22/22. Cycle Lesson 8 codified: adversary dispatch must use absolute worktree paths. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
@@ -126,6 +126,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 **D-025 — STORY-004 Pass 12 FAIL + fix burst 12 applied + DI-004 RETIRED — streak 0/3 (2026-05-29):** Pass 12 adversary verdict: FAIL — 2 HIGH + 2 MEDIUM + 1 LOW. Fix burst 12 (4 commits on feature/STORY-004): 624dc86 (spec — STORY-004 AC-005 Compliance Rule 4 Task #3 aligned with BC-2.16.002 RED threshold 150K/3x; line 22 POL-14 inline comment updated; BC-2.16.002 wins over STORY-004 per Source-of-Truth precedence rule 1 — BC is authoritative for contract semantics), 9be3702 (fix — run.sh RED threshold constant 200000 → 150000; bats:418 stale comment block rewritten), e8504ef (stories — STORY-005 AC-004 + 2 Test Vectors aligned with locked exit-code contract: exit 2 on non-brain dir, exit 0 for GREEN/YELLOW; DI-004 RETIRED), 6030583 (arch — VP-024 prose + bats test name + assertion comment relaxed to GREEN/YELLOW, 3 sites swept). F12-01 (HIGH) closed at e8504ef — DI-004 RETIRED. F12-02 (HIGH) closed at 624dc86 + 9be3702. F12-03 (MEDIUM) closed at 9be3702. F12-04 (MEDIUM) closed at 6030583. F12-05 (LOW) closed at 624dc86. Remaining DIs: DI-001/002/005/006. Tests 45/45 + 22/22 at tip 6030583. Cycle Lesson 6 codified: BC supersedes story spec for contract semantics per Source-of-Truth precedence rule 1; fresh-context cascade catches BC-vs-story collisions that initial implementation review missed. Pass 13 next. Streak 0/3.
 
 **D-026 — STORY-004 Pass 13 FAIL + fix burst 13 applied — streak 0/3 (2026-05-29):** Pass 13 adversary verdict: FAIL — 4 MEDIUM + 3 LOW + 2 DI candidates. Fix burst 13 (3 commits on feature/STORY-004): 7fe85f0 (fix — run.sh -r readability check adds unreadable STATE.md detection completing EC-002 "missing OR unreadable"; bats test name 200K→150K Pass-12 propagation gap closed), 0bd4612 (spec — BC-2.01.006 v1.6→v1.7 Canonical Test Vector citations rewritten to reference actual bats @test declaration names; citation drift closes F13-02), 15aa87e (stories — STORY-004 AC-001 JSON example includes writeback_status; AC-007 _template* exclusion documented; dependency-graph.md STORY-002→STORY-004 + STORY-003→STORY-004 edges updated to standalone brain-health-skill.bats not integration.bats extension). F13-01 (MEDIUM) closed at 7fe85f0. F13-02 (MEDIUM) closed at 0bd4612. F13-03 (MEDIUM) closed at 15aa87e. F13-04 (MEDIUM) closed at 7fe85f0. F13-05 (LOW) closed at 15aa87e. F13-06 (LOW) closed at 15aa87e. F13-07 (LOW, intent verification) DEFERRED — hook reference test paper-fix risk; can be addressed in PR review or follow-up. DI-007 + DI-008 surfaced as DI candidates (tentative; pending verification by next pass). Tests 45/45 + 22/22 at tip 15aa87e. Cycle Lesson 7 codified: citation drift — BC Canonical Test Vector citations must reference actual @test declarations from the bats suite; function-name citations can become non-existent silently. Pass 14 next. Streak 0/3.
+
+**D-027 — STORY-004 Pass 14 LARGELY INVALID (adversary tool path issue) + fix burst 14 closes 3 real findings — streak 0/3 (2026-05-29):** Pass 14 adversary verdict: FAIL — claimed 4 CRITICAL + 6 HIGH + 2 MEDIUM. VERIFIED LARGELY BOGUS: adversary dispatch used `cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 &&` prefix but Read/Grep absolute-path resolutions fell through to `/Users/jmagady/Dev/brain-factory/.factory/` (stale factory-artifacts mount at f85dc89 — pre-STORY-004 era). Direct inspection confirmed STORY-004 worktree had BC-2.01.006 v1.7, AC-001 writeback_status, AC-005 150K/3x, skills/brain-health/ paths all in place from fix burst 13. F14-01 through F14-05 and F14-07 through F14-10 BOGUS (9 of 12). Real findings: F14-06 (HIGH) — STORY-004 frontmatter missing behavioral_contracts field + body Behavioral Contracts table missing; F14-11 (paired) — AC-010 trace lacked specific clause anchors to BC-2.04.014; F14-12 (MEDIUM) — state-md-template.md line 34 "4× baseline" → "3× baseline" (Pass-12 sibling-sweep miss). Fix burst 14 (2 commits on feature/STORY-004): 9b25092 (stories — STORY-004 frontmatter behavioral_contracts: [BC-2.01.006, BC-2.04.014] + Behavioral Contracts table row + AC-010 trace anchored to BC-2.04.014 P1+I4), d52e6f4 (fix — state-md-template.md line 34 4x baseline → 3x baseline). Tests 45/45 + 22/22 at d52e6f4. Dispatch protocol fixed for Pass 15: adversary must use absolute STORY-004 worktree paths. Cycle Lesson 8 codified. Pass 15 next. Streak 0/3.
 
 ---
 
