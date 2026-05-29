@@ -21,9 +21,12 @@ status: proposed
 delivers a complete, working plugin installation: all 13 hook scripts, all 26 skill
 SKILL.md files, all 14 agent AGENT.md files, all templates, all workflow YAML files,
 and all scripts are present at the installed path. After installation, `/brain:health`
-is invokable without error (it may return RED status on a non-brain directory — that
-is correct behavior, not a crash). The tarball is the only distribution mechanism —
-no npm/pip install paths exist.
+is invokable without raw bash crash on any directory. On a non-brain directory (no
+`.brain/STATE.md`), the skill emits a structured E-HEALTH-001 error envelope (per
+BC-2.01.006 EC-002 and the error-taxonomy) and exits 2 — a clean structured error,
+not an unhandled bash crash. The verification property is: no raw stack traces escape
+the skill. The tarball is the only distribution mechanism — no npm/pip install paths
+exist.
 
 **Upgrade migration script execution (BC-2.14.003):** When the operator runs
 `/brain:upgrade-brain` to migrate from a prior version, the upgrade script executes
