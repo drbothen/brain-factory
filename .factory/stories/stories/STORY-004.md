@@ -60,9 +60,11 @@ and emits:
     "reflection": {"status": "GREEN", "detail": "..."}
   },
   "overall": "GREEN",
-  "last_checked": "<ISO8601>"
+  "last_checked": "<ISO8601>",
+  "writeback_status": "ok"
 }
 ```
+`writeback_status` is always present: `"ok"` | `"failed"` | `"skipped_malformed_frontmatter"` (per BC-2.01.006 postcondition 5).
 (traces to BC-2.01.006 postconditions 1–2)
 
 **AC-002** — The `overall` field is `RED` if any dimension is `RED`; `YELLOW` if any
@@ -91,8 +93,10 @@ emits:
 (traces to BC-2.01.006 edge case EC-002)
 
 **AC-007** — When the brain has 0 wiki pages (no markdown files under `wiki/`
-other than `index.md` and `log.md`), the `wiki` dimension reports `YELLOW` with
-`detail` = `"No wiki pages yet — ingest your first source."`.
+other than `index.md`, `log.md`, and `_template*` files), the `wiki` dimension
+reports `YELLOW` with `detail` = `"No wiki pages yet — ingest your first source."`.
+Template files (`_template*`) are scaffold artifacts created by `/brain:init`, not
+authored wiki content, and are excluded from the wiki page count.
 (traces to BC-2.01.006 edge case EC-003)
 
 **AC-008** — The `last_checked` field in the JSON output is a valid ISO8601 UTC
