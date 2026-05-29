@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.5"
+version: "1.6"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -35,7 +35,7 @@ removal_reason: null
 ## Postconditions
 
 1. Skill exits 0.
-2. Structured JSON is emitted to stdout: `{"dimensions": {"capture": {"status": "GREEN|YELLOW|RED", "detail": "..."}, "sources": {...}, "wiki": {...}, "synthesis": {...}, "output": {...}, "reflection": {...}}, "overall": "GREEN|YELLOW|RED", "last_checked": "<ISO8601>"}`.
+2. Structured JSON is emitted to stdout: `{"dimensions": {"capture": {"status": "GREEN|YELLOW|RED", "detail": "..."}, "sources": {...}, "wiki": {...}, "synthesis": {...}, "output": {...}, "reflection": {...}}, "overall": "GREEN|YELLOW|RED", "last_checked": "<ISO8601>", "writeback_status": "ok|skipped_malformed_frontmatter|failed"}`. Note: `writeback_status` is one of `{ok, skipped_malformed_frontmatter, failed}` per Postcondition 5; `writeback_error` field is present when `writeback_status` is `"failed"` and contains the yq diagnostic string.
 3. Overall status is RED if any dimension is RED; YELLOW if any dimension is YELLOW and none are RED; GREEN only if all dimensions are GREEN.
 4. If the 30-day trailing average token cost in `.brain/logs/ingest-tokens.jsonl` exceeds 2x the 50K-token baseline, the token budget alert is surfaced in the `sources` dimension detail (status YELLOW or RED depending on severity).
 5. After computing the health report, the skill writes back `overall_health`, `last_health_check`, `dimensions` (each of the six dimension entries), and `red_dimensions` to `.brain/STATE.md` YAML frontmatter so that `brain-health-check.sh` can read the cached result on the next SessionStart without re-running the full dimensional analysis. The write uses `yq` to update the frontmatter in-place. If STATE.md is unreadable (EC-002), this postcondition is not reached. If STATE.md frontmatter is malformed (fewer than 2 `---` markers, or yq parse failure inside well-fenced frontmatter), the writeback is skipped with `writeback_status` set to `"skipped_malformed_frontmatter"` or `"failed"` respectively, the original STATE.md is preserved byte-identical, and a diagnostic is surfaced in the JSON report's `writeback_error` field.
@@ -52,15 +52,20 @@ removal_reason: null
 | EC-001 | `.brain/logs/ingest-tokens.jsonl` does not exist yet (brand-new brain) | Sources dimension reports GREEN with detail "No ingest history yet." Token budget check skipped. |
 | EC-002 | `.brain/STATE.md` is missing or unreadable | Skill exits 2 with E-HEALTH-001: "Brain state file missing — run `/brain:init` or `/brain:cold-start-recover`." |
 | EC-003 | Brain has 0 wiki pages (no ingests yet) | Wiki dimension reports YELLOW with detail "No wiki pages yet — ingest your first source." |
+| EC-004 | `.brain/STATE.md` exists but has fewer than 2 `---` markers (malformed frontmatter fence) | Writeback skipped; `writeback_status` = `"skipped_malformed_frontmatter"` in stdout JSON; original STATE.md preserved byte-identical; dimensional JSON report still emitted (Postcondition 2) with writeback_status field set. References Postcondition 5. |
+| EC-005 | `.brain/STATE.md` has well-fenced YAML frontmatter but `yq` fails to parse it (e.g., tab-indented YAML, duplicate keys) | Writeback fails; `writeback_status` = `"failed"` in stdout JSON; `writeback_error` field populated with yq diagnostic string; original STATE.md preserved byte-identical; dimensional JSON report still emitted (Postcondition 2). References Postcondition 5. |
 
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| Healthy brain with recent ingests | `{"overall": "GREEN", "dimensions": {...all GREEN...}}`; exit 0 | happy-path |
-| Brand-new brain (just init'd, no ingests) | `{"overall": "YELLOW", ...sources: GREEN, wiki: YELLOW, ...}`; exit 0 | edge-case |
+| Healthy brain with recent ingests | `{"overall": "GREEN", "dimensions": {...all GREEN...}, "writeback_status": "ok"}`; exit 0 | happy-path |
+| Brand-new brain (just init'd, no ingests) | `{"overall": "YELLOW", ...sources: GREEN, wiki: YELLOW, ..., "writeback_status": "ok"}`; exit 0 | edge-case |
 | Brain with missing STATE.md | E-HEALTH-001 JSON; exit 2 | error |
-| Brain with token cost > 2x baseline | Sources dimension YELLOW with token alert detail | edge-case |
+| Brain with token cost > 2x baseline | Sources dimension YELLOW with token alert detail; `"writeback_status": "ok"` | edge-case |
+| STATE.md with fewer than 2 `---` markers (EC-004) | Dimensional report with `"writeback_status": "skipped_malformed_frontmatter"`, no `writeback_error`; exit 0 (bats: `test_writeback_skipped_malformed_frontmatter` in brain-health-skill.bats) | edge-case |
+| STATE.md with well-fenced but yq-unparseable YAML (EC-005) | Dimensional report with `"writeback_status": "failed"`, `"writeback_error": "<yq diagnostic>"`, original STATE.md preserved byte-identical; exit 0 (bats: `test_writeback_failed_yq_error` in brain-health-skill.bats) | edge-case |
+| Healthy brain: writeback succeeds, STATE.md updated | `"writeback_status": "ok"` in stdout; STATE.md frontmatter `overall_health`/`dimensions`/`red_dimensions`/`last_health_check` updated; exit 0 (bats: `test_writeback_ok` in brain-health-skill.bats) | happy-path |
 
 ## Verification Properties
 
@@ -98,6 +103,14 @@ STORY-004
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
 
 ## Changelog
+
+### v1.6 (2026-05-28)
+
+**WRITEBACK ENUM COVERAGE (F-P9-I02 + F-P9-I03 + optional EC-004/EC-005):**
+
+- **Postcondition 2 JSON example (F-P9-I02):** `writeback_status` field added to the example JSON output schema. The field is always present in the stdout report and is one of `{ok, skipped_malformed_frontmatter, failed}` per Postcondition 5. `writeback_error` is conditionally present when `writeback_status` is `"failed"`, containing the yq diagnostic string. The prior example omitted this field despite Postcondition 5 being present since v1.4 — a contract surface gap.
+- **Canonical Test Vectors (F-P9-I03):** Added 3 new rows covering the writeback enum paths: (1) `writeback_status="ok"` on well-formed STATE.md (positive path, bats: `test_writeback_ok`); (2) `writeback_status="skipped_malformed_frontmatter"` on STATE.md with fewer than 2 `---` markers (safeguard path, bats: `test_writeback_skipped_malformed_frontmatter`); (3) `writeback_status="failed"` on STATE.md with well-fenced but yq-unparseable YAML (failure path, bats: `test_writeback_failed_yq_error`). All prior rows updated to include `writeback_status` in their expected output.
+- **Edge Cases EC-004 and EC-005 (optional in-scope, production-grade Rule 4):** EC-004 documents the malformed-frontmatter safeguard path (fewer than 2 `---` markers → writeback skipped, STATE.md preserved byte-identical). EC-005 documents the yq parse-failure path (well-fenced but yq-unparseable YAML → writeback fails, `writeback_error` populated, STATE.md preserved byte-identical). Both reference Postcondition 5 as the authoritative specification. The bats suite (brain-health-skill.bats, 45 tests) already covers these paths; this entry brings the BC body in line with the test coverage that existed since v1.4.
 
 ### v1.5 (2026-05-28)
 

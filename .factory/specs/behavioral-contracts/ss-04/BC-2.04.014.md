@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.4"
+version: "1.5"
 status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -15,11 +15,11 @@ introduced: v0.1.0
 modified: ["2026-05-28"]
 ---
 
-# Behavioral Contract BC-2.04.014: `brain-health-check.sh` surfaces six-dimensional convergence state on SessionStart (exit 0 or 1)
+# Behavioral Contract BC-2.04.014: `brain-health-check.sh` surfaces convergence state on SessionStart (always exits 0; advisory delivered via systemMessage)
 
 ## Description
 
-`brain-health-check.sh` fires on the SessionStart event. It reads `.brain/STATE.md` and emits the six-dimensional convergence state as a banner to the operator. This gives the operator immediate situational awareness at the start of each session without requiring a manual `/brain:health` invocation. If any dimension is RED, the hook exits 1 (advisory) so the state is surfaced prominently.
+`brain-health-check.sh` fires on the SessionStart event. It reads `.brain/STATE.md` frontmatter and emits a one-line convergence summary to the operator via the `systemMessage` field. The summary takes the form `Brain health: <state>. Issues: <name>: <detail>; ...` derived from the `red_dimensions` array written by the last `/brain:health` invocation. This gives the operator immediate situational awareness at the start of each session without requiring a manual `/brain:health` invocation. The hook ALWAYS exits 0 — per ADR-002 v2.0, operator-visible advisories are delivered via `systemMessage` (exit 0), never via exit 1 (which goes to the debug log only and is not shown to the operator).
 
 ## Preconditions
 
@@ -30,12 +30,12 @@ modified: ["2026-05-28"]
 
 **In a valid brain with GREEN overall state:**
 1. Hook exits 0.
-2. stdout: `{"verdict": "allow", "message": "Brain health: GREEN. <summary>", "trace": "<uuid>"}`.
+2. stdout: `{"continue": true, "systemMessage": "Brain health: GREEN. All dimensions healthy.", "hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "overall_health: GREEN"}}`.
 3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "brain.health.checked", "hook_name": "brain-health-check.sh", "overall_state": "GREEN"}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **In a valid brain with YELLOW or RED state:**
-1. Hook exits 1 (advisory).
-2. stdout: `{"verdict": "advise", "code": "E-HEALTH-002", "message": "Brain health: <YELLOW|RED>. <dimension summaries with issues>", "trace": "<uuid>"}`.
+1. Hook exits 0 (advisory delivered via systemMessage per ADR-002 v2.0 — exit 1 is debug-log only and NOT shown to the operator).
+2. stdout: `{"continue": true, "systemMessage": "Brain health: <YELLOW|RED>. Issues: <name>: <detail>; ...", "hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "E-HEALTH-002", "unhealthy_state": true, "red_dimensions": ["<dim>"]}}`.
 3. Hook emits JSONL event to stderr: `{"ts": "<ISO8601>", "event_type": "brain.health.checked", "hook_name": "brain-health-check.sh", "overall_state": "<YELLOW|RED>", "red_dimensions": ["<dim>"]}`. (Past-tense verb per SS-17 §Event-type naming convention.)
 
 **Not in a brain directory (`.brain/STATE.md` absent):**
@@ -53,14 +53,14 @@ modified: ["2026-05-28"]
 | ID | Description | Expected Behavior |
 |----|-------------|-------------------|
 | EC-001 | Not in a brain directory | Exit 0; emit `brain.health.skipped` JSONL event to stderr (NFR-011 + BC-2.04.017). |
-| EC-002 | `.brain/STATE.md` exists but is malformed | Exit 1 with advisory: "Brain STATE.md unreadable — run /brain:health for diagnosis." |
+| EC-002 | `.brain/STATE.md` exists but is malformed | Exit 0 with advisory delivered via systemMessage: "Brain STATE.md unreadable — run /brain:health for diagnosis."; `hookSpecificOutput.unhealthy_state=true`. |
 
 ## Canonical Test Vectors
 
 | Input | Expected Output | Category |
 |-------|----------------|----------|
-| SessionStart in healthy brain | `{"verdict": "allow", "message": "Brain health: GREEN..."}` ; exit 0 | happy-path |
-| SessionStart in brain with RED wiki dimension | `{"verdict": "advise", ...}` ; exit 1 | edge-case |
+| SessionStart in healthy brain | `{"continue": true, "systemMessage": "Brain health: GREEN. All dimensions healthy.", "hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "overall_health: GREEN"}}`; exit 0 | happy-path |
+| SessionStart in brain with RED wiki dimension | `{"continue": true, "systemMessage": "Brain health: RED. Issues: wiki: ...", "hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "E-HEALTH-002", "unhealthy_state": true, "red_dimensions": ["wiki"]}}`; exit 0 | edge-case |
 | SessionStart outside a brain directory | stderr: `{"event_type": "brain.health.skipped", ...}`; exit 0 | edge-case |
 
 ## Verification Properties
@@ -68,7 +68,7 @@ modified: ["2026-05-28"]
 | VP-NNN | Property | Proof Method |
 |--------|----------|-------------|
 | (no VP — P1) | GREEN brain → exit 0 | bats tests/brain-health-check.bats |
-| (no VP — P1) | RED dimension → exit 1 (never 2) | bats tests/brain-health-check.bats |
+| (no VP — P1) | RED dimension → exit 0 (advisory via systemMessage; never exit 1 or 2) | bats tests/brain-health-check.bats |
 | (no VP — P1) | Non-brain directory → exit 0 + `brain.health.skipped` event on stderr | bats tests/brain-health-check.bats |
 
 ## Traceability
@@ -86,6 +86,23 @@ modified: ["2026-05-28"]
 - BC-2.01.006 — related to (/brain:health skill surfaces the same dimensions)
 
 ## Changelog
+
+### v1.5 (2026-05-28)
+
+**ADR-002 v2.0 FULL ALIGNMENT (F-P9-C01 + F-P9-C02 + F-P9-I01 + DI-003 retirement):** Complete rewrite of all exit-code and stdout-schema references to match ADR-002 v2.0 verified May 2026 Claude Code hook protocol. Prior versions contained the v1.0-era custom verdict envelope (`{"verdict": "allow|advise|block", ...}`) and incorrect exit 1 advisory semantics — both superseded by ADR-002 v2.0.
+
+Changes in this version:
+- **H1 title:** "(exit 0 or 1)" → "(always exits 0; advisory delivered via systemMessage)" — accurately reflects the ADR-002 v2.0 contract.
+- **Description:** Rewrote to accurately state (a) the hook emits a one-line summary via `systemMessage`, not a "six-dimensional banner"; (b) the summary is derived from `red_dimensions` array; (c) hook ALWAYS exits 0; (d) exit 1 is debug-log only and NOT shown to the operator per ADR-002 v2.0. Closes F-P9-I01 (misleading "six-dimensional banner" phrasing per BC-DIMENSION-RECONCILIATION §BC-2.04.014 Dimension Names Clarification — the hook never enumerates dimension names).
+- **Postconditions (GREEN state):** `{"verdict": "allow", ...}` → `{"continue": true, "systemMessage": "Brain health: GREEN...", "hookSpecificOutput": {...}}`.
+- **Postconditions (YELLOW/RED state):** exit 1 → exit 0; `{"verdict": "advise", ...}` → `{"continue": true, "systemMessage": "Brain health: <state>. Issues: ...", "hookSpecificOutput": {"unhealthy_state": true, "red_dimensions": [...]}}`.
+- **EC-002:** "Exit 1 with advisory" → "Exit 0 with advisory delivered via systemMessage; hookSpecificOutput.unhealthy_state=true".
+- **Canonical Test Vectors:** All rows updated. RED-dimension row: exit 1 → exit 0; `{"verdict": "advise", ...}` → native Claude Code schema.
+- **Verification Properties:** "RED dimension → exit 1 (never 2)" → "RED dimension → exit 0 (advisory via systemMessage; never exit 1 or 2)".
+- **Invariant 1** ("hook NEVER exits 2") verified correct — kept unchanged.
+- **Invariant 3** (canonical dimension names) verified correct — kept unchanged.
+
+DI-003 (deferred exit-code narrative drift item) is fully closed by this version. The deferral lacked the three required criteria under CLAUDE.md Canonical Principle Rule 3 (explicit human direction, concrete future dependency, specific future story anchor) — per Rule 4, AI-built defects are AI responsibility to fix in scope.
 
 ### v1.4 (2026-05-28)
 

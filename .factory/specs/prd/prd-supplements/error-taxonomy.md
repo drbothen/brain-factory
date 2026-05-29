@@ -1,7 +1,7 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.8"
+version: "0.1.9"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
@@ -159,7 +159,7 @@ Message format uses `<placeholder>` for dynamic values.
 | Code | Severity | Exit | Raised By | Message Format |
 |------|----------|------|-----------|---------------|
 | E-HEALTH-001 | broken | 2 | `/brain:health` | `Brain state file missing — run /brain:init or /brain:cold-start-recover.` |
-| E-HEALTH-002 | degraded | 1 | `brain-health-check.sh` | `Brain health: <YELLOW|RED>. <dimension summaries with issues>` |
+| E-HEALTH-002 | degraded | 0 | `brain-health-check.sh` | `Brain health: <YELLOW|RED>. Issues: <name>: <detail>; ...` (delivered via `systemMessage` field; hook exits 0 per ADR-002 v2.0) |
 | E-HEALTH-003 | cosmetic | 0 | `brain-health-check.sh` | `Brain STATE.md unreadable — run /brain:health for diagnosis.` |
 | E-HEALTH-004 | broken | 2 | `/brain:health` | `jq is required for /brain:health. Install via your package manager.` |
 | E-HEALTH-005 | broken | 2 | `/brain:health` | `yq is required for /brain:health. Install via your package manager.` |
@@ -275,7 +275,7 @@ Per CLAUDE.md Canonical Principle:
 
 - [x] All error codes follow `E-{SCOPE}-NNN` convention — verified.
 - [x] All severity levels are one of: broken/degraded/cosmetic — verified.
-- [x] All exit codes match severity (broken=2, degraded=1, cosmetic=1) — verified.
+- [x] All exit codes match severity (broken=2, degraded=1, cosmetic=1) — verified with exception: E-HEALTH-002 is degraded but exits 0. This is correct per ADR-002 v2.0: `brain-health-check.sh` is a SessionStart hook where exit 1 is debug-log only (not shown to the operator); operator-visible advisories require exit 0 + `systemMessage`. E-HEALTH-002 is a hook advisory, not a skill exit code, so the standard degraded=1 mapping does not apply.
 - [x] All message formats use `<placeholder>` syntax for dynamic values — verified.
 - [x] Three-file gate: run before commit:
   ```bash
@@ -289,6 +289,19 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.9 (2026-05-28)
+
+**ADR-002 v2.0 EXIT-CODE ALIGNMENT (F-P9-C03):** E-HEALTH-002 exit-code column corrected from `1` → `0`. The hook `brain-health-check.sh` delivers the YELLOW/RED health advisory via the `systemMessage` field in the stdout JSON verdict and always exits 0 per ADR-002 v2.0 (exit 1 is debug-log only and NOT shown to the operator). The prior value of `1` reflected the v1.0-era advisory-via-exit-1 pattern that was superseded when ADR-002 was updated to v2.0 in May 2026. Message format updated to match the one-line summary pattern `Brain health: <YELLOW|RED>. Issues: <name>: <detail>; ...` per BC-2.04.014 v1.5 Postcondition 2.
+
+TD-VSDD-060 sibling-sweep: all five HEALTH error rows verified:
+- E-HEALTH-001 (broken, exit 2): raised by `/brain:health` skill when STATE.md missing — exit 2 is correct (skill exits non-zero on fatal error).
+- E-HEALTH-002 (degraded, exit 0): raised by `brain-health-check.sh` on YELLOW/RED health — corrected to 0 in this version.
+- E-HEALTH-003 (cosmetic, exit 0): raised by `brain-health-check.sh` on UNREADABLE STATE.md — exit 0 already correct.
+- E-HEALTH-004 (broken, exit 2): raised by `/brain:health` when `jq` missing — exit 2 correct.
+- E-HEALTH-005 (broken, exit 2): raised by `/brain:health` when `yq` missing — exit 2 correct.
+
+No other HEALTH row changes required.
 
 ### v0.1.8 (2026-05-28)
 
