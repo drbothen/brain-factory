@@ -10,7 +10,8 @@ traces_to: ../VP-INDEX.md
 timestamp: 2026-05-15T00:00:00
 verifies_bcs: [BC-2.14.001, BC-2.14.003]
 created: 2026-05-15
-status: proposed
+status: partial
+status_detail: "brain-health sub-property verified by brain-health-skill.bats (STORY-004); upgrade-brain sub-property pending future story"
 ---
 
 # VP-024: Plugin lifecycle: install from marketplace and upgrade migration execution
@@ -165,10 +166,12 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
   artifacts, not runtime plugin files) — the planning-docs-absent test catches this
 - The migration script is not idempotent: running it twice creates duplicate entries
   in `wiki/index.md` — the sha256 state-comparison test catches this
-- `/brain:health` crashes with an unhandled bash error (exit 2 with no JSON output)
-  on a non-brain directory — the health-callable test catches this specific failure mode
+- `/brain:health` crashes with an unhandled bash error (raw stack trace to stderr,
+  no JSON envelope on stdout) on a non-brain directory — the health-callable test
+  catches this specific failure mode (E-HEALTH-001 envelope must be present with
+  valid JSON; exit 2 is the expected structured response, not the failure)
 
 ## Status
 
-proposed — pending Phase 3 implementation of health skill, upgrade-brain skill,
-and upgrade.bats
+partial — Brain-health sub-property verified by STORY-004 (brain-health-skill.bats,
+45/45 green). Upgrade-brain sub-property + upgrade.bats pending future story.
