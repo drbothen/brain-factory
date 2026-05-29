@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-8-pending
+phase: phase-3-wave-4-story-004-pass-9-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-8-pending
-session_continuity: "Pass 7 PASS (0C+0I+0S+0O) — first clean pass — streak 1/3. Fresh-context audit verified: 10 yq calls in _writeback_state each have paired per-call || guard; writeback_status enum (ok/failed) consistent across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + bats; writeback surface 4-field consistent across all surfaces; all AC-001 through AC-010 + Postcondition 5 have bats coverage; no drift from canonical dim names, skill dir, or locked decisions; all DI-001 through DI-006 remain correctly out-of-scope. Tests 45/45 + 22/22 on feature/STORY-004 at 40de399 (unchanged). NEXT ACTION: dispatch adversary Pass 8 (need second consecutive PASS for streak 2/3). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-9-pending
+session_continuity: "Pass 8 FAIL (0C+1I+0S+1O) — streak reset 1/3 → 0/3. Fix burst 8 applied (2 commits on feature/STORY-004): 03a34d3 (spec — BC-2.01.006 v1.4 → v1.5 Description sentence rewritten to reflect cache-decoupled hook architecture per BC-2.04.014, NOT skill-fired; closes partial-fix regression S-7.01 from v1.3→v1.4 burst), ddea4fa (fix — run.sh:335 trap comment corrected EXIT→RETURN, doc/code alignment, no behavior change). Tests 45/45 + 22/22 on feature/STORY-004 at ddea4fa. NEXT ACTION: dispatch adversary Pass 9 (need 3 consecutive PASS from 0/3 for convergence). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-8-pending
+status: phase-3-wave-4-story-004-pass-9-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,16 +90,16 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 8 PENDING — Streak 1/3 (first clean pass — Pass 7 PASS)
+## TOP OF STACK — STORY-004 Pass 9 PENDING — Streak 0/3 (Pass 8 FAIL — streak reset by F-P8-I01 BC Description drift)
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `40de399`
+1. Verify worktree: `git worktree list` — should show STORY-004 at `ddea4fa`
 2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
 3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 8 (fresh context, streak 1/3, need second consecutive PASS for streak 2/3)
+4. Dispatch adversary for Pass 9 (fresh context, streak 0/3 after Pass 8 reset, need 3 consecutive PASS for convergence)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
 
-**STORY-004 cascade state:** Pass 7 PASS (0C+0I+0S+0O) — first clean pass — streak 1/3. No fix burst applied. Worktree tip remains 40de399. Tests 45/45 + 22/22. Pass 7 fresh-context audit verified: 10 yq calls in _writeback_state each have paired per-call || guard (count match), writeback_status enum consistent across all surfaces, all ACs have bats coverage, no drift from canonical dim names or locked decisions, all DI-001 through DI-006 correctly remain out-of-scope. BC-5.39.001 requires 3 consecutive clean passes; streak now 1/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 8 FAIL (0C+1I+0S+1O) — streak reset 1/3 → 0/3. Fix burst 8 applied (2 commits). Worktree tip ddea4fa. Tests 45/45 + 22/22. F-P8-I01 (IMPORTANT): BC-2.01.006 Description prose still claimed skill fires the hook — closed at 03a34d3 (v1.4 → v1.5, Description rewritten to reflect cache-decoupled architecture per BC-2.04.014). F-P8-O01 (OBSERVATION): run.sh:335 trap comment said EXIT instead of RETURN — closed at ddea4fa (doc/code alignment, no behavior change). Fresh-context audit value confirmed: Pass 8 caught what 7 prior passes missed — BC-5.39.001 3-CLEAN protocol design working as intended. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
@@ -110,6 +110,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 **D-019 — STORY-004 fix burst 6 complete + paper-fix exposed + closed (2026-05-28):** Pass 6 FAIL (1C+2I+1S+2O) closed by 3-commit fix burst on feature/STORY-004. F-P6-C01 (CRITICAL): 2-step closure — 7784cfb renamed pre-yq sentinel `yq_parse_error` → `failed` (BC-2.01.006 enum compliance); 9fe29ce added test 45 "malformed YAML in well-fenced frontmatter triggers writeback_status=failed" (RED GATE: initially FAILED — exposing that Pass-4 F-P4-O01 shopt inherit_errexit fix was based on false assumption); 40de399 replaced false inherit_errexit-in-if-context reliance with explicit per-call `|| { _writeback_failure_reason="failed"; return 1; }` guards; test 45 transitioned FAIL → PASS. F-P6-I01: SKILL.md Output JSON schema + Quality Bar extended. F-P6-I02: 3 volatile v1.x version pins swept from bats test comments (TD-VSDD-091). F-P6-O02: SKILL.md Procedure step 2 writeback sub-bullet added. F-P6-S01 deferred → DI-005. F-P6-O01 [process-gap] deferred → DI-006. Tests 45/45 + 22/22 pass at 40de399. Streak 0/3. Pass 7 next. Cycle lesson codified: shopt -s inherit_errexit does NOT propagate set -e into functions invoked via if-conditional context (POSIX errexit-context rule); use explicit per-call guards.
 
 **D-020 — STORY-004 Pass 7 PASS — first clean pass — streak 1/3 (2026-05-28):** Pass 7 adversary verdict: PASS — 0 CRITICAL + 0 IMPORTANT + 0 SUGGESTION + 0 OBSERVATION. Fresh-context read-only audit. No fix burst. Worktree tip remains 40de399. Verification details: (1) 10 yq calls inside _writeback_state (run.sh lines 359, 364, 370, 375, 380, 385, 390, 395, 403, 438) — each has a paired `|| { _writeback_failure_reason="failed"; return 1; }` guard (count match confirmed); (2) writeback_status enum 3-value consistency verified across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + bats; (3) writeback surface 4-field consistency (overall_health, last_health_check, dimensions, red_dimensions) verified across run.sh + SKILL.md + BC-2.01.006 + STORY-004 + brain-health-check.sh; (4) all AC-001 through AC-010 + Postcondition 5 have bats coverage; (5) no drift from canonical dim names (capture/sources/wiki/synthesis/output/reflection), canonical skill dir (skills/brain-health/), or locked decisions; (6) all previously-deferred DI-001 through DI-006 remain out-of-scope and correctly skipped. BC-5.39.001 streak advances to 1/3. Pass 8 next (need second consecutive PASS).
+
+**D-021 — STORY-004 Pass 8 FAIL + fix burst 8 applied — streak reset 0/3 (2026-05-28):** Pass 8 adversary verdict: FAIL — 0 CRITICAL + 1 IMPORTANT + 0 SUGGESTION + 1 OBSERVATION. Streak reset 1/3 → 0/3 per BC-5.39.001 (any finding resets the streak). F-P8-I01 (IMPORTANT): BC-2.01.006 Description prose still claimed "the skill fires the hook" — a partial-fix regression (S-7.01) from the v1.3 → v1.4 burst which correctly enumerated Postcondition 5 but left Description prose unsync'd with BC-2.04.014 cache-decoupled architecture. Closed at 03a34d3 (BC-2.01.006 v1.4 → v1.5, Description sentence rewritten: hook is SessionStart-event-driven per BC-2.04.014, NOT skill-fired). Sibling sweep clean — only BC-2.01.006 had the drift. F-P8-O01 (OBSERVATION): run.sh:335 trap comment said "EXIT trap" but code uses RETURN trap — closed at ddea4fa (doc/code alignment, no behavior change). Cycle value: fresh-context audit by a different pass surfaced a real defect that 7 prior passes missed — BC-5.39.001 3-CLEAN protocol working as designed. Tests 45/45 + 22/22 at ddea4fa. Pass 9 next (need 3 consecutive PASS from 0/3 for convergence).
 
 ---
 

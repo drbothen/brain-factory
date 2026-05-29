@@ -21,9 +21,13 @@ traces_to: STATE.md
 2. **Paper-fix detection works when test-writers have autonomy to commit initially-failing tests** — Pass 4 F-P4-O01 was "closed" at 5c8430a with `shopt -s inherit_errexit`. Pass 6 adversary surfaced the same issue as F-P6-C01. The paper-fix was only exposed when test-writer added a load-bearing yq-failure test (test 45) in 9fe29ce that initially FAILED — demonstrating the claimed fix was insufficient. The paper-fix was then actually closed at 40de399. Lesson: empirical RED GATE tests that start failing are more reliable closure evidence than implementer self-assessment. TD-VSDD-059 paper-fix detection protocol requires load-bearing tests precisely for this reason.
    _Discovered: Pass 6 (2026-05-28). Manifestation: 2-step closure required for a finding that was declared closed in Pass 4._
 
+3. **Fresh-context audits should explicitly include narrative prose review (Description, AC text, Architecture Compliance Rules), not just enum/structural artifacts** — Postcondition-focused passes can leave Description prose unswept, creating partial-fix regression (S-7.01). The v1.3 → v1.4 burst correctly enumerated Postcondition 5 and its 4 writeback fields, but left BC-2.01.006 Description claiming "the skill fires the hook" intact. Seven consecutive passes missed this drift. Pass 8, a fresh-context audit, caught it by reading the Description prose against the actual BC-2.04.014 architecture. Lesson: adversary dispatch instructions should explicitly call out narrative sections (Description, Preconditions prose, Architecture Compliance Rules) as review surfaces alongside structured tables and enumerations.
+   _Discovered: Pass 8 (2026-05-28). Root cause: partial-fix regression from v1.3→v1.4 burst. Closure: BC-2.01.006 v1.5 Description rewritten at 03a34d3._
+
 ## Policy Candidates
 
 | Lesson | Proposed Policy | Scope | Status |
 |--------|----------------|-------|--------|
 | 1 | Explicit per-call error guards required in any bash function called via if-context | hook + skill bash code review checklist | proposed |
 | 2 | Paper-fix closure MUST be validated by a load-bearing test (bats) that was initially FAILING | test-writer dispatch protocol for fix bursts | proposed |
+| 3 | Adversary dispatch must explicitly list narrative prose sections (Description, AC text, Compliance Rules) as review surfaces alongside structured tables | adversary dispatch template + BC-5.39.001 cascade instructions | proposed |
