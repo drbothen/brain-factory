@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-28
+last_updated: 2026-05-28T18:00:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-9-pending
+phase: phase-3-wave-4-story-004-pass-10-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-9-pending
-session_continuity: "Pass 8 FAIL (0C+1I+0S+1O) — streak reset 1/3 → 0/3. Fix burst 8 applied (2 commits on feature/STORY-004): 03a34d3 (spec — BC-2.01.006 v1.4 → v1.5 Description sentence rewritten to reflect cache-decoupled hook architecture per BC-2.04.014, NOT skill-fired; closes partial-fix regression S-7.01 from v1.3→v1.4 burst), ddea4fa (fix — run.sh:335 trap comment corrected EXIT→RETURN, doc/code alignment, no behavior change). Tests 45/45 + 22/22 on feature/STORY-004 at ddea4fa. NEXT ACTION: dispatch adversary Pass 9 (need 3 consecutive PASS from 0/3 for convergence). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-10-pending
+session_continuity: "Pass 9 FAIL (4C+3I+1O+1pg) — streak 0/3. Fix burst 9 applied (3 commits on feature/STORY-004): 50fa61c (spec — BC-2.04.014 v1.4→v1.5 full ADR-002 v2.0 + native CC schema + BC-2.01.006 v1.5→v1.6 writeback enum rows + EC-004/005 + error-taxonomy v0.1.8→v0.1.9 E-HEALTH-002 exit 0), ae22310 (arch — SS-04 BC-2.04.014 exit-code 0/1→0), aad5374 (fix — state-md-template body canonical six dims + hook HEALTH_SKILL paper-fix removed). Tests 45/45 + 22/22 at aad5374. DI-003 RETIRED. NEXT ACTION: dispatch adversary Pass 10 (need 3 consecutive PASS from 0/3). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -90,16 +90,17 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 9 PENDING — Streak 0/3 (Pass 8 FAIL — streak reset by F-P8-I01 BC Description drift)
+## TOP OF STACK — STORY-004 Pass 10 PENDING — Streak 0/3 (Pass 9 fix burst 9 closed DI-003 + 4C+3I)
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `ddea4fa`
+1. Verify worktree: `git worktree list` — should show STORY-004 at `aad5374`
 2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
 3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 9 (fresh context, streak 0/3 after Pass 8 reset, need 3 consecutive PASS for convergence)
+4. Dispatch adversary for Pass 10 (fresh context, streak 0/3 after Pass 9 FAIL, need 3 consecutive PASS for convergence)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
+6. DI-003 is RETIRED — do not re-raise BC-2.04.014 narrative drift from Pass 9; it was fully closed at 50fa61c
 
-**STORY-004 cascade state:** Pass 8 FAIL (0C+1I+0S+1O) — streak reset 1/3 → 0/3. Fix burst 8 applied (2 commits). Worktree tip ddea4fa. Tests 45/45 + 22/22. F-P8-I01 (IMPORTANT): BC-2.01.006 Description prose still claimed skill fires the hook — closed at 03a34d3 (v1.4 → v1.5, Description rewritten to reflect cache-decoupled architecture per BC-2.04.014). F-P8-O01 (OBSERVATION): run.sh:335 trap comment said EXIT instead of RETURN — closed at ddea4fa (doc/code alignment, no behavior change). Fresh-context audit value confirmed: Pass 8 caught what 7 prior passes missed — BC-5.39.001 3-CLEAN protocol design working as intended. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 9 FAIL (4C+3I+1O+1pg) — streak 0/3. Fix burst 9 applied (3 commits: 50fa61c + ae22310 + aad5374). Worktree tip aad5374. Tests 45/45 + 22/22. F-P9-C01+C02 (BC-2.04.014 v1.4→v1.5 full ADR-002 v2.0 + native CC schema rewrite), F-P9-C03 (error-taxonomy E-HEALTH-002 exit 1→0), F-P9-C04 (state-md-template body canonical six dims), F-P9-I01 (BC-2.04.014 Description), F-P9-I02+I03 (BC-2.01.006 v1.6 writeback enum + EC-004/005), F-P9-I05 (hook HEALTH_SKILL unused var removed). DI-003 RETIRED (BC-2.04.014 narrative drift fully closed at 50fa61c). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
@@ -113,6 +114,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 **D-021 — STORY-004 Pass 8 FAIL + fix burst 8 applied — streak reset 0/3 (2026-05-28):** Pass 8 adversary verdict: FAIL — 0 CRITICAL + 1 IMPORTANT + 0 SUGGESTION + 1 OBSERVATION. Streak reset 1/3 → 0/3 per BC-5.39.001 (any finding resets the streak). F-P8-I01 (IMPORTANT): BC-2.01.006 Description prose still claimed "the skill fires the hook" — a partial-fix regression (S-7.01) from the v1.3 → v1.4 burst which correctly enumerated Postcondition 5 but left Description prose unsync'd with BC-2.04.014 cache-decoupled architecture. Closed at 03a34d3 (BC-2.01.006 v1.4 → v1.5, Description sentence rewritten: hook is SessionStart-event-driven per BC-2.04.014, NOT skill-fired). Sibling sweep clean — only BC-2.01.006 had the drift. F-P8-O01 (OBSERVATION): run.sh:335 trap comment said "EXIT trap" but code uses RETURN trap — closed at ddea4fa (doc/code alignment, no behavior change). Cycle value: fresh-context audit by a different pass surfaced a real defect that 7 prior passes missed — BC-5.39.001 3-CLEAN protocol working as designed. Tests 45/45 + 22/22 at ddea4fa. Pass 9 next (need 3 consecutive PASS from 0/3 for convergence).
 
+**D-022 — STORY-004 Pass 9 FAIL + fix burst 9 applied — DI-003 RETIRED — streak 0/3 (2026-05-28):** Pass 9 adversary verdict: FAIL — 4 CRITICAL + 3 IMPORTANT + 1 OBSERVATION + 1 process-gap. Fix burst 9 (3 commits on feature/STORY-004): 50fa61c (spec — BC-2.04.014 v1.4→v1.5 full ADR-002 v2.0 + native CC schema rewrite + H1/Description/Postconditions/EC-002/Test Vectors/VP all aligned; BC-2.01.006 v1.5→v1.6 Postcondition 2 JSON includes writeback_status + Canonical Test Vectors writeback enum rows + EC-004/EC-005; error-taxonomy.md v0.1.8→v0.1.9 E-HEALTH-002 exit 1→0; DI-003 retired), ae22310 (arch — SS-04-hook-enforcement-chain.md BC-2.04.014 row exit-code 0/1→0), aad5374 (fix — state-md-template.md body rewritten canonical six dimensions; hook HEALTH_SKILL unused variable removed). Tests 45/45 + 22/22 at aad5374. DI-003 RETIRED: BC-2.04.014 narrative drift fully closed (was deferred as spec-only/out-of-scope; closed in-scope per Canonical Principle Rule 4 — deferral lacked explicit human direction + fix is load-bearing). Cycle Lesson 4 codified in lessons.md: reconciliation documents must sweep the WHOLE file in scope. Pass 10 next.
+
 ---
 
 ## Drift Items (process-gap deferrals — not blocking STORY-004)
@@ -123,7 +126,7 @@ These items were identified during adversarial passes as out-of-STORY-004-scope 
 |----|---------|--------|--------------|--------|-------|
 | DI-001 | BC frontmatter `status: draft` vs `lifecycle_status: active` divergence — project-wide inconsistency in BC files | F-P3-O01 (Pass 3 OBSERVATION) | Out-of-STORY-004-scope; project-wide pattern needing dedicated PO sweep across all 95 BCs | Post-STORY-004-PR-merge or next maintenance sweep | product-owner |
 | DI-002 | `argument-hint: ""` project-wide in SKILL.md files vs Meta-Lint Contract requiring non-empty value | F-P3-O02 (Pass 3 OBSERVATION) | Out-of-STORY-004-scope; project-wide pattern requiring meta-lint rule clarification or SKILL.md sweep | Post-STORY-004-PR-merge or next maintenance sweep | product-owner + test-writer |
-| DI-003 | BC-2.04.014 v1.4 exit-code narrative prose says "exits 1 (advisory)" in at least one location; ADR-002 v2.0 + actual hook + bats test `test_BC_2_04_014_hook_never_exits_1` all require exit 0 — spec narrative drift | F-P4-noted (Pass 4 adversary OUT-OF-STORY-004-SCOPE note; STORY-013 ownership) | BC narrative drift only; implementation and test are correct (ADR-002 v2.0 + hook + bats enforce exit 0); amendment is spec-only and not blocking STORY-004 merge | Post-STORY-004-PR-merge or next maintenance sweep | product-owner (STORY-013 BC owner) |
+| DI-003 | ~~BC-2.04.014 v1.4 exit-code narrative prose says "exits 1 (advisory)"; ADR-002 v2.0 + hook + bats all require exit 0 — spec narrative drift~~ | F-P4-noted | **RETIRED** — fully closed at 50fa61c (Pass 9 fix burst 9): BC-2.04.014 v1.4→v1.5 full ADR-002 v2.0 + native CC schema rewrite; all prose aligned to exit 0. Lessons.md Lesson 4 codifies the reconciliation-completeness rule that prevented earlier closure. | CLOSED 2026-05-28 | product-owner (closed in-scope Pass 9) |
 | DI-004 | STORY-005 AC-004 / Test Vector says "exit ≤ 1" but VP-024 + brain-health-skill.bats + impl all require exit 2 for unhealthy state — cross-story spec narrative drift | F-P5-O04 (Pass 5 adversary OBSERVATION; STORY-005 ownership) | Implementation and test are correct; spec narrative drift only in STORY-005; cross-story scope makes this STORY-005-owner responsibility; does not block STORY-004 merge | STORY-005 wave-gate or next maintenance sweep | product-owner (STORY-005 BC owner) |
 | DI-005 | yq dim_detail shell-escape latent risk — yq inline interpolation of dim_detail string; currently no `"` or `\` in any detail string so risk is latent only; no test vectors exercise special chars | F-P6-S01 (Pass 6 adversary SUGGESTION) | Latent risk only at current time; no special characters in any dim_detail value in codebase; fix requires dedicated story to add escape helper + test vectors; not blocking STORY-004 merge | Post-STORY-004-PR-merge follow-up story | implementer + test-writer |
 | DI-006 | [process-gap] Recommends codifying "grep swept token across plugin tree" as a formal closure-validation gate — recurring sibling-sweep miss pattern (TD-VSDD-060) detected across multiple passes | F-P6-O01 (Pass 6 adversary OBSERVATION; process-gap tag) | Adversary fresh-context audit currently catches sibling-sweep misses (demonstrated in Passes 4, 5, 6); codifying as a closure gate is process polish; defer to post-merge cycle-lessons sweep per S-7.02 | Post-STORY-004-PR-merge cycle-lessons sweep | state-manager + orchestrator |
