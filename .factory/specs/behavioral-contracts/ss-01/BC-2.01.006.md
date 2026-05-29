@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.7"
+version: "1.8"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -35,7 +35,7 @@ removal_reason: null
 ## Postconditions
 
 1. Skill exits 0.
-2. Structured JSON is emitted to stdout: `{"dimensions": {"capture": {"status": "GREEN|YELLOW|RED", "detail": "..."}, "sources": {...}, "wiki": {...}, "synthesis": {...}, "output": {...}, "reflection": {...}}, "overall": "GREEN|YELLOW|RED", "last_checked": "<ISO8601>", "writeback_status": "ok|skipped_malformed_frontmatter|failed"}`. Note: `writeback_status` is one of `{ok, skipped_malformed_frontmatter, failed}` per Postcondition 5; `writeback_error` field is present when `writeback_status` is `"failed"` and contains the yq diagnostic string.
+2. Structured JSON is emitted to stdout: `{"dimensions": {"capture": {"status": "GREEN|YELLOW|RED", "detail": "..."}, "sources": {...}, "wiki": {...}, "synthesis": {...}, "output": {...}, "reflection": {...}}, "overall": "GREEN|YELLOW|RED", "last_checked": "<ISO8601>", "writeback_status": "ok|skipped_malformed_frontmatter|failed"}`. Note: `writeback_status` is one of `{ok, skipped_malformed_frontmatter, failed}` per Postcondition 5; `writeback_error` field is present when `writeback_status` is non-`"ok"` (i.e., `"failed"` or `"skipped_malformed_frontmatter"`) and contains the diagnostic string (yq error for `"failed"`; malformed-frontmatter description for `"skipped_malformed_frontmatter"`).
 3. Overall status is RED if any dimension is RED; YELLOW if any dimension is YELLOW and none are RED; GREEN only if all dimensions are GREEN.
 4. If the 30-day trailing average token cost in `.brain/logs/ingest-tokens.jsonl` exceeds 2x the 50K-token baseline, the token budget alert is surfaced in the `sources` dimension detail (status YELLOW or RED depending on severity).
 5. After computing the health report, the skill writes back `overall_health`, `last_health_check`, `dimensions` (each of the six dimension entries), and `red_dimensions` to `.brain/STATE.md` YAML frontmatter so that `brain-health-check.sh` can read the cached result on the next SessionStart without re-running the full dimensional analysis. The write uses `yq` to update the frontmatter in-place. If STATE.md is unreadable (EC-002), this postcondition is not reached. If STATE.md frontmatter is malformed (fewer than 2 `---` markers, or yq parse failure inside well-fenced frontmatter), the writeback is skipped with `writeback_status` set to `"skipped_malformed_frontmatter"` or `"failed"` respectively, the original STATE.md is preserved byte-identical, and a diagnostic is surfaced in the JSON report's `writeback_error` field.
@@ -63,7 +63,7 @@ removal_reason: null
 | Brand-new brain (just init'd, no ingests) | `{"overall": "YELLOW", ...sources: GREEN, wiki: YELLOW, ..., "writeback_status": "ok"}`; exit 0 | edge-case |
 | Brain with missing STATE.md | E-HEALTH-001 JSON; exit 2 | error |
 | Brain with token cost > 2x baseline | Sources dimension YELLOW with token alert detail; `"writeback_status": "ok"` | edge-case |
-| STATE.md with fewer than 2 `---` markers (EC-004) | Dimensional report with `"writeback_status": "skipped_malformed_frontmatter"`, no `writeback_error`; exit 0 (bats: `BC_2_01_006: zero-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` and `BC_2_01_006: one-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` in brain-health-skill.bats) | edge-case |
+| STATE.md with fewer than 2 `---` markers (EC-004) | Dimensional report with `"writeback_status": "skipped_malformed_frontmatter"`, `"writeback_error": "STATE.md frontmatter has fewer than 2 markers; skipping writeback"` (or equivalent malformed-frontmatter diagnostic); exit 0 (bats: `BC_2_01_006: zero-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` and `BC_2_01_006: one-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` in brain-health-skill.bats) | edge-case |
 | STATE.md with well-fenced but yq-unparseable YAML (EC-005) | Dimensional report with `"writeback_status": "failed"`, `"writeback_error": "<yq diagnostic>"`, original STATE.md preserved byte-identical; exit 0 (bats: `BC_2_01_006: malformed YAML in well-fenced frontmatter triggers writeback_status=failed and leaves file unchanged` in brain-health-skill.bats) | edge-case |
 | Healthy brain: writeback succeeds, STATE.md updated | `"writeback_status": "ok"` in stdout; STATE.md frontmatter `overall_health`/`dimensions`/`red_dimensions`/`last_health_check` updated; exit 0 (bats: `BC_2_01_006: JSON report writeback_status is ok on successful healthy brain` in brain-health-skill.bats) | happy-path |
 
@@ -103,6 +103,15 @@ STORY-004
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
 
 ## Changelog
+
+### v1.8 (2026-05-29)
+
+**WRITEBACK_ERROR PRESENCE RULE CORRECTED (F15-01):** Resolved three-way self-contradiction in v1.7 where PC2 said `writeback_error` is present only for `"failed"`, PC5 said it is present for both non-ok values, and CTV EC-004 said "no writeback_error" for `"skipped_malformed_frontmatter"`. The implementation (`run.sh:469-483`), bats assertions (lines 806-809, 853-856, 931-933), and SKILL.md (line 61) all populate `writeback_error` for BOTH non-ok `writeback_status` values. PC2 and CTV EC-004 were the spec-side outliers; both brought into alignment with the consistent implementation/bats/SKILL.md surface.
+
+- **PC2** (Postcondition 2 JSON schema note): changed from "`writeback_error` field is present when `writeback_status` is `\"failed\"`" to "`writeback_error` field is present when `writeback_status` is non-`\"ok\"` (i.e., `\"failed\"` or `\"skipped_malformed_frontmatter\"`)" — now matches PC5 and implementation.
+- **CTV EC-004 row**: changed from "no `writeback_error`" to "`writeback_error` contains malformed-frontmatter diagnostic" — now matches bats assertions for the skipped_malformed_frontmatter path.
+
+PC5 (Postcondition 5 prose) was already correct in v1.7 and is unchanged. No semantic change to the contract — this is a correction of internal inconsistency where two sub-surfaces disagreed with the authoritative consensus.
 
 ### v1.7 (2026-05-29)
 
