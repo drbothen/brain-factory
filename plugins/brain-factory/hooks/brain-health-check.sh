@@ -75,25 +75,30 @@ frontmatter="$(awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "$state_file")" |
 # Prefer yq (mikefarah/yq) using direct expression syntax (no subcommand).
 # Fall back to grep only when yq is not available.
 # If yq is available and returns empty, the YAML is malformed → UNREADABLE.
+#
+# UNCONDITIONAL structural sanity check first (F17-01 + F17-03):
+# Require at least 2 '---' markers regardless of yq availability.
+# Real yq v4+ parses a single-fence YAML body successfully, so the check
+# MUST run before trusting any parse result (yq or grep).
+# Split assignment from fallback to avoid '0\n0' arithmetic error under set -e
+# when grep exits 1 for zero matches on some platforms (F17-03).
 # ---------------------------------------------------------------------------
 overall_health=""
 _yq_available=false
 
-if command -v yq >/dev/null 2>&1; then
-  _yq_available=true
-  overall_health="$(printf '%s' "$frontmatter" | yq '.overall_health // ""' - 2>/dev/null)" || overall_health=""
-fi
+marker_count="$(grep -c '^---$' "$state_file" 2>/dev/null)" || true
+marker_count="${marker_count:-0}"
 
-if [[ "$_yq_available" == "false" ]]; then
-  # Structural sanity check: require at least 2 '---' markers before trusting grep.
-  # A file with < 2 markers has malformed/missing frontmatter — treat as UNREADABLE.
-  marker_count="$(grep -c '^---$' "$state_file" 2>/dev/null || printf '0')"
-  if [[ "$marker_count" -ge 2 ]]; then
+if [[ "$marker_count" -ge 2 ]]; then
+  if command -v yq >/dev/null 2>&1; then
+    _yq_available=true
+    overall_health="$(printf '%s' "$frontmatter" | yq '.overall_health // ""' - 2>/dev/null)" || overall_health=""
+  else
     # yq not available — grep fallback (best-effort; malformed values pass through).
     overall_health="$(printf '%s' "$frontmatter" | grep '^overall_health:' | sed 's/.*: *//' | tr -d '[:space:]')" || overall_health=""
   fi
-  # If marker_count < 2: overall_health stays "", triggering UNREADABLE path below.
 fi
+# If marker_count < 2: overall_health stays "", triggering UNREADABLE path below.
 
 # ---------------------------------------------------------------------------
 # Handle unreadable / unparseable STATE.md.
@@ -132,7 +137,15 @@ fi
 
 if [[ -z "$issues_summary" ]]; then
   # Fallback: list non-GREEN dimensions from the dimensions map.
-  issues_summary="$(printf '%s' "$frontmatter" | grep -E '^\s+[a-z]+:' | grep -v 'GREEN' | awk '{print $1}' | tr -d ':' | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')" || issues_summary=""
+  # F17-04: If the result is only bare names without colon-details, it violates
+  # BC-2.04.014 v1.6 format mandate (name: detail). Clear it so the unconditional
+  # fallback clause "(no dimensional detail available...)" fires instead.
+  _bare_names="$(printf '%s' "$frontmatter" | grep -E '^\s+[a-z]+:' | grep -v 'GREEN' | awk '{print $1}' | tr -d ':' | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')" || _bare_names=""
+  if [[ "$_bare_names" == *":"* ]]; then
+    # Result contains colon-details (e.g. from a richer grep path) — safe to use.
+    issues_summary="$_bare_names"
+  fi
+  # If bare names only (no ':'), issues_summary stays "" → fallback clause fires.
 fi
 
 if [[ -z "$dims_csv" ]] && [[ -n "$issues_summary" ]]; then
