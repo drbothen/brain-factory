@@ -61,8 +61,7 @@ state_file="${brain_dir}/.brain/STATE.md"
 
 if [[ ! -f "$state_file" ]]; then
   emit_event "brain.health.skipped" "reason=not_a_brain_session" "path=${brain_dir}"
-  jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-    '{"continue":true,"trace":$trace,"message":"Not a brain session."}'
+  printf '{"continue":true}\n'
   exit 0
 fi
 
@@ -86,8 +85,14 @@ if command -v yq >/dev/null 2>&1; then
 fi
 
 if [[ "$_yq_available" == "false" ]]; then
-  # yq not available — grep fallback (best-effort; malformed values pass through).
-  overall_health="$(printf '%s' "$frontmatter" | grep '^overall_health:' | sed 's/.*: *//' | tr -d '[:space:]')" || overall_health=""
+  # Structural sanity check: require at least 2 '---' markers before trusting grep.
+  # A file with < 2 markers has malformed/missing frontmatter — treat as UNREADABLE.
+  marker_count="$(grep -c '^---$' "$state_file" 2>/dev/null || printf '0')"
+  if [[ "$marker_count" -ge 2 ]]; then
+    # yq not available — grep fallback (best-effort; malformed values pass through).
+    overall_health="$(printf '%s' "$frontmatter" | grep '^overall_health:' | sed 's/.*: *//' | tr -d '[:space:]')" || overall_health=""
+  fi
+  # If marker_count < 2: overall_health stays "", triggering UNREADABLE path below.
 fi
 
 # ---------------------------------------------------------------------------
@@ -118,8 +123,9 @@ issues_summary=""
 dims_csv=""
 
 if [[ "$_yq_available" == "true" ]]; then
-  # Extract red_dimensions as a compact summary (key: value pairs).
-  issues_summary="$(printf '%s' "$frontmatter" | yq '.red_dimensions // [] | .[] | to_entries | .[] | (.key + " (" + .value + ")")' - 2>/dev/null | tr '\n' ';' | sed 's/;$//;s/;/, /g')" || issues_summary=""
+  # Extract red_dimensions as a compact summary: "name: detail; name: detail"
+  # BC-2.04.014 v1.6 mandates colon-space between name and detail, semicolon-space between entries.
+  issues_summary="$(printf '%s' "$frontmatter" | yq '.red_dimensions // [] | .[] | to_entries | .[] | (.key + ": " + .value)' - 2>/dev/null | tr '\n' ';' | sed 's/;$//;s/;/; /g')" || issues_summary=""
   # Build dims_csv: comma-separated list of RED/YELLOW dimension names.
   dims_csv="$(printf '%s' "$frontmatter" | yq '.red_dimensions // [] | .[] | keys | .[0]' - 2>/dev/null | tr '\n' ',' | sed 's/,$//')" || dims_csv=""
 fi
@@ -137,6 +143,10 @@ fi
 issue_msg="Brain health: ${overall_health}."
 if [[ -n "$issues_summary" ]]; then
   issue_msg="Brain health: ${overall_health}. Issues: ${issues_summary}"
+else
+  # BC-2.04.014 v1.6: Issues clause is always present for YELLOW/RED.
+  # When dimensional detail is unavailable, emit a fallback clause.
+  issue_msg="Brain health: ${overall_health}. Issues: (no dimensional detail available — run /brain:health for full diagnosis)"
 fi
 
 # Build red_dimensions JSON array from dims_csv (e.g. "wiki,output" → ["wiki","output"]).
