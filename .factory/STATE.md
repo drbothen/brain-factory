@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-6-pending
+phase: phase-3-wave-4-story-004-pass-7-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-6-pending
-session_continuity: "Pass 5 FAIL (1I+3O) — fix burst 5 applied (2 commits on feature/STORY-004: 9ac5ebf fix, b8ea25c test). Tests 44/44 + 22/22 on feature/STORY-004 at b8ea25c. Streak 0/3. NEXT ACTION: dispatch adversary Pass 6. Wave 4: 2/4 stories delivered. 17/43 total stories (98/264 pts). 38 BCs active. PO decisions locked — canonical skill dir brain-health/, six dimensions, AC-010 design. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-7-pending
+session_continuity: "Pass 6 FAIL (1C+2I+1S+2O) — fix burst 6 applied (3 commits on feature/STORY-004: 7784cfb fix, 9fe29ce test, 40de399 fix). Paper-fix exposed + closed: Pass-4 F-P4-O01 inherit_errexit-in-if-context false assumption surfaced by test 45 (FAIL→PASS); replaced with explicit per-call || guards. Tests 45/45 + 22/22 on feature/STORY-004 at 40de399. Streak 0/3. NEXT ACTION: dispatch adversary Pass 7. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-6-pending
+status: phase-3-wave-4-story-004-pass-7-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,22 +90,24 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 6 PENDING — Fix Burst 5 Complete
+## TOP OF STACK — STORY-004 Pass 7 PENDING — Fix Burst 6 Complete (paper-fix exposed + closed)
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `b8ea25c`
-2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 44/44
+1. Verify worktree: `git worktree list` — should show STORY-004 at `40de399`
+2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
 3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 6 (fresh context, streak 0/3, need 3-CLEAN per BC-5.39.001)
+4. Dispatch adversary for Pass 7 (fresh context, streak 0/3, need 3-CLEAN per BC-5.39.001)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
 
-**STORY-004 cascade state:** Pass 5 FAIL (1I+3O). Fix burst 5 applied (2 commits on feature/STORY-004 — 9ac5ebf/b8ea25c). All P5 non-deferred findings fixed. Tests 44/44 + 22/22 on worktree at b8ea25c. Streak 0/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 6 FAIL (1C+2I+1S+2O). Fix burst 6 applied (3 commits on feature/STORY-004 — 7784cfb/9fe29ce/40de399). Paper-fix exposed + closed: test 45 (yq-failure) initially FAILED, exposing that Pass-4 F-P4-O01 inherit_errexit-in-if-context fix was insufficient; 40de399 replaced false assumption with explicit per-call guards; test 45 PASS. Tests 45/45 + 22/22 on worktree at 40de399. Streak 0/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
 **D-017 — STORY-004 fix burst 4 complete (2026-05-28):** Pass 4 FAIL (2I+2O) closed by 4-commit fix burst on feature/STORY-004: 5c8430a (fix — event-catalog.json voice→output canonical sweep + run.sh inherit_errexit + RETURN trap), 8ef4e32 (spec — BC-2.01.006 v1.4 Postcondition 5 enumerates 4 writeback fields), f54db70 (test — bats whitelist extended to include skipped_malformed_frontmatter), b1c3c43 (stories — STORY-004 AC narrative + Task #6 + Architecture Compliance Rule 3 updated). Tests 43/43 + 22/22 pass at b1c3c43. Pass 5 next.
 
 **D-018 — STORY-004 fix burst 5 complete (2026-05-28):** Pass 5 FAIL (1I+3O) closed by 2-commit fix burst on feature/STORY-004: 9ac5ebf (fix — SKILL.md Quality Bar + Red Flags + run.sh:296 comment block enumerate 4-field writeback surface + drop volatile v1.3 pin per TD-VSDD-091; closes F-P5-I01 TD-VSDD-060 sibling-sweep miss from fix burst 4), b8ea25c (test — brain-health-check.bats:214 stale comment swept wire→output + new AC-008 within-5s delta test added; closes F-P5-O02 + F-P5-O03; test count 43→44). F-P5-O04 deferred — cross-story STORY-005 AC-004/Test Vector exit-code drift; impl + test correct; spec narrative only; see DI-004. Tests 44/44 + 22/22 pass at b8ea25c. Streak 0/3. Pass 6 next.
+
+**D-019 — STORY-004 fix burst 6 complete + paper-fix exposed + closed (2026-05-28):** Pass 6 FAIL (1C+2I+1S+2O) closed by 3-commit fix burst on feature/STORY-004. F-P6-C01 (CRITICAL): 2-step closure — 7784cfb renamed pre-yq sentinel `yq_parse_error` → `failed` (BC-2.01.006 enum compliance); 9fe29ce added test 45 "malformed YAML in well-fenced frontmatter triggers writeback_status=failed" (RED GATE: initially FAILED — exposing that Pass-4 F-P4-O01 shopt inherit_errexit fix was based on false assumption); 40de399 replaced false inherit_errexit-in-if-context reliance with explicit per-call `|| { _writeback_failure_reason="failed"; return 1; }` guards; test 45 transitioned FAIL → PASS. F-P6-I01: SKILL.md Output JSON schema + Quality Bar extended. F-P6-I02: 3 volatile v1.x version pins swept from bats test comments (TD-VSDD-091). F-P6-O02: SKILL.md Procedure step 2 writeback sub-bullet added. F-P6-S01 deferred → DI-005. F-P6-O01 [process-gap] deferred → DI-006. Tests 45/45 + 22/22 pass at 40de399. Streak 0/3. Pass 7 next. Cycle lesson codified: shopt -s inherit_errexit does NOT propagate set -e into functions invoked via if-conditional context (POSIX errexit-context rule); use explicit per-call guards.
 
 ---
 
@@ -119,6 +121,8 @@ These items were identified during adversarial passes as out-of-STORY-004-scope 
 | DI-002 | `argument-hint: ""` project-wide in SKILL.md files vs Meta-Lint Contract requiring non-empty value | F-P3-O02 (Pass 3 OBSERVATION) | Out-of-STORY-004-scope; project-wide pattern requiring meta-lint rule clarification or SKILL.md sweep | Post-STORY-004-PR-merge or next maintenance sweep | product-owner + test-writer |
 | DI-003 | BC-2.04.014 v1.4 exit-code narrative prose says "exits 1 (advisory)" in at least one location; ADR-002 v2.0 + actual hook + bats test `test_BC_2_04_014_hook_never_exits_1` all require exit 0 — spec narrative drift | F-P4-noted (Pass 4 adversary OUT-OF-STORY-004-SCOPE note; STORY-013 ownership) | BC narrative drift only; implementation and test are correct (ADR-002 v2.0 + hook + bats enforce exit 0); amendment is spec-only and not blocking STORY-004 merge | Post-STORY-004-PR-merge or next maintenance sweep | product-owner (STORY-013 BC owner) |
 | DI-004 | STORY-005 AC-004 / Test Vector says "exit ≤ 1" but VP-024 + brain-health-skill.bats + impl all require exit 2 for unhealthy state — cross-story spec narrative drift | F-P5-O04 (Pass 5 adversary OBSERVATION; STORY-005 ownership) | Implementation and test are correct; spec narrative drift only in STORY-005; cross-story scope makes this STORY-005-owner responsibility; does not block STORY-004 merge | STORY-005 wave-gate or next maintenance sweep | product-owner (STORY-005 BC owner) |
+| DI-005 | yq dim_detail shell-escape latent risk — yq inline interpolation of dim_detail string; currently no `"` or `\` in any detail string so risk is latent only; no test vectors exercise special chars | F-P6-S01 (Pass 6 adversary SUGGESTION) | Latent risk only at current time; no special characters in any dim_detail value in codebase; fix requires dedicated story to add escape helper + test vectors; not blocking STORY-004 merge | Post-STORY-004-PR-merge follow-up story | implementer + test-writer |
+| DI-006 | [process-gap] Recommends codifying "grep swept token across plugin tree" as a formal closure-validation gate — recurring sibling-sweep miss pattern (TD-VSDD-060) detected across multiple passes | F-P6-O01 (Pass 6 adversary OBSERVATION; process-gap tag) | Adversary fresh-context audit currently catches sibling-sweep misses (demonstrated in Passes 4, 5, 6); codifying as a closure gate is process polish; defer to post-merge cycle-lessons sweep per S-7.02 | Post-STORY-004-PR-merge cycle-lessons sweep | state-manager + orchestrator |
 
 ---
 
