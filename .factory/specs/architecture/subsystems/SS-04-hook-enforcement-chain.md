@@ -3,7 +3,7 @@ document_type: subsystem-design
 id: SS-04
 title: "Hook Enforcement Chain"
 level: L3
-version: "1.3"
+version: "1.4"
 producer: "vsdd-factory:architect"
 timestamp: 2026-05-18T00:00:00
 phase: phase-1c
@@ -35,7 +35,7 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 | BC-2.04.011 | enforce-kebab-case.sh blocks non-kebab filenames | 2 | P0 |
 | BC-2.04.012 | block-ai-attribution.sh blocks AI attribution tokens | 2 | P0 |
 | BC-2.04.013 | flush-state-and-commit.sh commits brain state on Stop | 0/1 | P1 |
-| BC-2.04.014 | brain-health-check.sh reports convergence on SessionStart | 0/1 | P1 |
+| BC-2.04.014 | brain-health-check.sh reports convergence on SessionStart | 0 | P1 |
 | BC-2.04.015 | Every hook processes payload under 100ms p99 | — | P0 |
 | BC-2.04.016 | Every hook: JSON stdin → JSON stdout → exit 0/1/2 | — | P0 |
 | BC-2.04.017 | Every hook emits JSONL events on stderr via event catalog | — | P0 |
@@ -85,6 +85,10 @@ The core governance infrastructure: 13 bash hook scripts registered in hooks.jso
 PostToolUse hooks fire on every Write/Edit. At 10K page ingest, this means 10K+ hook invocations. Hooks must be fast (NFR-001: 100ms p99). The O(n) wikilink resolution (grep -F on wiki/index.md) is the bottleneck; profiled and optimized in Phase 3 if needed.
 
 ## Changelog
+
+### v1.4 (2026-05-28)
+
+**SIBLING-SWEEP FIX (TD-VSDD-060 / Pass-9 PO mega-sweep continuation):** BC Inventory table BC-2.04.014 row exit-code column corrected from `0/1` to `0`. Per ADR-002 v2.0 and BC-2.04.014 v1.5 (50fa61c), `brain-health-check.sh` always exits 0; operator-visible advisories are delivered via `systemMessage` field, never via exit 1 (which is debug-log only and not shown to the operator). BC-2.04.013 `flush-state-and-commit.sh` row remains `0/1` — that hook legitimately uses exit 1 for git commit failure advisory per its own BC. [audit-trail]
 
 ### v1.3 (2026-05-25)
 
