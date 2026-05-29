@@ -110,8 +110,8 @@ unrecoverable (per E-HEALTH-001). It does NOT crash with an unhandled bash error
 reads `overall_health` from `.brain/STATE.md` frontmatter (written by the last
 `/brain:health` invocation) — it does NOT re-implement the six-dimensional logic and
 does NOT execute `skills/brain-health/run.sh` inline on every SessionStart. The
-`/brain:health` skill is responsible for updating `overall_health` and `dimensions`
-in STATE.md frontmatter after each run (see postcondition 5 added below).
+`/brain:health` skill is responsible for updating `overall_health`, `last_health_check`,
+`dimensions`, and `red_dimensions` in STATE.md frontmatter after each run (see postcondition 5).
 (traces to BC-2.01.006 postconditions 1–2; BC-2.04.014 description; hooks.json SessionStart registration)
 
 ## Tasks
@@ -161,9 +161,13 @@ in STATE.md frontmatter after each run (see postcondition 5 added below).
    but is empty, skip. Emit YELLOW detail string with actual average when > 100000.
 
 6. **[impl]** Implement STATE.md frontmatter write-back in `skills/brain-health/run.sh`:
-   after computing the health report, use `yq` to update `overall_health` and `dimensions`
-   in `.brain/STATE.md` YAML frontmatter so the SessionStart hook reads the cached result.
-   This satisfies BC-2.01.006 postcondition 5.
+   after computing the health report, use `yq` to update `overall_health`, `last_health_check`,
+   `dimensions`, and `red_dimensions` in `.brain/STATE.md` YAML frontmatter so the SessionStart
+   hook reads the cached result. If STATE.md frontmatter is malformed (fewer than 2 `---` markers),
+   skip the write and set `writeback_status: "skipped_malformed_frontmatter"` in the JSON report.
+   If `yq` fails inside well-fenced frontmatter, set `writeback_status: "failed"` and surface the
+   error in the `writeback_error` field of the JSON report. The original STATE.md must be preserved
+   byte-identical on any writeback failure. This satisfies BC-2.01.006 postcondition 5.
 
 7. **[green]** Run all health bats tests. All pass.
 
@@ -202,7 +206,7 @@ From `architecture/subsystems/SS-01-brain-init-scaffold.md`:
    dimension requires a BC update.
 2. **Status values are exactly three uppercase strings:** `"GREEN"`, `"YELLOW"`, `"RED"`.
    No other values allowed. The bats test checks via `[[ "$status" =~ ^(GREEN|YELLOW|RED)$ ]]`.
-3. **`brain-health-check.sh` reads cached STATE.md, not skill output inline** — the hook reads `overall_health` from `.brain/STATE.md` YAML frontmatter. The `/brain:health` skill is responsible for writing `overall_health` and `dimensions` back to STATE.md frontmatter after each run (BC-2.01.006 postcondition 5). The hook does NOT call `skills/brain-health/run.sh` inline on every SessionStart. The canonical skill path is `skills/brain-health/run.sh` (not `skills/health/run.sh`).
+3. **`brain-health-check.sh` reads cached STATE.md, not skill output inline** — the hook reads `overall_health` from `.brain/STATE.md` YAML frontmatter. The `/brain:health` skill is responsible for writing `overall_health`, `last_health_check`, `dimensions`, and `red_dimensions` back to STATE.md frontmatter after each run (BC-2.01.006 postcondition 5). On writeback failure, `writeback_status` is set to `"skipped_malformed_frontmatter"` (malformed frontmatter guard) or `"failed"` (yq failure), the `writeback_error` field is populated in the JSON report, and the original STATE.md is preserved byte-identical. The hook does NOT call `skills/brain-health/run.sh` inline on every SessionStart. The canonical skill path is `skills/brain-health/run.sh` (not `skills/health/run.sh`).
 4. **Token budget baseline is 50,000 tokens.** The 2× alert threshold is 100,000.
    4× threshold (200,000) triggers RED. These values are constants in `run.sh`, not
    configuration — changing them requires a BC update.
