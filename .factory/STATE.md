@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-29T16:30:00
+last_updated: 2026-05-29T18:00:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-15-pending
+phase: phase-3-wave-4-story-004-pass-16-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-15-pending
-session_continuity: "Pass 14 LARGELY INVALID (adversary read stale factory-artifacts at f85dc89 instead of STORY-004 worktree) — 3 real findings closed in fix burst 14 (2 commits on feature/STORY-004): 9b25092 (stories — STORY-004 frontmatter behavioral_contracts: [BC-2.01.006, BC-2.04.014] + Behavioral Contracts table row + AC-010 trace anchored to BC-2.04.014 P1+I4), d52e6f4 (fix — state-md-template.md line 34 4x baseline → 3x baseline sibling-sweep miss from Pass-12). 9 of 12 claimed Pass-14 findings BOGUS (F14-01 through F14-05, F14-07 through F14-10) — verified via direct inspection: BC-2.01.006 v1.7 present on worktree, AC-001 writeback_status present, AC-005 uses 150K/3x, skills/brain-health/ paths correct. Tests 45/45+22/22 at tip d52e6f4. Streak 0/3. Dispatch protocol fixed for Pass 15: use absolute worktree paths /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/... — do NOT use /Users/jmagady/Dev/brain-factory/.factory/... (stale factory-artifacts tree). Cycle Lesson 8 codified. NEXT ACTION: dispatch adversary Pass 15 WITH EXPLICIT WORKTREE-ABSOLUTE PATHS. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-16-pending
+session_continuity: "Pass 15 (corrected dispatch with absolute worktree paths): FAIL — 2 HIGH + 3 MEDIUM. All 5 findings closed by fix burst 15 (4 commits on feature/STORY-004): 14c2b8b (spec — BC-2.01.006 v1.7→v1.8 PC2 + CTV EC-004 writeback_error alignment for both non-ok paths per F15-01), 34b8c17 (fix — brain-health-check.sh stdout schema aligned to BC-2.04.014 v1.6 systemMessage/additionalContext/unhealthy_state/red_dimensions + run.sh yq quote-escape for F15-02+F15-04), 919c626 (stories — STORY-004 Task 6 writeback_error narrative aligned with BC v1.8 for F15-05), 7eed597 (test — structural bats assertions for BC v1.6 hook schema + red_dimensions awk check for F15-03+F15-02 enforcement). Tests 45/45 brain-health-skill.bats + 32/32 brain-health-check.bats (was 22, +10 structural) at tip 7eed597. Streak 0/3. Cycle Lesson 9 codified: bats JSON-shape assertions must use jq -e structural extraction, not substring matching. NEXT ACTION: dispatch adversary Pass 16 WITH ABSOLUTE WORKTREE PATHS. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-15-pending
+status: phase-3-wave-4-story-004-pass-16-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,20 +90,20 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 15 PENDING — Streak 0/3 (Pass 14 LARGELY INVALID — adversary tool path issue — fix burst 14 closes 3 real findings)
+## TOP OF STACK — STORY-004 Pass 16 PENDING — Streak 0/3 (Pass 15 FAIL — 2H+3M — fix burst 15 applied — 4 commits)
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `d52e6f4`
+1. Verify worktree: `git worktree list` — should show STORY-004 at `7eed597`
 2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
-3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
-4. Dispatch adversary for Pass 15 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree at f85dc89)
+3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 32/32 (was 22, +10 structural tests from fix burst 15)
+4. Dispatch adversary for Pass 16 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
 6. DI-003 and DI-004 are RETIRED — do not re-raise BC-2.04.014 narrative drift or STORY-005 exit codes; fully closed
 7. STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT — both promote per POL-14 at PR merge; do not flag as findings
 8. F13-07 deferred (hook reference test paper-fix risk; intent verification pending) — can be addressed in PR review or follow-up
-9. DI-007 and DI-008 remain tentative — Pass 14 was BOGUS so neither confirmed nor denied; Pass 15 adversary to evaluate
+9. DI-007 and DI-008 remain tentative — confirm or close in Pass 16
 
-**STORY-004 cascade state:** Pass 14 LARGELY INVALID (adversary read stale factory-artifacts tree at f85dc89 instead of STORY-004 worktree — 9 of 12 findings BOGUS). Fix burst 14 applied (2 commits on feature/STORY-004): 9b25092 (stories — STORY-004 frontmatter behavioral_contracts: [BC-2.01.006, BC-2.04.014] + Behavioral Contracts table row + AC-010 trace anchored to BC-2.04.014 P1+I4), d52e6f4 (fix — state-md-template.md line 34 4x baseline → 3x baseline sibling-sweep miss from Pass-12). Worktree tip d52e6f4. Tests 45/45 + 22/22. Cycle Lesson 8 codified: adversary dispatch must use absolute worktree paths. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 15 FAIL — 2 HIGH + 3 MEDIUM. Fix burst 15 applied (4 commits on feature/STORY-004): 14c2b8b (spec — BC-2.01.006 v1.7→v1.8 PC2 + CTV EC-004 writeback_error alignment), 34b8c17 (fix — brain-health-check.sh stdout schema rewrite + run.sh yq quote-escape), 919c626 (stories — STORY-004 Task 6 writeback_error narrative), 7eed597 (test — structural bats assertions + red_dimensions awk check; brain-health-check.bats 22→32 tests). Worktree tip 7eed597. Tests 45/45 + 32/32. Cycle Lesson 9 codified: bats JSON-shape assertions must use jq -e structural extraction, not substring matching. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
@@ -128,6 +128,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 **D-026 — STORY-004 Pass 13 FAIL + fix burst 13 applied — streak 0/3 (2026-05-29):** Pass 13 adversary verdict: FAIL — 4 MEDIUM + 3 LOW + 2 DI candidates. Fix burst 13 (3 commits on feature/STORY-004): 7fe85f0 (fix — run.sh -r readability check adds unreadable STATE.md detection completing EC-002 "missing OR unreadable"; bats test name 200K→150K Pass-12 propagation gap closed), 0bd4612 (spec — BC-2.01.006 v1.6→v1.7 Canonical Test Vector citations rewritten to reference actual bats @test declaration names; citation drift closes F13-02), 15aa87e (stories — STORY-004 AC-001 JSON example includes writeback_status; AC-007 _template* exclusion documented; dependency-graph.md STORY-002→STORY-004 + STORY-003→STORY-004 edges updated to standalone brain-health-skill.bats not integration.bats extension). F13-01 (MEDIUM) closed at 7fe85f0. F13-02 (MEDIUM) closed at 0bd4612. F13-03 (MEDIUM) closed at 15aa87e. F13-04 (MEDIUM) closed at 7fe85f0. F13-05 (LOW) closed at 15aa87e. F13-06 (LOW) closed at 15aa87e. F13-07 (LOW, intent verification) DEFERRED — hook reference test paper-fix risk; can be addressed in PR review or follow-up. DI-007 + DI-008 surfaced as DI candidates (tentative; pending verification by next pass). Tests 45/45 + 22/22 at tip 15aa87e. Cycle Lesson 7 codified: citation drift — BC Canonical Test Vector citations must reference actual @test declarations from the bats suite; function-name citations can become non-existent silently. Pass 14 next. Streak 0/3.
 
 **D-027 — STORY-004 Pass 14 LARGELY INVALID (adversary tool path issue) + fix burst 14 closes 3 real findings — streak 0/3 (2026-05-29):** Pass 14 adversary verdict: FAIL — claimed 4 CRITICAL + 6 HIGH + 2 MEDIUM. VERIFIED LARGELY BOGUS: adversary dispatch used `cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 &&` prefix but Read/Grep absolute-path resolutions fell through to `/Users/jmagady/Dev/brain-factory/.factory/` (stale factory-artifacts mount at f85dc89 — pre-STORY-004 era). Direct inspection confirmed STORY-004 worktree had BC-2.01.006 v1.7, AC-001 writeback_status, AC-005 150K/3x, skills/brain-health/ paths all in place from fix burst 13. F14-01 through F14-05 and F14-07 through F14-10 BOGUS (9 of 12). Real findings: F14-06 (HIGH) — STORY-004 frontmatter missing behavioral_contracts field + body Behavioral Contracts table missing; F14-11 (paired) — AC-010 trace lacked specific clause anchors to BC-2.04.014; F14-12 (MEDIUM) — state-md-template.md line 34 "4× baseline" → "3× baseline" (Pass-12 sibling-sweep miss). Fix burst 14 (2 commits on feature/STORY-004): 9b25092 (stories — STORY-004 frontmatter behavioral_contracts: [BC-2.01.006, BC-2.04.014] + Behavioral Contracts table row + AC-010 trace anchored to BC-2.04.014 P1+I4), d52e6f4 (fix — state-md-template.md line 34 4x baseline → 3x baseline). Tests 45/45 + 22/22 at d52e6f4. Dispatch protocol fixed for Pass 15: adversary must use absolute STORY-004 worktree paths. Cycle Lesson 8 codified. Pass 15 next. Streak 0/3.
+
+**D-028 — STORY-004 Pass 15 FAIL + fix burst 15 applied — streak 0/3 (2026-05-29):** Pass 15 adversary verdict: FAIL — 2 HIGH + 3 MEDIUM. Fix burst 15 (4 commits on feature/STORY-004): 14c2b8b (spec — BC-2.01.006 v1.7→v1.8: Postcondition 2 JSON schema + Canonical Test Vector EC-004 both updated to show writeback_error field present for ALL non-ok paths including skipped_malformed_frontmatter, not just failed; F15-01), 34b8c17 (fix — brain-health-check.sh stdout schema rewritten to match BC-2.04.014 v1.6 contract: systemMessage/additionalContext for all exits, unhealthy_state/red_dimensions for RED path; run.sh yq dim_detail quote-escaped; F15-02+F15-04), 919c626 (stories — STORY-004 Task 6 writeback_error narrative updated to reflect BC v1.8 both-paths semantics; F15-05), 7eed597 (test — structural bats assertions for BC v1.6 hook output schema using jq -e extraction; red_dimensions awk structural check; brain-health-check.bats 22→32 tests; F15-03+F15-02 enforcement). Closures: F15-01→14c2b8b, F15-02→34b8c17+7eed597, F15-03→7eed597, F15-04→34b8c17, F15-05→919c626. Tests 45/45 + 32/32 at tip 7eed597. Cycle Lesson 9 codified: bats JSON-shape assertions must use jq -e structural extraction, not substring matching. Pass 16 next. Streak 0/3.
 
 ---
 
