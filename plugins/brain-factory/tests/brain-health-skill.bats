@@ -491,7 +491,7 @@ _write_token_log() {
 }
 
 # ===========================================================================
-# BC-2.01.006 v1.3 Postcondition 5: STATE.md writeback.
+# BC-2.01.006 Postcondition 5: STATE.md writeback.
 # After the skill runs successfully (exit 0), it must write the computed
 # overall_health and dimension statuses back to STATE.md frontmatter using
 # yq -i. The body (markdown content after the frontmatter) must be preserved.
@@ -750,7 +750,7 @@ _write_token_log() {
   ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
   [ -n "${ws}" ]
   [ "${ws}" != "null" ]
-  # Must be one of the three valid writeback_status enum values (BC-2.01.006 v1.4 Postcondition 5)
+  # Must be one of the three valid writeback_status enum values (BC-2.01.006 Postcondition 5)
   [[ "${ws}" == "ok" || "${ws}" == "failed" || "${ws}" == "skipped_malformed_frontmatter" ]]
 }
 
@@ -771,7 +771,7 @@ _write_token_log() {
 # _writeback_state must abort and set writeback_status="skipped_malformed_frontmatter"
 # when STATE.md has fewer than two '---' delimiter lines, and must NOT modify the
 # file. Tests lock the safeguard against regression.
-# BC-2.01.006 v1.3 Postcondition 5 — writeback precondition check.
+# BC-2.01.006 Postcondition 5 — writeback precondition check.
 # ===========================================================================
 
 @test "BC_2_01_006: zero-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged" {
@@ -856,6 +856,84 @@ _write_token_log() {
   [ -n "${we}" ]
 
   # Assert: STATE.md is byte-identical to the fixture (file was NOT touched).
+  local after_content
+  after_content="$(cat -- "${state_file}")"
+  [ "${after_content}" = "${before_content}" ]
+}
+
+# ===========================================================================
+# F-P6-C01: yq-failure path coverage (commit 7784cfb renamed sentinel "failed").
+# _writeback_state must set writeback_status="failed" when the frontmatter
+# extracted from a well-fenced STATE.md (two valid '---' markers) contains
+# YAML that yq rejects at parse time. This locks the "failed" enum value
+# against paper-fix regression (TD-VSDD-059) and verifies:
+#   - The marker-count safeguard does NOT fire (markers are valid)
+#   - The yq parse error causes _writeback_failure_reason="failed" (set before
+#     the yq block in _writeback_state) to propagate through the trap EXIT path
+#   - writeback_status in the JSON output is exactly "failed"
+#   - writeback_error is present and non-empty (yq stderr captured)
+#   - STATE.md content is byte-identical to the fixture (not touched)
+# BC-2.01.006 Postcondition 5 — writeback_status enum {ok, failed,
+# skipped_malformed_frontmatter}. LOCKED DECISION #6.
+# ===========================================================================
+
+@test "BC_2_01_006: malformed YAML in well-fenced frontmatter triggers writeback_status=failed and leaves file unchanged" {
+  # Arrange: init brain to create directory structure, then overwrite STATE.md
+  # with a file that has exactly two valid '---' fence lines (passes the
+  # marker-count safeguard) but contains an unterminated flow sequence in the
+  # frontmatter YAML (fails yq parse, exercising the "failed" branch).
+  #
+  # Fixture: dimensions.capture value is an unterminated YAML flow sequence:
+  #   capture: [unterminated_flow_sequence
+  # yq rejects this with "yaml: line N: did not find expected ',' or ']'"
+  # Verified locally: `yq e -i '.x = "y"' <file-with-unterminated-bracket>` exits 1.
+  _init_brain
+  local state_file="${BRAIN_DIR}/.brain/STATE.md"
+  printf '%s\n' \
+    '---' \
+    'overall_health: GREEN' \
+    'last_health_check: ""' \
+    'dimensions:' \
+    '  capture: [unterminated_flow_sequence' \
+    '  sources: YELLOW' \
+    '  wiki: YELLOW' \
+    '  synthesis: YELLOW' \
+    '  output: YELLOW' \
+    '  reflection: YELLOW' \
+    'red_dimensions: []' \
+    '---' \
+    '# Brain State' \
+    '' \
+    'Fixture body — must be preserved byte-identical after skill run.' \
+    >"${state_file}"
+
+  # Precondition sanity: fixture must have exactly two '---' markers so the
+  # marker-count safeguard is NOT the path that fires (we want yq-failure path).
+  local marker_count
+  marker_count="$(grep -c '^---$' -- "${state_file}")"
+  [ "${marker_count}" -eq 2 ]
+
+  # Capture byte-exact content before running the skill.
+  local before_content
+  before_content="$(cat -- "${state_file}")"
+
+  # Act: run the skill.
+  run bash "${RUN_SH}"
+
+  # Assert: skill exits 0 (writeback failure is advisory — JSON report still emits).
+  [ "$status" -eq 0 ]
+
+  # Assert: writeback_status is "failed" (yq-failure path, NOT "skipped_malformed_frontmatter").
+  local ws
+  ws="$(printf '%s' "${output}" | jq -r '.writeback_status')"
+  [ "${ws}" = "failed" ]
+
+  # Assert: writeback_error field is PRESENT and non-empty (yq diagnostic captured via stderr).
+  local we
+  we="$(printf '%s' "${output}" | jq -r '.writeback_error // empty')"
+  [ -n "${we}" ]
+
+  # Assert: STATE.md is byte-identical to the fixture (file was NOT touched by writeback).
   local after_content
   after_content="$(cat -- "${state_file}")"
   [ "${after_content}" = "${before_content}" ]
