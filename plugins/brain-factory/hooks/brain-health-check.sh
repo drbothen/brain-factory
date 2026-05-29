@@ -15,11 +15,11 @@ set -euo pipefail
 #   0 — always (GREEN, RED/YELLOW advisory, unreadable, or not a brain session)
 #   Advisory messages delivered via stdout systemMessage, never via exit code
 
-# Path to the full six-dimensional health skill (AC-010: thin-wrapper reference).
-# The session-start hook reads cached STATE.md for speed; run the skill directly
-# for a live six-dimensional report: bash "${HEALTH_SKILL}"
-# shellcheck disable=SC2034
-HEALTH_SKILL="${CLAUDE_PLUGIN_ROOT}/skills/brain-health/run.sh"
+# Cache-decoupled hook: reads the cached overall_health/dimensions/red_dimensions
+# written to .brain/STATE.md frontmatter by ${CLAUDE_PLUGIN_ROOT}/skills/brain-health/run.sh
+# per BC-2.01.006 v1.6 Postcondition 5. This hook does NOT invoke the skill.
+# For a live six-dimensional report, run the skill directly:
+#   bash "${CLAUDE_PLUGIN_ROOT}/skills/brain-health/run.sh"
 
 # ADVISORY ERR trap: unhandled errors exit 0 so session open is never blocked.
 trap 'printf "%s\n" "{\"continue\":true,\"systemMessage\":\"Health check encountered an error.\"}" ; exit 0' ERR
