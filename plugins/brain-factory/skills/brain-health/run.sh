@@ -293,7 +293,7 @@ last_checked="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 # ---------------------------------------------------------------------------
 # Write computed health back to STATE.md frontmatter.
-# BC-2.01.006 v1.3 Postcondition 5: skill writes overall_health, last_health_check,
+# BC-2.01.006 Postcondition 5: skill writes overall_health, last_health_check,
 # dimensions.<name>.status, and red_dimensions back to .brain/STATE.md so the
 # session-start hook can read the cached state without re-running all six dimensions.
 # Strategy: extract frontmatter → update with yq → reassemble with body preserved.
