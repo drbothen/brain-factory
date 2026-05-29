@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
+version: "1.3"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -12,7 +12,7 @@ subsystem: "SS-01"
 capability: "CAP-001"
 lifecycle_status: active
 introduced: v0.1.0
-modified: []
+modified: ["2026-05-28"]
 deprecated: null
 deprecated_by: null
 replacement: null
@@ -38,6 +38,7 @@ removal_reason: null
 2. Structured JSON is emitted to stdout: `{"dimensions": {"capture": {"status": "GREEN|YELLOW|RED", "detail": "..."}, "sources": {...}, "wiki": {...}, "synthesis": {...}, "output": {...}, "reflection": {...}}, "overall": "GREEN|YELLOW|RED", "last_checked": "<ISO8601>"}`.
 3. Overall status is RED if any dimension is RED; YELLOW if any dimension is YELLOW and none are RED; GREEN only if all dimensions are GREEN.
 4. If the 30-day trailing average token cost in `.brain/logs/ingest-tokens.jsonl` exceeds 2x the 50K-token baseline, the token budget alert is surfaced in the `sources` dimension detail (status YELLOW or RED depending on severity).
+5. After computing the health report, the skill writes back `overall_health` and `dimensions` to `.brain/STATE.md` YAML frontmatter so that `brain-health-check.sh` can read the cached result on the next SessionStart without re-running the full dimensional analysis. The write uses `yq` to update the frontmatter in-place. If STATE.md is unreadable (EC-002), this postcondition is not reached.
 
 ## Invariants
 
@@ -97,6 +98,10 @@ STORY-004
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
 
 ## Changelog
+
+### v1.3 (2026-05-28)
+
+**DIMENSION RECONCILIATION (BC-DIMENSION-RECONCILIATION.md):** Added Postcondition 5: skill writes back `overall_health` and `dimensions` to STATE.md frontmatter after each health computation. This enables `brain-health-check.sh` to read the cached health state on SessionStart without re-running the full dimensional analysis. This closes the AC-010 ambiguity in STORY-004 about how the hook and skill interact.
 
 ### v1.2 (2026-05-19)
 

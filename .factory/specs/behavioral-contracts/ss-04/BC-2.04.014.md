@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.3"
-status: draft
+version: "1.4"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -12,7 +12,7 @@ subsystem: "SS-04"
 capability: "CAP-004"
 lifecycle_status: active
 introduced: v0.1.0
-modified: []
+modified: ["2026-05-28"]
 ---
 
 # Behavioral Contract BC-2.04.014: `brain-health-check.sh` surfaces six-dimensional convergence state on SessionStart (exit 0 or 1)
@@ -46,6 +46,7 @@ modified: []
 
 1. This hook NEVER exits 2 (a SessionStart block would prevent the session from opening — unacceptable).
 2. The banner is concise: one line per RED/YELLOW dimension, showing dimension name and issue summary.
+3. The six canonical dimension names used in `.brain/STATE.md` frontmatter and any banner output are: `capture`, `sources`, `wiki`, `synthesis`, `output`, `reflection` — per BC-2.01.006 invariant 1 and `docs/planning/llm-second-brain-phased-build-plan.md` §Six-dimensional convergence. Any test fixture or STATE.md content using other names (e.g., `briefs`, `publishing`, `voice`, `structural`) is non-conformant.
 
 ## Edge Cases
 
@@ -85,6 +86,10 @@ modified: []
 - BC-2.01.006 — related to (/brain:health skill surfaces the same dimensions)
 
 ## Changelog
+
+### v1.4 (2026-05-28)
+
+**DIMENSION RECONCILIATION (BC-DIMENSION-RECONCILIATION.md):** Added Invariant 3 codifying the canonical six dimension names (capture / sources / wiki / synthesis / output / reflection) as the authoritative vocabulary for STATE.md frontmatter and banner output. This closes the vocabulary collision surfaced by STORY-004 Pass 1 adversary review. No change to postconditions or exit-code semantics.
 
 ### v1.3 (2026-05-19)
 

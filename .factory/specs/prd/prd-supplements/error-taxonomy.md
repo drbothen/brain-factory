@@ -1,7 +1,7 @@
 ---
 document_type: prd-supplement
 supplement_type: error-taxonomy
-version: "0.1.7"
+version: "0.1.8"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-18T00:00:00
@@ -160,6 +160,7 @@ Message format uses `<placeholder>` for dynamic values.
 |------|----------|------|-----------|---------------|
 | E-HEALTH-001 | broken | 2 | `/brain:health` | `Brain state file missing — run /brain:init or /brain:cold-start-recover.` |
 | E-HEALTH-002 | degraded | 1 | `brain-health-check.sh` | `Brain health: <YELLOW|RED>. <dimension summaries with issues>` |
+| E-HEALTH-003 | cosmetic | 0 | `brain-health-check.sh` | `Brain STATE.md unreadable — run /brain:health for diagnosis.` |
 | E-HEALTH-004 | broken | 2 | `/brain:health` | `jq is required for /brain:health. Install via your package manager.` |
 | E-HEALTH-005 | broken | 2 | `/brain:health` | `yq is required for /brain:health. Install via your package manager.` |
 
@@ -288,6 +289,10 @@ Per CLAUDE.md Canonical Principle:
 ---
 
 ## Changelog
+
+### v0.1.8 (2026-05-28)
+
+**CONTENT FIX (STORY-004 Pass 3 Fix Burst — F-P3-C03):** Registered E-HEALTH-003. This code is emitted by `brain-health-check.sh` when `.brain/STATE.md` exists but `overall_health` is empty or unparseable (UNREADABLE state). The hook exits 0 (per BC-2.04.014 Invariant 1 — SessionStart must never be blocked), emitting `"Brain STATE.md unreadable — run /brain:health for diagnosis."` as a systemMessage. Severity is cosmetic (exit 0, session continues, user is advised to run `/brain:health` to regenerate STATE.md health fields). The v0.1.7 changelog noted this gap but deferred formal registration — this entry closes that gap. TD-VSDD-060 sibling-sweep confirmed no additional unregistered HEALTH error codes exist.
 
 ### v0.1.7 (2026-05-28)
 
