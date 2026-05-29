@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-in-progress
+phase: phase-3-wave-4-story-004-pass-3-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-in-progress
-session_continuity: "Wave 4 STORY-032 DELIVERED (PR #17, d610cf0). 17/43 stories delivered (98/264 pts). 38 BCs active. 717 tests on develop (714 passing). 17 PRs merged. Wave 4 remaining: STORY-004 + STORY-015 (parallel). Deferred: BC verdict schema drift (PO sweep), STORY-002 test naming, F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR, STORY-006 AC exit codes, VP-003 field name. New deferred: SS-12 doc drift (architect), holdout-scenarios.md exit codes 3/4 (PO), VP-007 example fixtures (architect), BC-2.12.001 wording/EC-001 alignment (PO), STORY-032 body BC title drift (story-writer)."
+session_stage: phase-3-wave-4-story-004-pass-3-pending
+session_continuity: "RELOCATION PAUSE — full durable handoff written. STORY-004 adversarial cascade pass 2 complete (FAIL 3C+4I+3S). Fix burst 2 applied (commit f391bff on feature/STORY-004 — C01/C02/C03/I01/I03/I04 fixed). Tests 41/41 + 22/22 passing. Streak 0/3. NEXT ACTION: dispatch adversary Pass 3. Wave 4: 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). 17/43 total stories (98/264 pts). 38 BCs active. Key PO decisions from Pass 1 are locked — canonical skill dir brain-health/, canonical six dimensions capture/sources/wiki/synthesis/output/reflection, AC-010 hook reads cached STATE.md not inline skill, STATE.md template updated with health frontmatter. DO NOT re-litigate any of these. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-in-progress
+status: phase-3-wave-4-story-004-pass-3-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,7 +90,18 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — Phase 3 Wave 4 IN PROGRESS — STORY-004 IN PROGRESS (/brain:health six-dimensional convergence skill — Wave 4 story 3/4)
+## TOP OF STACK — RELOCATION PAUSE — STORY-004 Pass 3 PENDING — Resume from SESSION-HANDOFF.md
+
+**NEXT ACTION (for fresh session resuming here):**
+1. Verify worktree: `git worktree list` — should show STORY-004 at `f391bff`
+2. Verify tests: `bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 41/41
+3. `bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 22/22
+4. Dispatch adversary for Pass 3 (fresh context, streak 0/3, need 3-CLEAN per BC-5.39.001)
+5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
+
+**STORY-004 cascade state:** Pass 2 FAIL (3C+4I+3S). Fix burst 2 applied as WIP commit `f391bff` on `feature/STORY-004`. All P2 findings fixed (C01/C02/C03/I01/I03/I04). Streak 0/3. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+
+---
 
 **STORY-032 delivery summary (2026-05-28):**
 - Red Gate: 14 failing → 114 STORY-032 integration tests after all fix bursts

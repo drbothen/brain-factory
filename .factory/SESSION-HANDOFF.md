@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-next
-session_stage: phase-3-wave-3-gate-passed-wave-4-next
+session_phase: phase-3-wave-4-story-004-pass-3-pending
+session_stage: phase-3-wave-4-story-004-pass-3-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-27
+last_updated: 2026-05-28
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,77 +94,229 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-3-gate-passed-wave-4-next
+status: phase-3-wave-4-story-004-pass-3-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-total_stories_delivered: 15
-total_bcs_active: 33
-total_tests_on_develop: 584
+wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 2 FAIL — fix burst 2 applied (f391bff). Pass 3 pending."
+story_004_cascade_streak: "0/3 — Pass 2 FAIL (3C+4I+3S) — fix burst 2 applied — Pass 3 next"
+story_004_worktree_tip: f391bff
+total_stories_delivered: 17
+total_bcs_active: 38
+total_tests_on_develop: 717
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 1a / Phase 1b / Phase 1c / Phase 1d / Phase 2 CLOSED / Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + GATED — Wave 4 NEXT
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — RELOCATION PAUSE — STORY-004 Pass 3 Pending
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-27):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + integration gates PASSED. 15/43 stories (82/264 pts — 31%). 584/587 tests on develop. 33 BCs active. Wave 3 gate PASSED 6/6 (2026-05-27). Wave 4 dispatch is next. Consult `.factory/stories/wave-schedule.md` for Wave 4 story list.
+**Current state (as of 2026-05-28 — RELOCATION PAUSE):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 2 FAIL — fix burst 2 committed as WIP on `feature/STORY-004` (tip `f391bff`). Tests 41/41 + 22/22 passing. Streak 0/3. NEXT ACTION: dispatch adversary Pass 3. 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
 
 ### Step 1 — Read documents in this exact order
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md` (project conventions, canonical principle, agent routing table)
-2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (pipeline status, user decisions log, top-of-stack action)
-3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` (this file — detailed narrative + Phase 3 readiness checklist)
-4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (task ledger with pending entries)
-5. `/Users/jmagady/Dev/brain-factory/.factory/stories/wave-schedule.md` (v0.1.4)
-6. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-INDEX.md` (v0.3.3 — 43 stories, all updated at 5a64927)
+2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (pipeline status, top-of-stack action — frontmatter updated to reflect relocation pause)
+3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` (this file — primary resume doc, read fully)
+4. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-004.md` (in-flight story spec — has PO edits from Pass 1 locked in)
+5. `/Users/jmagady/Dev/brain-factory/.factory/specs/behavioral-contracts/ss-01/BC-2.01.006.md` (canonical BC, v1.3 — Postcondition 5 writeback added by PO)
 
-### Step 2 — Verify git state before dispatching any agent
+Do NOT read TASK-LIST.md as a first-priority doc this session — it may not have been updated with the STORY-004 cascade detail. STATE.md and SESSION-HANDOFF.md are the authoritative resume sources.
 
-```
-git log --oneline origin/develop -5
-```
-Expected: Wave 3 gate fix commits (42ca028, 56e1ec7, e7824d0) near tip, followed by story PRs
+### Step 2 — Verify git state BEFORE dispatching any agent
 
-```
-git status --short
-```
-Expected: empty (clean tree; untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/ are OK untracked)
+Run all four checks. If any check fails, diagnose before proceeding.
 
-### Step 3 — What just happened; Wave 4 dispatch is next-action
+```bash
+# Check 1: develop tip should be d610cf0 (STORY-032 PR #17 squash-merge)
+git log --oneline origin/develop -3
 
-**3a. DONE — Waves 1–2 complete (7/7 stories, 53/53 points, gates PASSED):**
-Wave 1: STORY-001 (#1), STORY-014 (#2), STORY-027 (#3), STORY-038 (#4) — gate PASSED. Wave 2: STORY-016 (#5), STORY-002 (#6), STORY-006 (#7) — gate PASSED 6/6.
+# Check 2: STORY-004 worktree exists at expected tip
+git worktree list
+# Expected: shows /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 [feature/STORY-004]
 
-**3b. DONE — Wave 3 complete (8/8 stories, 32/32 points, PRs #8-#15 merged):**
-STORY-003 (#8), STORY-007 (#9), STORY-008 (#10), STORY-009 (#11), STORY-010 (#12), STORY-011 (#13), STORY-012 (#14), STORY-013 (#15). 26 BCs promoted draft → active per POL-14.
+# Check 3: STORY-004 worktree tip commit is f391bff
+git -C /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 log --oneline origin/develop..HEAD | head -5
+# Expected: f391bff at tip, 3 commits ahead of develop
 
-**3c. DONE — Wave 3 integration gate PASSED 6/6:**
-584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed via e7824d0+56e1ec7+42ca028), demo evidence PASS, holdout PASS (mean 0.925, HS-003/004/005 verified), state update PASS. 33 BCs active total.
-
-**3d. TOP-OF-STACK — Wave 4 dispatch next:**
-Wave 3 gate CLOSED. 5 deferred items still open — see Step 6 below. Develop tip: 42ca028 (Wave 3 gate fix — slug_count). No open worktrees. No open PRs.
-
-**3e. Wave 4 Stories and Delivery Order:**
-
-| # | Story | Pts | Epic | Goal | Key BCs |
-|---|-------|-----|------|------|---------|
-| 1 | STORY-017 | 8 | EPIC-03 | Wiki page generation pipeline + token JSONL logging + 50K-chunk warning | BC-2.05.001, BC-2.05.002, BC-2.05.003, BC-2.05.004, BC-2.05.005 |
-| 2 | STORY-032 | 8 | EPIC-07 | bin/lobster-run — YAML parsing, topological sort, exit-code contract | BC-2.12.001, BC-2.12.002 |
-| 3 | STORY-004 | 5 | EPIC-01 | /brain:health six-dimensional convergence skill | BC-2.01.006 |
-| 4 | STORY-015 | 5 | EPIC-02 | Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 |
-
-Critical path: STORY-017 first (unblocks Wave 5 STORY-019). STORY-032, STORY-004, and STORY-015 are parallel after STORY-017 starts.
-
-**3f. Git State Verification (run before dispatching any agent):**
-```
-git log --oneline origin/develop -3   # expect 42ca028 at tip
-git status --short                    # expect clean tree
-ls .worktrees/                        # expect empty
-gh pr list --state open               # expect none
+# Check 4: Tests pass on the worktree
+cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004
+bats plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3
+# Expected: 41 tests, 41 passed, 0 failed
+bats plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3
+# Expected: 22 tests, 22 passed, 0 failed
+shellcheck plugins/brain-factory/skills/brain-health/run.sh plugins/brain-factory/hooks/brain-health-check.sh
+shfmt -d -i 2 plugins/brain-factory/skills/brain-health/run.sh plugins/brain-factory/hooks/brain-health-check.sh
+# Expected: no output (clean)
 ```
 
-### Step 4 — Key constraints to carry forward
+### Step 3 — What just happened (read carefully — do not skip)
+
+**3a. DONE — Waves 1–3 complete + gates PASSED (15 stories, 82 pts):**
+Wave 1: STORY-001/014/027/038 (PRs #1-#4, gate PASSED). Wave 2: STORY-016/002/006 (PRs #5-#7, gate PASSED 6/6). Wave 3: STORY-003/007/008/009/010/011/012/013 (PRs #8-#15, gate PASSED 6/6). 33 BCs active after Wave 3.
+
+**3b. DONE — Wave 4 stories 1-2 delivered:**
+- STORY-017 (PR #16, b30dd35): Wiki page generation pipeline. 5 passes, 2 fix bursts, 3-CLEAN at passes 3-4-5. BCs BC-2.02.002/003/005 active.
+- STORY-032 (PR #17, d610cf0): bin/lobster-run pure-bash workflow runtime. 22 passes, 14 fix bursts — longest cascade in project history. 3-CLEAN at passes 20-21-22. BCs BC-2.12.001/002 active. User explicitly approved continuing to convergence rather than relaxing the bar.
+
+**3c. IN PROGRESS — STORY-004 adversarial cascade (wave 4 story 3/4):**
+Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `f391bff`. See §STORY-004 Cascade Detail below — this is the primary current work.
+
+**3d. PENDING — STORY-015 (wave 4 story 4/4):**
+Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
+
+**3e. TOP-OF-STACK — STORY-004 adversary Pass 3:**
+Streak 0/3. Fix burst 2 applied (commit `f391bff`). All Pass 2 findings fixed. Dispatch adversary for Pass 3. Need 3 consecutive clean passes (0C+0I) for BC-5.39.001 convergence.
+
+**3f. Develop tip verification:**
+```bash
+git log --oneline origin/develop -3   # tip: d610cf0 (STORY-032 PR #17 squash-merge)
+git status --short                    # clean (untracked: .claude/ .factory/code-delivery/ .factory/cycles/ .factory/logs/ .factory/planning/ OK)
+gh pr list --state open               # none open
+```
+
+---
+
+## STORY-004 Cascade Detail
+
+**Story:** STORY-004 — /brain:health six-dimensional convergence skill
+**Epic:** EPIC-01
+**Points:** 5
+**Key BC:** BC-2.01.006 (status: draft, will promote to active at PR merge per POL-14)
+**Worktree:** `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004`
+**Branch:** `feature/STORY-004`
+**Worktree tip:** `f391bff` — "wip(STORY-004): pass-2 fix burst — C01/C02/C03/I01/I03/I04 — pausing for relocation"
+
+### Cascade History Table
+
+| Step | Result | Notes |
+|------|--------|-------|
+| Red Gate | 30 failing tests written | brain-health-skill.bats |
+| TDD impl | 41/41 + 22/22 tests pass | brain-health-skill.bats + brain-health-check.bats |
+| Pass 1 | FAIL — 3C + 8I + 3S | PO+architect dispatched to resolve cross-BC collision |
+| PO + architect dispatch | decisions locked | See "Locked Decisions" below — DO NOT re-litigate |
+| Fix burst 1 | applied | PO updates + I02/I05/I06/I07 + new writeback feature |
+| Pass 2 | FAIL — 3C + 4I + 3S | writeback feature introduced 3 new criticals |
+| Fix burst 2 | applied (f391bff) | C01/C02/C03/I01/I03/I04 fixed |
+| **Pass 3** | **PENDING** | **Streak 0/3 — this is the next action** |
+
+### Locked Decisions (DO NOT RE-LITIGATE)
+
+The product-owner was dispatched after Pass 1 to adjudicate a cross-BC collision between BC-2.01.006 (health skill) and BC-2.04.014 (health check hook). These decisions are binding. The spec files have already been updated. Any fresh adversary pass that re-raises these as open questions has misread the spec.
+
+**Decision 1 — Canonical skill directory:** `skills/brain-health/` (NOT `skills/health/`). All 7 affected spec files were updated by PO at fix burst 1.
+
+**Decision 2 — Canonical six dimensions:** `capture, sources, wiki, synthesis, output, reflection`. These are the BC-2.01.006 names. BC-2.04.014 v1.4 Invariant 3 codifies this and marks the prior names (`briefs/publishing/voice/structural`) as non-conformant.
+
+**Decision 3 — AC-010 rework (hook does NOT inline-invoke skill):** The `brain-health-check.sh` hook reads CACHED health state from STATE.md frontmatter fields (`overall_health`, `dimensions`, `red_dimensions`, `last_health_check`). The `/brain:health` skill writes these fields BACK to STATE.md after each run (BC-2.01.006 v1.3 Postcondition 5). This is the production-grade design: hook reads cache, skill writes cache.
+
+**Decision 4 — STATE.md template updated:** `plugins/brain-factory/templates/state-md-template.md` now has `overall_health: YELLOW`, `last_health_check: ""`, and `dimensions` map with the six canonical dimension names. This was applied by PO in fix burst 1.
+
+**Decision 5 — STORY-004 spec task #3 clarification:** Missing `ingest-tokens.jsonl` → GREEN "No ingest history yet." takes precedence over source count check. The task ordering in STORY-004.md was made explicit by PO.
+
+### Pass 2 Findings Fixed in WIP Commit f391bff
+
+All six Pass 2 non-suggestion findings were fixed:
+
+| Finding | Description | Fix Applied |
+|---------|-------------|-------------|
+| C01 | `_writeback_state` did not populate `red_dimensions` array | Now derives and writes `red_dimensions` from dim scores |
+| C02 | Body extraction destroyed `---` horizontal rules in markdown | State machine approach preserves `---` in body |
+| C03 | VP-024 verification snippets used `--brain` flag that doesn't exist | Snippets now use `BRAIN_ROOT=` env var |
+| I01 | jq + yq not checked at startup; E-HEALTH-004/005 not registered | Preflight checks added; codes registered in error-taxonomy.md v0.1.7 |
+| I03 | Awk fallback for writeback present despite yq guaranteed by I01 | Awk fallback removed; yq-only path |
+| I04 | `writeback_status` not captured explicitly; not in JSON report | Captured explicitly; injected as "ok"/"failed" in report |
+
+Note: I02 (P1 token threshold arithmetic from TOKEN_BASELINE), I05 (SKILL.md `--brain-root` removal), I06 (reflection_detail fix), I07 (AC-009 test strengthened) were applied in fix burst 1 (pre-Pass-2).
+
+### Pass 2 Suggestion Findings (S01-S03) — Carry into Pass 3
+
+These were filed as SUGGESTION severity in Pass 2. They were NOT fixed in fix burst 2 (fix burst only addressed C and I findings per production-grade priority). The adversary may re-raise them as higher severity in Pass 3 — if so, assess honestly and fix if warranted.
+
+S01, S02, S03 specifics: the exact text from the adversary pass 2 report should be read from `.factory/cycles/v0.1-phase-3-impl/adversarial-reviews/` or from the pass 2 report file if it was committed. If not available, do not preemptively defend — let Pass 3 adversary surface what remains.
+
+### Files Modified (STORY-004 worktree state at f391bff)
+
+| File | Change Summary |
+|------|---------------|
+| `plugins/brain-factory/skills/brain-health/run.sh` | ~360 lines — six-dimensional skill; writeback fixed (C01); body extraction state machine (C02); I01 preflight; I03 awk fallback removed; I04 writeback_status captured |
+| `plugins/brain-factory/skills/brain-health/SKILL.md` | Full 6-section per meta-lint contract; `--brain-root` flag removed (I05) |
+| `plugins/brain-factory/hooks/brain-health-check.sh` | Reads cached STATE.md health fields per AC-010 rework |
+| `plugins/brain-factory/tests/brain-health-skill.bats` | 41 tests including writeback, preflight, red_dimensions |
+| `plugins/brain-factory/tests/brain-health-check.bats` | 22 tests; fixtures updated by PO for canonical dimension names |
+| `plugins/brain-factory/templates/state-md-template.md` | Health frontmatter fields added (PO fix burst 1) |
+| `.factory/specs/behavioral-contracts/ss-01/BC-2.01.006.md` | v1.3 — Postcondition 5 writeback added |
+| `.factory/specs/behavioral-contracts/ss-04/BC-2.04.014.md` | v1.4 — Invariant 3 canonical dimension names |
+| `.factory/specs/behavioral-contracts/BC-DIMENSION-RECONCILIATION.md` | NEW — PO decision document recording the cross-BC adjudication |
+| `.factory/specs/architecture/verification-properties/VP-024-plugin-lifecycle.md` | BRAIN_ROOT env var in snippets (C03) |
+| `.factory/specs/prd/prd-supplements/error-taxonomy.md` | v0.1.7 — E-HEALTH-004/E-HEALTH-005 registered (I01) |
+| `.factory/stories/stories/STORY-004.md` | AC-010 rewording, task #3 clarification (PO fix burst 1) |
+| `.factory/stories/stories/STORY-005.md` | Path update (brain-health/) |
+| `.factory/stories/stories/STORY-037.md` | Path update (brain-health/) |
+| `.factory/stories/dependency-graph.md` | Path update |
+| `.factory/specs/architecture/ARCH-INDEX.md` | Path update |
+
+### Adversary Dispatch Template for Pass 3
+
+Use this exact framing when dispatching the adversary. Fresh context, no prior conversation, provide the already-fixed list so adversary doesn't re-report closed findings.
+
+```
+cd /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 &&
+
+Fresh-Context Adversarial Review — STORY-004 Pass 3
+Zero prior context. Streak: 0/3. Need 3 consecutive 0C+0I passes for convergence (BC-5.39.001).
+
+Story: STORY-004 — /brain:health six-dimensional convergence skill
+Files to review:
+- plugins/brain-factory/skills/brain-health/run.sh
+- plugins/brain-factory/skills/brain-health/SKILL.md
+- plugins/brain-factory/hooks/brain-health-check.sh
+- plugins/brain-factory/tests/brain-health-skill.bats
+- plugins/brain-factory/tests/brain-health-check.bats
+- .factory/stories/stories/STORY-004.md
+- .factory/specs/behavioral-contracts/ss-01/BC-2.01.006.md
+- .factory/specs/behavioral-contracts/ss-04/BC-2.04.014.md
+
+Already confirmed CLOSED (do not re-report):
+PASS 1: C01(orig-path-names), C02(dimension-names), C03(AC-010-hook-design), I01-I08 (per-fix-burst-1), S01-S03 (per-fix-burst-1 PO)
+PASS 2: C01(red_dimensions), C02(body-extraction-state-machine), C03(VP-024-BRAIN_ROOT), I01(preflight-checks), I03(awk-fallback-removed), I04(writeback_status-captured)
+
+Note: Locked architectural decisions — DO NOT re-raise as open:
+- Canonical skill dir: skills/brain-health/ (finalized)
+- Canonical six dimensions: capture/sources/wiki/synthesis/output/reflection (BC-2.01.006)
+- AC-010: hook reads STATE.md cache; skill writes back (not inline invocation)
+
+Find NEW defects only. CRITICAL findings block progression. IMPORTANT findings must be fixed before next pass. SUGGESTION findings are discretionary. Output: structured finding list with severity, location, description.
+```
+
+### Post-Convergence Steps (after 3-CLEAN achieved)
+
+1. Push branch: `git -C .worktrees/STORY-004 push --set-upstream origin feature/STORY-004`
+2. Create PR via pr-manager (targeting develop), including BC-2.01.006 traceability
+3. Wait for CI (Lint + Test jobs green)
+4. Merge (squash-merge per project pattern)
+5. State-manager post-merge burst:
+   - BC-2.01.006 draft → active (POL-14)
+   - STORY-INDEX updated (STORY-004 status → done, commit SHA recorded)
+   - sprint-state.yaml updated
+   - Wave 4 progress: 3/4 (21/26 pts)
+6. Remove worktree: `git worktree remove .worktrees/STORY-004`
+7. Move to STORY-015
+
+---
+
+## Wave 4 Summary
+
+| # | Story | Pts | Status | Notes |
+|---|-------|-----|--------|-------|
+| 1 | STORY-017 | 8 | DONE — PR #16 (b30dd35) | Wiki page generation pipeline; 5 passes 2 fix bursts |
+| 2 | STORY-032 | 8 | DONE — PR #17 (d610cf0) | bin/lobster-run; 22 passes 14 fix bursts; longest cascade |
+| 3 | STORY-004 | 5 | IN PROGRESS — Pass 3 pending | /brain:health skill; 2 passes 2 fix bursts; streak 0/3 |
+| 4 | STORY-015 | 5 | NOT STARTED | Hook meta-lint; begin after STORY-004 or parallel |
+
+---
+
+## Standing Constraints (carry into every agent dispatch)
 
 - **Per-story delivery flow:** worktree → stubs (failing bats Red Gate) → TDD green → local adversary 3-CLEAN → demo-recorder per-AC → push → pr-manager → merge → state-mgr post-merge burst.
 - **Holdout scenarios restricted:** `.factory/stories/holdout-scenarios.md` MUST NOT be passed to story-writer, architect, adversary, implementer, or any agent other than holdout-evaluator (Phase 4).
@@ -179,7 +331,7 @@ gh pr list --state open               # expect none
 - **manifest.json:** OBJECT format with full-path keys per ADR-015.
 - **Event catalog:** `scripts/event-catalog.json` — update fields BEFORE pushing or CI fails VP-008 meta-lint.
 
-### Step 5 — Wave 3 story list with status (COMPLETE)
+## Wave 3 Story List (COMPLETE — for reference)
 
 | Story | Points | Priority | Status | Description |
 |-------|--------|----------|--------|-------------|
@@ -194,7 +346,7 @@ gh pr list --state open               # expect none
 
 Wave 3 integration gate PASSED 6/6 (2026-05-27). Gate fix commits: e7824d0, 56e1ec7, 42ca028. All 8 stories DONE.
 
-### Step 6 — Deferred findings disposition after Wave 3 gate
+## Deferred Findings (10 open items — not blocking STORY-004)
 
 | Finding | Status | Notes |
 |---------|--------|-------|
@@ -204,6 +356,11 @@ Wave 3 integration gate PASSED 6/6 (2026-05-27). Gate fix commits: e7824d0, 56e1
 | F-INTEG-007 BRAIN_ROOT vs BRAIN_DIR | STILL DEFERRED | env var naming inconsistency |
 | STORY-006 AC exit codes stale vs BC v1.4 | STILL DEFERRED | story spec stale |
 | VP-003 field name | STILL DEFERRED | verify cascade completeness |
+| SS-12 subsystem doc drift | STILL DEFERRED | implementation supersedes per Source-of-Truth Precedence |
+| holdout-scenarios.md exit codes 3/4 | STILL DEFERRED | should be exit 2 — product-owner to fix |
+| VP-007 example fixtures missing description field | STILL DEFERRED | architect |
+| BC-2.12.001 wording / EC-001 alignment | STILL DEFERRED | product-owner |
+| STORY-032 body BC title minor drift | STILL DEFERRED | story-writer |
 
 ---
 
