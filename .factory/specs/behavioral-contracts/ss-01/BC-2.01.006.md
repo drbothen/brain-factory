@@ -1,7 +1,7 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.6"
+version: "1.7"
 status: draft
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
@@ -63,9 +63,9 @@ removal_reason: null
 | Brand-new brain (just init'd, no ingests) | `{"overall": "YELLOW", ...sources: GREEN, wiki: YELLOW, ..., "writeback_status": "ok"}`; exit 0 | edge-case |
 | Brain with missing STATE.md | E-HEALTH-001 JSON; exit 2 | error |
 | Brain with token cost > 2x baseline | Sources dimension YELLOW with token alert detail; `"writeback_status": "ok"` | edge-case |
-| STATE.md with fewer than 2 `---` markers (EC-004) | Dimensional report with `"writeback_status": "skipped_malformed_frontmatter"`, no `writeback_error`; exit 0 (bats: `test_writeback_skipped_malformed_frontmatter` in brain-health-skill.bats) | edge-case |
-| STATE.md with well-fenced but yq-unparseable YAML (EC-005) | Dimensional report with `"writeback_status": "failed"`, `"writeback_error": "<yq diagnostic>"`, original STATE.md preserved byte-identical; exit 0 (bats: `test_writeback_failed_yq_error` in brain-health-skill.bats) | edge-case |
-| Healthy brain: writeback succeeds, STATE.md updated | `"writeback_status": "ok"` in stdout; STATE.md frontmatter `overall_health`/`dimensions`/`red_dimensions`/`last_health_check` updated; exit 0 (bats: `test_writeback_ok` in brain-health-skill.bats) | happy-path |
+| STATE.md with fewer than 2 `---` markers (EC-004) | Dimensional report with `"writeback_status": "skipped_malformed_frontmatter"`, no `writeback_error`; exit 0 (bats: `BC_2_01_006: zero-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` and `BC_2_01_006: one-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` in brain-health-skill.bats) | edge-case |
+| STATE.md with well-fenced but yq-unparseable YAML (EC-005) | Dimensional report with `"writeback_status": "failed"`, `"writeback_error": "<yq diagnostic>"`, original STATE.md preserved byte-identical; exit 0 (bats: `BC_2_01_006: malformed YAML in well-fenced frontmatter triggers writeback_status=failed and leaves file unchanged` in brain-health-skill.bats) | edge-case |
+| Healthy brain: writeback succeeds, STATE.md updated | `"writeback_status": "ok"` in stdout; STATE.md frontmatter `overall_health`/`dimensions`/`red_dimensions`/`last_health_check` updated; exit 0 (bats: `BC_2_01_006: JSON report writeback_status is ok on successful healthy brain` in brain-health-skill.bats) | happy-path |
 
 ## Verification Properties
 
@@ -104,12 +104,16 @@ STORY-004
 
 ## Changelog
 
+### v1.7 (2026-05-29)
+
+**CANONICAL TEST VECTOR CITATIONS CORRECTED (F13-02):** Replaced three non-existent `test_writeback_*` function-name citations in the Canonical Test Vectors table and the v1.6 changelog narrative with the actual bats `@test` names used in `brain-health-skill.bats` per the `BC_2_01_006: <description>` convention. Non-existent names were: `test_writeback_ok`, `test_writeback_skipped_malformed_frontmatter`, `test_writeback_failed_yq_error`. Actual names: (1) ok path — `BC_2_01_006: JSON report writeback_status is ok on successful healthy brain`; (2) skipped_malformed_frontmatter path — `BC_2_01_006: zero-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` and `BC_2_01_006: one-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` (two tests, one per EC-004 sub-variant); (3) failed path — `BC_2_01_006: malformed YAML in well-fenced frontmatter triggers writeback_status=failed and leaves file unchanged`. Closes paper-fix risk per TD-VSDD-059 — citations are now load-bearing references to real, existing tests. No semantic contract change.
+
 ### v1.6 (2026-05-28)
 
 **WRITEBACK ENUM COVERAGE (F-P9-I02 + F-P9-I03 + optional EC-004/EC-005):**
 
 - **Postcondition 2 JSON example (F-P9-I02):** `writeback_status` field added to the example JSON output schema. The field is always present in the stdout report and is one of `{ok, skipped_malformed_frontmatter, failed}` per Postcondition 5. `writeback_error` is conditionally present when `writeback_status` is `"failed"`, containing the yq diagnostic string. The prior example omitted this field despite Postcondition 5 being present since v1.4 — a contract surface gap.
-- **Canonical Test Vectors (F-P9-I03):** Added 3 new rows covering the writeback enum paths: (1) `writeback_status="ok"` on well-formed STATE.md (positive path, bats: `test_writeback_ok`); (2) `writeback_status="skipped_malformed_frontmatter"` on STATE.md with fewer than 2 `---` markers (safeguard path, bats: `test_writeback_skipped_malformed_frontmatter`); (3) `writeback_status="failed"` on STATE.md with well-fenced but yq-unparseable YAML (failure path, bats: `test_writeback_failed_yq_error`). All prior rows updated to include `writeback_status` in their expected output.
+- **Canonical Test Vectors (F-P9-I03):** Added 3 new rows covering the writeback enum paths: (1) `writeback_status="ok"` on well-formed STATE.md (positive path, bats: `BC_2_01_006: JSON report writeback_status is ok on successful healthy brain`); (2) `writeback_status="skipped_malformed_frontmatter"` on STATE.md with fewer than 2 `---` markers (safeguard path, bats: `BC_2_01_006: zero-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged` and `BC_2_01_006: one-marker STATE.md triggers skipped_malformed_frontmatter and leaves file unchanged`); (3) `writeback_status="failed"` on STATE.md with well-fenced but yq-unparseable YAML (failure path, bats: `BC_2_01_006: malformed YAML in well-fenced frontmatter triggers writeback_status=failed and leaves file unchanged`). All prior rows updated to include `writeback_status` in their expected output.
 - **Edge Cases EC-004 and EC-005 (optional in-scope, production-grade Rule 4):** EC-004 documents the malformed-frontmatter safeguard path (fewer than 2 `---` markers → writeback skipped, STATE.md preserved byte-identical). EC-005 documents the yq parse-failure path (well-fenced but yq-unparseable YAML → writeback fails, `writeback_error` populated, STATE.md preserved byte-identical). Both reference Postcondition 5 as the authoritative specification. The bats suite (brain-health-skill.bats, 45 tests) already covers these paths; this entry brings the BC body in line with the test coverage that existed since v1.4.
 
 ### v1.5 (2026-05-28)
