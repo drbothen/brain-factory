@@ -2,7 +2,7 @@
 set -euo pipefail
 # Fail-closed trap: any unhandled error exits 2 (block).
 # ADR-002 v2.0: exit codes other than 0 are treated as blocking errors.
-trap 'echo "Index-log coherence hook blocked: internal error." >&2; exit 2' ERR
+trap 'printf '"'"'{"ts":"%s","event_type":"hook.error.internal","hook_name":"validate-index-log-coherence.sh","trace":"%s","code":"E-HOOK-003","reason":"unhandled error"}\n'"'"' "$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null)" "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" >&2; exit 2' ERR
 # validate-index-log-coherence.sh — PostToolUse hook: wiki index/log coherence
 # BC-2.04.006 | VP-002 | ADR-002 v2.0 | ADR-016 (event emission)
 # Fires AFTER Write|Edit executes — bidirectional check:
@@ -27,7 +27,6 @@ if [ ! -f "$HELPER" ]; then
   jq -cn \
     --arg trace "00000000-0000-0000-0000-000000000000" \
     '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":$trace}}'
-  echo "Index-log coherence hook blocked: internal error." >&2
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
@@ -40,12 +39,12 @@ stdin_json="$(cat)"
 
 # Validate JSON is parseable — fail-closed on malformed or empty stdin.
 if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
   jq -cn \
     --arg code "E-WIKI-004" \
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Index-log coherence hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -65,7 +64,6 @@ if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Index-log coherence hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -98,7 +96,6 @@ if [[ ! -r "$index_file" ]] || [[ ! -r "$log_file" ]]; then
     --arg msg "wiki/index.md or wiki/log.md not found — cannot verify coherence." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Index-log coherence hook blocked: wiki/index.md or wiki/log.md not readable." >&2
   exit 2
 fi
 
@@ -164,7 +161,6 @@ if [[ -n "$all_missing" ]]; then
     --arg reason "Index-log coherence violation: slug(s) missing from counterpart file: ${all_missing}." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$reason,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Index-log coherence hook blocked: slug(s) missing from counterpart file: ${all_missing}." >&2
   exit 2
 fi
 

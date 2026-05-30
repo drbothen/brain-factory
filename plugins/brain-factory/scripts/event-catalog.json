@@ -295,5 +295,75 @@
     "severity": "info",
     "fields": ["workflow", "exit_code", "steps_run", "steps_skipped"],
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"lobster.run.completed\",\"hook_name\":\"bin/lobster-run\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"workflow\":\"workflows/ingest-url.yaml\",\"exit_code\":0,\"steps_run\":3,\"steps_skipped\":0}"
+  },
+  {
+    "event_type": "hook.input.invalid",
+    "hook_name": "block-ai-attribution.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.input.invalid\",\"hook_name\":\"block-ai-attribution.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-HOOK-001\",\"reason\":\"malformed or empty hook payload\"}"
+  },
+  {
+    "event_type": "source.citation.check_failed",
+    "hook_name": "validate-source-id-citation.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"source.citation.check_failed\",\"hook_name\":\"validate-source-id-citation.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-WIKI-008\",\"reason\":\"cannot read wiki file\"}"
+  },
+  {
+    "event_type": "publish.state.check_failed",
+    "hook_name": "validate-publish-state.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"publish.state.check_failed\",\"hook_name\":\"validate-publish-state.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-PUBLISH-002\",\"reason\":\"cannot read content file\"}"
+  },
+  {
+    "event_type": "hook.error.internal",
+    "hook_name": "validate-frontmatter-schema.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.error.internal\",\"hook_name\":\"validate-frontmatter-schema.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-HOOK-003\",\"reason\":\"unhandled error\"}"
+  },
+  {
+    "event_type": "hook.tool.missing",
+    "hook_name": "validate-frontmatter-schema.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.tool.missing\",\"hook_name\":\"validate-frontmatter-schema.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-SCHEMA-005\",\"reason\":\"yq not found in PATH\"}"
+  },
+  {
+    "event_type": "hook.input.invalid",
+    "hook_name": "validate-source-immutability.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.input.invalid\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-HOOK-001\",\"reason\":\"malformed or empty hook payload\"}"
+  },
+  {
+    "event_type": "hook.error.internal",
+    "hook_name": "validate-source-immutability.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.error.internal\",\"hook_name\":\"validate-source-immutability.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-HOOK-003\",\"reason\":\"unhandled error\"}"
+  },
+  {
+    "event_type": "hook.input.invalid",
+    "hook_name": "quarantine-fetch.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.input.invalid\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-HOOK-001\",\"reason\":\"malformed or empty hook payload\"}"
+  },
+  {
+    "event_type": "hook.tool.missing",
+    "hook_name": "quarantine-fetch.sh",
+    "severity": "error",
+    "fields": ["code", "reason"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"hook.tool.missing\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-QUARANTINE-002\",\"reason\":\"quarantine corpus (quarantine.mjs) missing\"}"
+  },
+  {
+    "event_type": "quarantine.fetch.failed",
+    "hook_name": "quarantine-fetch.sh",
+    "severity": "error",
+    "fields": ["code", "curl_rc"],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"quarantine.fetch.failed\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-QUARANTINE-004\",\"curl_rc\":\"7\"}"
   }
 ]

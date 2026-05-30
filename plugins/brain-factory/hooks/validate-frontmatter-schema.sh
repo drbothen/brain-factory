@@ -2,7 +2,7 @@
 set -euo pipefail
 # Fail-closed trap: any unhandled error exits 2 (block).
 # ADR-002 v2.0: exit codes other than 0 are treated as blocking errors.
-trap 'echo "Frontmatter schema hook blocked: internal error." >&2; exit 2' ERR
+trap 'printf '"'"'{"ts":"%s","event_type":"hook.error.internal","hook_name":"validate-frontmatter-schema.sh","trace":"%s","code":"E-HOOK-003","reason":"unhandled error"}\n'"'"' "$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null)" "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" >&2; exit 2' ERR
 # validate-frontmatter-schema.sh — PostToolUse hook: frontmatter schema enforcement
 # BC-2.04.004 | BC-2.04.005 | VP-005 | ADR-002 v2.0 | ADR-016 (event emission)
 # Fires AFTER Write|Edit executes — validates YAML frontmatter on wiki/** and sources/** files.
@@ -22,12 +22,13 @@ HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 # E-SCHEMA-005: yq absent → fail-closed. Uses null trace (helper not yet sourced).
 # ---------------------------------------------------------------------------
 if ! command -v yq >/dev/null 2>&1; then
+  printf '{"ts":"%s","event_type":"hook.tool.missing","hook_name":"validate-frontmatter-schema.sh","trace":"00000000-0000-0000-0000-000000000000","code":"E-SCHEMA-005","reason":"yq not found in PATH"}\n' \
+    "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >&2
   jq -cn \
     --arg code "E-SCHEMA-005" \
     --arg msg "yq is required for frontmatter validation but was not found in PATH." \
     --arg trace "00000000-0000-0000-0000-000000000000" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Frontmatter schema hook blocked: yq not found in PATH. Cannot validate frontmatter." >&2
   exit 2
 fi
 
@@ -40,7 +41,6 @@ if [ ! -f "$HELPER" ]; then
   jq -cn \
     --arg trace "00000000-0000-0000-0000-000000000000" \
     '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":$trace}}'
-  echo "Frontmatter schema hook blocked: internal error." >&2
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
@@ -53,12 +53,12 @@ stdin_json="$(cat)"
 
 # Validate JSON is parseable — fail-closed on malformed or empty stdin.
 if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
   jq -cn \
     --arg code "E-SCHEMA-003" \
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Frontmatter schema hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -78,7 +78,6 @@ if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Frontmatter schema hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -124,7 +123,6 @@ if [[ "$first_line" != "---" ]]; then
     --arg msg "No YAML frontmatter block found. File must begin with ---." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Frontmatter schema hook blocked: No YAML frontmatter found in ${relative_path}." >&2
   exit 2
 fi
 
@@ -135,7 +133,7 @@ fi
 # ---------------------------------------------------------------------------
 tmp_fm="$(mktemp)"
 # Reset ERR trap to also clean up tmp_fm.
-trap 'rm -f "${tmp_fm}"; echo "Frontmatter schema hook blocked: internal error." >&2; exit 2' ERR
+trap 'rm -f "${tmp_fm}"; emit_event "hook.error.internal" "code=E-HOOK-003" "reason=unhandled error in validate-frontmatter-schema"; exit 2' ERR
 trap 'rm -f "${tmp_fm}"' EXIT
 
 printf '%s' "$content" | awk '/^---/{if(p){exit}p=1;next}p{print}' >"${tmp_fm}"
@@ -151,7 +149,6 @@ if ! yq e '.' "${tmp_fm}" >/dev/null 2>&1; then
     --arg msg "Malformed YAML frontmatter: yq could not parse the frontmatter block." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Frontmatter schema hook blocked: malformed YAML frontmatter in ${relative_path}." >&2
   exit 2
 fi
 
@@ -214,7 +211,6 @@ if [[ "$schema" == "wiki" ]]; then
       --arg msg "Missing required field: embedding_status. Must be one of: pending, computed, stale." \
       --arg trace "${HOOK_TRACE_ID}" \
       '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-    echo "Frontmatter schema hook blocked: Missing embedding_status in ${relative_path}." >&2
     exit 2
   fi
 
@@ -230,7 +226,6 @@ if [[ "$schema" == "wiki" ]]; then
       --arg msg "Invalid embedding_status value: '${f_embedding_raw}'. Must be one of: pending, computed, stale (case-sensitive)." \
       --arg trace "${HOOK_TRACE_ID}" \
       '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-    echo "Frontmatter schema hook blocked: Invalid embedding_status '${f_embedding_raw}' in ${relative_path}." >&2
     exit 2
   fi
 
@@ -250,7 +245,6 @@ if [[ "$schema" == "wiki" ]]; then
       --argjson missing "$missing_json" \
       --arg trace "${HOOK_TRACE_ID}" \
       '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace,"missing_fields":$missing}}'
-    echo "Frontmatter schema hook blocked: Missing required field(s) ${missing_display} in ${relative_path}." >&2
     exit 2
   fi
 
@@ -273,7 +267,6 @@ if [[ "$schema" == "wiki" ]]; then
       --arg msg "Invalid type value: '${f_type}'. Must be one of: concepts, people, frameworks, syntheses, observations, questions." \
       --arg trace "${HOOK_TRACE_ID}" \
       '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-    echo "Frontmatter schema hook blocked: Invalid type '${f_type}' in ${relative_path}." >&2
     exit 2
   fi
 
@@ -327,7 +320,6 @@ else
       --argjson missing "$missing_json" \
       --arg trace "${HOOK_TRACE_ID}" \
       '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace,"missing_fields":$missing}}'
-    echo "Frontmatter schema hook blocked: Missing required field(s) ${missing_display} in ${relative_path}." >&2
     exit 2
   fi
 

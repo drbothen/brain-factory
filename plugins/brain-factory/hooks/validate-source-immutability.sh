@@ -2,7 +2,7 @@
 set -euo pipefail
 # Fail-closed trap: any unhandled error exits 2 (block).
 # ADR-002 v2.0: exit codes other than 0 are treated as blocking errors.
-trap 'echo "Source immutability hook blocked: internal error." >&2; exit 2' ERR
+trap 'printf '"'"'{"ts":"%s","event_type":"hook.error.internal","hook_name":"validate-source-immutability.sh","trace":"%s","code":"E-HOOK-003","reason":"unhandled error"}\n'"'"' "$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null)" "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" >&2; exit 2' ERR
 # validate-source-immutability.sh — PostToolUse hook: source immutability enforcement
 # BC-2.04.002 | VP-003 | ADR-002 v2.0 | ADR-015 (manifest schema) | ADR-016 (event emission)
 # Fires AFTER Write|Edit executes — checks .brain/manifest.json to block overwriting existing sources.
@@ -24,7 +24,6 @@ if [ ! -f "$HELPER" ]; then
   jq -cn \
     --arg trace "00000000-0000-0000-0000-000000000000" \
     '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":$trace}}'
-  echo "Source immutability hook blocked: internal error." >&2
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
@@ -37,12 +36,12 @@ stdin_json="$(cat)"
 
 # Validate JSON is parseable — fail-closed on malformed or empty stdin.
 if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
   jq -cn \
-    --arg code "E-SOURCE-003" \
+    --arg code "E-HOOK-001" \
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source immutability hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -62,7 +61,6 @@ if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source immutability hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -93,7 +91,6 @@ if [[ ! -r "$manifest" ]]; then
     --arg msg "Manifest not found — cannot verify source immutability." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source immutability hook blocked: manifest not found at ${manifest}. Cannot verify source immutability." >&2
   exit 2
 fi
 
@@ -105,7 +102,6 @@ if ! jq empty "$manifest" 2>/dev/null; then
     --arg msg "Manifest malformed — cannot verify source immutability." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source immutability hook blocked: manifest malformed at ${manifest}. Cannot verify source immutability." >&2
   exit 2
 fi
 
@@ -123,7 +119,6 @@ if [[ -n "$existing" ]]; then
     --arg path "$relative_path" \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":("Source file " + $path + " already exists in manifest. Sources are immutable. Use /brain:rename-page to rename."),"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source immutability hook blocked: Source file ${relative_path} already exists in manifest. Sources are immutable. Use /brain:rename-page to rename." >&2
   exit 2
 fi
 

@@ -2,7 +2,7 @@
 set -euo pipefail
 # Fail-closed trap: any unhandled error exits 2 (block).
 # ADR-002 v2.0: exit codes other than 0 are treated as blocking errors.
-trap 'echo "Source citation hook blocked: internal error." >&2; exit 2' ERR
+trap 'printf '"'"'{"ts":"%s","event_type":"hook.error.internal","hook_name":"validate-source-id-citation.sh","trace":"%s","code":"E-HOOK-003","reason":"unhandled error"}\n'"'"' "$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null)" "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" >&2; exit 2' ERR
 # validate-source-id-citation.sh — PostToolUse hook: source citation integrity enforcement
 # BC-2.04.009 | VP-002 | ADR-002 v2.0 | ADR-016 (event emission)
 # Fires AFTER Write|Edit executes — validates that source_ids in wiki page frontmatter
@@ -25,7 +25,6 @@ if [ ! -f "$HELPER" ]; then
   jq -cn \
     --arg trace "00000000-0000-0000-0000-000000000000" \
     '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":$trace}}'
-  echo "Source citation hook blocked: internal error." >&2
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
@@ -38,12 +37,12 @@ stdin_json="$(cat)"
 
 # Validate JSON is parseable — fail-closed on malformed or empty stdin.
 if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
   jq -cn \
     --arg code "E-WIKI-008" \
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source citation hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -57,12 +56,12 @@ brain_dir="${BRAIN_DIR:-${brain_dir}}"
 
 # Fail-closed if we cannot determine the brain directory or file path.
 if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=missing file_path or brain_dir in payload"
   jq -cn \
     --arg code "E-WIKI-008" \
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source citation hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -86,12 +85,12 @@ fi
 # Read the file from disk (PostToolUse — file already written).
 # ---------------------------------------------------------------------------
 if [[ ! -r "$file_path" ]]; then
+  emit_event "source.citation.check_failed" "code=E-WIKI-008" "reason=cannot read wiki file"
   jq -cn \
     --arg code "E-WIKI-008" \
     --arg msg "Cannot read wiki file for source citation check." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source citation hook blocked: cannot read file at ${file_path}." >&2
   exit 2
 fi
 
@@ -177,23 +176,23 @@ fi
 # ---------------------------------------------------------------------------
 manifest="${brain_dir}/.brain/manifest.json"
 if [[ ! -r "$manifest" ]]; then
+  emit_event "source.citation.check_failed" "code=E-WIKI-008" "reason=manifest not found"
   jq -cn \
     --arg code "E-WIKI-008" \
     --arg msg "Cannot read .brain/manifest.json — source citation verification impossible." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source citation hook blocked: manifest not found at ${manifest}." >&2
   exit 2
 fi
 
 # Check manifest is valid JSON (fail-closed on malformed).
 if ! jq empty "$manifest" 2>/dev/null; then
+  emit_event "source.citation.check_failed" "code=E-WIKI-008" "reason=manifest malformed"
   jq -cn \
     --arg code "E-WIKI-008" \
     --arg msg "Cannot read .brain/manifest.json — source citation verification impossible." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Source citation hook blocked: manifest malformed at ${manifest}." >&2
   exit 2
 fi
 
@@ -234,7 +233,6 @@ if [[ "${#unresolved[@]}" -gt 0 ]]; then
     --arg trace "${HOOK_TRACE_ID}" \
     --argjson unresolved_arr "$unresolved_json" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-WIKI-007","trace":$trace,"unresolved":$unresolved_arr}}'
-  echo "Source citation hook blocked: unresolved source citations: ${unresolved_list}." >&2
   exit 2
 fi
 

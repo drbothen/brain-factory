@@ -37,13 +37,15 @@ source "$HELPER"
 stdin_json="$(cat)"
 
 # Validate JSON is parseable — fail-closed on malformed or empty stdin.
+# BC-2.04.016 invariant 4: canonical empty/malformed-stdin code is E-HOOK-001.
+# Hook-specific codes (E-NAMING-001) apply to domain violations only.
 if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
   jq -cn \
-    --arg code "E-NAMING-001" \
+    --arg code "E-HOOK-001" \
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
-  printf "%s\n" "enforce-kebab-case hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
@@ -54,12 +56,12 @@ file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')
 
 # Fail-closed if we cannot determine the file path.
 if [[ -z "$file_path" ]]; then
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=missing tool_input.file_path in payload"
   jq -cn \
-    --arg code "E-NAMING-001" \
+    --arg code "E-HOOK-001" \
     --arg msg "Malformed or empty hook payload." \
     --arg trace "${HOOK_TRACE_ID}" \
     '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
-  printf "%s\n" "enforce-kebab-case hook blocked: malformed or empty hook payload." >&2
   exit 2
 fi
 
