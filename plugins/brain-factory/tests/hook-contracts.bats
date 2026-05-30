@@ -236,6 +236,8 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/block-ai-attribution-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 @test "BC_2_04_016: brain-health-check canonical fixture stdout is valid JSON" {
@@ -243,6 +245,8 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/brain-health-check-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 @test "BC_2_04_016: enforce-kebab-case canonical fixture stdout is valid JSON" {
@@ -250,6 +254,8 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/enforce-kebab-case-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 @test "BC_2_04_016: flush-state-and-commit canonical fixture stdout is valid JSON" {
@@ -257,16 +263,26 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/flush-state-and-commit-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 @test "BC_2_04_016: quarantine-fetch canonical fixture stdout is valid JSON" {
   # AC-003: Node startup overhead is included (no --exclude-node-startup).
-  # If Node is absent the hook exits 2 with a structured JSON error —
-  # that is still valid JSON and satisfies this assertion.
+  # Verdict: quarantine-fetch fixture exercises the "URL not blocked" path in
+  # environments with Node, but may exit 2 (E-QUARANTINE-003) without Node.
+  # The fixture cannot guarantee a true happy-path continue:true without Node
+  # present, so this test asserts JSON validity only (known infrastructure gap).
+  # When Node is present and the fixture URL is not blocked, the hook emits
+  # continue:true — a future fixture enhancement can add that assertion once
+  # Node presence is guaranteed in CI (see STORY-015 architecture notes).
   local hook="${PLUGIN_DIR}/hooks/quarantine-fetch.sh"
   local fixture="${PLUGIN_DIR}/tests/fixtures/quarantine-fetch-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # Verdict structure: must have either continue:true (allowed) or
+  # continue:false with a structured hookSpecificOutput (blocked/error).
+  echo "$output" | jq -e 'has("continue")' >/dev/null
 }
 
 @test "BC_2_04_016: validate-frontmatter-schema canonical fixture stdout is valid JSON" {
@@ -274,13 +290,24 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-frontmatter-schema-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  # Fixture was corrected from type:concept (singular, invalid) to type:concepts
+  # (plural, valid per canonical-6 type set in validate-frontmatter-schema.sh).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 @test "BC_2_04_016: validate-index-log-coherence canonical fixture stdout is valid JSON" {
+  # validate-index-log-coherence requires a real wiki/index.md and wiki/log.md on
+  # disk to exercise the happy path. The fixture points to /tmp which lacks these
+  # files, causing the hook to exit 2 (E-WIKI-002 or similar). This test asserts
+  # JSON validity + correct verdict structure; a true happy-path assertion requires
+  # fixture infrastructure (real index+log files in a temp brain directory).
   local hook="${PLUGIN_DIR}/hooks/validate-index-log-coherence.sh"
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-index-log-coherence-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # Verdict structure: must have continue field regardless of outcome.
+  echo "$output" | jq -e 'has("continue")' >/dev/null
 }
 
 @test "BC_2_04_016: validate-page-type-policy canonical fixture stdout is valid JSON" {
@@ -288,27 +315,47 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-page-type-policy-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  # This hook validates the file PATH type directory, not frontmatter type field.
+  # Fixture path wiki/concepts/my-concept.md gives type_dir=concepts (valid).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 @test "BC_2_04_016: validate-publish-state canonical fixture stdout is valid JSON" {
+  # validate-publish-state requires a real file on disk with publish_status
+  # frontmatter to exercise the full validation path. The fixture points to
+  # /tmp which lacks a real file, so the hook exits 2 (fail-closed). This test
+  # asserts JSON validity + correct verdict structure.
   local hook="${PLUGIN_DIR}/hooks/validate-publish-state.sh"
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-publish-state-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # Verdict structure: must have continue field regardless of outcome.
+  echo "$output" | jq -e 'has("continue")' >/dev/null
 }
 
 @test "BC_2_04_016: validate-source-id-citation canonical fixture stdout is valid JSON" {
+  # validate-source-id-citation requires source_id references against a real
+  # sources directory. The fixture uses /tmp which lacks real source files,
+  # so the hook exits 2 (fail-closed). This test asserts JSON validity + structure.
   local hook="${PLUGIN_DIR}/hooks/validate-source-id-citation.sh"
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-source-id-citation-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # Verdict structure: must have continue field regardless of outcome.
+  echo "$output" | jq -e 'has("continue")' >/dev/null
 }
 
 @test "BC_2_04_016: validate-source-immutability canonical fixture stdout is valid JSON" {
+  # validate-source-immutability checks sha256 of source files against stored hashes.
+  # The fixture uses /tmp which lacks real source files with hashes, so the hook
+  # exits 2 (fail-closed). This test asserts JSON validity + verdict structure.
   local hook="${PLUGIN_DIR}/hooks/validate-source-immutability.sh"
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-source-immutability-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # Verdict structure: must have continue field regardless of outcome.
+  echo "$output" | jq -e 'has("continue")' >/dev/null
 }
 
 @test "BC_2_04_016: validate-voice-avoid-list canonical fixture stdout is valid JSON" {
@@ -316,6 +363,8 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-voice-avoid-list-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 @test "BC_2_04_016: validate-wikilink-integrity canonical fixture stdout is valid JSON" {
@@ -323,6 +372,9 @@ setup() {
   local fixture="${PLUGIN_DIR}/tests/fixtures/validate-wikilink-integrity-sample.json"
   run bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  # BC-2.17.003 PC1 + AC-009: happy-path verdict must be continue:true (I-01 fix).
+  # Fixture has no wikilinks in content, so hook vacuously passes (continue:true).
+  echo "$output" | jq -e '.continue == true' >/dev/null
 }
 
 # =============================================================================
@@ -722,6 +774,216 @@ _make_cred_fixture() {
   fi
   if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
     echo "FAIL: sentinel found in stderr of validate-wikilink-integrity" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: brain-health-check does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  # Parameterized extension to cover all 13 hooks (S-02 fix).
+  local hook="${PLUGIN_DIR}/hooks/brain-health-check.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/brain-health-check-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of brain-health-check" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of brain-health-check" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: enforce-kebab-case does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  local hook="${PLUGIN_DIR}/hooks/enforce-kebab-case.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/enforce-kebab-case-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of enforce-kebab-case" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of enforce-kebab-case" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: flush-state-and-commit does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  local hook="${PLUGIN_DIR}/hooks/flush-state-and-commit.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/flush-state-and-commit-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of flush-state-and-commit" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of flush-state-and-commit" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: quarantine-fetch does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  # quarantine-fetch may exit 2 (Node absent) or 0/2 depending on URL verdict;
+  # in all cases the sentinel in content must not appear in stdout or stderr.
+  local hook="${PLUGIN_DIR}/hooks/quarantine-fetch.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/quarantine-fetch-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of quarantine-fetch" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of quarantine-fetch" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: validate-index-log-coherence does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  local hook="${PLUGIN_DIR}/hooks/validate-index-log-coherence.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-index-log-coherence-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of validate-index-log-coherence" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of validate-index-log-coherence" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: validate-page-type-policy does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  local hook="${PLUGIN_DIR}/hooks/validate-page-type-policy.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-page-type-policy-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of validate-page-type-policy" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of validate-page-type-policy" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: validate-publish-state does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  local hook="${PLUGIN_DIR}/hooks/validate-publish-state.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-publish-state-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of validate-publish-state" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of validate-publish-state" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: validate-source-id-citation does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  local hook="${PLUGIN_DIR}/hooks/validate-source-id-citation.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-source-id-citation-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of validate-source-id-citation" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of validate-source-id-citation" >&2
+    return 1
+  fi
+}
+
+@test "BC_2_17_004: validate-source-immutability does not leak credential sentinel to stdout or stderr" {
+  # BC-2.17.004 invariant 1: no hook may emit credential values in any output.
+  local hook="${PLUGIN_DIR}/hooks/validate-source-immutability.sh"
+  local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-source-immutability-sample.json"
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
+  local stdout_out stderr_out
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
+  if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stdout of validate-source-immutability" >&2
+    return 1
+  fi
+  if echo "$stderr_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
+    echo "FAIL: sentinel found in stderr of validate-source-immutability" >&2
     return 1
   fi
 }
