@@ -682,22 +682,37 @@ _make_cred_fixture() {
     "$base_fixture" 2>/dev/null || cat "$base_fixture"
 }
 
+# Variant for Bash-tool hooks (block-ai-attribution) that read .tool_input.command
+# rather than .tool_input.content. Injects sentinel into the command field so the
+# hook processes a payload containing the sentinel — verifying it is not echoed back.
+_make_cred_fixture_command() {
+  local base_fixture="$1"
+  jq \
+    --arg sentinel_key "${CRED_SENTINEL_KEY}" \
+    --arg sentinel_token "${CRED_SENTINEL_TOKEN}" \
+    '.tool_input.command = (.tool_input.command // "") + " api_key=" + $sentinel_key + " access_token=" + $sentinel_token' \
+    "$base_fixture" 2>/dev/null || cat "$base_fixture"
+}
+
 @test "BC_2_17_004: block-ai-attribution does not leak credential sentinel to stdout or stderr" {
   local hook="${PLUGIN_DIR}/hooks/block-ai-attribution.sh"
   local base_fixture="${PLUGIN_DIR}/tests/fixtures/block-ai-attribution-sample.json"
-  # block-ai-attribution reads .tool_input.command — embed sentinel there.
-  local cred_payload
-  cred_payload="$(jq \
-    --arg s "${CRED_SENTINEL_KEY}" \
-    '.tool_input.command = (.tool_input.command // "") + " " + $s' \
-    "$base_fixture")"
-  # F-PASS01-S02: use mktemp to avoid CI matrix race on hardcoded /tmp path.
-  local stderr_file
+  # block-ai-attribution is a Bash-tool hook: it scans .tool_input.command (the
+  # raw commit command string) for forbidden AI attribution tokens. Inject the
+  # credential sentinel into .tool_input.command via _make_cred_fixture_command so
+  # the hook processes a fully valid JSON payload containing the sentinel — then
+  # assert the sentinel is not reflected back on stdout or stderr.
+  # Uses the file-based pattern (mktemp) to avoid shell-quoting failures when the
+  # command field contains embedded single quotes (e.g. git commit -m 'feat: ...').
+  local cred_fixture_file stderr_file
+  cred_fixture_file="$(mktemp)"
   stderr_file="$(mktemp)"
+  # F-PASS01-S02: use mktemp to avoid CI matrix race on hardcoded /tmp path.
   # shellcheck disable=SC2064
-  trap "rm -f '${stderr_file}'" RETURN
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
+  _make_cred_fixture_command "$base_fixture" >"$cred_fixture_file"
   local stdout_out stderr_out
-  stdout_out="$(bash -c "printf '%s' '${cred_payload}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
   stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
   if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
     echo "FAIL: sentinel found in stdout of block-ai-attribution" >&2
