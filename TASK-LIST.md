@@ -37,7 +37,7 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 **Last gate:** Wave 4 integration gate PASSED 6/6 (2026-05-30). Fix commits: 1622696 (Gate 3 POL-14 backfill) + 21533b0 PR#20 (Gate 4 demo evidence) + 43ff437 (Gate 5 holdout refresh).
 **develop tip:** 21533b0 (post-PR#20-demo-evidence-merge).
 **main tip:** f9c4b86 (topology reconciliation removal commit — 2026-05-30).
-**factory-artifacts tip:** b73310d (post-reconciliation durability sweep with D-038 + L16 + UD-012).
+**factory-artifacts tip:** the most-recent commit on `origin/factory-artifacts` (run `git log origin/factory-artifacts -1` to confirm SHA). Latest commits include the reconciliation orphan (20d0d69 tree=main:.factory@6d8450c), the L16 closure (D-038 + L16 codified), and the post-reconciliation durability sweep (UD-012 + Step 2 verification rewrite).
 **Working tree:** main clean (only ?? .claude/ untracked; .factory/ gitignored after D-038). .factory/ is a worktree mount of factory-artifacts (only ?? logs/ untracked in factory-artifacts — runtime dispatcher artifacts).
 
 **Wave 4 status (4/4 COMPLETE + GATE PASSED 6/6):**

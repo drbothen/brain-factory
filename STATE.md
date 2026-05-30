@@ -115,7 +115,7 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 3. 3 Gate 5 advisories logged for future scenario tightening (non-blocking)
 4. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006
 
-**Post-Wave-4 milestone — Topology reconciliation complete (D-038, 2026-05-30):** factory state migrated from main-tracked to orphan factory-artifacts branch mounted at `.factory/`. Canonical vsdd-factory pattern restored. main tip: f9c4b86 (removal commit). factory-artifacts tip: b73310d (durability sweep closure). All future factory(state) commits land on factory-artifacts via worktree. UD-012 recorded in TASK-LIST.md.
+**Post-Wave-4 milestone — Topology reconciliation complete (D-038, 2026-05-30):** factory state migrated from main-tracked to orphan factory-artifacts branch mounted at `.factory/`. Canonical vsdd-factory pattern restored. main tip: f9c4b86 (removal commit on 2026-05-30). factory-artifacts: orphan-rooted at 20d0d69 (snapshot of main:.factory @ 6d8450c), with closure commits chained on top (L16 codification, UD-012 documentation, Step 2 verification rewrite — run `git log origin/factory-artifacts -5` for current HEAD). All future factory(state) commits land on factory-artifacts via worktree. UD-012 recorded in TASK-LIST.md.
 
 ---
 
