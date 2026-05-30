@@ -17,10 +17,32 @@
 #   source "$HELPER"
 
 # Shared trace ID for the hook invocation — set once per source operation.
-# Falls back across platforms: uuidgen (macOS/BSD), /proc (Linux), od fallback.
-: "${HOOK_TRACE_ID:=$(uuidgen 2>/dev/null ||
-  cat /proc/sys/kernel/random/uuid 2>/dev/null ||
-  od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')}"
+# Pure bash implementation using $RANDOM (no subprocess) for performance.
+# $RANDOM gives 0-32767; six values cover 94 bits of entropy — sufficient
+# for trace correlation within a single hook invocation.
+# Format mirrors UUID v4 layout (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).
+if [[ -z "${HOOK_TRACE_ID:-}" ]]; then
+  printf -v HOOK_TRACE_ID '%04x%04x-%04x-%04x-%04x-%04x%04x%04x' \
+    $((RANDOM)) $((RANDOM)) $((RANDOM)) \
+    $(((RANDOM & 0x0FFF) | 0x4000)) \
+    $(((RANDOM & 0x3FFF) | 0x8000)) \
+    $((RANDOM)) $((RANDOM)) $((RANDOM))
+fi
+
+# _json_get_str <json-string> <key>
+#
+# Pure bash extraction of a quoted string value for a JSON key.
+# Works for simple string values in hook payload JSON (no nested keys with
+# the same name, no escaped quotes inside the value).  Returns empty string
+# when the key is absent or the value is not a quoted string.
+# Usage: file_path="$(_json_get_str "$stdin_json" 'file_path')"
+_json_get_str() {
+  local _jgs_json="$1" _jgs_key="$2"
+  local _jgs_rest="${_jgs_json#*\""${_jgs_key}"\":\"}"
+  # Key not found — rest is unchanged.
+  [[ "$_jgs_rest" == "$_jgs_json" ]] && return 0
+  printf '%s' "${_jgs_rest%%\"*}"
+}
 
 # _json_escape <string>
 #
@@ -54,7 +76,12 @@ emit_event() {
   shift
 
   local ts hook_name
-  ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  # Use bash 4.2+ printf %T builtin for zero-subprocess UTC timestamp.
+  # TZ=UTC ensures the timestamp is in UTC regardless of local timezone.
+  # Falls back to date subprocess on older bash (pre-4.2).
+  if ! TZ=UTC printf -v ts '%(%Y-%m-%dT%H:%M:%SZ)T' -1 2>/dev/null; then
+    ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  fi
   hook_name="$(_json_escape "${BASH_SOURCE[1]##*/}")"
   event_type="$(_json_escape "$event_type")"
 

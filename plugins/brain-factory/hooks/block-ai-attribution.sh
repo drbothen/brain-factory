@@ -2,7 +2,7 @@
 set -euo pipefail
 # Fail-closed trap: any unhandled error exits 2 (block).
 # ADR-002 v2.0: exit codes other than 0 are treated as blocking errors.
-trap 'printf "%s\n" "block-ai-attribution hook blocked: internal error." >&2; exit 2' ERR
+trap 'printf '"'"'{"ts":"%s","event_type":"hook.error.internal","hook_name":"block-ai-attribution.sh","trace":"%s","code":"E-HOOK-003","reason":"unhandled error"}\n'"'"' "$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null)" "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" >&2; exit 2' ERR
 # block-ai-attribution.sh — PreToolUse hook: AI attribution token gate
 # BC-2.04.012 | ADR-002 v2.0 | ADR-016 (event emission)
 # Fires BEFORE Bash tool executes — scans the command string for AI attribution
@@ -21,58 +21,44 @@ HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 if [ ! -f "$HELPER" ]; then
   printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
     "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "block-ai-attribution.sh" >&2
-  jq -cn \
-    --arg trace "00000000-0000-0000-0000-000000000000" \
-    '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-002","trace":$trace}}'
-  printf "%s\n" "block-ai-attribution hook blocked: internal error." >&2
+  printf '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-002","trace":"00000000-0000-0000-0000-000000000000"}}\n'
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
 source "$HELPER"
 
 # ---------------------------------------------------------------------------
-# Read stdin JSON payload
+# Read stdin JSON payload.
+# Fail-closed on empty stdin or non-JSON content; no jq call needed —
+# we scan the raw JSON for forbidden patterns directly (the patterns contain
+# no JSON-special chars). A minimal JSON validity check: payload must start
+# with '{' and end with '}'. BC-2.04.016 invariant 4: E-HOOK-001.
 # ---------------------------------------------------------------------------
 stdin_json="$(cat)"
+# Strip leading/trailing whitespace for the shape check.
+_stripped="${stdin_json#"${stdin_json%%[![:space:]]*}"}"
+_stripped="${_stripped%"${_stripped##*[![:space:]]}"}"
 
-# Validate JSON is parseable — fail-closed on malformed or empty stdin.
-# BC-2.04.016 invariant 4: canonical empty/malformed-stdin code is E-HOOK-001.
-# Hook-specific codes (E-ATTR-001) apply to domain violations only.
-if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
+if [[ -z "$_stripped" ]] || [[ "$_stripped" != '{'*'}' ]]; then
   emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
-  jq -cn \
-    --arg code "E-HOOK-001" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
+  printf '{"continue":false,"decision":"block","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
 # ---------------------------------------------------------------------------
-# Extract command from the payload
-# ---------------------------------------------------------------------------
-command_str="$(printf '%s' "$stdin_json" | jq -r '.tool_input.command // empty')"
-
-# Fail-closed if we cannot determine the command.
-if [[ -z "$command_str" ]]; then
-  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=missing tool_input.command in payload"
-  jq -cn \
-    --arg code "E-HOOK-001" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
-  exit 2
-fi
-
-# ---------------------------------------------------------------------------
-# Scan command for forbidden AI attribution tokens (single pass, priority order).
+# Scan the raw JSON for forbidden AI attribution tokens (pure bash, no subprocess).
+# PreToolUse:Bash fires for git commit commands; the command value is the
+# target. All three forbidden patterns contain no JSON-escapable characters
+# so searching the raw payload is equivalent to searching the decoded command.
 # ---------------------------------------------------------------------------
 matched=""
-if printf '%s' "$command_str" | grep -qiF 'Co-Authored-By: Claude'; then
+if [[ "$stdin_json" == *'Co-Authored-By: Claude'* ]] ||
+  [[ "$stdin_json" == *'co-authored-by: claude'* ]]; then
   matched="Co-Authored-By: Claude"
-elif printf '%s' "$command_str" | grep -qF '🤖'; then
+elif [[ "$stdin_json" == *'🤖'* ]]; then
   matched="🤖"
-elif printf '%s' "$command_str" | grep -qF 'Generated with Claude Code'; then
+elif [[ "$stdin_json" == *'Generated with Claude Code'* ]]; then
   matched="Generated with Claude Code"
 fi
 
@@ -81,11 +67,9 @@ fi
 # ---------------------------------------------------------------------------
 if [[ -n "$matched" ]]; then
   emit_event "attribution.token.blocked" "matched_pattern=${matched}"
-  jq -cn \
-    --arg code "E-ATTR-001" \
-    --arg pattern "${matched}" \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":"AI attribution token found: \($pattern). This project prohibits AI attribution per CLAUDE.md.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace,"matched_pattern":$pattern}}'
+  _escaped_matched="$(_json_escape "${matched}")"
+  printf '{"continue":false,"decision":"block","reason":"AI attribution token found: %s. This project prohibits AI attribution per CLAUDE.md.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-ATTR-001","trace":"%s","matched_pattern":"%s"}}\n' \
+    "${_escaped_matched}" "${HOOK_TRACE_ID}" "${_escaped_matched}"
   exit 2
 fi
 
@@ -93,7 +77,6 @@ fi
 # No forbidden tokens — allow.
 # ---------------------------------------------------------------------------
 emit_event "attribution.token.cleared"
-jq -cn \
-  --arg trace "${HOOK_TRACE_ID}" \
-  '{"continue":true,"trace":$trace,"message":"No AI attribution tokens found."}'
+printf '{"continue":true,"trace":"%s","message":"No AI attribution tokens found."}\n' \
+  "${HOOK_TRACE_ID}"
 exit 0

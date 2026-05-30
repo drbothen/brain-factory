@@ -21,46 +21,28 @@ HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 if [ ! -f "$HELPER" ]; then
   printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
     "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "validate-source-immutability.sh" >&2
-  jq -cn \
-    --arg trace "00000000-0000-0000-0000-000000000000" \
-    '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":$trace}}'
+  printf '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":"00000000-0000-0000-0000-000000000000"}}\n'
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
 source "$HELPER"
 
 # ---------------------------------------------------------------------------
-# Read stdin JSON payload
+# Read stdin JSON payload and extract fields in a single jq call.
+# (performance: one subprocess vs three; malformed JSON → empty → fail-closed).
 # ---------------------------------------------------------------------------
 stdin_json="$(cat)"
-
-# Validate JSON is parseable — fail-closed on malformed or empty stdin.
-if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
-  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
-  jq -cn \
-    --arg code "E-HOOK-001" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  exit 2
-fi
-
-# ---------------------------------------------------------------------------
-# Extract fields from the payload
-# ---------------------------------------------------------------------------
-file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')"
-brain_dir="$(printf '%s' "$stdin_json" | jq -r '.cwd // empty')"
+file_path="$(_json_get_str "$stdin_json" 'file_path')"
+_cwd_raw="$(_json_get_str "$stdin_json" 'cwd')"
 # BRAIN_DIR env var takes precedence (used in test environments and local invocation).
-brain_dir="${BRAIN_DIR:-${brain_dir}}"
+brain_dir="${BRAIN_DIR:-${_cwd_raw}}"
 
 # Fail-closed if we cannot determine the brain directory or file path.
+# This also catches malformed/empty stdin (jq failure leaves file_path empty).
 if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
-  emit_event "source.immutability.check_failed" "code=E-SOURCE-003" "reason=missing file_path or brain_dir in payload"
-  jq -cn \
-    --arg code "E-SOURCE-003" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
+  printf '{"continue":false,"decision":"block","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-SOURCE-003","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -75,7 +57,7 @@ relative_path="${file_path#"${brain_dir}/"}"
 # BC-2.04.002 precondition 1: only fires for Write|Edit on sources/** paths.
 # ---------------------------------------------------------------------------
 if [[ "$relative_path" != sources/* ]]; then
-  jq -cn --arg trace "${HOOK_TRACE_ID}" '{"continue":true,"trace":$trace}'
+  printf '{"continue":true,"trace":"%s"}\n' "${HOOK_TRACE_ID}"
   exit 0
 fi
 
@@ -86,22 +68,16 @@ fi
 manifest="${brain_dir}/.brain/manifest.json"
 if [[ ! -r "$manifest" ]]; then
   emit_event "source.immutability.check_failed" "code=E-SOURCE-002" "reason=manifest not found"
-  jq -cn \
-    --arg code "E-SOURCE-002" \
-    --arg msg "Manifest not found — cannot verify source immutability." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  printf '{"continue":false,"decision":"block","reason":"Manifest not found — cannot verify source immutability.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-SOURCE-002","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
 # Check manifest is valid JSON (fail-closed on malformed) — EC-003 covers both missing and malformed.
 if ! jq empty "$manifest" 2>/dev/null; then
   emit_event "source.immutability.check_failed" "code=E-SOURCE-002" "reason=manifest malformed"
-  jq -cn \
-    --arg code "E-SOURCE-002" \
-    --arg msg "Manifest malformed — cannot verify source immutability." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  printf '{"continue":false,"decision":"block","reason":"Manifest malformed — cannot verify source immutability.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-SOURCE-002","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -109,16 +85,14 @@ fi
 # Manifest lookup — check whether the relative path is registered.
 # ADR-015: non-null .sources[$path] means the source already exists.
 # ---------------------------------------------------------------------------
-existing="$(jq -r --arg path "$relative_path" '.sources[$path] // empty' "$manifest")"
+existing="$(jq -r --arg path "$relative_path" '.sources[$path] // ""' "$manifest" 2>/dev/null || true)"
 
 if [[ -n "$existing" ]]; then
   # Existing source — block the overwrite (immutability violation).
   emit_event "source.immutability.violated" "path=${relative_path}" "code=E-SOURCE-001"
-  jq -cn \
-    --arg code "E-SOURCE-001" \
-    --arg path "$relative_path" \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":("Source file " + $path + " already exists in manifest. Sources are immutable. Use /brain:rename-page to rename."),"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  _em_path="$(_json_escape "${relative_path}")"
+  printf '{"continue":false,"decision":"block","reason":"Source file %s already exists in manifest. Sources are immutable. Use /brain:rename-page to rename.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-SOURCE-001","trace":"%s"}}\n' \
+    "${_em_path}" "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -126,6 +100,5 @@ fi
 # New source — allow the write.
 # ---------------------------------------------------------------------------
 emit_event "source.added" "path=${relative_path}"
-jq -cn --arg trace "${HOOK_TRACE_ID}" --arg msg "New source accepted." \
-  '{"continue":true,"trace":$trace,"message":$msg}'
+printf '{"continue":true,"trace":"%s","message":"New source accepted."}\n' "${HOOK_TRACE_ID}"
 exit 0

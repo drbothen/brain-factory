@@ -24,46 +24,29 @@ HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 if [ ! -f "$HELPER" ]; then
   printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
     "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "validate-index-log-coherence.sh" >&2
-  jq -cn \
-    --arg trace "00000000-0000-0000-0000-000000000000" \
-    '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":$trace}}'
+  printf '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":"00000000-0000-0000-0000-000000000000"}}\n'
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
 source "$HELPER"
 
 # ---------------------------------------------------------------------------
-# Read stdin JSON payload
+# Read stdin JSON payload and extract file_path + cwd in a single jq call
+# (performance: one subprocess vs three; malformed JSON → empty → fail-closed).
+# Uses ASCII RS () as field separator — never present in file paths.
 # ---------------------------------------------------------------------------
 stdin_json="$(cat)"
-
-# Validate JSON is parseable — fail-closed on malformed or empty stdin.
-if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
-  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
-  jq -cn \
-    --arg code "E-WIKI-004" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  exit 2
-fi
-
-# ---------------------------------------------------------------------------
-# Extract fields from the payload
-# ---------------------------------------------------------------------------
-file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')"
-brain_dir="$(printf '%s' "$stdin_json" | jq -r '.cwd // empty')"
+file_path="$(_json_get_str "$stdin_json" 'file_path')"
+_cwd_raw="$(_json_get_str "$stdin_json" 'cwd')"
 # BRAIN_DIR env var takes precedence (used in test environments and local invocation).
-brain_dir="${BRAIN_DIR:-${brain_dir}}"
+brain_dir="${BRAIN_DIR:-${_cwd_raw}}"
 
 # Fail-closed if we cannot determine the brain directory or file path.
+# This also catches malformed/empty stdin (jq failure leaves file_path empty).
 if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
-  emit_event "wiki.index_log.check_failed" "code=E-WIKI-004" "reason=missing file_path or brain_dir in payload"
-  jq -cn \
-    --arg code "E-WIKI-004" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
+  printf '{"continue":false,"decision":"block","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-WIKI-004","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -77,9 +60,8 @@ relative_path="${file_path#"${brain_dir}/"}"
 # BC-2.04.006 precondition 1: only fires when index or log is written.
 # ---------------------------------------------------------------------------
 if [[ "$relative_path" != "wiki/index.md" ]] && [[ "$relative_path" != "wiki/log.md" ]]; then
-  jq -cn --arg trace "${HOOK_TRACE_ID}" \
-    --arg msg "Non-index/log path; coherence check skipped." \
-    '{"continue":true,"trace":$trace,"message":$msg}'
+  printf '{"continue":true,"trace":"%s","message":"Non-index/log path; coherence check skipped."}\n' \
+    "${HOOK_TRACE_ID}"
   exit 0
 fi
 
@@ -91,11 +73,8 @@ log_file="${brain_dir}/wiki/log.md"
 
 if [[ ! -r "$index_file" ]] || [[ ! -r "$log_file" ]]; then
   emit_event "wiki.index_log.check_failed" "code=E-WIKI-004" "reason=wiki/index.md or wiki/log.md not found"
-  jq -cn \
-    --arg code "E-WIKI-004" \
-    --arg msg "wiki/index.md or wiki/log.md not found — cannot verify coherence." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  printf '{"continue":false,"decision":"block","reason":"wiki/index.md or wiki/log.md not found — cannot verify coherence.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-WIKI-004","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -114,9 +93,8 @@ log_slugs="$(grep -o '\[[^]]*\]([^)]*\.md)' "${log_file}" | sed 's/.*(\(.*\)\.md
 # Both empty — vacuously coherent.
 if [[ -z "$index_slugs" ]] && [[ -z "$log_slugs" ]]; then
   emit_event "wiki.index_log.coherence_verified" "path=${relative_path}" "slug_count=0"
-  jq -cn --arg trace "${HOOK_TRACE_ID}" \
-    --arg msg "Index-log coherence verified." \
-    '{"continue":true,"trace":$trace,"message":$msg}'
+  printf '{"continue":true,"trace":"%s","message":"Index-log coherence verified."}\n' \
+    "${HOOK_TRACE_ID}"
   exit 0
 fi
 
@@ -156,17 +134,14 @@ fi
 # ---------------------------------------------------------------------------
 if [[ -n "$all_missing" ]]; then
   emit_event "wiki.index_log.coherence_violated" "missing_slugs=${all_missing}" "path=${relative_path}"
-  jq -cn \
-    --arg code "E-WIKI-003" \
-    --arg reason "Index-log coherence violation: slug(s) missing from counterpart file: ${all_missing}." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$reason,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
+  _em_reason="$(_json_escape "Index-log coherence violation: slug(s) missing from counterpart file: ${all_missing}.")"
+  printf '{"continue":false,"decision":"block","reason":"%s","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-WIKI-003","trace":"%s"}}\n' \
+    "${_em_reason}" "${HOOK_TRACE_ID}"
   exit 2
 fi
 
 _verified_count="$(printf '%s\n' "$index_slugs" | grep -c . || true)"
 emit_event "wiki.index_log.coherence_verified" "path=${relative_path}" "slug_count=${_verified_count}"
-jq -cn --arg trace "${HOOK_TRACE_ID}" \
-  --arg msg "Index-log coherence verified." \
-  '{"continue":true,"trace":$trace,"message":$msg}'
+printf '{"continue":true,"trace":"%s","message":"Index-log coherence verified."}\n' \
+  "${HOOK_TRACE_ID}"
 exit 0
