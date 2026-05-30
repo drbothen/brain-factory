@@ -1,8 +1,8 @@
 ---
 artifact_type: story-index
-version: "0.4.5"
+version: "0.4.6"
 created: 2026-05-18
-last_updated: 2026-05-28
+last_updated: 2026-05-29
 authored_by: vsdd-factory:story-writer
 total_stories: 43
 total_points: 264
@@ -24,13 +24,19 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 17 stories completed (STORY-001, STORY-002, STORY-003, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-017, STORY-027, STORY-032, STORY-038). 26 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 18 stories completed (STORY-001, STORY-002, STORY-003, STORY-004, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-017, STORY-027, STORY-032, STORY-038). 25 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.6 — 2026-05-29 (STORY-004 delivery / POL-14 BC promotion — Wave 4 progress 3/4)
+
+- **STORY-004 status:** `draft` → `completed` (PR #18 merged to develop, commit af7c6ad). BC-2.01.006 promoted `draft` → `active` per POL-14. BC-2.04.014 already active (promoted at STORY-013 delivery, PR #15, commit 93af76d).
+- **Delivery summary:** /brain:health skill (brain-health/run.sh + SKILL.md) + brain-health-check.sh hook — six-dimensional convergence state (Capture/Sources/Wiki/Synthesis/Output/Reflection), writeback to .brain/STATE.md, SessionStart health banner. 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats = 88 tests green in CI. LOCAL adversarial cascade CONVERGED at Pass 20 (BC-5.39.001 3-CLEAN at Passes 18+19+20). 17 fix bursts, ~30 commits. 10 cycle lessons codified. 2 DIs retired (DI-003 BC-2.04.014 exit-code drift; DI-004 STORY-005 exit codes).
+- **Wave 4 progress:** 3/4 stories delivered (21/26 points). Next: STORY-015 (hook meta-lint, P0, 5 points — Wave 4 terminal node).
 
 ### v0.4.5 — 2026-05-28 (STORY-032 delivery / POL-14 BC promotion — Wave 4 progress 2/4)
 
@@ -135,7 +141,7 @@ inputs:
 | STORY-001 | Plugin repo structure, plugin.json manifest, and hooks.json.template | completed | 5 | P0 | BC-2.14.003, BC-2.14.004, BC-2.14.005 | — |
 | STORY-002 | /brain:init core scaffold — directory structure, templates, manifest.json, policies.yaml | completed | 8 | P0 | BC-2.01.001, BC-2.01.004, BC-2.06.003, BC-2.06.004 | PR #6 merged 1665a92 (2026-05-26) |
 | STORY-003 | /brain:init error handling, SLA assertion, and briefs/research/ scaffold | completed | 5 | P0 | BC-2.01.002, BC-2.01.003, BC-2.01.005 | PR #8 merged 2f13f97 (2026-05-27) |
-| STORY-004 | /brain:health six-dimensional convergence skill | draft | 5 | P1 | BC-2.01.006 | — |
+| STORY-004 | /brain:health six-dimensional convergence skill | completed | 5 | P1 | BC-2.01.006 | PR #18 merged af7c6ad (2026-05-29) |
 | STORY-005 | Plugin install from marketplace, tarball completeness, and /brain:upgrade-brain | draft | 5 | P0 | BC-2.14.001, BC-2.14.002 | — |
 
 ---

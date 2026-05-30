@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
-status: draft
+version: "1.3"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -97,6 +97,10 @@ STORY-004
 - (no VP — P1 priority; deferred per VP-INDEX coverage policy)
 
 ## Changelog
+
+### v1.3 (2026-05-29)
+
+**POL-14 auto-promotion:** `status: draft` → `status: active`. PR #18 merged to develop at af7c6addd3e63379b67f17a2dd7ea27d31b3b765 (STORY-004 delivery). Promotion per POL-14 standing rule — BCs in story frontmatter auto-promote draft→active at merge. No semantic change to BC contract.
 
 ### v1.2 (2026-05-19)
 

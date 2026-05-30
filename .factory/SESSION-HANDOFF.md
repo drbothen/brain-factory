@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-story-004-CONVERGED-pr-pending
-session_stage: phase-3-wave-4-story-004-CONVERGED-pr-pending
+session_phase: phase-3-wave-4-story-015-pending
+session_stage: phase-3-wave-4-story-015-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -16,7 +16,7 @@ current_nfr_catalog_version: 0.1.2
 current_interface_defs_version: 0.2.0
 current_test_vectors_version: 0.2.0
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.4.3"
+current_story_index_version: "0.4.6"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-29T23:00:00
+last_updated: 2026-05-29T23:59:00
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,24 +94,24 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-story-004-CONVERGED-pr-pending
+status: phase-3-wave-4-story-015-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 LOCAL CASCADE CONVERGED — BC-5.39.001 3-CLEAN satisfied (Pass 18+19+20 PASS) — tip abb9c71 — push + PR pending. STORY-015 next."
-story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS (1/3) + Pass 19 PASS (2/3) + Pass 20 PASS (3/3) — BC-5.39.001 3-CLEAN protocol satisfied — tests 45/45+43/43 at tip abb9c71 — push + PR pending"
-story_004_worktree_tip: abb9c71
-total_stories_delivered: 17
-total_bcs_active: 38
-total_tests_on_develop: 717
+wave_4_status: "3/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18 af7c6ad). STORY-015 next (hook meta-lint, P0, 5 pts)."
+story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS (1/3) + Pass 19 PASS (2/3) + Pass 20 PASS (3/3) — DELIVERED PR #18 af7c6ad (2026-05-29)"
+story_004_merge_sha: af7c6addd3e63379b67f17a2dd7ea27d31b3b765
+total_stories_delivered: 18
+total_bcs_active: 40
+total_tests_on_develop: 805
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 LOCAL CASCADE CONVERGED — push + PR pending
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 DELIVERED — STORY-015 pending
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 LOCAL CASCADE CONVERGED — BC-5.39.001 3-CLEAN satisfied (Pass 18+19+20 PASS, streak 3/3). Worktree tip `abb9c71` (unchanged). Tests 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats. NEXT ACTION: push feature/STORY-004 to origin, dispatch pr-manager 9-step PR cycle targeting develop. BC-2.01.006 + BC-2.04.014 auto-promote draft→active at merge per POL-14. 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
+**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 3/4 stories delivered. STORY-004 DELIVERED — PR #18 squash-merged to develop at `af7c6addd3e63379b67f17a2dd7ea27d31b3b765`. BC-2.01.006 v1.3 active per POL-14. BC-2.04.014 already active. 18/43 stories (103/264 pts). 40 BCs active. NEXT ACTION: dispatch implementer for STORY-015 (hook meta-lint, P0, 5 pts — Wave 4 terminal node). BCs: BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004. .worktrees/STORY-004 can be safely removed.
 
 ### Step 1 — Read documents in this exact order
 
@@ -158,14 +158,14 @@ Wave 1: STORY-001/014/027/038 (PRs #1-#4, gate PASSED). Wave 2: STORY-016/002/00
 - STORY-017 (PR #16, b30dd35): Wiki page generation pipeline. 5 passes, 2 fix bursts, 3-CLEAN at passes 3-4-5. BCs BC-2.02.002/003/005 active.
 - STORY-032 (PR #17, d610cf0): bin/lobster-run pure-bash workflow runtime. 22 passes, 14 fix bursts — longest cascade in project history. 3-CLEAN at passes 20-21-22. BCs BC-2.12.001/002 active. User explicitly approved continuing to convergence rather than relaxing the bar.
 
-**3c. CONVERGED — STORY-004 adversarial cascade (wave 4 story 3/4):**
-Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `abb9c71`. BC-5.39.001 3-CLEAN SATISFIED (Pass 18+19+20). LOCAL cascade CONVERGED. NEXT: push + pr-manager 9-step PR cycle. See §STORY-004 Cascade Detail below for full history.
+**3c. DELIVERED — STORY-004 (wave 4 story 3/4):**
+PR #18 squash-merged to develop at `af7c6addd3e63379b67f17a2dd7ea27d31b3b765` (2026-05-29). 88 tests green. LOCAL cascade CONVERGED at Pass 20 (BC-5.39.001 3-CLEAN at Passes 18+19+20). BC-2.01.006 v1.3 active per POL-14. .worktrees/STORY-004 can be safely removed. See §STORY-004 Cascade Detail below for full history.
 
 **3d. PENDING — STORY-015 (wave 4 story 4/4):**
 Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
 
-**3e. TOP-OF-STACK — STORY-004 push + PR:**
-LOCAL CASCADE CONVERGED. Streak 3/3 (Pass 18+19+20 PASS). Worktree tip `abb9c71` (unchanged). Tests 45/45 + 43/43. DI-001, DI-002, DI-005, DI-006 remain open (project-wide deferred, non-blocking). DI-003, DI-004 RETIRED. F13-07 deferred (PR review or follow-up). F16-05 deferred (TD-VSDD-091 justified). Cycle Lesson 10 codified. NEXT: push feature/STORY-004 to origin → pr-manager 9-step PR cycle → BC-2.01.006 + BC-2.04.014 auto-promote at merge per POL-14 → state-manager post-merge burst (Wave 4 3/4) → STORY-015.
+**3e. TOP-OF-STACK — STORY-015:**
+STORY-004 DELIVERED (PR #18, af7c6ad). Wave 4 progress: 3/4 (21/26 pts). DI-001, DI-002, DI-005, DI-006, DI-007, DI-008 remain open (project-wide deferred, non-blocking). NEXT: dispatch implementer for STORY-015 (hook meta-lint, P0, 5 pts — BCs: BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004). After STORY-015 delivers: run Wave 4 integration gate.
 
 **3f. Develop tip verification:**
 ```bash
@@ -181,10 +181,9 @@ gh pr list --state open               # none open
 **Story:** STORY-004 — /brain:health six-dimensional convergence skill
 **Epic:** EPIC-01
 **Points:** 5
-**Key BC:** BC-2.01.006 (status: draft, will promote to active at PR merge per POL-14)
-**Worktree:** `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004`
-**Branch:** `feature/STORY-004`
-**Worktree tip:** `abb9c71` — "spec: error-taxonomy v0.1.10 + BC-2.01.006 v1.9 + STORY-004 AC-006/009 E-HEALTH-001 message 'missing or unreadable'"
+**Key BC:** BC-2.01.006 (status: active — promoted per POL-14 at PR #18 merge)
+**Merge SHA:** `af7c6addd3e63379b67f17a2dd7ea27d31b3b765` (PR #18, squash-merged to develop 2026-05-29)
+**Worktree tip (pre-merge):** `abb9c71` — "spec: error-taxonomy v0.1.10 + BC-2.01.006 v1.9 + STORY-004 AC-006/009 E-HEALTH-001 message 'missing or unreadable'"
 
 ### Cascade History Table
 
