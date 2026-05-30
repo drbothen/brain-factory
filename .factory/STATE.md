@@ -63,7 +63,7 @@ canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.2, commit 5a64927
 canonical_error_taxonomy: .factory/specs/prd/error-taxonomy.md (v0.1.2, commit 39d6fba)
 canonical_story_index: .factory/stories/STORY-INDEX.md (v0.4.8, Wave 4 Gate 3 fix — 46 stories / 270 pts)
 canonical_dependency_graph: .factory/stories/dependency-graph.md (v0.1.1, commit f160696)
-canonical_holdout_scenarios: .factory/stories/holdout-scenarios.md (v0.1.4, commit 7b1ae9d)
+canonical_holdout_scenarios: .factory/stories/holdout-scenarios.md (v0.1.5, Wave 4 Gate 5 fix burst)
 total_stories_drafted: 46
 current_story_index_path: .factory/stories/STORY-INDEX.md
 current_story_index_version: "0.4.8"
@@ -75,7 +75,7 @@ current_epics_version: "0.1.4"
 current_sprint_state_path: .factory/stories/sprint-state.yaml
 current_sprint_state_version: "0.1.1"
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
-current_holdout_scenarios_version: "0.1.4"
+current_holdout_scenarios_version: "0.1.5"
 total_holdout_scenarios: 17
 holdout_must_pass: 10
 holdout_nice_to_pass: 7

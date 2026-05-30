@@ -1,8 +1,8 @@
 ---
 artifact_type: holdout-scenarios
-version: "v0.1.4"
+version: "v0.1.5"
 created: 2026-05-19
-last_updated: 2026-05-19
+last_updated: 2026-05-30
 authored_by: vsdd-factory:product-owner
 inputs:
   - product-brief.md@v0.4.20
@@ -325,7 +325,7 @@ plus 7 additional specialist skills defined in the plugin manifest.
 | # | Acceptance Signal | How to Verify |
 |---|------------------|---------------|
 | 1 | At least 5 new wiki pages are created under `wiki/{type}/` with valid kebab-case filenames | `find wiki/ -name "*.md" -newer .brain/manifest.json.pre-ingest | wc -l` ≥ 5 |
-| 2 | Each new wiki page has valid YAML frontmatter including `embedding_status: pending`, a non-empty `source_id` field referencing the ingested source slug, and a `type` matching a valid category | `yq '.embedding_status, .source_id, .type' wiki/{type}/{slug}.md` passes for each page |
+| 2 | Each new wiki page has valid YAML frontmatter including `embedding_status: pending`, a non-empty `source_ids` field as a YAML list referencing the ingested source slug(s), and a `type` matching a valid category | `yq '.embedding_status, .source_ids, .type' wiki/{type}/{slug}.md` passes for each page; `source_ids` must be a list (array), not a scalar |
 | 3 | `.brain/manifest.json` has a new source entry with `url`, `sha256`, `ingested_at`, and `wiki_pages` fields; `wiki_pages` lists ≥ 5 slugs | `jq '.sources[-1] | {url, sha256, ingested_at, wiki_pages}' .brain/manifest.json` |
 | 4 | `.brain/logs/ingest-tokens.jsonl` has a new line with fields `ts`, `source_slug`, `input_tokens`, `output_tokens`; `input_tokens` > 0 | `tail -1 .brain/logs/ingest-tokens.jsonl | jq '. | keys'` contains required fields |
 | 5 | All new wiki pages pass `/brain:lint-wiki` (no broken wikilinks, valid frontmatter, valid type directories) | Run `/brain:lint-wiki` after ingest; assert exit 0 |
@@ -400,17 +400,17 @@ plus 7 additional specialist skills defined in the plugin manifest.
 
 | # | Acceptance Signal | How to Verify |
 |---|------------------|---------------|
-| 1 | The output is valid JSON with exactly 6 top-level dimension keys corresponding to the six health dimensions (content depth, connection density, synthesis currency, publishing cadence, schema compliance, token budget) | `jq 'keys | length'` returns 6; each key matches the expected dimension names |
+| 1 | The output is valid JSON with exactly 6 top-level dimension keys corresponding to the six health dimensions (capture, sources, wiki, synthesis, output, reflection) | `jq 'keys | length'` returns 6; each key matches the canonical dimension names: `capture`, `sources`, `wiki`, `synthesis`, `output`, `reflection` |
 | 2 | Each dimension has a `status` field with one of: `GREEN`, `YELLOW`, or `RED` | `jq '.[] | .status' health_output.json` returns only valid values for all 6 dimensions |
-| 3 | The `token_budget` dimension includes a `trailing_30d_average_tokens` field computed from `.brain/logs/ingest-tokens.jsonl` | Assert field present and numeric; verify it matches manual aggregation of last 30 days of log entries |
-| 4 | The health skill exits 0 when all dimensions are GREEN, and exits 1 (advisory) when any dimension is YELLOW or RED | Manipulate a known-good brain to force a YELLOW condition (e.g., no synthesis in 7 days) and verify exit 1 |
+| 3 | The `output` dimension includes a `trailing_30d_average_tokens` field computed from `.brain/logs/ingest-tokens.jsonl` | Assert field present and numeric; verify it matches manual aggregation of last 30 days of log entries |
+| 4 | The health skill exits 0 regardless of dimension status — YELLOW and RED dimensions surface as verdict data in the JSON output, not as a non-zero exit code (per BC-2.04.014 Invariant 4: NEVER exits 1) | Manipulate a known-good brain to force a YELLOW condition (e.g., no synthesis in 7 days) and verify exit remains 0; inspect JSON for the YELLOW status in the relevant dimension |
 | 5 | `brain-health-check.sh` (SessionStart hook) fires on the next session open and emits a summary banner matching the `/brain:health` output structure | Simulate SessionStart; grep JSONL logs for `brain-health-check` event; assert `status` field present |
 
 **Story coverage:** STORY-004, STORY-036, STORY-037, STORY-013
 
 **BC coverage:** BC-2.01.006, BC-2.16.001, BC-2.16.002, BC-2.04.013, BC-2.04.014
 
-**Emergent-behavior probe:** Tests that the six health dimensions are all computable from available data (wiki/, manifest.json, logs/) and that the 30-day trailing average is correctly aggregated from the JSONL log written by STORY-036's instrumentation. The SessionStart hook (STORY-013) re-runs the same computation; consistency between the skill output and the hook banner is emergent.
+**Emergent-behavior probe:** Tests that the six health dimensions are all computable from available data (wiki/, manifest.json, logs/) and that the 30-day trailing average is correctly aggregated from the JSONL log written by STORY-036's instrumentation. The SessionStart hook (STORY-013) re-runs the same computation; consistency between the skill output and the hook banner is emergent. The exit-0 advisory semantic (BC-2.04.014 Invariant 4) is also an emergent property: the hook must never confuse advisory output with blocking exit codes.
 
 ---
 
@@ -575,16 +575,16 @@ plus 7 additional specialist skills defined in the plugin manifest.
 | # | Acceptance Signal | How to Verify |
 |---|------------------|---------------|
 | 1 | All 6 workflow runs complete without blocking on stdin (no "waiting for input" hang) | Assert all 6 complete within 30 seconds with non-blocking termination |
-| 2 | Each workflow exits with one of the documented codes: 0 (success), 1 (skill advisory), 2 (skill blocked), 3 (cycle detected), 4 (skill not found) | Assert exit codes are in {0,1,2,3,4} |
-| 3 | A workflow YAML with a circular dependency (`A depends_on B`, `B depends_on A`) is detected and exits 3 with `E-LOBSTER-001` | Create a cycle-test.yaml fixture; assert exit 3 and `E-LOBSTER-001` |
+| 2 | Each workflow exits with one of the documented codes: 0 (success), 1 (skill advisory), 2 (skill blocked / cycle detected / skill not found) — the hook contract permits only exit codes {0, 1, 2}; cycle and missing-skill errors both use exit 2 and are disambiguated via E-LOBSTER-XXX codes in stderr JSONL | Assert exit codes are in {0, 1, 2} for all 6 runs |
+| 3 | A workflow YAML with a circular dependency (`A depends_on B`, `B depends_on A`) exits 2 with `E-LOBSTER-001` in stderr JSONL | Create a cycle-test.yaml fixture; assert exit 2 and grep stderr JSONL for `E-LOBSTER-001` |
 | 4 | The topological sort executes skills in dependency order (skill B runs before skill C when C depends_on B) | Log timestamps of skill invocations in JSONL; assert B's `ts` < C's `ts` |
-| 5 | A workflow referencing a non-existent skill name exits 4 with `E-LOBSTER-002` | Test with a workflow referencing `brain:nonexistent-skill`; assert exit 4 |
+| 5 | A workflow referencing a non-existent skill name exits 2 with `E-LOBSTER-002` in stderr JSONL | Test with a workflow referencing `brain:nonexistent-skill`; assert exit 2 and grep stderr JSONL for `E-LOBSTER-002` |
 
 **Story coverage:** STORY-032, STORY-033
 
 **BC coverage:** BC-2.12.001, BC-2.12.002, BC-2.12.003, BC-2.12.004
 
-**Emergent-behavior probe:** Tests that `bin/lobster-run` is genuinely headless (BC-2.12.003 invariant) — a skill that prompts for interactive input would hang indefinitely in CI. Also tests that the topological sort ordering is preserved under real execution, not just in the topo-sort unit test. If the dependency graph is correct but the execution scheduler doesn't honor the order, that's an emergent failure.
+**Emergent-behavior probe:** Tests that `bin/lobster-run` is genuinely headless (BC-2.12.003 invariant) — a skill that prompts for interactive input would hang indefinitely in CI. Also tests that the topological sort ordering is preserved under real execution, not just in the topo-sort unit test. If the dependency graph is correct but the execution scheduler doesn't honor the order, that's an emergent failure. Error disambiguation via E-LOBSTER-001 (cycle) and E-LOBSTER-002 (missing skill) in stderr JSONL ensures operators can distinguish failure modes without relying on non-canonical exit codes.
 
 ---
 
@@ -823,6 +823,16 @@ are exercised in HS-001, HS-006, HS-007 as side effects of the primary acceptanc
 ---
 
 ## §Changelog
+
+### v0.1.5 — 2026-05-30
+
+**BC CONTRACT REFRESH (Wave 4 Gate 5 fix burst):** Refresh HS-006, HS-008, and HS-013 to match canonical BC contracts post-Wave 4 canonicalization. Per Source-of-Truth Precedence Rule 1, BC supersedes scenario for contract semantics; scenario text is updated to match, not the reverse. Three changes applied:
+
+- **HS-006 AS2:** `source_id` (singular scalar) → `source_ids` (plural YAML list). A wiki page can synthesize multiple sources; the plural array form is canonical per BC-2.02.002/003/005 v1.3 active state. Verification instruction updated to assert `source_ids` is a list, not a scalar.
+- **HS-008 AS1:** Dimension names updated from `content depth, connection density, synthesis currency, publishing cadence, schema compliance, token budget` to the canonical six: `capture`, `sources`, `wiki`, `synthesis`, `output`, `reflection` per BC-2.01.006 v1.9 + STORY-004 spec. AS3 updated: `token_budget` dimension reference → `output` dimension. AS4 rewritten: exit 1 on YELLOW/RED removed; canonical behavior is exit 0 regardless of dimension status per BC-2.04.014 v1.6 Invariant 4 (NEVER exits 1); verdict surfaces as data in JSON, not in exit code. AS4 verification instruction updated accordingly. Emergent-behavior probe paragraph extended to name the exit-0 advisory semantic explicitly.
+- **HS-013 AS2:** Exit code set `{0,1,2,3,4}` → `{0,1,2}`. The hook contract per CLAUDE.md and BC-2.12.001/002 v1.3 active permits only exit codes {0, 1, 2}. Cycle and missing-skill errors both use exit 2 and are disambiguated via E-LOBSTER-XXX error codes in stderr JSONL. AS3: exit 3 → exit 2 + grep for E-LOBSTER-001. AS5: exit 4 → exit 2 + grep for E-LOBSTER-002. Emergent-behavior probe paragraph updated to name E-LOBSTER-001/002 disambiguation explicitly.
+
+No scenario IDs modified. No scenarios added or removed.
 
 ### v0.1.4 — 2026-05-19
 
