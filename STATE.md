@@ -115,6 +115,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 3. 3 Gate 5 advisories logged for future scenario tightening (non-blocking)
 4. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006
 
+**Post-Wave-4 milestone — Topology reconciliation complete (D-038, 2026-05-30):** factory state migrated from main-tracked to orphan factory-artifacts branch mounted at `.factory/`. Canonical vsdd-factory pattern restored. main tip: f9c4b86 (removal commit). factory-artifacts tip: b73310d (durability sweep closure). All future factory(state) commits land on factory-artifacts via worktree. UD-012 recorded in TASK-LIST.md.
+
 ---
 
 **D-038 — Topology reconciliation executed (2026-05-30):** Force-replaced factory-artifacts orphan (af6f004 → 20d0d69 fresh from main:.factory @ 6d8450c, user-authorized). Removed .factory/ from main tracking via `git rm -r .factory/` + added `/.factory/` to .gitignore (removal commit f9c4b86 on main). Mounted .factory/ as worktree on factory-artifacts branch (canonical vsdd-factory pattern). Standing directive updated: `worktree_layout_note` replaced with canonical orphan-mount description. L16 codified: when project diverges from canonical patterns, document explicitly + plan reconciliation timeline. Reconciliation triggered by Wave 4 Gate 3 false-negative (devops-engineer auto-mounted .factory/ as worktree, adversary read stale factory-artifacts at af6f004 instead of live main; root cause: divergence without explicit reconciliation plan + agent auto-correction under canonical assumptions). main retains pre-reconciliation factory(state) history (68 commits b3eed43..6d8450c) as backup. All future factory(state) commits land on factory-artifacts via worktree.

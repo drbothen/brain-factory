@@ -132,18 +132,36 @@ Run these checks. If any check fails, diagnose before proceeding.
 ```bash
 # Check 1: develop tip should be 21533b0 (PR #20 demo evidence squash-merge)
 git log --oneline origin/develop -3
+# Expected: 21533b0 docs(brain-factory): backfill demo evidence for STORY-017 + STORY-032 (#20)
 
-# Check 2: no open worktrees (STORY-004 and STORY-015 worktrees should be removed)
+# Check 2: main tip should be f9c4b86 (topology reconciliation removal commit — 2026-05-30)
+git log --oneline origin/main -3
+# Expected: f9c4b86 chore(brain-factory): reconcile factory state to orphan factory-artifacts branch
+#           6d8450c factory(state): Wave 4 GATE PASSED 6/6 (backup history retained)
+
+# Check 3: factory-artifacts tip should be b73310d (post-reconciliation durability sweep)
+git log --oneline origin/factory-artifacts -3
+# Expected: b73310d factory(state): post-reconciliation durability sweep — update resume verification + UD-012 + TOP OF STACK refs
+#           20d0d69 factory(state): RECONCILIATION — fresh orphan factory-artifacts from main:.factory tree
+
+# Check 4: worktree topology — 2 worktrees (canonical post-reconciliation)
 git worktree list
-# Expected: only main worktree; .worktrees/ should be empty
+# Expected:
+#   /Users/jmagady/Dev/brain-factory          f9c4b86 [main]
+#   /Users/jmagady/Dev/brain-factory/.factory b73310d [factory-artifacts]
+# NOTE: .worktrees/ should be empty (STORY-004 and STORY-015 worktrees removed)
 
-# Check 3: working tree clean
+# Check 5: main working tree state — .factory/ is gitignored; only .claude/ untracked
 git status --short
-# Expected: clean (untracked: .claude/ .factory/code-delivery/ .factory/cycles/ .factory/logs/ .factory/planning/ OK)
+# Expected: ?? .claude/  (and possibly other local config; NOT .factory/* since gitignored after D-038)
 
-# Check 4: no open PRs
+# Check 6: factory-artifacts worktree state — only runtime artifacts untracked
+git -C .factory status --short
+# Expected: ?? logs/  (runtime dispatcher writes — expected, gitignored on orphan)
+
+# Check 7: no open PRs
 gh pr list --state open
-# Expected: none open
+# Expected: empty (Wave 4 complete; PR #19 + PR #20 both merged)
 ```
 
 ### Step 3 — What just happened (read carefully — do not skip)
@@ -169,11 +187,16 @@ DI-001, DI-002, DI-005, DI-006 remain open (project-wide deferred, non-blocking)
 
 **3g. Develop tip verification:**
 ```bash
-git log --oneline origin/develop -3   # tip: 21533b0 (PR #20 demo evidence squash-merge)
-git log --oneline origin/main -3      # tip: this commit (Wave 4 gate closure)
-git status --short                    # clean (untracked: .claude/ .factory/code-delivery/ .factory/cycles/ .factory/logs/ .factory/planning/ OK)
-gh pr list --state open               # none open
+git log --oneline origin/develop -3        # tip: 21533b0 (PR #20 demo evidence squash-merge)
+git log --oneline origin/main -3           # tip: f9c4b86 (topology reconciliation removal commit)
+git log --oneline origin/factory-artifacts -3  # tip: b73310d (post-reconciliation durability sweep)
+git status --short                         # ?? .claude/ only (main; .factory/ gitignored after D-038)
+git -C .factory status --short             # ?? logs/ only (runtime; factory-artifacts worktree)
+gh pr list --state open                    # none open
 ```
+
+**3h. DONE — Topology reconciliation (D-038, 2026-05-30):**
+factory state migrated from main-tracked `.factory/` to orphan factory-artifacts branch mounted at `.factory/` via git worktree (canonical vsdd-factory pattern). main tip: f9c4b86 (removal commit). factory-artifacts tip: b73310d (this durability sweep). All future factory(state) commits land on factory-artifacts via the worktree mount. L16 codified: when project diverges from canonical patterns, document explicitly and plan reconciliation timeline. See D-038 in STATE.md for full reconciliation detail.
 
 ---
 

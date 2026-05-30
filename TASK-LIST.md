@@ -20,6 +20,7 @@
 | 2026-05-28 | UD-009 | STORY-004 LOCAL adversarial cascade — continue until BC-5.39.001 3-CLEAN convergence per strict protocol | User authorized strict BC-5.39.001 3-CLEAN convergence for STORY-004 LOCAL adversarial cascade (continue cascade until convergence or stop). Convergence achieved at Pass 20 commit abb9c71; PR #18 merged at af7c6addd3e63379b67f17a2dd7ea27d31b3b765 (2026-05-29). |
 | 2026-05-30 | UD-010 | STORY-015 LOCAL adversarial cascade — continue until BC-5.39.001 3-CLEAN convergence per strict protocol | User authorized strict BC-5.39.001 3-CLEAN convergence for STORY-015 LOCAL adversarial cascade. Convergence achieved at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8); 8 passes, 5 fix bursts. PR #19 merged at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30). 3 cross-story deferrals recorded: D-PASS8-CS-01 (validate-page-type-policy ERR trap), D-PASS8-CS-02 (quarantine-fetch ERR trap), D-PASS8-CS-03 (BC-2.04.016 PC2 stale verdict text) — routed to Wave 4 integration gate. |
 | 2026-05-30 | UD-011 | Wave 4 Gate 5 holdout mean 0.825 below 0.85 threshold — lower threshold vs refresh scenarios | **Strict-pass disposition** — refresh scenarios per Source-of-Truth Precedence rule 1 (planning artifacts are immutable; BC contracts are authoritative). No pragmatic threshold lowering. HS-006/008/013 refreshed to canonical BC contracts (holdout-scenarios v0.1.4→v0.1.5, commit 43ff437 on main). Re-eval mean 0.90 / min 0.85. Gate 5 PASSED. |
+| 2026-05-30 | UD-012 | Topology reconciliation — should factory state migrate from main-tracked to orphan factory-artifacts branch (canonical vsdd-factory pattern)? | **YES — full reconciliation.** Force-replace factory-artifacts with fresh orphan from main:.factory @ 6d8450c (discards 4 stale Wave-3-era commits 3131aab/18c198c/f85dc89/af6f004); remove .factory/ from main tracking + gitignore; mount .factory/ as factory-artifacts worktree. User explicitly authorized destructive force-push of factory-artifacts. Reconciliation executed at end of Wave 4 (2026-05-30) before Wave 5 dispatch. L16 codified. main retains pre-reconciliation factory(state) history (b3eed43..6d8450c, 68 commits) as backup. |
 
 ## Phase 1d CLOSED (CONVERGED at Pass 42 commit 44cda58 — historical record)
 
@@ -29,12 +30,15 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 
 ## TOP OF STACK (RESUME ENTRY POINT — Wave 4 GATE PASSED — Wave 5 READY)
 
+**Topology reconciliation complete (D-038, 2026-05-30):** factory state migrated from `.factory/` tracked on main to orphan factory-artifacts branch mounted at `.factory/` via git worktree. Canonical vsdd-factory pattern restored. All future factory(state) commits land on factory-artifacts via the worktree mount.
+
 **Pipeline:** Phase 3 Wave 4 GATE PASSED 6/6 (2026-05-30). 19/46 stories delivered (108/270 pts ≈ 40%). 49 BCs active.
 **Next action:** Dispatch Wave 5 (STORY-019 first — critical path, unblocks STORY-036).
 **Last gate:** Wave 4 integration gate PASSED 6/6 (2026-05-30). Fix commits: 1622696 (Gate 3 POL-14 backfill) + 21533b0 PR#20 (Gate 4 demo evidence) + 43ff437 (Gate 5 holdout refresh).
 **develop tip:** 21533b0 (post-PR#20-demo-evidence-merge).
-**main tip:** this commit (Wave 4 gate closure state update).
-**Working tree:** clean; .factory/code-delivery/ + .factory/cycles/ + .factory/logs/ + .factory/planning/ untracked (expected).
+**main tip:** f9c4b86 (topology reconciliation removal commit — 2026-05-30).
+**factory-artifacts tip:** b73310d (post-reconciliation durability sweep with D-038 + L16 + UD-012).
+**Working tree:** main clean (only ?? .claude/ untracked; .factory/ gitignored after D-038). .factory/ is a worktree mount of factory-artifacts (only ?? logs/ untracked in factory-artifacts — runtime dispatcher artifacts).
 
 **Wave 4 status (4/4 COMPLETE + GATE PASSED 6/6):**
 - STORY-017 (P0 wiki page generation) — DONE — PR#16, merge_commit=b30dd35
