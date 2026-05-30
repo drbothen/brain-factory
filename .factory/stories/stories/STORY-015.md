@@ -25,7 +25,7 @@ inputs:
   - architecture/verification-properties/VP-001-hook-exit-code-semantics.md
   - architecture/verification-properties/VP-013-hook-performance-budget.md
   - architecture/verification-properties/VP-026-event-catalog-schema-and-completeness.md
-input-hash: ""
+input-hash: "15c507c"
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Bundling rationale: BC-2.04.015 (perf budget), BC-2.04.016 (I/O contract),
 # BC-2.17.003 (stream separation), and BC-2.17.004 (no-credential) are all
