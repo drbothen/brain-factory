@@ -105,64 +105,90 @@ setup() {
   echo "$output" | grep -qF "E-HOOK-001"
 }
 
-@test "BC_2_04_016: quarantine-fetch empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: quarantine-fetch empty stdin exits 2 with E-HOOK-001 in stdout" {
   # quarantine-fetch has a Node dependency check that fires before stdin parsing.
-  # If Node is absent the hook exits 2 with a different error code (E-QUARANTINE-003).
-  # Either way: exit 2 + valid JSON on stdout is the required contract.
-  # AC-003: Node startup overhead is included in the budget (no exclusion).
+  # If Node is absent the hook exits 2 with E-QUARANTINE-003 (not E-HOOK-001).
+  # Per BC-2.04.016 invariant 4: on empty stdin the hook MUST exit 2 and emit
+  # {"verdict":"block","code":"E-HOOK-001",...} when stdin parse fails.
+  # Node-absent path may emit a different code — the canonical empty-stdin parse
+  # path (Node present) must emit E-HOOK-001.
+  # IMPLEMENTATION NOTE for implementer: if Node is absent, the hook bails early
+  # with E-QUARANTINE-003; when Node IS present but stdin is empty, the stdin-
+  # parse path fires E-HOOK-001. This test exercises the stdin-parse path.
+  # If Node is absent in CI, this test will fail with a different code — that
+  # is intentional: it surfaces the constraint gap to the implementer.
   local hook="${PLUGIN_DIR}/hooks/quarantine-fetch.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
-@test "BC_2_04_016: validate-frontmatter-schema empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: validate-frontmatter-schema empty stdin exits 2 with E-HOOK-001 in stdout" {
+  # BC-2.04.016 invariant 4: fail-closed hook on empty stdin MUST emit
+  # {"verdict":"block","code":"E-HOOK-001",...} on stdout.
   local hook="${PLUGIN_DIR}/hooks/validate-frontmatter-schema.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
-@test "BC_2_04_016: validate-index-log-coherence empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: validate-index-log-coherence empty stdin exits 2 with E-HOOK-001 in stdout" {
+  # BC-2.04.016 invariant 4: fail-closed hook on empty stdin MUST emit
+  # {"verdict":"block","code":"E-HOOK-001",...} on stdout.
   local hook="${PLUGIN_DIR}/hooks/validate-index-log-coherence.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
-@test "BC_2_04_016: validate-page-type-policy empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: validate-page-type-policy empty stdin exits 2 with E-HOOK-001 in stdout" {
+  # BC-2.04.016 invariant 4: fail-closed hook on empty stdin MUST emit
+  # {"verdict":"block","code":"E-HOOK-001",...} on stdout.
   local hook="${PLUGIN_DIR}/hooks/validate-page-type-policy.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
-@test "BC_2_04_016: validate-publish-state empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: validate-publish-state empty stdin exits 2 with E-HOOK-001 in stdout" {
+  # BC-2.04.016 invariant 4: fail-closed hook on empty stdin MUST emit
+  # {"verdict":"block","code":"E-HOOK-001",...} on stdout.
   local hook="${PLUGIN_DIR}/hooks/validate-publish-state.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
-@test "BC_2_04_016: validate-source-id-citation empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: validate-source-id-citation empty stdin exits 2 with E-HOOK-001 in stdout" {
+  # BC-2.04.016 invariant 4: fail-closed hook on empty stdin MUST emit
+  # {"verdict":"block","code":"E-HOOK-001",...} on stdout.
   local hook="${PLUGIN_DIR}/hooks/validate-source-id-citation.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
-@test "BC_2_04_016: validate-source-immutability empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: validate-source-immutability empty stdin exits 2 with E-HOOK-001 in stdout" {
+  # BC-2.04.016 invariant 4: fail-closed hook on empty stdin MUST emit
+  # {"verdict":"block","code":"E-HOOK-001",...} on stdout.
   local hook="${PLUGIN_DIR}/hooks/validate-source-immutability.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
 @test "BC_2_04_016: validate-voice-avoid-list empty stdin exits 2 with JSON on stdout" {
@@ -174,12 +200,15 @@ setup() {
     "Skip: advisory-only contract supersedes fail-closed default."
 }
 
-@test "BC_2_04_016: validate-wikilink-integrity empty stdin exits 2 with JSON on stdout" {
+@test "BC_2_04_016: validate-wikilink-integrity empty stdin exits 2 with E-HOOK-001 in stdout" {
+  # BC-2.04.016 invariant 4: fail-closed hook on empty stdin MUST emit
+  # {"verdict":"block","code":"E-HOOK-001",...} on stdout.
   local hook="${PLUGIN_DIR}/hooks/validate-wikilink-integrity.sh"
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'"
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
 # Advisory-only hooks: empty stdin → still produces valid JSON stdout, exit 0.
@@ -610,10 +639,14 @@ _make_cred_fixture() {
     --arg s "${CRED_SENTINEL_KEY}" \
     '.tool_input.command = (.tool_input.command // "") + " " + $s' \
     "$base_fixture")"
+  # F-PASS01-S02: use mktemp to avoid CI matrix race on hardcoded /tmp path.
+  local stderr_file
+  stderr_file="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm -f '${stderr_file}'" RETURN
   local stdout_out stderr_out
-  stdout_out="$(bash -c "printf '%s' '${cred_payload}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>/tmp/s015-cred-stderr || true)"
-  stderr_out="$(cat /tmp/s015-cred-stderr 2>/dev/null || true)"
-  rm -f /tmp/s015-cred-stderr
+  stdout_out="$(bash -c "printf '%s' '${cred_payload}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
   if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
     echo "FAIL: sentinel found in stdout of block-ai-attribution" >&2
     return 1
@@ -627,13 +660,16 @@ _make_cred_fixture() {
 @test "BC_2_17_004: validate-frontmatter-schema does not leak credential sentinel to stdout or stderr" {
   local hook="${PLUGIN_DIR}/hooks/validate-frontmatter-schema.sh"
   local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-frontmatter-schema-sample.json"
-  local cred_fixture_file
+  local cred_fixture_file stderr_file
   cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # F-PASS01-S02: use mktemp to avoid CI matrix race on hardcoded /tmp path.
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
   _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
   local stdout_out stderr_out
-  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>/tmp/s015-fms-stderr || true)"
-  stderr_out="$(cat /tmp/s015-fms-stderr 2>/dev/null || true)"
-  rm -f "$cred_fixture_file" /tmp/s015-fms-stderr
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
   if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
     echo "FAIL: sentinel found in stdout of validate-frontmatter-schema" >&2
     return 1
@@ -647,13 +683,16 @@ _make_cred_fixture() {
 @test "BC_2_17_004: validate-voice-avoid-list does not leak credential sentinel to stdout or stderr" {
   local hook="${PLUGIN_DIR}/hooks/validate-voice-avoid-list.sh"
   local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-voice-avoid-list-sample.json"
-  local cred_fixture_file
+  local cred_fixture_file stderr_file
   cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # F-PASS01-S02: use mktemp to avoid CI matrix race on hardcoded /tmp path.
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
   _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
   local stdout_out stderr_out
-  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>/tmp/s015-vav-stderr || true)"
-  stderr_out="$(cat /tmp/s015-vav-stderr 2>/dev/null || true)"
-  rm -f "$cred_fixture_file" /tmp/s015-vav-stderr
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
   if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
     echo "FAIL: sentinel found in stdout of validate-voice-avoid-list" >&2
     return 1
@@ -667,13 +706,16 @@ _make_cred_fixture() {
 @test "BC_2_17_004: validate-wikilink-integrity does not leak credential sentinel to stdout or stderr" {
   local hook="${PLUGIN_DIR}/hooks/validate-wikilink-integrity.sh"
   local base_fixture="${PLUGIN_DIR}/tests/fixtures/validate-wikilink-integrity-sample.json"
-  local cred_fixture_file
+  local cred_fixture_file stderr_file
   cred_fixture_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+  # F-PASS01-S02: use mktemp to avoid CI matrix race on hardcoded /tmp path.
+  # shellcheck disable=SC2064
+  trap "rm -f '${cred_fixture_file}' '${stderr_file}'" RETURN
   _make_cred_fixture "$base_fixture" >"$cred_fixture_file"
   local stdout_out stderr_out
-  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>/tmp/s015-wl-stderr || true)"
-  stderr_out="$(cat /tmp/s015-wl-stderr 2>/dev/null || true)"
-  rm -f "$cred_fixture_file" /tmp/s015-wl-stderr
+  stdout_out="$(bash -c "cat '${cred_fixture_file}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" 2>"${stderr_file}" || true)"
+  stderr_out="$(cat "${stderr_file}" 2>/dev/null || true)"
   if echo "$stdout_out" | grep -qF "${CRED_SENTINEL_KEY}"; then
     echo "FAIL: sentinel found in stdout of validate-wikilink-integrity" >&2
     return 1
@@ -711,44 +753,65 @@ _make_cred_fixture() {
 #                 script). Parameterized over all 13 hooks.
 # AC-003: quarantine-fetch Node startup overhead is INCLUDED (not excluded).
 #
-# MEASUREMENT RATIONALE:
-#   date +%s%3N gives milliseconds since epoch on macOS (gdate) and Linux (date).
-#   We capture 10 times, sort numerically, take the 9th element (0-indexed = p99
-#   of 10 samples — every run must be under budget for p99 to be met).
-#   This is a real wall-clock measurement: a hook with `sleep 0.2` would fail.
+# MEASUREMENT RATIONALE (F-PASS01-C02 fix):
+#   Previous implementation used `bash -c "cat ${fixture} | bash ${hook}"` which
+#   included 2 subprocess forks (bash -c wrapper + cat) outside the hook runtime.
+#   This violated BC-2.04.015 PC1: "wall-clock time from hook invocation to exit."
+#
+#   Corrected implementation:
+#   - $EPOCHREALTIME (bash 5.0+) captures microsecond-precision wall time as a
+#     bash builtin — zero subprocess overhead at the timing boundary.
+#   - Hook stdin is fed via bash I/O redirection "< fixture" — no cat subprocess.
+#   - The only fork is the hook process itself (bash hook.sh < fixture) — that IS
+#     the hook's runtime and is correctly included per BC-2.04.015 PC1.
+#   - Portability fallback: perl -MTime::HiRes for bash < 5.0 environments
+#     (currently bash 5.2 on macOS ARM and Linux CI).
+#
+#   P99 estimator: N=10 samples, sort numerically, take the 9th-of-10 (second-
+#   highest). BC-2.04.015 EC-003 states "single outlier does not constitute
+#   failure." Using the 9th-of-10 (index [8] after 0-based sort) absorbs one
+#   outlier. If flakiness is observed in CI, increase N to 20 (19th-of-20) per
+#   the guidance in EC-003; do NOT lower the 100ms threshold.
 # =============================================================================
 
 # _assert_hook_p99_under_100ms <hook_path> <fixture_path> <hook_name>
-# Runs the hook 10 times with the given fixture and asserts p99 < 100ms.
+# Runs the hook 10 times with the given fixture and asserts p99 (9th-of-10) < 100ms.
+# Measurement uses $EPOCHREALTIME (bash builtin, no subprocess) for wall-clock time.
+# Hook stdin is fed via bash redirection (< fixture) — no cat subprocess fork.
 _assert_hook_p99_under_100ms() {
   local hook="$1"
   local fixture="$2"
   local hook_name="$3"
 
   local times=()
-  local i
-  for i in {1..10}; do
-    local t_start t_end elapsed
-    # Use perl for portable millisecond-precision time (avoids gdate/date -N diff).
-    t_start="$(perl -MTime::HiRes=time -e 'printf "%.0f\n", time()*1000' 2>/dev/null || date +%s%3N)"
-    bash -c "cat '${fixture}' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}'" \
-      >/dev/null 2>&1 || true
-    t_end="$(perl -MTime::HiRes=time -e 'printf "%.0f\n", time()*1000' 2>/dev/null || date +%s%3N)"
-    elapsed=$(( t_end - t_start ))
-    times+=("$elapsed")
+  local _iter
+  for _iter in {1..10}; do
+    local t0 t1 elapsed_ms
+    # $EPOCHREALTIME: bash 5.0+ builtin (format: seconds.microseconds).
+    # Capture inside the current bash process — no subprocess fork for timing.
+    t0="${EPOCHREALTIME}"
+    # Feed hook via stdin redirection — one fork (the hook), no cat.
+    CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}" bash "${hook}" \
+      < "${fixture}" >/dev/null 2>&1 || true
+    t1="${EPOCHREALTIME}"
+    # Convert fractional seconds to integer milliseconds using awk (no subshell
+    # that would skew the next iteration, awk is called after the hook exits).
+    elapsed_ms="$(awk "BEGIN{printf \"%.0f\", (${t1} - ${t0}) * 1000}")"
+    times+=("${elapsed_ms}")
   done
 
-  # Sort numerically and find p99 (= max element out of 10, i.e. element [9]).
-  local sorted
-  # mapfile requires bash 4+; use printf+read for portability.
+  # Sort numerically. P99 estimator = 9th-of-10 (index 8, 0-based after sort).
+  # This absorbs the single highest outlier per BC-2.04.015 EC-003.
   local sorted_str
   sorted_str="$(printf '%s\n' "${times[@]}" | sort -n)"
+  # Use sed to get line 9 (1-based) = 9th-of-10.
   local p99
-  p99="$(echo "$sorted_str" | tail -1)"
+  p99="$(printf '%s\n' "${times[@]}" | sort -n | sed -n '9p')"
 
-  if [[ "$p99" -ge 100 ]]; then
+  if [[ "${p99}" -ge 100 ]]; then
     echo "FAIL: Hook ${hook_name} p99 latency ${p99}ms >= 100ms budget (BC-2.04.015)" >&2
     echo "All times (ms): ${times[*]}" >&2
+    echo "Sorted: ${sorted_str}" >&2
     return 1
   fi
 }
