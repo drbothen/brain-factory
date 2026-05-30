@@ -28,9 +28,9 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 
 ## TOP OF STACK (RESUME ENTRY POINT — Wave 4 COMPLETE — Integration Gate PENDING)
 
-**Pipeline:** Phase 3 Wave 4 COMPLETE. 19/43 stories delivered (108/264 pts ≈ 41%). 44 BCs active.
+**Pipeline:** Phase 3 Wave 4 COMPLETE. 19/46 stories delivered (108/270 pts ≈ 40%). 49 BCs active.
 **Next action:** Run Wave 4 integration gate (6-check: test suite, DTU skip, adversary fresh-context, demo evidence, holdout, state update).
-**Last delivery:** STORY-015 PR #19 merged at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30).
+**Last delivery:** STORY-015 PR #19 merged at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30). Wave 4 Gate 3 fix burst: POL-14 backfill for 5 BCs + 3 follow-up stories filed (2026-05-30).
 **develop tip:** 20bedb7 (post-STORY-015-merge).
 **main tip:** (this burst — post-STORY-015-delivery state-manager closure).
 **Working tree:** clean; .factory/code-delivery/ + .factory/cycles/ + .factory/logs/ + .factory/planning/ untracked (expected).
@@ -41,10 +41,10 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 - STORY-004 (P0 /brain:health skill + hook) — DONE — PR#18, merge_commit=af7c6ad
 - STORY-015 (P0 hook meta-lint) — **DONE — PR#19, merge_commit=20bedb7**
 
-**Wave 4 gate (PENDING):** standard 6-check integration gate per wave-gate skill. 3 cross-story deferrals to process during gate:
-- D-PASS8-CS-01: validate-page-type-policy ERR trap plain-text output on crash (origin: STORY-015 Pass 8; owner: implementer; target: wave-gate review or Wave 5)
-- D-PASS8-CS-02: quarantine-fetch ERR trap silent (no stdout on crash) (origin: STORY-015 Pass 8; owner: implementer; target: wave-gate review or Wave 5)
-- D-PASS8-CS-03: BC-2.04.016 v1.4 PC2 stale `verdict` text (ADR-002 v2.0 updated to `continue`/`decision` but PC2 prose not swept) (origin: STORY-015 Pass 8; owner: product-owner; target: wave-gate or PO sweep)
+**Wave 4 gate (PENDING):** standard 6-check integration gate per wave-gate skill. Cross-story deferrals D-PASS8-CS-01/02/03 RESOLVED — anchored to follow-up stories:
+- ~~D-PASS8-CS-01~~ → **STORY-045** (validate-page-type-policy ERR trap JSONL alignment; Wave 5; implementer)
+- ~~D-PASS8-CS-02~~ → **STORY-046** (quarantine-fetch ERR trap telemetry; Wave 5; implementer)
+- ~~D-PASS8-CS-03~~ → **STORY-044** (BC-2.04.016 PC2 verdict-text harmonization; Wave 5; product-owner)
 
 **UD-007+UD-008 carry-forward note:** dependency-graph.md is CANONICAL for inter-story dependencies. Per-story frontmatter `dependencies:`/`blocks:` are at-creation-time snapshots. I07 (frontmatter blocks asymmetry) DEFERRED per UD-008. Downstream agents consult dep-graph, not frontmatter. Consistency-validator MUST NOT flag frontmatter-vs-dep-graph asymmetries as defects.
 
@@ -128,9 +128,14 @@ See `.factory/stories/wave-schedule.md` for full schedule.
 
 ## Next Steps (in dependency order)
 
-1. **Wave 4 integration gate (NEXT ACTION)** — 6-check standard gate (test suite, DTU skip, adversary fresh-context wave diff review, demo evidence, holdout, state update) per wave-gate skill. Process cross-story deferrals D-PASS8-CS-01/02/03 during gate review. Gate must PASS before Wave 5 dispatch.
+1. **Wave 4 integration gate (NEXT ACTION)** — 6-check standard gate (test suite, DTU skip, adversary fresh-context wave diff review, demo evidence, holdout, state update) per wave-gate skill. Gate must PASS before Wave 5 dispatch. D-PASS8-CS-01/02/03 resolved (STORY-044/045/046); no longer blocks gate.
 
 2. **Wave 5: Source Ingest + Lobster Headless + Token Write + Adversary Core** — 4 stories, 26 pts. See sprint-state.yaml. Critical path: STORY-019 first (unblocks STORY-036).
+
+3. **Wave 5 follow-up maintenance stories (from Wave 4 Gate 3 fix burst):**
+   - STORY-044 (P1, 2 pts): BC-2.04.016 PC2 verdict-text harmonization — product-owner
+   - STORY-045 (P1, 2 pts): validate-page-type-policy ERR trap JSONL alignment — implementer
+   - STORY-046 (P1, 2 pts): quarantine-fetch ERR trap telemetry — implementer
 
 ## Phase 1d / Phase 2 Completion Record (historical — for audit trail only)
 

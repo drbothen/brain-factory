@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
-status: draft
+version: "1.3"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -12,7 +12,7 @@ subsystem: "SS-02"
 capability: "CAP-002"
 lifecycle_status: active
 introduced: v0.1.0
-modified: []
+modified: [2026-05-27]
 ---
 
 # Behavioral Contract BC-2.02.005: `/brain:ingest-url` warns when source exceeds 50K-token chunk threshold
@@ -76,6 +76,10 @@ When the Defuddle-extracted content of a URL exceeds the 50K-token per-chunk thr
 - BC-2.06.002 — related to (manifest chunks array reserved here)
 
 ## Changelog
+
+### v1.3 (2026-05-30)
+
+**BACKFILL: POL-14 auto-promotion at PR #16 merge (commit b30dd35). Originally missed in state-manager post-merge burst at PR-merge time; identified by Wave 4 Gate 3 adversary finding C01 (2026-05-30). status: draft → active. No semantic change to BC contract.**
 
 ### v1.2 (2026-05-19)
 

@@ -8,7 +8,7 @@ current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
 current_prd_path: .factory/specs/prd/index.md
 current_bc_index_path: .factory/specs/behavioral-contracts/BC-INDEX.md
-current_bc_index_version: 0.1.15
+current_bc_index_version: 0.1.18
 current_architecture_version: 0.1.24
 current_arch_index_path: .factory/specs/architecture/ARCH-INDEX.md
 current_vp_index_version: 0.1.8
@@ -16,7 +16,7 @@ current_nfr_catalog_version: 0.1.2
 current_interface_defs_version: 0.2.0
 current_test_vectors_version: 0.2.0
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.4.7"
+current_story_index_version: "0.4.8"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
@@ -103,7 +103,7 @@ story_004_merge_sha: af7c6addd3e63379b67f17a2dd7ea27d31b3b765
 story_015_cascade_streak: "3/3 CONVERGED — Pass 6 PASS (1/3) + Pass 7 PASS (2/3) + Pass 8 PASS (3/3) — DELIVERED PR #19 20bedb7 (2026-05-30)"
 story_015_merge_sha: 20bedb7708660bc7a828a2d17c2e956fec8e301d
 total_stories_delivered: 19
-total_bcs_active: 44
+total_bcs_active: 49
 total_tests_on_develop: 939
 ---
 
@@ -113,7 +113,7 @@ total_tests_on_develop: 939
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-30):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 4/4 stories DELIVERED (COMPLETE). STORY-015 DELIVERED — PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d`. BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active per POL-14. 19/43 stories (108/264 pts). 44 BCs active. NEXT ACTION: Wave 4 integration gate (6-check). 3 cross-story deferrals to review: D-PASS8-CS-01/02/03 (see STATE.md Drift Items table).
+**Current state (as of 2026-05-30):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 4/4 stories DELIVERED (COMPLETE). STORY-015 DELIVERED — PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d`. BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active per POL-14. Wave 4 Gate 3 fix burst applied: BC-2.02.002/003/005 v1.3 active + BC-2.12.001/002 v1.3 active (POL-14 backfill for STORY-017/032 missed promotions). Follow-up stories STORY-044/045/046 filed. 19/46 stories (108/270 pts). 49 BCs active. D-PASS8-CS-01/02/03 closed with explicit story anchors (STORY-045/046/044). NEXT ACTION: Wave 4 integration gate (6-check).
 
 ### Step 1 — Read documents in this exact order
 

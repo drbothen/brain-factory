@@ -44,7 +44,7 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 4/4 stories DELIVERED (26/26 pts) — integration gate PENDING. 19/43 stories (108/264 pts). 44 BCs active."
+phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 4/4 stories DELIVERED (26/26 pts) — integration gate PENDING. 19/46 stories (108/270 pts). 44 BCs active."
 wave_3_status: "GATE PASSED 6/6 — 2026-05-27 — 584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed), demo evidence PASS, holdout PASS (mean 0.925), state update PASS"
 wave_3_gate_result: "PASSED 6/6 — fix commits: e7824d0 (lifecycle+catalog) + 56e1ec7 (manifest schema) + 42ca028 (slug_count)"
 dtu_required: true
@@ -52,21 +52,21 @@ dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
 session_stage: phase-3-wave-4-complete-gate-pending
-session_continuity: "STORY-015 DELIVERED — PR #19 squash-merged to develop at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30). 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats green in CI. LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active (POL-14). Wave 4 COMPLETE: 4/4 (26/26 pts). 19/43 stories (108/264 pts). 44 BCs active. NEXT ACTION: Wave 4 integration gate (6-check). 3 cross-story deferrals to review at gate: D-PASS8-CS-01/02/03."
+session_continuity: "Wave 4 Gate 3 fix burst applied (2026-05-30). POL-14 backfill: BC-2.02.002/003/005 v1.2→v1.3 active (STORY-017 PR#16), BC-2.12.001/002 v1.2→v1.3 active (STORY-032 PR#17). Follow-up stories filed: STORY-044 (BC-2.04.016 PC2 harmonization), STORY-045 (validate-page-type-policy ERR trap), STORY-046 (quarantine-fetch ERR trap). D-PASS8-CS-01/02/03 closed with explicit story anchors. BC-INDEX v0.1.18. STORY-INDEX v0.4.8 (46 stories, 270 pts). 49 BCs active. NEXT ACTION: Wave 4 integration gate (6-check)."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
 canonical_prd: .factory/specs/prd/index.md (v0.1.14, commit 5a64927)
-canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.17, this burst)
+canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.18, Wave 4 Gate 3 fix burst)
 canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.24, commit 5a64927) + 17 ADRs + 18 SS-NN (SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2) + VP-INDEX v0.1.8 + 27 VPs
 canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.2, commit 5a64927)
 canonical_error_taxonomy: .factory/specs/prd/error-taxonomy.md (v0.1.2, commit 39d6fba)
-canonical_story_index: .factory/stories/STORY-INDEX.md (v0.4.7, post-STORY-015 delivery — Wave 4 4/4 COMPLETE)
+canonical_story_index: .factory/stories/STORY-INDEX.md (v0.4.8, Wave 4 Gate 3 fix — 46 stories / 270 pts)
 canonical_dependency_graph: .factory/stories/dependency-graph.md (v0.1.1, commit f160696)
 canonical_holdout_scenarios: .factory/stories/holdout-scenarios.md (v0.1.4, commit 7b1ae9d)
-total_stories_drafted: 43
+total_stories_drafted: 46
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.4.7"
+current_story_index_version: "0.4.8"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
@@ -105,6 +105,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 4. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006, DI-007, DI-008
 
 ---
+
+**D-036 — Wave 4 Gate 3 fix burst (2026-05-30):** POL-14 backfill applied: BC-2.02.002 v1.2→v1.3, BC-2.02.003 v1.2→v1.3, BC-2.02.005 v1.2→v1.3 (STORY-017 PR#16, commit b30dd35, 2026-05-27); BC-2.12.001 v1.2→v1.3, BC-2.12.002 v1.2→v1.3 (STORY-032 PR#17, commit d610cf0, 2026-05-28) — all 5 BCs promoted status: draft → active. Wave 4 Gate 3 adversary finding C01 identified the inconsistency. BC-INDEX bumped v0.1.17→v0.1.18. Follow-up stories filed: STORY-044 (BC-2.04.016 PC2 verdict-text harmonization, closes D-PASS8-CS-03), STORY-045 (validate-page-type-policy ERR trap JSONL alignment, closes D-PASS8-CS-01), STORY-046 (quarantine-fetch ERR trap telemetry, closes D-PASS8-CS-02). STORY-INDEX bumped v0.4.7→v0.4.8 (43→46 stories, 264→270 pts). D-PASS8-CS-01/02/03 retired from STATE.md Drift Items — anchored to STORY-044/045/046. NEXT: Wave 4 integration gate.
 
 **D-035 — STORY-015 delivered (2026-05-30):** PR #19 squash-merged to develop at 20bedb7708660bc7a828a2d17c2e956fec8e301d. CI green (88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats = 134 + 1 skip). LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). 8 passes, 5 fix bursts. POL-14: BC-2.04.015 v1.4→v1.5, BC-2.04.016 v1.4→v1.5, BC-2.17.003 v1.3→v1.4, BC-2.17.004 v1.3→v1.4 — all draft→active. Wave 4 COMPLETE: 4/4 (26/26 pts). 18/43→19/43 stories. 103/264→108/264 pts. 40→44 BCs active. Cross-story deferrals: D-PASS8-CS-01/02/03 routed to Wave 4 gate. New lessons: L12 (cascade paper-fix layers), L13 (compute-input-hash awk bug). Wave 4 integration gate NEXT.
 
@@ -160,9 +162,9 @@ Items identified during adversarial passes as out-of-scope. Deferred per Cycle-C
 | DI-006 | [process-gap] Recommends codifying "grep swept token across plugin tree" as a formal closure-validation gate — recurring sibling-sweep miss pattern (TD-VSDD-060) detected across multiple passes | F-P6-O01 (Pass 6 adversary OBSERVATION; process-gap tag) | Adversary fresh-context audit currently catches sibling-sweep misses (demonstrated in Passes 4, 5, 6); codifying as a closure gate is process polish; defer to post-merge cycle-lessons sweep per S-7.02 | Post-STORY-004-PR-merge cycle-lessons sweep | state-manager + orchestrator |
 | DI-007 | BC-2.04.014 v1.6 postcondition exit-1 contradiction — postconditions may still specify exit 1 for YELLOW/RED but impl + bats enforce exit 0; possible residual from Pass-9 F-P9-C01/C02 closure sweep (50fa61c) | F13 DI candidate (Pass 13 adversary) — TENTATIVE | Pass 9 fix burst 50fa61c may have fully closed this; needs fresh-context verification by next adversary pass before confirming as open; STORY-013 ownership if confirmed open | Pass 14 adversary verification; if open, STORY-013 | product-owner (via story-writer) |
 | DI-008 | Token alert message format in run.sh does not match BC-2.16.002 / STORY-037 canonical message format — message text drift between impl and spec | F13 DI candidate (Pass 13 adversary) — TENTATIVE | STORY-037 ownership; out-of-STORY-004-scope for BC-2.01.006 cascade; needs adversary confirmation | Post-STORY-004-PR-merge or STORY-037 delivery | story-writer |
-| D-PASS8-CS-01 | validate-page-type-policy.sh ERR trap emits plain-text to stdout on crash — violates BC-2.04.016 (stdout must be valid JSON) | STORY-015 Pass 8 cross-story finding | Out-of-STORY-015-scope; validate-page-type-policy.sh is STORY-010 deliverable; fix requires implementer dispatch on that hook | Wave 4 integration gate review or Wave 5 fix burst | implementer |
-| D-PASS8-CS-02 | quarantine-fetch.sh ERR trap silent on crash — no stdout JSON emitted; violates BC-2.04.016 fail-closed contract (EC-001/EC-004) | STORY-015 Pass 8 cross-story finding | Out-of-STORY-015-scope; quarantine-fetch.sh is STORY-002 deliverable; needs dedicated fix burst | Wave 4 integration gate review or Wave 5 fix burst | implementer |
-| D-PASS8-CS-03 | BC-2.04.016 v1.4 Postcondition 2 still uses `{"verdict": "allow|advise|block", ...}` — ADR-002 v2.0 updated stdout format to `continue`/`decision` but BC-2.04.016 PC2 text not swept | STORY-015 Pass 8 cross-story finding | BC content update; out-of-STORY-015 scope; product-owner sweep against ADR-002 v2.0 format | Wave 4 integration gate or PO maintenance sweep | product-owner |
+| ~~D-PASS8-CS-01~~ | ~~validate-page-type-policy.sh ERR trap emits plain-text to stdout on crash~~ | STORY-015 Pass 8 | **CLOSED** — STORY-045 filed with explicit story anchor (Wave 4 Gate 3 fix burst, 2026-05-30). | STORY-045 (Wave 5) | implementer |
+| ~~D-PASS8-CS-02~~ | ~~quarantine-fetch.sh ERR trap silent on crash~~ | STORY-015 Pass 8 | **CLOSED** — STORY-046 filed with explicit story anchor (Wave 4 Gate 3 fix burst, 2026-05-30). | STORY-046 (Wave 5) | implementer |
+| ~~D-PASS8-CS-03~~ | ~~BC-2.04.016 v1.4 PC2 stale `verdict` text~~ | STORY-015 Pass 8 | **CLOSED** — STORY-044 filed with explicit story anchor (Wave 4 Gate 3 fix burst, 2026-05-30). | STORY-044 (Wave 5) | product-owner |
 
 ---
 
@@ -209,7 +211,7 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 | STORY-013 | 3 | #15 | 93af76d | 5p/2fc, 3-CLEAN@3-4-5 |
 
 ### Overall Progress (updated after STORY-015 delivery — Wave 4 COMPLETE)
-- 19/43 stories (108/264 points — 41%)
+- 19/46 stories (108/270 points — 40%)
 - 44 BCs active (of 95 total)
 - 939 tests on develop (estimated)
 - 19 PRs merged (#1-#19) + 3 Wave 3 gate fix commits

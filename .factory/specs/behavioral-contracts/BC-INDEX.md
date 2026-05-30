@@ -1,7 +1,7 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.17"
+version: "0.1.18"
 status: draft
 producer: "vsdd-factory:product-owner"
 timestamp: 2026-05-30T00:00:00
@@ -281,6 +281,10 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 ---
 
 ## Changelog
+
+### v0.1.18 (2026-05-30)
+
+**POL-14 BACKFILL (Wave 4 Gate 3 fix — closes C01):** BC-2.02.002 v1.2→v1.3, BC-2.02.003 v1.2→v1.3, BC-2.02.005 v1.2→v1.3 (STORY-017 PR #16 merge, commit b30dd35, 2026-05-27); BC-2.12.001 v1.2→v1.3, BC-2.12.002 v1.2→v1.3 (STORY-032 PR #17 merge, commit d610cf0, 2026-05-28) — all 5 BCs promoted `status: draft` → `status: active`. BC file bodies now reflect active status with changelog entries. Index table rows for these 5 BCs were already showing `active` (pre-set during Phase 2 story decomposition); the BC file bodies were the lagging artifact. Wave 4 Gate 3 adversary finding C01 identified the inconsistency (2026-05-30). No semantic change to any BC contract; POL-14 lifecycle auto-promotion backfill only.
 
 ### v0.1.17 (2026-05-30)
 

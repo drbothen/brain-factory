@@ -1,11 +1,11 @@
 ---
 artifact_type: story-index
-version: "0.4.7"
+version: "0.4.8"
 created: 2026-05-18
 last_updated: 2026-05-30
 authored_by: vsdd-factory:story-writer
-total_stories: 43
-total_points: 264
+total_stories: 46
+total_points: 270
 total_epics: 9
 total_bcs_covered: 95
 phase: phase-3-tdd-implementation
@@ -24,13 +24,21 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 19 stories completed (STORY-001, STORY-002, STORY-003, STORY-004, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-015, STORY-016, STORY-017, STORY-027, STORY-032, STORY-038). 24 stories status: draft.**
+**46 stories across 9 completed epics. 95 BCs total project scope. 19 stories completed (STORY-001, STORY-002, STORY-003, STORY-004, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-015, STORY-016, STORY-017, STORY-027, STORY-032, STORY-038). 27 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.8 — 2026-05-30 (Wave 4 Gate 3 fix — 3 follow-up story stubs filed — closes D-PASS8-CS-01/02/03)
+
+- **STORY-044 filed:** BC-2.04.016 v1.6 PC2 verdict-text harmonization to ADR-002 v2.0 format. Closes D-PASS8-CS-03 deferral with explicit story anchor per Canonical Principle Rule 3.
+- **STORY-045 filed:** validate-page-type-policy.sh ERR trap JSONL alignment. Closes D-PASS8-CS-01 deferral with explicit story anchor.
+- **STORY-046 filed:** quarantine-fetch.sh ERR trap telemetry — emit JSONL on crash with fail-closed JSON stdout. Closes D-PASS8-CS-02 deferral with explicit story anchor.
+- **Total:** 43 → 46 stories; 264 → 270 points. All 3 new stories are P1 draft in EPIC-02, target Wave 5 maintenance sweep.
+- **Per-Priority update:** P1 stories 14 → 17.
 
 ### v0.4.7 — 2026-05-30 (STORY-015 delivery / POL-14 BC promotion — Wave 4 COMPLETE 4/4)
 
@@ -166,7 +174,10 @@ inputs:
 | STORY-012 | enforce-kebab-case.sh and block-ai-attribution.sh: filename naming gate and AI attribution block | completed | 3 | P0 | BC-2.04.011, BC-2.04.012 | PR #14 merged 50b54e0 (2026-05-27) |
 | STORY-013 | flush-state-and-commit.sh and brain-health-check.sh: session Stop commit and SessionStart health banner | completed | 3 | P1 | BC-2.04.013, BC-2.04.014 | PR #15 merged 93af76d (2026-05-27) |
 | STORY-014 | Structured event catalog: scripts/event-catalog.json, hook-event-emit.sh shim, and BC-2.04.017 universal emission | completed | 5 | P0 | BC-2.04.017, BC-2.17.001, BC-2.17.002 | — |
-| STORY-015 | Hook contract meta-lint expansion: performance budget, canonical I/O, fail-closed, and stream/credential enforcement | draft | 5 | P0 | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 | — |
+| STORY-015 | Hook contract meta-lint expansion: performance budget, canonical I/O, fail-closed, and stream/credential enforcement | completed | 5 | P0 | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 | PR #19 merged 20bedb7 (2026-05-30) |
+| STORY-044 | BC-2.04.016 v1.6 PC2 verdict-text harmonization to ADR-002 v2.0 continue/decision format | draft | 2 | P1 | BC-2.04.016 | — |
+| STORY-045 | validate-page-type-policy.sh ERR trap JSONL alignment — sibling-sweep with hook ERR trap pattern | draft | 2 | P1 | BC-2.04.007, BC-2.04.016, BC-2.04.017 | STORY-010 |
+| STORY-046 | quarantine-fetch.sh ERR trap telemetry — emit JSONL on crash with fail-closed JSON stdout | draft | 2 | P1 | BC-2.04.001, BC-2.04.016, BC-2.04.017, BC-2.10.002 | STORY-006 |
 
 ---
 
@@ -252,15 +263,15 @@ inputs:
 | Epic | Stories | Points | Running Story Total | Running Point Total |
 |------|---------|--------|---------------------|---------------------|
 | EPIC-01 | 5 | 28 | 5 | 28 |
-| EPIC-02 | 10 | 45 | 15 | 73 |
-| EPIC-03 | 4 | 29 | 19 | 102 |
-| EPIC-04 | 4 | 29 | 23 | 131 |
-| EPIC-05 | 3 | 15 | 26 | 146 |
-| EPIC-06 | 5 | 29 | 31 | 175 |
-| EPIC-07 | 4 | 29 | 35 | 204 |
-| EPIC-08 | 4 | 34 | 39 | 238 |
-| EPIC-09 | 4 | 26 | 43 | 264 |
-| **TOTAL (epics 1–9)** | **43** | **264** | — | — |
+| EPIC-02 | 13 | 51 | 18 | 79 |
+| EPIC-03 | 4 | 29 | 22 | 108 |
+| EPIC-04 | 4 | 29 | 26 | 137 |
+| EPIC-05 | 3 | 15 | 29 | 152 |
+| EPIC-06 | 5 | 29 | 34 | 181 |
+| EPIC-07 | 4 | 29 | 38 | 210 |
+| EPIC-08 | 4 | 34 | 42 | 244 |
+| EPIC-09 | 4 | 26 | 46 | 270 |
+| **TOTAL (epics 1–9)** | **46** | **270** | — | — |
 
 ---
 
@@ -269,9 +280,9 @@ inputs:
 | Priority | Stories | Notes |
 |----------|---------|-------|
 | P0 | 29 | Must-have for v0.1 launch |
-| P1 | 14 | High-value, ship in v0.1 if capacity allows |
+| P1 | 17 | High-value, ship in v0.1 if capacity allows |
 | P2 | 0 | None in scope |
-| **Total** | **43** | — |
+| **Total** | **46** | — |
 
 ---
 

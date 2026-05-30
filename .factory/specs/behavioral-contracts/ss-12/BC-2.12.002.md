@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.2"
-status: draft
+version: "1.3"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -12,7 +12,7 @@ subsystem: "SS-12"
 capability: "CAP-012"
 lifecycle_status: active
 introduced: v0.1.0
-modified: []
+modified: [2026-05-28]
 ---
 
 # Behavioral Contract BC-2.12.002: `bin/lobster-run` exits 0 (all steps succeed), 1 (advisory), 2 (any step blocks)
@@ -64,6 +64,10 @@ modified: []
 - BC-2.12.001 — composes with
 
 ## Changelog
+
+### v1.3 (2026-05-30)
+
+**BACKFILL: POL-14 auto-promotion at PR #17 merge (commit d610cf0). Originally missed in state-manager post-merge burst at PR-merge time; identified by Wave 4 Gate 3 adversary finding C01 (2026-05-30). status: draft → active. No semantic change to BC contract.**
 
 ### v1.2 (2026-05-19)
 
