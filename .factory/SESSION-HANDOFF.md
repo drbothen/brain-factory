@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-story-004-pass-17-pending
-session_stage: phase-3-wave-4-story-004-pass-17-pending
+session_phase: phase-3-wave-4-story-004-pass-18-pending
+session_stage: phase-3-wave-4-story-004-pass-18-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-29T20:00:00
+last_updated: 2026-05-29T21:00:00
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,24 +94,24 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-story-004-pass-17-pending
+status: phase-3-wave-4-story-004-pass-18-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 16 FAIL (1H+3M+1L) — 4 findings closed in fix burst 16 (2 commits: f319cc5+8e19c66) — streak 0/3. Pass 17 pending WITH EXPLICIT WORKTREE PATHS."
-story_004_cascade_streak: "0/3 — Pass 16 FAIL (1H+3M+1L) — fix burst 16 closes 4 findings (f319cc5+8e19c66; F16-05 deferred per TD-VSDD-091; F16-06 no-action) — tests 45/45+43/43 — DI-007+DI-008 still tentative (confirm/close in Pass 17) — Pass 17 next WITH ABSOLUTE WORKTREE PATHS (need 3 consecutive PASS from 0/3 for convergence)"
-story_004_worktree_tip: 8e19c66
+wave_4_status: "IN PROGRESS — 2/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17). STORY-004 adversarial cascade pass 17 FAIL (2M+2L+2O) — 4 findings closed in fix burst 17 (2 commits: c992a0d+abb9c71) — streak 0/3. Pass 18 pending WITH EXPLICIT WORKTREE PATHS."
+story_004_cascade_streak: "0/3 — Pass 17 FAIL (2M+2L+2O) — fix burst 17 closes 4 findings (c992a0d+abb9c71; OBS-1 deferred POL-14 false positive; OBS-2 deferred AC-008 CI fragility) — tests 45/45+43/43 — DI-007+DI-008 still tentative (confirm/close in Pass 18) — Pass 18 next WITH ABSOLUTE WORKTREE PATHS (need 3 consecutive PASS from 0/3 for convergence)"
+story_004_worktree_tip: abb9c71
 total_stories_delivered: 17
 total_bcs_active: 38
 total_tests_on_develop: 717
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 17 Pending — Streak 0/3 (Pass 16 FAIL 1H+3M+1L — fix burst 16 applied — 2 commits)
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 Pass 18 Pending — Streak 0/3 (Pass 17 FAIL 2M+2L+2O — fix burst 17 applied — 2 commits)
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 16 FAIL (1H+3M+1L) — 4 findings closed in fix burst 16 (2 commits: f319cc5+8e19c66; F16-05 deferred per TD-VSDD-091; F16-06 no-action) — streak 0/3. Worktree tip `8e19c66`. Tests 45/45 + 43/43 passing on feature/STORY-004. NEXT ACTION: dispatch adversary Pass 17 WITH EXPLICIT ABSOLUTE WORKTREE PATHS (need 3 consecutive PASS from 0/3 for convergence). 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
+**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 2/4 stories delivered. STORY-004 adversarial cascade pass 17 FAIL (2M+2L+2O) — 4 findings closed in fix burst 17 (2 commits: c992a0d+abb9c71; OBS-1 deferred POL-14 false positive; OBS-2 deferred AC-008 CI fragility) — streak 0/3. Worktree tip `abb9c71`. Tests 45/45 + 43/43 passing on feature/STORY-004. NEXT ACTION: dispatch adversary Pass 18 WITH EXPLICIT ABSOLUTE WORKTREE PATHS (need 3 consecutive PASS from 0/3 for convergence). 17/43 stories (98/264 pts). 38 BCs active. 717 tests on develop.
 
 ### Step 1 — Read documents in this exact order
 
@@ -135,15 +135,15 @@ git log --oneline origin/develop -3
 git worktree list
 # Expected: shows /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 [feature/STORY-004]
 
-# Check 3: STORY-004 worktree tip commit is 8e19c66
+# Check 3: STORY-004 worktree tip commit is abb9c71
 git -C /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 log --oneline origin/develop..HEAD | head -5
-# Expected: 8e19c66 at tip, 42 commits ahead of develop
+# Expected: abb9c71 at tip, 44 commits ahead of develop
 
 # Check 4: Tests pass on the worktree
 bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3
 # Expected: 45 tests, 45 passed, 0 failed
 bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3
-# Expected: 43 tests, 43 passed, 0 failed (was 32 before fix burst 16 +11 structural)
+# Expected: 43 tests, 43 passed, 0 failed
 shellcheck plugins/brain-factory/skills/brain-health/run.sh plugins/brain-factory/hooks/brain-health-check.sh
 shfmt -d -i 2 plugins/brain-factory/skills/brain-health/run.sh plugins/brain-factory/hooks/brain-health-check.sh
 # Expected: no output (clean)
@@ -159,13 +159,13 @@ Wave 1: STORY-001/014/027/038 (PRs #1-#4, gate PASSED). Wave 2: STORY-016/002/00
 - STORY-032 (PR #17, d610cf0): bin/lobster-run pure-bash workflow runtime. 22 passes, 14 fix bursts — longest cascade in project history. 3-CLEAN at passes 20-21-22. BCs BC-2.12.001/002 active. User explicitly approved continuing to convergence rather than relaxing the bar.
 
 **3c. IN PROGRESS — STORY-004 adversarial cascade (wave 4 story 3/4):**
-Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `8e19c66`. See §STORY-004 Cascade Detail below — this is the primary current work.
+Worktree at `.worktrees/STORY-004`. Branch `feature/STORY-004`. Tip `abb9c71`. See §STORY-004 Cascade Detail below — this is the primary current work.
 
 **3d. PENDING — STORY-015 (wave 4 story 4/4):**
 Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
 
-**3e. TOP-OF-STACK — STORY-004 adversary Pass 17:**
-Streak 0/3 (Pass 16 FAIL — 1H+3M+1L — fix burst 16 applied). Worktree tip `8e19c66` (fix burst 16 applied — 2 commits: f319cc5 + 8e19c66). DI-003 and DI-004 RETIRED. F13-07 deferred (hook reference test paper-fix risk; intent verification pending — can be addressed in PR review or follow-up). F16-05 deferred (BC changelog volatile line pins; pass-report-changelog justified-citation exception per TD-VSDD-091; intent verification pending). F16-06 no-action (redundant rm before RETURN trap benign). DI-007 + DI-008 still tentative — Pass 17 adversary to confirm or close. Dispatch adversary for Pass 17 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec/story file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree). Need 3 consecutive clean PASS (0C+0I) from 0/3 for convergence. BC-5.39.001 requires 3 consecutive clean passes. NOTE: STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT pre-merge states per POL-14 — do not flag as findings.
+**3e. TOP-OF-STACK — STORY-004 adversary Pass 18:**
+Streak 0/3 (Pass 17 FAIL — 2M+2L+2O — fix burst 17 applied). Worktree tip `abb9c71` (fix burst 17 applied — 2 commits: c992a0d + abb9c71). DI-003 and DI-004 RETIRED. F13-07 deferred (hook reference test paper-fix risk; intent verification pending — can be addressed in PR review or follow-up). F16-05 deferred (BC changelog volatile line pins; pass-report-changelog justified-citation exception per TD-VSDD-091; intent verification pending). OBS-1 deferred (BC-2.04.014 status:draft — POL-14 false positive class). OBS-2 deferred (AC-008 5s window CI fragility). DI-007 + DI-008 still tentative — Pass 18 adversary to confirm or close. error-taxonomy is now v0.1.10; BC-2.01.006 is now v1.9; E-HEALTH-001 message is "missing or unreadable". Dispatch adversary for Pass 18 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec/story file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree). Need 3 consecutive clean PASS (0C+0I) from 0/3 for convergence. BC-5.39.001 requires 3 consecutive clean passes. NOTE: STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT pre-merge states per POL-14 — do not flag as findings.
 
 **3f. Develop tip verification:**
 ```bash
@@ -184,7 +184,7 @@ gh pr list --state open               # none open
 **Key BC:** BC-2.01.006 (status: draft, will promote to active at PR merge per POL-14)
 **Worktree:** `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004`
 **Branch:** `feature/STORY-004`
-**Worktree tip:** `8e19c66` — "test: bats structural locks for Issues format + skipped/fallback/corrupted paths (+11 tests, 32→43)"
+**Worktree tip:** `abb9c71` — "spec: error-taxonomy v0.1.10 + BC-2.01.006 v1.9 + STORY-004 AC-006/009 E-HEALTH-001 message 'missing or unreadable'"
 
 ### Cascade History Table
 
@@ -224,7 +224,9 @@ gh pr list --state open               # none open
 | Fix burst 15 | 4 commits (14c2b8b + 34b8c17 + 919c626 + 7eed597) | 14c2b8b (spec — BC-2.01.006 v1.7→v1.8: PC2 JSON schema + CTV EC-004 both show writeback_error for ALL non-ok paths); 34b8c17 (fix — brain-health-check.sh stdout schema rewritten to BC-2.04.014 v1.6 contract + run.sh yq quote-escape); 919c626 (stories — STORY-004 Task 6 writeback_error narrative updated to BC v1.8 both-paths); 7eed597 (test — structural jq -e bats assertions for hook schema + red_dimensions awk check; brain-health-check.bats 22→32 tests). Tests 45/45 + 32/32 at tip 7eed597. Streak 0/3. |
 | Pass 16 | FAIL — 1 HIGH + 3 MEDIUM + 1 LOW | F16-01 Issues format (colon-semicolon per BC-2.04.014 v1.6, was parens-comma). F16-02 skipped path emitted Issues (should be silent). F16-03 fallback missing Issues clause. F16-04 corrupted-YAML missing marker-count guard. F16-05 DEFERRED (changelog volatile line pins; TD-VSDD-091 justified). F16-06 NO-ACTION (redundant rm benign). Streak remains 0/3. |
 | Fix burst 16 | 2 commits (f319cc5 + 8e19c66) | f319cc5 (fix — brain-health-check.sh systemMessage Issues format colon-semicolon + skipped path silent + fallback Issues + corrupted-YAML guard; F16-01+02+03+04). 8e19c66 (test — +11 structural bats locks 32→43; F16-01+02+03+04 enforcement). Tests 45/45 + 43/43 at 8e19c66. |
-| **Pass 17** | **PENDING** | **Streak 0/3 (Pass 16 FAIL) — dispatch WITH ABSOLUTE WORKTREE PATHS — tip 8e19c66 — need 3 consecutive PASS for convergence** |
+| Pass 17 | FAIL — 2 MEDIUM + 2 LOW + 2 OBS | F17-01 marker-count check not unconditional (MEDIUM). F17-02 E-HEALTH-001 message wording (MEDIUM). F17-03 marker_count arithmetic-unsafe fallback (LOW). F17-04 yq-absent fallback format drift (LOW). OBS-1 DEFERRED (BC-2.04.014 status:draft — POL-14 false positive). OBS-2 DEFERRED (AC-008 5s window CI fragility). Streak remains 0/3. |
+| Fix burst 17 | 2 commits (c992a0d + abb9c71) | c992a0d (fix — marker-count check hoisted unconditional + marker_count arithmetic-safe + yq-absent fallback BC format; F17-01+03+04). abb9c71 (spec — error-taxonomy v0.1.10 + BC-2.01.006 v1.9 + STORY-004 AC-006/009 E-HEALTH-001 'missing or unreadable'; F17-02). Tests 45/45 + 43/43 at abb9c71. |
+| **Pass 18** | **PENDING** | **Streak 0/3 (Pass 17 FAIL) — dispatch WITH ABSOLUTE WORKTREE PATHS — tip abb9c71 — need 3 consecutive PASS for convergence** |
 
 ### Locked Decisions (DO NOT RE-LITIGATE)
 

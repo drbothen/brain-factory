@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-29T20:00:00
+last_updated: 2026-05-29T21:00:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-17-pending
+phase: phase-3-wave-4-story-004-pass-18-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-17-pending
-session_continuity: "Pass 16: FAIL — 1 HIGH + 3 MEDIUM + 1 LOW. All non-deferred findings closed by fix burst 16 (2 commits on feature/STORY-004): f319cc5 (fix — brain-health-check.sh systemMessage Issues format aligned with BC-2.04.014 v1.6 colon-semicolon, skipped path silent, fallback Issues clause, corrupted-YAML guard per F16-01+F16-02+F16-03+F16-04), 8e19c66 (test — bats structural locks +11 tests 32→43 for Issues format/skipped/fallback/yq-failure paths). F16-05 deferred (changelog volatile line pins; pass-report-changelog justified-citation exception per TD-VSDD-091; intent verification pending). F16-06 no-action (redundant rm before RETURN trap benign). Tests 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats at tip 8e19c66. Streak 0/3. NEXT ACTION: dispatch adversary Pass 17 WITH ABSOLUTE WORKTREE PATHS. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-pass-18-pending
+session_continuity: "Pass 17: FAIL — 2 MEDIUM + 2 LOW + 2 OBS. Fix burst 17 (2 commits on feature/STORY-004): c992a0d (fix — marker-count check hoisted unconditional F17-01; marker_count fallback arithmetic-safe F17-03; yq-absent fallback preserves BC format F17-04), abb9c71 (spec — error-taxonomy v0.1.10 + BC-2.01.006 v1.9 + STORY-004 AC-006/009 E-HEALTH-001 message 'missing or unreadable' F17-02). Closures: F17-01 F17-02 F17-03 F17-04. Observations deferred (POL-14 BC-2.04.014 status; AC-008 5s window CI fragility). Tests 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats at tip abb9c71. Streak 0/3. NEXT ACTION: dispatch adversary Pass 18 WITH ABSOLUTE WORKTREE PATHS. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,7 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-17-pending
+status: phase-3-wave-4-story-004-pass-18-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,21 +90,22 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 17 PENDING — Streak 0/3 (Pass 16 FAIL — 1H+3M+1L — fix burst 16 applied — 2 commits)
+## TOP OF STACK — STORY-004 Pass 18 PENDING — Streak 0/3 (Pass 17 FAIL — 2M+2L+2O — fix burst 17 applied — 2 commits)
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `8e19c66`
+1. Verify worktree: `git worktree list` — should show STORY-004 at `abb9c71`
 2. Verify tests: `bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
-3. `bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 43/43 (was 32, +11 structural tests from fix burst 16)
-4. Dispatch adversary for Pass 17 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree)
+3. `bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 43/43
+4. Dispatch adversary for Pass 18 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree)
 5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
 6. DI-003 and DI-004 are RETIRED — do not re-raise BC-2.04.014 narrative drift or STORY-005 exit codes; fully closed
 7. STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT — both promote per POL-14 at PR merge; do not flag as findings
 8. F13-07 deferred (hook reference test paper-fix risk; intent verification pending) — can be addressed in PR review or follow-up
 9. F16-05 deferred (BC changelog volatile line pins; pass-report-changelog justified-citation exception per TD-VSDD-091; intent verification pending)
-10. DI-007 and DI-008 remain tentative — confirm or close in Pass 17
+10. DI-007 and DI-008 remain tentative — confirm or close in Pass 18
+11. error-taxonomy is now v0.1.10; BC-2.01.006 is now v1.9; E-HEALTH-001 message is "missing or unreadable"
 
-**STORY-004 cascade state:** Pass 16 FAIL — 1 HIGH + 3 MEDIUM + 1 LOW. Fix burst 16 applied (2 commits on feature/STORY-004): f319cc5 (fix — brain-health-check.sh systemMessage Issues format aligned with BC-2.04.014 v1.6 colon-semicolon, skipped path silent, fallback Issues clause, corrupted-YAML guard; F16-01+F16-02+F16-03+F16-04), 8e19c66 (test — bats structural locks +11 tests 32→43 for Issues format/skipped/fallback/yq-failure paths). Worktree tip 8e19c66. Tests 45/45 + 43/43. F16-05 deferred (changelog volatile line pins; justified per TD-VSDD-091). F16-06 no-action. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** Pass 17 FAIL — 2 MEDIUM + 2 LOW + 2 OBS. Fix burst 17 applied (2 commits on feature/STORY-004): c992a0d (fix — marker-count check hoisted unconditional F17-01; marker_count fallback arithmetic-safe F17-03; yq-absent fallback preserves BC format F17-04), abb9c71 (spec — error-taxonomy v0.1.10 + BC-2.01.006 v1.9 + STORY-004 AC-006/009 E-HEALTH-001 message 'missing or unreadable' F17-02). Worktree tip abb9c71. Tests 45/45 + 43/43. OBS-1 deferred (POL-14 BC-2.04.014 status — false positive class). OBS-2 deferred (AC-008 5s window CI fragility). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
 
 ---
 
@@ -133,6 +134,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 **D-028 — STORY-004 Pass 15 FAIL + fix burst 15 applied — streak 0/3 (2026-05-29):** Pass 15 adversary verdict: FAIL — 2 HIGH + 3 MEDIUM. Fix burst 15 (4 commits on feature/STORY-004): 14c2b8b (spec — BC-2.01.006 v1.7→v1.8: Postcondition 2 JSON schema + Canonical Test Vector EC-004 both updated to show writeback_error field present for ALL non-ok paths including skipped_malformed_frontmatter, not just failed; F15-01), 34b8c17 (fix — brain-health-check.sh stdout schema rewritten to match BC-2.04.014 v1.6 contract: systemMessage/additionalContext for all exits, unhealthy_state/red_dimensions for RED path; run.sh yq dim_detail quote-escaped; F15-02+F15-04), 919c626 (stories — STORY-004 Task 6 writeback_error narrative updated to reflect BC v1.8 both-paths semantics; F15-05), 7eed597 (test — structural bats assertions for BC v1.6 hook output schema using jq -e extraction; red_dimensions awk structural check; brain-health-check.bats 22→32 tests; F15-03+F15-02 enforcement). Closures: F15-01→14c2b8b, F15-02→34b8c17+7eed597, F15-03→7eed597, F15-04→34b8c17, F15-05→919c626. Tests 45/45 + 32/32 at tip 7eed597. Cycle Lesson 9 codified: bats JSON-shape assertions must use jq -e structural extraction, not substring matching. Pass 16 next. Streak 0/3.
 
 **D-029 — STORY-004 Pass 16 FAIL + fix burst 16 applied — streak 0/3 (2026-05-29):** Pass 16 adversary verdict: FAIL — 1 HIGH + 3 MEDIUM + 1 LOW. Fix burst 16 (2 commits on feature/STORY-004): f319cc5 (fix — brain-health-check.sh systemMessage Issues format aligned with BC-2.04.014 v1.6 colon-semicolon format, was parens-comma; skipped path now silent/no Issues field; fallback Issues clause added; corrupted-YAML marker-count guard added; F16-01+F16-02+F16-03+F16-04), 8e19c66 (test — bats structural locks +11 tests 32→43 for Issues format/skipped-path/fallback/yq-failure paths; F16-01+F16-02+F16-03+F16-04 enforcement). Closures: F16-01→f319cc5+8e19c66, F16-02→f319cc5+8e19c66, F16-03→f319cc5+8e19c66, F16-04→f319cc5+8e19c66. F16-05 DEFERRED — BC changelog volatile line pins; pass-report-changelog justified-citation exception per TD-VSDD-091; intent verification pending. F16-06 NO-ACTION — redundant rm before RETURN trap is benign. Tests 45/45 + 43/43 at tip 8e19c66. Pass 17 next. Streak 0/3.
+
+**D-030 — STORY-004 Pass 17 FAIL + fix burst 17 applied — streak 0/3 (2026-05-29):** Pass 17 adversary verdict: FAIL — 2 MEDIUM + 2 LOW + 2 OBS. Fix burst 17 (2 commits on feature/STORY-004): c992a0d (fix — marker-count check hoisted unconditional F17-01 correctness; marker_count fallback arithmetic-safe F17-03; yq-absent fallback preserves BC format F17-04), abb9c71 (spec — error-taxonomy v0.1.10 + BC-2.01.006 v1.9 + STORY-004 AC-006/009 E-HEALTH-001 message 'missing or unreadable' F17-02). Closures: F17-01→c992a0d, F17-02→abb9c71, F17-03→c992a0d, F17-04→c992a0d. OBS-1 DEFERRED (BC-2.04.014 status:draft — POL-14 false positive class; do not flag pre-merge). OBS-2 DEFERRED (AC-008 5s window CI fragility). Tests 45/45 + 43/43 at tip abb9c71. Pass 18 next. Streak 0/3.
 
 ---
 
