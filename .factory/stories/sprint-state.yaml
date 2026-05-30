@@ -16,9 +16,9 @@ schema_version: "v0.1.1"
 project: brain-factory
 phase: phase-2-story-decomposition-step-d
 total_waves: 11
-total_stories: 43
-total_points: 264
-current_wave: 4
+total_stories: 46
+total_points: 270
+current_wave: 5
 created: 2026-05-19
 last_updated: 2026-05-30
 in_progress_stories: []

@@ -1,6 +1,6 @@
 # TASK-LIST — brain-factory Session Snapshot
 
-> Snapshot updated: 2026-05-30. **Phase 1a/1b/1c/1d CLOSED. Phase 2 CLOSED. Phase 3 IN PROGRESS — Waves 1+2+3 COMPLETE + GATES PASSED. Wave 4: 4/4 stories DELIVERED (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18, STORY-015 PR#19). Wave 4 integration gate PENDING.**
+> Snapshot updated: 2026-05-30. **Phase 1a/1b/1c/1d CLOSED. Phase 2 CLOSED. Phase 3 IN PROGRESS — Waves 1+2+3+4 COMPLETE + GATES PASSED. Wave 4 GATE PASSED 6/6 (2026-05-30). Wave 5 READY (STORY-019 first — critical path).**
 > **HOLDOUT-SCENARIOS ACCESS CONTROL: restricted — orchestrator MUST NOT pass `.factory/stories/holdout-scenarios.md` contents to story-writer, architect, adversary, implementer, or any Phase 2/3 agent other than holdout-evaluator (Phase 4).**
 > **Resume on fresh context:** Read `.factory/STATE.md` FIRST, then `.factory/SESSION-HANDOFF.md`, then this file.
 > See SESSION-HANDOFF.md "RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR" section for numbered resume steps.
@@ -19,6 +19,7 @@
 | 2026-05-19 | UD-008 | F-PHASE2-ADV-PASS1-I07 — frontmatter `blocks:` arrays asymmetric vs dep-graph — accept deferral or fix? | **DEFERRED per UD-007** — dep-graph supersession convention makes frontmatter blocks asymmetry a legitimate non-defect. Per-story frontmatter blocks/dependencies are at-creation-time snapshots. I07 DEFERRED. If Pass 2+ re-surfaces I07 with concrete implementer-blocking evidence, orchestrator reconsiders. |
 | 2026-05-28 | UD-009 | STORY-004 LOCAL adversarial cascade — continue until BC-5.39.001 3-CLEAN convergence per strict protocol | User authorized strict BC-5.39.001 3-CLEAN convergence for STORY-004 LOCAL adversarial cascade (continue cascade until convergence or stop). Convergence achieved at Pass 20 commit abb9c71; PR #18 merged at af7c6addd3e63379b67f17a2dd7ea27d31b3b765 (2026-05-29). |
 | 2026-05-30 | UD-010 | STORY-015 LOCAL adversarial cascade — continue until BC-5.39.001 3-CLEAN convergence per strict protocol | User authorized strict BC-5.39.001 3-CLEAN convergence for STORY-015 LOCAL adversarial cascade. Convergence achieved at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8); 8 passes, 5 fix bursts. PR #19 merged at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30). 3 cross-story deferrals recorded: D-PASS8-CS-01 (validate-page-type-policy ERR trap), D-PASS8-CS-02 (quarantine-fetch ERR trap), D-PASS8-CS-03 (BC-2.04.016 PC2 stale verdict text) — routed to Wave 4 integration gate. |
+| 2026-05-30 | UD-011 | Wave 4 Gate 5 holdout mean 0.825 below 0.85 threshold — lower threshold vs refresh scenarios | **Strict-pass disposition** — refresh scenarios per Source-of-Truth Precedence rule 1 (planning artifacts are immutable; BC contracts are authoritative). No pragmatic threshold lowering. HS-006/008/013 refreshed to canonical BC contracts (holdout-scenarios v0.1.4→v0.1.5, commit 43ff437 on main). Re-eval mean 0.90 / min 0.85. Gate 5 PASSED. |
 
 ## Phase 1d CLOSED (CONVERGED at Pass 42 commit 44cda58 — historical record)
 
@@ -26,25 +27,26 @@ BC-5.39.001 3-CLEAN literal streak 3/3 achieved: Pass 40 PASS (eef8402) + Pass 4
 
 Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (F-PASS39-I3 hit-by-hit enumeration vs F-PASS37-O2 mirror tension), F-PASS40-O3 (historical Pass 35-37 closure-summary ordering inconsistency), F-PASS41-O2 (inherited F-PASS40-O2/O3), F-PASS42-O2 (inherited same). May be revisited during Phase 2 if relevant or post-Phase-2.
 
-## TOP OF STACK (RESUME ENTRY POINT — Wave 4 COMPLETE — Integration Gate PENDING)
+## TOP OF STACK (RESUME ENTRY POINT — Wave 4 GATE PASSED — Wave 5 READY)
 
-**Pipeline:** Phase 3 Wave 4 COMPLETE. 19/46 stories delivered (108/270 pts ≈ 40%). 49 BCs active.
-**Next action:** Run Wave 4 integration gate (6-check: test suite, DTU skip, adversary fresh-context, demo evidence, holdout, state update).
-**Last delivery:** STORY-015 PR #19 merged at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30). Wave 4 Gate 3 fix burst: POL-14 backfill for 5 BCs + 3 follow-up stories filed (2026-05-30).
-**develop tip:** 20bedb7 (post-STORY-015-merge).
-**main tip:** (this burst — post-STORY-015-delivery state-manager closure).
+**Pipeline:** Phase 3 Wave 4 GATE PASSED 6/6 (2026-05-30). 19/46 stories delivered (108/270 pts ≈ 40%). 49 BCs active.
+**Next action:** Dispatch Wave 5 (STORY-019 first — critical path, unblocks STORY-036).
+**Last gate:** Wave 4 integration gate PASSED 6/6 (2026-05-30). Fix commits: 1622696 (Gate 3 POL-14 backfill) + 21533b0 PR#20 (Gate 4 demo evidence) + 43ff437 (Gate 5 holdout refresh).
+**develop tip:** 21533b0 (post-PR#20-demo-evidence-merge).
+**main tip:** this commit (Wave 4 gate closure state update).
 **Working tree:** clean; .factory/code-delivery/ + .factory/cycles/ + .factory/logs/ + .factory/planning/ untracked (expected).
 
-**Wave 4 status (4/4 COMPLETE):**
+**Wave 4 status (4/4 COMPLETE + GATE PASSED 6/6):**
 - STORY-017 (P0 wiki page generation) — DONE — PR#16, merge_commit=b30dd35
 - STORY-032 (P0 lobster-run runtime) — DONE — PR#17, merge_commit=d610cf0
 - STORY-004 (P0 /brain:health skill + hook) — DONE — PR#18, merge_commit=af7c6ad
-- STORY-015 (P0 hook meta-lint) — **DONE — PR#19, merge_commit=20bedb7**
+- STORY-015 (P0 hook meta-lint) — DONE — PR#19, merge_commit=20bedb7
+- **Wave 4 gate: PASSED 6/6 — 2026-05-30**
 
-**Wave 4 gate (PENDING):** standard 6-check integration gate per wave-gate skill. Cross-story deferrals D-PASS8-CS-01/02/03 RESOLVED — anchored to follow-up stories:
-- ~~D-PASS8-CS-01~~ → **STORY-045** (validate-page-type-policy ERR trap JSONL alignment; Wave 5; implementer)
-- ~~D-PASS8-CS-02~~ → **STORY-046** (quarantine-fetch ERR trap telemetry; Wave 5; implementer)
-- ~~D-PASS8-CS-03~~ → **STORY-044** (BC-2.04.016 PC2 verdict-text harmonization; Wave 5; product-owner)
+**Follow-up stories (filed Wave 4 Gate 3, awaiting Wave 5+):**
+- **STORY-044** (BC-2.04.016 PC2 verdict-text harmonization; Wave 5; product-owner)
+- **STORY-045** (validate-page-type-policy ERR trap JSONL alignment; Wave 5; implementer)
+- **STORY-046** (quarantine-fetch ERR trap telemetry; Wave 5; implementer)
 
 **UD-007+UD-008 carry-forward note:** dependency-graph.md is CANONICAL for inter-story dependencies. Per-story frontmatter `dependencies:`/`blocks:` are at-creation-time snapshots. I07 (frontmatter blocks asymmetry) DEFERRED per UD-008. Downstream agents consult dep-graph, not frontmatter. Consistency-validator MUST NOT flag frontmatter-vs-dep-graph asymmetries as defects.
 
@@ -82,14 +84,15 @@ Inherited process-gaps DEFERRED per UD-005 (NOT blocking Phase 2): F-PASS40-O2 (
 | STORY-012 | 3 | #14 | 50b54e0 | DONE |
 | STORY-013 | 3 | #15 | 93af76d | DONE |
 
-### Wave 4: Wiki Generation + Lobster + Health + Meta-Lint (COMPLETE — 4/4 stories — 26/26 pts — Integration Gate PENDING)
+### Wave 4: Wiki Generation + Lobster + Health + Meta-Lint (COMPLETE — 4/4 stories — 26/26 pts — GATE PASSED 6/6)
 
 | Story | Pts | PR | Merge Commit | Status |
 |-------|-----|----|--------------|--------|
 | STORY-017 | 8 | #16 | b30dd35 | DONE |
 | STORY-032 | 8 | #17 | d610cf0 | DONE |
 | STORY-004 | 5 | #18 | af7c6ad | DONE (converged at Pass 20) |
-| STORY-015 | 5 | #19 | 20bedb7 | **DONE (converged at Pass 8)** |
+| STORY-015 | 5 | #19 | 20bedb7 | DONE (converged at Pass 8) |
+| **Wave 4 gate** | — | #20 | 21533b0 | **GATE PASSED 6/6 — 2026-05-30** |
 
 ### Waves 5-11: PENDING (26 stories, 161 pts remaining)
 
@@ -110,7 +113,7 @@ See `.factory/stories/wave-schedule.md` for full schedule.
 
 ## Cycle Lessons Codified (`.factory/cycles/v0.1-phase-3-impl/lessons.md`)
 
-13 lessons codified. L1-L10 during STORY-004 LOCAL cascade. L11 post-STORY-004 (durability gap). L12-L13 post-STORY-015:
+15 lessons codified. L1-L10 during STORY-004 LOCAL cascade. L11 post-STORY-004 (durability gap). L12-L13 post-STORY-015. L14-L15 post-Wave 4 gate:
 
 - L1: `shopt -s inherit_errexit` does NOT propagate `set -e` into bash functions invoked via if-conditional context
 - L2: Paper-fix detection via test-writer-committed initially-failing tests
@@ -125,17 +128,19 @@ See `.factory/stories/wave-schedule.md` for full schedule.
 - L11: Harness `TaskCreate`/`TaskUpdate` tasks are ephemeral — orchestrator must mirror task state to TASK-LIST.md after every meaningful burst
 - L12: Cascade paper-fix layers descend through architectural strata (BC text → test mechanism → fixture content → implementation); accept cascade depth as evidence BC-5.39.001 is working
 - L13: vsdd-factory compute-input-hash tool has awk-termination bug on multi-file inputs; use manual CONCAT+sha256sum workaround
+- L14: Worktree mount must respect project standing directive — devops-engineer pre-flight skills must check for project-specific `worktree_layout_note` overrides BEFORE auto-mounting (brain-factory .factory/ is a regular dir on main, NOT a worktree on factory-artifacts)
+- L15: Wave-perimeter adversary catches state-vs-implementation drift that per-story passes cannot see (POL-14 promotion happens at merge, AFTER per-story Step 4.5; wave-gate catches narrative-vs-file divergence AND missing demo evidence on same pass)
 
 ## Next Steps (in dependency order)
 
-1. **Wave 4 integration gate (NEXT ACTION)** — 6-check standard gate (test suite, DTU skip, adversary fresh-context wave diff review, demo evidence, holdout, state update) per wave-gate skill. Gate must PASS before Wave 5 dispatch. D-PASS8-CS-01/02/03 resolved (STORY-044/045/046); no longer blocks gate.
+1. **Wave 5: Source Ingest + Lobster Headless + Token Write + Adversary Core (NEXT ACTION)** — 4 stories, 26 pts. Critical path: STORY-019 first (unblocks STORY-036). Wave 4 gate PASSED; Wave 5 may be dispatched immediately.
 
-2. **Wave 5: Source Ingest + Lobster Headless + Token Write + Adversary Core** — 4 stories, 26 pts. See sprint-state.yaml. Critical path: STORY-019 first (unblocks STORY-036).
-
-3. **Wave 5 follow-up maintenance stories (from Wave 4 Gate 3 fix burst):**
+2. **Wave 5 follow-up maintenance stories (from Wave 4 Gate 3 fix burst):**
    - STORY-044 (P1, 2 pts): BC-2.04.016 PC2 verdict-text harmonization — product-owner
    - STORY-045 (P1, 2 pts): validate-page-type-policy ERR trap JSONL alignment — implementer
    - STORY-046 (P1, 2 pts): quarantine-fetch ERR trap telemetry — implementer
+
+3. **Gate 5 advisories** (3 non-blocking items) — logged for future scenario tightening when HS coverage is revisited post-Wave 5.
 
 ## Phase 1d / Phase 2 Completion Record (historical — for audit trail only)
 
@@ -145,4 +150,4 @@ Phase 1c COMPLETED — architecture v0.1.1 across 5 commits (b7679ee through d89
 Phase 1d CONVERGED — BC-5.39.001 3-CLEAN literal streak 3/3 achieved at Pass 42 commit 44cda58. 42 passes total (39 FAIL + 3 PASS). 68 fix-bursts. Phase 1d adversarial spec review CLOSED.
 Phase 2 Steps A-G COMPLETED and CONVERGED — epics/stories/dep-graph/wave-schedule/holdout/consistency gate/adversarial-story-review all CLOSED. 43 stories, 264 pts, 11 waves. Phase 2 Step G converged at Pass 6 commit 543c588. Phase 2 CLOSED — Phase 3 AUTHORIZED.
 Phase 3 Waves 1-3 COMPLETE + GATES PASSED (see Wave Implementation Status above).
-Phase 3 Wave 4 COMPLETE (4/4 stories delivered — integration gate pending).
+Phase 3 Wave 4 COMPLETE + GATE PASSED 6/6 (2026-05-30). 4 stories delivered, 5 BCs promoted, 3 follow-up stories filed, 51 ACs evidenced, holdout mean 0.90.

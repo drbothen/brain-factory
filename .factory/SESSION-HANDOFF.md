@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-complete-gate-pending
-session_stage: phase-3-wave-4-complete-gate-pending
+session_phase: phase-3-wave-5-ready
+session_stage: phase-3-wave-5-ready
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -24,7 +24,7 @@ current_wave_schedule_version: "0.1.4"
 current_sprint_state_path: .factory/stories/sprint-state.yaml
 current_sprint_state_version: "0.1.1"
 total_waves: 11
-total_stories_drafted: 43
+total_stories_drafted: 46
 total_bc_count: 95
 total_adr_count: 17
 total_ss_design_count: 18
@@ -85,19 +85,20 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-30T18:00:00
+last_updated: 2026-05-30T22:00:00
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
-current_holdout_scenarios_version: "0.1.4"
+current_holdout_scenarios_version: "0.1.5"
 total_holdout_scenarios: 17
 holdout_must_pass: 10
 holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-complete-gate-pending
+status: phase-3-wave-5-ready
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "4/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18, STORY-015 PR#19); Wave 4 integration gate pending"
+wave_4_status: "GATE PASSED 6/6 — 2026-05-30 — 4 stories delivered, 5 BCs promoted, 3 follow-ups filed, 51 ACs evidenced, holdout mean 0.90"
+wave_4_gate_result: "PASSED 6/6 — 2026-05-30 — fix commits: 1622696 (Gate 3 POL-14 backfill) + 21533b0 (Gate 4 demo PR#20) + 43ff437 (Gate 5 holdout refresh)"
 story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS (1/3) + Pass 19 PASS (2/3) + Pass 20 PASS (3/3) — DELIVERED PR #18 af7c6ad (2026-05-29)"
 story_004_merge_sha: af7c6addd3e63379b67f17a2dd7ea27d31b3b765
 story_015_cascade_streak: "3/3 CONVERGED — Pass 6 PASS (1/3) + Pass 7 PASS (2/3) + Pass 8 PASS (3/3) — DELIVERED PR #19 20bedb7 (2026-05-30)"
@@ -107,13 +108,13 @@ total_bcs_active: 49
 total_tests_on_develop: 939
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 COMPLETE — Integration Gate PENDING
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 GATE PASSED — Wave 5 READY
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-30):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 4/4 stories DELIVERED (COMPLETE). STORY-015 DELIVERED — PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d`. BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active per POL-14. Wave 4 Gate 3 fix burst applied: BC-2.02.002/003/005 v1.3 active + BC-2.12.001/002 v1.3 active (POL-14 backfill for STORY-017/032 missed promotions). Follow-up stories STORY-044/045/046 filed. 19/46 stories (108/270 pts). 49 BCs active. D-PASS8-CS-01/02/03 closed with explicit story anchors (STORY-045/046/044). NEXT ACTION: Wave 4 integration gate (6-check).
+**Current state (as of 2026-05-30):** Phase 3 IN PROGRESS — Waves 1–4 COMPLETE + gates PASSED. Wave 4 GATE PASSED 6/6 (2026-05-30). 19/46 stories (108/270 pts). 49 BCs active. develop tip: 21533b0 (PR #20 demo evidence). main tip: this commit. Follow-up stories STORY-044/045/046 filed and awaiting Wave 5+. 3 Gate 5 advisories logged (non-blocking). NEXT ACTION: Dispatch Wave 5 (STORY-019 first — critical path).
 
 ### Step 1 — Read documents in this exact order
 
@@ -129,7 +130,7 @@ Read TASK-LIST.md before deep-diving into story/spec files so the orchestrator h
 Run these checks. If any check fails, diagnose before proceeding.
 
 ```bash
-# Check 1: develop tip should be 20bedb7 (STORY-015 PR #19 squash-merge)
+# Check 1: develop tip should be 21533b0 (PR #20 demo evidence squash-merge)
 git log --oneline origin/develop -3
 
 # Check 2: no open worktrees (STORY-004 and STORY-015 worktrees should be removed)
@@ -160,12 +161,16 @@ PR #18 squash-merged to develop at `af7c6addd3e63379b67f17a2dd7ea27d31b3b765` (2
 **3d. DELIVERED — STORY-015 (wave 4 story 4/4):**
 PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d` (2026-05-30). 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats green in CI. LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). 8 passes, 5 fix bursts. BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active per POL-14. .worktrees/STORY-015 can be safely removed. See §STORY-015 Cascade Detail below.
 
-**3e. TOP-OF-STACK — Wave 4 integration gate:**
-Wave 4 COMPLETE (4/4 stories, 26/26 pts). DI-001, DI-002, DI-005, DI-006, DI-007, DI-008 remain open (project-wide deferred, non-blocking). 3 cross-story deferrals to process at gate: D-PASS8-CS-01 (validate-page-type-policy ERR trap), D-PASS8-CS-02 (quarantine-fetch ERR trap), D-PASS8-CS-03 (BC-2.04.016 PC2 stale text). NEXT: Wave 4 integration gate (6-check). After gate PASSES: Wave 5 (STORY-019 first — critical path).
+**3e. DONE — Wave 4 integration gate PASSED 6/6 (2026-05-30):**
+Wave 4 GATE PASSED. Gates 1 CI green (21533b0), 2 DTU SKIP, 3 adversary PASS (after fix burst 1622696 on main + PR #20 21533b0 on develop), 4 demo evidence PASS (51 ACs), 5 holdout PASS (after fix burst 43ff437, mean 0.90), 6 this state update. D-PASS8-CS-01/02/03 resolved to STORY-045/046/044. UD-011: user strict-pass disposition for Gate 5. Lessons L14 + L15 codified. NEXT: Wave 5 (STORY-019 first — critical path).
 
-**3f. Develop tip verification:**
+**3f. TOP-OF-STACK — Wave 5 ready:**
+DI-001, DI-002, DI-005, DI-006 remain open (project-wide deferred, non-blocking). DI-007 and DI-008 tentatively resolved during cascade (DI-007 fully closed Pass 15; DI-008 verified clean Pass 14). Follow-up stories STORY-044/045/046 await Wave 5+ timing. 3 Gate 5 advisories logged for future scenario tightening (non-blocking). Wave 5 NEXT: STORY-019 (P0 wiki source ingest), STORY-033 (lobster headless), STORY-040 (token write), STORY-036 (adversary core).
+
+**3g. Develop tip verification:**
 ```bash
-git log --oneline origin/develop -3   # tip: 20bedb7 (STORY-015 PR #19 squash-merge)
+git log --oneline origin/develop -3   # tip: 21533b0 (PR #20 demo evidence squash-merge)
+git log --oneline origin/main -3      # tip: this commit (Wave 4 gate closure)
 git status --short                    # clean (untracked: .claude/ .factory/code-delivery/ .factory/cycles/ .factory/logs/ .factory/planning/ OK)
 gh pr list --state open               # none open
 ```

@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-30T18:00:00
+last_updated: 2026-05-30T22:00:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-complete-gate-pending
+phase: phase-3-wave-5-ready
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -44,15 +44,15 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 4/4 stories DELIVERED (26/26 pts) — integration gate PENDING. 19/46 stories (108/270 pts). 44 BCs active."
+phase_3_status: "IN PROGRESS — Waves 1–4 COMPLETE + GATES PASSED. Wave 4 GATE PASSED 6/6 (2026-05-30). 19/46 stories (108/270 pts). 49 BCs active. Wave 5 READY."
 wave_3_status: "GATE PASSED 6/6 — 2026-05-27 — 584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed), demo evidence PASS, holdout PASS (mean 0.925), state update PASS"
 wave_3_gate_result: "PASSED 6/6 — fix commits: e7824d0 (lifecycle+catalog) + 56e1ec7 (manifest schema) + 42ca028 (slug_count)"
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-complete-gate-pending
-session_continuity: "Wave 4 Gate 3 fix burst applied (2026-05-30). POL-14 backfill: BC-2.02.002/003/005 v1.2→v1.3 active (STORY-017 PR#16), BC-2.12.001/002 v1.2→v1.3 active (STORY-032 PR#17). Follow-up stories filed: STORY-044 (BC-2.04.016 PC2 harmonization), STORY-045 (validate-page-type-policy ERR trap), STORY-046 (quarantine-fetch ERR trap). D-PASS8-CS-01/02/03 closed with explicit story anchors. BC-INDEX v0.1.18. STORY-INDEX v0.4.8 (46 stories, 270 pts). 49 BCs active. NEXT ACTION: Wave 4 integration gate (6-check)."
+session_stage: phase-3-wave-5-ready
+session_continuity: "Wave 4 GATE PASSED 6/6 (2026-05-30). Gates 1+2+3+4+5 all PASS (Gate 2 DTU SKIP documented). Gate 3 fix burst: 5 BCs promoted active + 3 follow-up stories filed (STORY-044/045/046). Gate 5 fix burst: holdout-scenarios v0.1.5 (HS-006/008/013 refreshed). develop tip: 21533b0. 49 BCs active. 46 stories. Wave 5 NEXT (STORY-019 first — critical path). UD-011 recorded: strict-pass disposition for Gate 5."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -84,8 +84,9 @@ worktree_layout_note: .factory/ is a regular directory tracked on main with fact
 story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS + Pass 19 PASS + Pass 20 PASS — BC-5.39.001 3-CLEAN satisfied — DELIVERED PR #18 af7c6ad"
 story_015_cascade_streak: "3/3 CONVERGED — Pass 6 PASS + Pass 7 PASS + Pass 8 PASS — BC-5.39.001 3-CLEAN satisfied — DELIVERED PR #19 20bedb7 (2026-05-30)"
 story_015_merge_sha: 20bedb7708660bc7a828a2d17c2e956fec8e301d
-wave_4_status: "4/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18, STORY-015 PR#19); Wave 4 integration gate pending"
-status: phase-3-wave-4-complete-gate-pending
+wave_4_status: "GATE PASSED 6/6 — 2026-05-30 — 4 stories delivered, 5 BCs promoted, 3 follow-ups filed, 51 ACs evidenced, holdout mean 0.90"
+wave_4_gate_result: "PASSED 6/6 — fix commits: 1622696 (Gate 3 POL-14 backfill) + 21533b0 (Gate 4 demo evidence PR#20) + 43ff437 (Gate 5 holdout refresh)"
+status: phase-3-wave-5-ready
 ---
 
 # brain-factory Pipeline STATE
@@ -94,17 +95,29 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-015 DELIVERED — Wave 4 COMPLETE — Integration Gate PENDING
+## TOP OF STACK — Wave 4 GATE PASSED 6/6 — Wave 5 READY
 
-**STORY-015 DELIVERED:** PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d` (2026-05-30). 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats green in CI (134 + 1 skip). LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). 8 passes, 5 fix bursts. BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 → active per POL-14. Wave 4: 4/4 (26/26 pts) COMPLETE. 19/43 stories (108/264 pts). 44 BCs active.
+**Wave 4 GATE PASSED 6/6 (2026-05-30):** All 4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18, STORY-015 PR#19). 51 ACs evidenced across 4 stories. 49 BCs active. develop tip: 21533b0.
+
+**Wave 4 Integration Gate Results (2026-05-30) — GATE PASSED 6/6**
+| Gate | Result | Detail |
+|------|--------|--------|
+| Gate 1 — CI on develop | PASS | Lint+Test green at 21533b0; local defuddle-fetch failures environmental (npm dep); shellcheck+shfmt clean |
+| Gate 2 — DTU | SKIP | No Wave 4 stories touch DTU-covered external services (LinkedIn). Rationale documented. |
+| Gate 3 — Adversarial wave review | PASS (after fix burst) | C01 POL-14 missed promotion + H01 missing demo evidence. Fix: 1622696 (5 BCs promoted active) + PR #20 21533b0 (15 demo files). Re-verify confirmed all closures. |
+| Gate 4 — Demo evidence | PASS | STORY-017 15 ACs, STORY-032 11 ACs, STORY-004 10 ACs, STORY-015 15 ACs. 51 ACs total evidenced. |
+| Gate 5 — Holdout | PASS (after scenario refresh) | Initial mean 0.825 below threshold. Fix: 43ff437 (HS-006/008/013 refreshed, holdout-scenarios v0.1.4→v0.1.5). Re-eval mean 0.90 / min must-pass 0.85. |
+| Gate 6 — State update | PASS | This commit (D-037 below). |
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Run Wave 4 integration gate (6-check: test suite, DTU skip, adversary fresh-context wave diff, demo evidence, holdout, state update)
-2. During gate: review cross-story deferrals D-PASS8-CS-01/02/03 (see Drift Items table below)
-3. After gate PASSES: dispatch Wave 5 (STORY-019 first — critical path)
-4. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006, DI-007, DI-008
+1. Dispatch Wave 5 (STORY-019 first — critical path unblocks STORY-036)
+2. Follow-up stories awaiting Wave 5+ timing: STORY-044 (BC-2.04.016 PC2), STORY-045 (validate-page-type-policy ERR trap), STORY-046 (quarantine-fetch ERR trap)
+3. 3 Gate 5 advisories logged for future scenario tightening (non-blocking)
+4. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006
 
 ---
+
+**D-037 — Wave 4 GATE PASSED 6/6 (2026-05-30):** Wave 4 integration gate PASSED all 6 checks. Gate 1 CI green at 21533b0. Gate 2 DTU SKIP (no LinkedIn calls in Wave 4). Gate 3 adversarial PASS after fix burst 1622696 (5 BCs: BC-2.02.002/003/005 + BC-2.12.001/002 promoted active) + PR #20 21533b0 (demo evidence 15 files). Gate 4 demo evidence PASS (51 ACs across 4 stories). Gate 5 holdout PASS after fix burst 43ff437 (holdout-scenarios v0.1.5, mean 0.90 / min 0.85). Gate 6 this commit. UD-011 recorded: user applied strict-pass disposition for Gate 5 (refresh scenarios per Source-of-Truth precedence rule 1 rather than lower threshold). Lessons L14 (worktree mount must respect project standing directive) + L15 (wave-perimeter adversary catches state-vs-impl drift) codified. STORY-044/045/046 follow-up stories await Wave 5+. Wave 5 NEXT (STORY-019 first).
 
 **D-036 — Wave 4 Gate 3 fix burst (2026-05-30):** POL-14 backfill applied: BC-2.02.002 v1.2→v1.3, BC-2.02.003 v1.2→v1.3, BC-2.02.005 v1.2→v1.3 (STORY-017 PR#16, commit b30dd35, 2026-05-27); BC-2.12.001 v1.2→v1.3, BC-2.12.002 v1.2→v1.3 (STORY-032 PR#17, commit d610cf0, 2026-05-28) — all 5 BCs promoted status: draft → active. Wave 4 Gate 3 adversary finding C01 identified the inconsistency. BC-INDEX bumped v0.1.17→v0.1.18. Follow-up stories filed: STORY-044 (BC-2.04.016 PC2 verdict-text harmonization, closes D-PASS8-CS-03), STORY-045 (validate-page-type-policy ERR trap JSONL alignment, closes D-PASS8-CS-01), STORY-046 (quarantine-fetch ERR trap telemetry, closes D-PASS8-CS-02). STORY-INDEX bumped v0.4.7→v0.4.8 (43→46 stories, 264→270 pts). D-PASS8-CS-01/02/03 retired from STATE.md Drift Items — anchored to STORY-044/045/046. NEXT: Wave 4 integration gate.
 
@@ -210,15 +223,16 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 | STORY-012 | 3 | #14 | 50b54e0 | 4p/1fc, 3-CLEAN@2-3-4 |
 | STORY-013 | 3 | #15 | 93af76d | 5p/2fc, 3-CLEAN@3-4-5 |
 
-### Overall Progress (updated after STORY-015 delivery — Wave 4 COMPLETE)
+### Overall Progress (updated after Wave 4 GATE PASSED 6/6)
 - 19/46 stories (108/270 points — 40%)
-- 44 BCs active (of 95 total)
-- 939 tests on develop (estimated)
-- 19 PRs merged (#1-#19) + 3 Wave 3 gate fix commits
-- Waves 1–3 COMPLETE + GATE PASSED; Wave 4: 4/4 delivered (STORY-017, STORY-032, STORY-004, STORY-015) — gate pending
+- 49 BCs active (of 95 total)
+- 939+ tests on develop (estimated, after PR #20 demo evidence)
+- 20 PRs merged (#1-#20) + 3 Wave 3 gate fix commits + 3 Wave 4 gate fix commits
+- Waves 1–4 COMPLETE + GATES PASSED; Wave 5 READY (STORY-019 first)
 
 ### Git State to Verify
-- `git log --oneline origin/develop -3` should show 20bedb7 (STORY-015 PR #19 squash-merge) at tip
+- `git log --oneline origin/develop -3` should show 21533b0 (PR #20 demo evidence squash-merge) at tip
+- `git log --oneline origin/main -3` should show this commit at tip
 - `git status --short` should be clean (untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/)
 - `.worktrees/` should be empty
 - No open PRs
@@ -239,22 +253,22 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 ### Resume Procedure for Fresh Context
 
 #### 1. Pipeline Position
-Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 4/4 delivered (STORY-017, STORY-032, STORY-004, STORY-015) — integration gate pending. 19/43 stories delivered (108/264 pts). 44 BCs active.
+Phase 3 TDD Implementation. Waves 1–4 COMPLETE + GATES PASSED. Wave 4 GATE PASSED 6/6 (2026-05-30). 19/46 stories delivered (108/270 pts). 49 BCs active. Wave 5 READY.
 
-#### 2. Wave 4 Task List (CRITICAL — this is what to DO)
+#### 2. Wave 5 Task List (CRITICAL — this is what to DO)
 
-Wave 4: Wiki Generation + Lobster Core + Health + Hook Meta-Lint (4 stories / 26 points)
+Wave 5: Source Ingest + Lobster Headless + Token Write + Adversary Core (4 stories / 26 points)
 
-Delivery order (STORY-017 first, rest parallel):
+Delivery order (STORY-019 first — critical path):
 
 | # | Story | Pts | Epic | Goal | Key BCs |
 |---|-------|-----|------|------|---------|
-| 1 | STORY-017 | 8 | EPIC-03 | Wiki page generation pipeline + token JSONL logging + 50K-chunk warning | BC-2.02.002, BC-2.02.003, BC-2.02.005 | **DELIVERED** — PR #16 b30dd35 |
-| 2 | STORY-032 | 8 | EPIC-07 | bin/lobster-run — YAML parsing, topological sort, exit-code contract | BC-2.12.001, BC-2.12.002 | **DELIVERED** — PR #17 d610cf0 |
-| 3 | STORY-004 | 5 | EPIC-01 | /brain:health six-dimensional convergence skill | BC-2.01.006 | **DELIVERED** — PR #18 af7c6ad |
-| 4 | STORY-015 | 5 | EPIC-02 | Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 | **DELIVERED** — PR #19 20bedb7 |
+| 1 | STORY-019 | 8 | EPIC-03 | Source ingest pipeline | BC-2.02.xxx (see story) | PENDING |
+| 2 | STORY-033 | 5 | EPIC-07 | Lobster headless mode | BC-2.12.xxx (see story) | PENDING |
+| 3 | STORY-040 | 8 | EPIC-09 | Token write + adversary core | BC-2.xx.xxx (see story) | PENDING |
+| 4 | STORY-036 | 5 | EPIC-08 | (depends on STORY-019) | BC-2.xx.xxx (see story) | PENDING |
 
-Wave 4 COMPLETE. Next: Wave 4 integration gate.
+Wave 5 NEXT. Follow-up: STORY-044/045/046 (Wave 5+ timing).
 
 #### 3. Per-Story Delivery Steps
 ```
