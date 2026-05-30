@@ -53,23 +53,15 @@ if [[ ! -f "$AVOID_LIST" ]] || [[ ! -r "$AVOID_LIST" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Read stdin JSON payload (advisory fallback on malformed input).
+# Read stdin JSON payload and extract file_path using pure bash _json_get_str
+# (no subprocess). Advisory fallback on malformed input — never block.
+# Malformed/empty JSON → file_path empty → skip.
 # ---------------------------------------------------------------------------
 stdin_json="$(cat)" || true
-
-if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
-  emit_event "voice.avoid_list.skipped" "reason=malformed_payload"
-  printf '%s\n' '{"continue":true}'
-  exit 0
-fi
-
-# ---------------------------------------------------------------------------
-# Extract file_path from payload.
-# ---------------------------------------------------------------------------
-file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')" || true
+file_path="$(_json_get_str "$stdin_json" 'file_path')"
 
 if [[ -z "$file_path" ]]; then
-  emit_event "voice.avoid_list.skipped" "reason=missing_file_path"
+  emit_event "voice.avoid_list.skipped" "reason=malformed_or_missing_file_path"
   printf '%s\n' '{"continue":true}'
   exit 0
 fi
@@ -111,22 +103,27 @@ if [[ "${#matched_terms[@]}" -eq 0 ]]; then
   exit 0
 fi
 
-# Build the JSON matches array from matched_terms.
-matches_json="$(
-  arr="[]"
-  for t in "${matched_terms[@]}"; do
-    arr="$(jq -cn --arg t "$t" --argjson arr "$arr" '$arr + [$t]')"
-  done
-  printf '%s' "$arr"
-)"
-
-# Build comma-separated display string.
-matches_display="$(printf '%s' "$matches_json" | jq -r 'join(", ")')"
+# Build the JSON matches array and display string from matched_terms.
+# Pure bash array construction — no jq subprocess needed.
+matches_json="["
+matches_display=""
+_mfirst=true
+for _mt in "${matched_terms[@]}"; do
+  _esc="$(_json_escape "${_mt}")"
+  if [[ "$_mfirst" == "true" ]]; then
+    matches_json="${matches_json}\"${_esc}\""
+    matches_display="${_mt}"
+    _mfirst=false
+  else
+    matches_json="${matches_json},\"${_esc}\""
+    matches_display="${matches_display}, ${_mt}"
+  fi
+done
+matches_json="${matches_json}]"
 
 emit_event "voice.avoid_list.matched" "path=$file_path" "match_count=${#matched_terms[@]}"
 
-jq -cn \
-  --arg msg "Voice avoid-list terms found: ${matches_display}" \
-  --argjson matches "$matches_json" \
-  '{"continue":true,"systemMessage":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-VOICE-001","matches":$matches}}'
+_em_msg="$(_json_escape "Voice avoid-list terms found: ${matches_display}")"
+printf '{"continue":true,"systemMessage":"%s","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-VOICE-001","matches":%s}}\n' \
+  "${_em_msg}" "${matches_json}"
 exit 0

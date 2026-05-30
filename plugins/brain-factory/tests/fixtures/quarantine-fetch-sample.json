@@ -1,0 +1,1 @@
+{"session_id":"test-s015","transcript_path":"/tmp/t","cwd":"/tmp","hook_event_name":"PreToolUse","tool_name":"WebFetch","tool_input":{"url":"http://127.0.0.1:1/test","prompt":"Summarize"},"tool_use_id":"s015-quarantine-001"}

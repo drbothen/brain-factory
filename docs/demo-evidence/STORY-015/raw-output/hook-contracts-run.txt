@@ -1,0 +1,89 @@
+1..88
+ok 1 BC_2_04_016: block-ai-attribution empty stdin exits 2 with E-HOOK-001 in stdout
+ok 2 BC_2_04_016: enforce-kebab-case empty stdin exits 2 with E-HOOK-001 in stdout
+ok 3 BC_2_04_016: quarantine-fetch empty stdin exits 2 with E-HOOK-001 in stdout
+ok 4 BC_2_04_016: validate-frontmatter-schema empty stdin exits 2 with E-HOOK-001 in stdout
+ok 5 BC_2_04_016: validate-index-log-coherence empty stdin exits 2 with E-HOOK-001 in stdout
+ok 6 BC_2_04_016: validate-page-type-policy empty stdin exits 2 with E-HOOK-001 in stdout
+ok 7 BC_2_04_016: validate-publish-state empty stdin exits 2 with E-HOOK-001 in stdout
+ok 8 BC_2_04_016: validate-source-id-citation empty stdin exits 2 with E-HOOK-001 in stdout
+ok 9 BC_2_04_016: validate-source-immutability empty stdin exits 2 with E-HOOK-001 in stdout
+ok 10 BC_2_04_016: validate-voice-avoid-list empty stdin exits 2 with JSON on stdout # skip validate-voice-avoid-list is advisory-only; empty-stdin exit behavior 
+ok 11 BC_2_04_016: validate-wikilink-integrity empty stdin exits 2 with E-HOOK-001 in stdout
+ok 12 BC_2_04_016: brain-health-check advisory-only hook exits 0 on empty stdin with valid JSON stdout
+ok 13 BC_2_04_016: flush-state-and-commit advisory-only hook exits 0 on empty stdin with valid JSON stdout
+ok 14 BC_2_04_016: block-ai-attribution canonical fixture stdout is valid JSON
+ok 15 BC_2_04_016: brain-health-check canonical fixture stdout is valid JSON
+ok 16 BC_2_04_016: enforce-kebab-case canonical fixture stdout is valid JSON
+ok 17 BC_2_04_016: flush-state-and-commit canonical fixture stdout is valid JSON
+ok 18 BC_2_04_016: quarantine-fetch canonical fixture stdout is valid JSON
+ok 19 BC_2_04_016: validate-frontmatter-schema canonical fixture stdout is valid JSON
+ok 20 BC_2_04_016: validate-index-log-coherence canonical fixture stdout is valid JSON
+ok 21 BC_2_04_016: validate-page-type-policy canonical fixture stdout is valid JSON
+ok 22 BC_2_04_016: validate-publish-state canonical fixture stdout is valid JSON
+ok 23 BC_2_04_016: validate-source-id-citation canonical fixture stdout is valid JSON
+ok 24 BC_2_04_016: validate-source-immutability canonical fixture stdout is valid JSON
+ok 25 BC_2_04_016: validate-voice-avoid-list canonical fixture stdout is valid JSON
+ok 26 BC_2_04_016: validate-wikilink-integrity canonical fixture stdout is valid JSON
+ok 27 BC_2_04_016: block-ai-attribution exit code is in {0,1,2} on canonical fixture
+ok 28 BC_2_04_016: enforce-kebab-case exit code is in {0,1,2} on canonical fixture
+ok 29 BC_2_04_016: quarantine-fetch exit code is in {0,1,2} on canonical fixture
+ok 30 BC_2_04_016: validate-frontmatter-schema exit code is in {0,1,2} on canonical fixture
+ok 31 BC_2_04_016: validate-wikilink-integrity exit code is in {0,1,2} on canonical fixture
+ok 32 BC_2_17_003: block-ai-attribution stderr has >=1 JSONL on canonical fixture
+ok 33 BC_2_17_003: block-ai-attribution stdout is single JSON object on canonical fixture
+ok 34 BC_2_17_003: brain-health-check stderr has >=1 JSONL on canonical fixture
+ok 35 BC_2_17_003: brain-health-check stdout is single JSON object on canonical fixture
+ok 36 BC_2_17_003: enforce-kebab-case stderr has >=1 JSONL on canonical fixture
+ok 37 BC_2_17_003: enforce-kebab-case stdout is single JSON object on canonical fixture
+ok 38 BC_2_17_003: flush-state-and-commit stderr has >=1 JSONL on canonical fixture
+ok 39 BC_2_17_003: flush-state-and-commit stdout is single JSON object on canonical fixture
+ok 40 BC_2_17_003: quarantine-fetch stderr has >=1 JSONL on canonical fixture
+ok 41 BC_2_17_003: quarantine-fetch stdout is single JSON object on canonical fixture
+ok 42 BC_2_17_003: validate-frontmatter-schema stderr has >=1 JSONL on canonical fixture
+ok 43 BC_2_17_003: validate-frontmatter-schema stdout is single JSON object on canonical fixture
+ok 44 BC_2_17_003: validate-index-log-coherence stderr has >=1 JSONL on canonical fixture
+ok 45 BC_2_17_003: validate-index-log-coherence stdout is single JSON object on canonical fixture
+ok 46 BC_2_17_003: validate-page-type-policy stderr has >=1 JSONL on canonical fixture
+ok 47 BC_2_17_003: validate-page-type-policy stdout is single JSON object on canonical fixture
+ok 48 BC_2_17_003: validate-publish-state stderr has >=1 JSONL on canonical fixture
+ok 49 BC_2_17_003: validate-publish-state stdout is single JSON object on canonical fixture
+ok 50 BC_2_17_003: validate-source-id-citation stderr has >=1 JSONL on canonical fixture
+ok 51 BC_2_17_003: validate-source-id-citation stdout is single JSON object on canonical fixture
+ok 52 BC_2_17_003: validate-source-immutability stderr has >=1 JSONL on canonical fixture
+ok 53 BC_2_17_003: validate-source-immutability stdout is single JSON object on canonical fixture
+ok 54 BC_2_17_003: validate-voice-avoid-list stderr has >=1 JSONL on canonical fixture
+ok 55 BC_2_17_003: validate-voice-avoid-list stdout is single JSON object on canonical fixture
+ok 56 BC_2_17_003: validate-wikilink-integrity stderr has >=1 JSONL on canonical fixture
+ok 57 BC_2_17_003: validate-wikilink-integrity stdout is single JSON object on canonical fixture
+ok 58 BC_2_17_004: block-ai-attribution does not leak credential sentinel to stdout or stderr
+ok 59 BC_2_17_004: validate-frontmatter-schema does not leak credential sentinel to stdout or stderr
+ok 60 BC_2_17_004: validate-voice-avoid-list does not leak credential sentinel to stdout or stderr
+ok 61 BC_2_17_004: validate-wikilink-integrity does not leak credential sentinel to stdout or stderr
+ok 62 BC_2_17_004: brain-health-check does not leak credential sentinel to stdout or stderr
+ok 63 BC_2_17_004: enforce-kebab-case does not leak credential sentinel to stdout or stderr
+ok 64 BC_2_17_004: flush-state-and-commit does not leak credential sentinel to stdout or stderr
+ok 65 BC_2_17_004: quarantine-fetch does not leak credential sentinel to stdout or stderr
+ok 66 BC_2_17_004: validate-index-log-coherence does not leak credential sentinel to stdout or stderr
+ok 67 BC_2_17_004: validate-page-type-policy does not leak credential sentinel to stdout or stderr
+ok 68 BC_2_17_004: validate-publish-state does not leak credential sentinel to stdout or stderr
+ok 69 BC_2_17_004: validate-source-id-citation does not leak credential sentinel to stdout or stderr
+ok 70 BC_2_17_004: validate-source-immutability does not leak credential sentinel to stdout or stderr
+ok 71 BC_2_17_004: emit_event credential masking — key matching *_key is redacted in stderr JSONL
+ok 72 BC_2_04_015: block-ai-attribution p99 latency <100ms over 10 runs
+ok 73 BC_2_04_015: brain-health-check p99 latency <100ms over 10 runs
+ok 74 BC_2_04_015: enforce-kebab-case p99 latency <100ms over 10 runs
+ok 75 BC_2_04_015: flush-state-and-commit p99 latency <100ms over 10 runs
+ok 76 BC_2_04_015: quarantine-fetch p99 latency <100ms over 10 runs (Node startup INCLUDED per AC-003)
+ok 77 BC_2_04_015: validate-frontmatter-schema p99 latency <100ms over 10 runs
+ok 78 BC_2_04_015: validate-index-log-coherence p99 latency <100ms over 10 runs
+ok 79 BC_2_04_015: validate-page-type-policy p99 latency <100ms over 10 runs
+ok 80 BC_2_04_015: validate-publish-state p99 latency <100ms over 10 runs
+ok 81 BC_2_04_015: validate-source-id-citation p99 latency <100ms over 10 runs
+ok 82 BC_2_04_015: validate-source-immutability p99 latency <100ms over 10 runs
+ok 83 BC_2_04_015: validate-voice-avoid-list p99 latency <100ms over 10 runs
+ok 84 BC_2_04_015: validate-wikilink-integrity p99 latency <100ms over 10 runs
+ok 85 BC_2_04_016_EC002: block-ai-attribution malformed JSON stdin exits 2
+ok 86 BC_2_04_016_EC002: enforce-kebab-case malformed JSON stdin exits 2
+ok 87 BC_2_04_016_EC002: validate-frontmatter-schema malformed JSON stdin exits 2
+ok 88 BC_2_17_003_EC002: no debug echo pollutes stdout for block-ai-attribution

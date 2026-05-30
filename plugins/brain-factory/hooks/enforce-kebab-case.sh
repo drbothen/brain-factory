@@ -2,7 +2,7 @@
 set -euo pipefail
 # Fail-closed trap: any unhandled error exits 2 (block).
 # ADR-002 v2.0: exit codes other than 0 are treated as blocking errors.
-trap 'printf "%s\n" "enforce-kebab-case hook blocked: internal error." >&2; exit 2' ERR
+trap 'printf '"'"'{"ts":"%s","event_type":"hook.error.internal","hook_name":"enforce-kebab-case.sh","trace":"%s","code":"E-HOOK-003","reason":"unhandled error"}\n'"'"' "$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null)" "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" >&2; exit 2' ERR
 # enforce-kebab-case.sh — PreToolUse hook: filename kebab-case naming gate
 # BC-2.04.011 | ADR-002 v2.0 | ADR-016 (event emission)
 # Fires BEFORE Write|Edit executes — validates that the target filename is
@@ -22,44 +22,27 @@ HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 if [ ! -f "$HELPER" ]; then
   printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
     "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "enforce-kebab-case.sh" >&2
-  jq -cn \
-    --arg trace "00000000-0000-0000-0000-000000000000" \
-    '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-002","trace":$trace}}'
-  printf "%s\n" "enforce-kebab-case hook blocked: internal error." >&2
+  printf '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-002","trace":"00000000-0000-0000-0000-000000000000"}}\n'
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
 source "$HELPER"
 
 # ---------------------------------------------------------------------------
-# Read stdin JSON payload
+# Read stdin JSON payload and extract file_path using pure bash _json_get_str
+# (no subprocess — zero jq calls). file_path is a simple quoted string.
+# Malformed/empty stdin → file_path is empty → fail-closed below.
+# BC-2.04.016 invariant 4: canonical empty/malformed-stdin code is E-HOOK-001.
 # ---------------------------------------------------------------------------
 stdin_json="$(cat)"
-
-# Validate JSON is parseable — fail-closed on malformed or empty stdin.
-if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
-  jq -cn \
-    --arg code "E-NAMING-001" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
-  printf "%s\n" "enforce-kebab-case hook blocked: malformed or empty hook payload." >&2
-  exit 2
-fi
-
-# ---------------------------------------------------------------------------
-# Extract file_path from the payload
-# ---------------------------------------------------------------------------
-file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')"
+file_path="$(_json_get_str "$stdin_json" 'file_path')"
 
 # Fail-closed if we cannot determine the file path.
+# This also catches malformed/empty stdin (jq failure leaves file_path empty).
 if [[ -z "$file_path" ]]; then
-  jq -cn \
-    --arg code "E-NAMING-001" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace}}'
-  printf "%s\n" "enforce-kebab-case hook blocked: malformed or empty hook payload." >&2
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
+  printf '{"continue":false,"decision":"block","code":"E-HOOK-001","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -84,10 +67,9 @@ esac
 
 if [[ "$is_exempt" == "true" ]]; then
   emit_event "naming.kebab_case.accepted" "filename=${basename_val}"
-  jq -cn \
-    --arg trace "${HOOK_TRACE_ID}" \
-    --arg msg "Filename '${basename_val}' is on the exception list." \
-    '{"continue":true,"trace":$trace,"message":$msg}'
+  _em_bn="$(_json_escape "${basename_val}")"
+  printf '{"continue":true,"trace":"%s","message":"Filename '\''%s'\'' is on the exception list."}\n' \
+    "${HOOK_TRACE_ID}" "${_em_bn}"
   exit 0
 fi
 
@@ -106,10 +88,9 @@ fi
 
 if [[ "$is_kebab" == "true" ]]; then
   emit_event "naming.kebab_case.accepted" "filename=${basename_val}"
-  jq -cn \
-    --arg trace "${HOOK_TRACE_ID}" \
-    --arg msg "Filename '${basename_val}' is kebab-case." \
-    '{"continue":true,"trace":$trace,"message":$msg}'
+  _em_bn="$(_json_escape "${basename_val}")"
+  printf '{"continue":true,"trace":"%s","message":"Filename '\''%s'\'' is kebab-case."}\n' \
+    "${HOOK_TRACE_ID}" "${_em_bn}"
   exit 0
 fi
 
@@ -121,10 +102,8 @@ fi
 suggested="$(printf '%s' "$basename_val" | tr '[:upper:]' '[:lower:]' | tr ' _' '-')"
 
 emit_event "naming.kebab_case.rejected" "filename=${basename_val}" "suggested=${suggested}"
-jq -cn \
-  --arg code "E-NAMING-001" \
-  --arg filename "${basename_val}" \
-  --arg suggested "${suggested}" \
-  --arg trace "${HOOK_TRACE_ID}" \
-  '{"continue":false,"decision":"block","reason":"Filename \($filename) is not kebab-case. Suggested: \($suggested).","hookSpecificOutput":{"hookEventName":"PreToolUse","code":$code,"trace":$trace,"filename":$filename,"suggested":$suggested}}'
+_em_fn="$(_json_escape "${basename_val}")"
+_em_sg="$(_json_escape "${suggested}")"
+printf '{"continue":false,"decision":"block","reason":"Filename %s is not kebab-case. Suggested: %s.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-NAMING-001","trace":"%s","filename":"%s","suggested":"%s"}}\n' \
+  "${_em_fn}" "${_em_sg}" "${HOOK_TRACE_ID}" "${_em_fn}" "${_em_sg}"
 exit 2

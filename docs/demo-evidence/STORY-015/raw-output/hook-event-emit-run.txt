@@ -1,0 +1,27 @@
+1..26
+ok 1 BC_2_04_017: hook-event-emit.sh exports emit_event function
+ok 2 BC_2_04_017: hook-event-emit.sh exports emit_verdict function
+ok 3 BC_2_04_017: emit_event writes JSONL to stderr with ts, event_type, hook_name, trace
+ok 4 BC_2_04_017: emit_event ts field is ISO 8601 format
+ok 5 VP_017: emit_event produces no stdout output
+ok 6 VP_017: emit_verdict produces no stderr output
+ok 7 VP_017: emit_verdict writes JSON to stdout
+ok 8 BC_2_04_017: emit_event masks credential values
+ok 9 BC_2_04_017: emit_event includes extra key-value fields
+ok 10 BC_2_04_017_EC001: missing helper emits fallback JSONL and exits 2
+ok 11 F_PASS01_I01: _json_get_str simple key returns its value
+ok 12 F_PASS01_I01: _json_get_str missing key returns empty string
+ok 13 F_PASS01_I01: _json_get_str empty value returns empty string
+ok 14 F_PASS01_I01: _json_get_str value that equals the key string
+ok 15 F_PASS01_I01: _json_get_str key appearing as a value in another field
+ok 16 F_PASS01_I01: _json_get_str multiple keys where target key has a prefix match
+ok 17 F_PASS01_I01: _json_get_str key with backslash-escaped quote in value — skip outside contract # skip Deferred to v1.0 WASM dispatcher migration (docs/planning/llm-second-brain-phased-build-plan.md §A.4): richer JSON parsing tooling available post-migration; pure-bash JSON parsing in v0.x accepts the documented escape-handling limitation per CLAUDE.md §Project Identity pure-bash + minimal tooling authorization.
+ok 18 F_PASS01_I01: _json_get_str key with literal newline escape sequence in value — skip outside contract
+ok 19 F_PASS01_I01: _json_escape plain string passes through unchanged
+ok 20 F_PASS01_I01: _json_escape empty string returns empty string
+ok 21 F_PASS01_I01: _json_escape double quote is escaped to backslash-quote
+ok 22 F_PASS01_I01: _json_escape backslash is doubled
+ok 23 F_PASS01_I01: _json_escape newline is replaced with backslash-n
+ok 24 F_PASS01_I01: _json_escape tab is replaced with backslash-t
+ok 25 F_PASS01_I01: _json_escape carriage return is replaced with backslash-r
+ok 26 F_PASS01_I01: _json_escape backslash then double-quote is double-escaped

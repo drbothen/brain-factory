@@ -25,7 +25,7 @@ inputs:
   - architecture/verification-properties/VP-001-hook-exit-code-semantics.md
   - architecture/verification-properties/VP-013-hook-performance-budget.md
   - architecture/verification-properties/VP-026-event-catalog-schema-and-completeness.md
-input-hash: ""
+input-hash: "15c507c"
 # BC status: all BCs assigned; status=draft per Spec-First Gate S-7.01 until PO review
 # Bundling rationale: BC-2.04.015 (perf budget), BC-2.04.016 (I/O contract),
 # BC-2.17.003 (stream separation), and BC-2.17.004 (no-credential) are all
@@ -107,9 +107,14 @@ explicit value).
 contains the string `eval` anywhere in the file body.
 (traces to BC-2.04.016 invariant 2)
 
-**AC-008** — `tests/hook-contracts.bats` contains a parameterized test (over all 13 hooks)
-that feeds empty stdin `""` and asserts: (a) exit code is 2; (b) stdout is valid JSON
-containing `"code":"E-HOOK-001"`. This verifies fail-closed on malformed input.
+**AC-008** — `tests/hook-contracts.bats` contains a parameterized test over the 10
+fail-closed hooks (all hooks subject to PreToolUse/PostToolUse blocking semantics per
+BC-2.04.016) that feeds empty stdin `""` and asserts: (a) exit code is 2; (b) stdout is
+valid JSON containing `"code":"E-HOOK-001"`. The 3 advisory-only hooks
+(`brain-health-check`, `flush-state-and-commit`, `validate-voice-avoid-list`) are
+`skip`ped with the annotation "advisory-only contract supersedes fail-closed default"
+— they correctly exit 0 on empty stdin per their domain BCs. This verifies fail-closed
+behavior on malformed input for all hooks where blocking semantics apply.
 (traces to BC-2.04.016 invariant 4; edge cases EC-001 and EC-002)
 
 **AC-009** — `tests/hook-contracts.bats` contains a test that for each hook: feeding the
@@ -173,7 +178,9 @@ produces no diff on any modified file.
 
 3. **[failing test — Red Gate]** Create `tests/hook-contracts.bats` with runtime contract
    assertions in failing state (cross-cutting parameterized suite over all 13 hooks):
-   - Empty stdin → exit 2 + E-HOOK-001 (parameterized over all 13 hooks).
+   - Empty stdin → exit 2 + E-HOOK-001 (parameterized over the 10 fail-closed hooks;
+     advisory-only hooks skipped with "advisory-only contract supersedes fail-closed
+     default" bats `skip` annotation).
    - Happy-path fixture stdout is valid JSON (parameterized over all 13 hooks).
    - Happy-path fixture stderr has ≥ 1 valid JSONL line (parameterized over all 13 hooks).
    - Latency assertion: canonical fixture → wall-clock < 100ms over 10 runs
@@ -205,7 +212,8 @@ produces no diff on any modified file.
 | Input | Expected Output | Category | Source |
 |-------|----------------|----------|--------|
 | Any hook; canonical fixture; 10 runs timed | All runs < 100ms; p99 < 100ms | happy-path | BC-2.04.015 |
-| Any hook; empty stdin `""` | exit 2; stdout `{"code":"E-HOOK-001",...}` | error | BC-2.04.016 EC-001 |
+| Fail-closed hook; empty stdin `""` | exit 2; stdout `{"code":"E-HOOK-001",...}` | error | BC-2.04.016 EC-001 |
+| Advisory-only hook; empty stdin `""` | exit 0; stdout `{"continue":true}` | expected advisory path | BC-2.04.008 / BC-2.04.013 |
 | Any hook; happy-path fixture | stdout is single valid JSON object | happy-path | BC-2.04.016 postcondition 2 |
 | Any hook; happy-path fixture | stderr has ≥ 1 valid JSONL line | happy-path | BC-2.17.003 |
 | Hook with credential-value fixture | stdout + stderr do NOT contain the credential value | security | BC-2.17.004 |
@@ -232,8 +240,15 @@ From `architecture/subsystems/SS-04-hook-enforcement-chain.md`,
 
 1. The 100ms budget is measured for the canonical **sample payload** only (per BC-2.04.015
    invariant 1). Full-wiki operations (500+ pages) are NOT in scope for the p99 assertion.
-2. Empty stdin (`""`) must produce exit 2 + E-HOOK-001 for ALL hooks — this is the
-   fail-closed universal entry check (BC-2.04.016 invariant 4). Tests confirm this.
+2. Empty stdin (`""`) must produce exit 2 + E-HOOK-001 for all **FAIL-CLOSED hooks** — the
+   10 hooks subject to PreToolUse/PostToolUse blocking semantics per BC-2.04.016. This is
+   the fail-closed universal entry check (BC-2.04.016 invariant 4). **ADVISORY-ONLY hooks**
+   (`brain-health-check`, `flush-state-and-commit`, `validate-voice-avoid-list` — those
+   governed by BC-2.04.008, BC-2.04.013, or equivalent advisory contracts) correctly exit 0
+   on empty stdin per their domain BC; they are NOT subject to this fail-closed empty-stdin
+   rule. The `hook-contracts.bats` parameterized empty-stdin test (AC-008) must use a
+   `skip` annotation with the rationale "advisory-only contract supersedes fail-closed
+   default" for these three hooks.
 3. The meta-lint static analysis runs at the file level (grep, awk). It is NOT a
    runtime check — it fires during `bats tests/meta-lint.bats`, not during hook execution.
 4. Credential leakage detection is static (meta-lint scans source) AND dynamic

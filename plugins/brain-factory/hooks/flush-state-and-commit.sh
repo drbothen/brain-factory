@@ -9,7 +9,7 @@ set -euo pipefail
 #   Advisory messages delivered via stdout systemMessage, never via exit code
 
 # ADVISORY ERR trap: unhandled errors exit 0 so session close is never blocked.
-trap 'printf "%s\n" "{\"continue\":true,\"systemMessage\":\"Flush hook encountered an error; session closing normally.\"}" ; exit 0' ERR
+trap 'printf '"'"'{"continue":true,"systemMessage":"Flush hook encountered an error; session closing normally."}\n'"'"'; exit 0' ERR
 
 HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 
@@ -37,14 +37,17 @@ stdin_json="$(cat)" || true
 
 # ---------------------------------------------------------------------------
 # Determine brain directory: prefer BRAIN_DIR env, fall back to cwd in payload.
+# Pure bash _json_get_str for zero-subprocess cwd extraction.
 # ---------------------------------------------------------------------------
-brain_dir="${BRAIN_DIR:-$(printf '%s' "$stdin_json" | jq -r '.cwd // empty' 2>/dev/null || true)}"
+_cwd_raw="$(_json_get_str "$stdin_json" 'cwd')"
+brain_dir="${BRAIN_DIR:-${_cwd_raw}}"
+
+_trace="${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}"
 
 # If no brain dir resolved, exit 0 (no-op — cannot identify brain).
 if [[ -z "$brain_dir" ]]; then
   emit_event "session.state.flushed" "committed=false"
-  jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-    '{"continue":true,"trace":$trace,"message":"No changes to flush."}'
+  printf '{"continue":true,"trace":"%s","message":"No changes to flush."}\n' "${_trace}"
   exit 0
 fi
 
@@ -55,8 +58,7 @@ fi
 # ---------------------------------------------------------------------------
 if ! git -C "$brain_dir" rev-parse --git-dir >/dev/null 2>&1; then
   emit_event "session.state.flushed" "committed=false"
-  jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-    '{"continue":true,"trace":$trace,"message":"No changes to flush."}'
+  printf '{"continue":true,"trace":"%s","message":"No changes to flush."}\n' "${_trace}"
   exit 0
 fi
 
@@ -68,8 +70,7 @@ status_output="$(git -C "$brain_dir" status --porcelain 2>/dev/null || true)"
 if [[ -z "$status_output" ]]; then
   # No uncommitted changes — clean state.
   emit_event "session.state.flushed" "committed=false"
-  jq -cn --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-    '{"continue":true,"trace":$trace,"message":"No changes to flush."}'
+  printf '{"continue":true,"trace":"%s","message":"No changes to flush."}\n' "${_trace}"
   exit 0
 fi
 
@@ -103,10 +104,9 @@ if [[ "$commit_exit" -ne 0 ]]; then
     error_msg="${error_msg}${error_msg:+ | }add errors: $(printf '%s' "$add_errors" | head -1)"
   fi
   emit_event "session.state.commit_failed" "error=${error_msg}"
-  jq -cn \
-    --arg msg "Flush failed: ${error_msg}" \
-    --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-    '{"continue":true,"systemMessage":$msg,"hookSpecificOutput":{"hookEventName":"Stop","code":"E-FLUSH-001","trace":$trace}}'
+  _em_err="$(_json_escape "${error_msg}")"
+  printf '{"continue":true,"systemMessage":"Flush failed: %s","hookSpecificOutput":{"hookEventName":"Stop","code":"E-FLUSH-001","trace":"%s"}}\n' \
+    "${_em_err}" "${_trace}"
   exit 0
 fi
 
@@ -114,8 +114,6 @@ fi
 short_sha="$(git -C "$brain_dir" rev-parse --short HEAD 2>/dev/null || true)"
 
 emit_event "session.state.committed" "sha=${short_sha}"
-jq -cn \
-  --arg sha "$short_sha" \
-  --arg trace "${HOOK_TRACE_ID:-00000000-0000-0000-0000-000000000000}" \
-  '{"continue":true,"trace":$trace,"message":("Session state committed: " + $sha)}'
+printf '{"continue":true,"trace":"%s","message":"Session state committed: %s"}\n' \
+  "${_trace}" "${short_sha}"
 exit 0

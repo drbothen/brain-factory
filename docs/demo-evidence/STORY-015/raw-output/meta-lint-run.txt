@@ -1,0 +1,22 @@
+1..21
+ok 1 BC_2_17_002: event-catalog.json exists and is valid JSON array
+ok 2 BC_2_17_002: all catalog entries have event_type, hook_name, severity, fields, example
+ok 3 BC_2_17_002: all event_type values match domain.verb pattern
+ok 4 BC_2_17_001: catalog has at least 27 event entries
+ok 5 BC_2_17_001: all event_type values are unique
+ok 6 BC_2_17_002: all example payloads are valid JSON
+ok 7 BC_2_17_002: severity values are info, warn, or error
+ok 8 VP_008: all emit_event call sites have matching catalog entries
+ok 9 BC_2_04_017: hook-event-emit.sh passes shellcheck
+ok 10 BC_2_04_017: hook-event-emit.sh passes shfmt
+ok 11 BC_2_04_016_AC005: all 13 hooks have shebang on line 1 and set -euo pipefail in first 10 lines
+ok 12 BC_2_04_016_AC006: no bare exit in any hook (every exit must be exit 0, 1, or 2)
+ok 13 BC_2_04_016_AC007: no eval in any hook script
+ok 14 BC_2_17_003_AC010: no bare echo/printf to stdout in any hook (must use stderr redirect or emit_verdict)
+ok 15 BC_2_17_004_AC013: no credential variable refs in emit_event or emit_verdict calls in any hook
+ok 16 BC_2_04_016: all 13 hooks have a corresponding per-hook bats test file
+ok 17 BC_2_04_015_AC002: all 13 hooks have a -sample.json fixture at tests/fixtures/
+ok 18 BC_2_17_004: no plugin source file contains Co-Authored-By: Claude
+ok 19 BC_2_17_004: no plugin source file contains robot emoji
+ok 20 BC_2_04_016: no plugin source file contains --no-verify
+ok 21 BC_2_04_016: no plugin source file contains hardcoded .claude/templates/ path

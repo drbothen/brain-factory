@@ -22,7 +22,7 @@ set -euo pipefail
 #   bash "${CLAUDE_PLUGIN_ROOT}/skills/brain-health/run.sh"
 
 # ADVISORY ERR trap: unhandled errors exit 0 so session open is never blocked.
-trap 'printf "%s\n" "{\"continue\":true,\"systemMessage\":\"Health check encountered an error.\"}" ; exit 0' ERR
+trap 'printf '"'"'{"continue":true,"systemMessage":"Health check encountered an error."}\n'"'"'; exit 0' ERR
 
 HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 
@@ -50,8 +50,10 @@ stdin_json="$(cat)" || true
 
 # ---------------------------------------------------------------------------
 # Determine brain directory: prefer BRAIN_DIR env, fall back to cwd in payload.
+# Pure bash _json_get_str for zero-subprocess cwd extraction.
 # ---------------------------------------------------------------------------
-brain_dir="${BRAIN_DIR:-$(printf '%s' "$stdin_json" | jq -r '.cwd // empty' 2>/dev/null || true)}"
+_cwd_raw="$(_json_get_str "$stdin_json" 'cwd')"
+brain_dir="${BRAIN_DIR:-${_cwd_raw}}"
 
 # ---------------------------------------------------------------------------
 # Check if this is a brain session (has .brain/STATE.md).
@@ -59,7 +61,7 @@ brain_dir="${BRAIN_DIR:-$(printf '%s' "$stdin_json" | jq -r '.cwd // empty' 2>/d
 # ---------------------------------------------------------------------------
 state_file="${brain_dir}/.brain/STATE.md"
 
-if [[ ! -f "$state_file" ]]; then
+if [[ -z "$brain_dir" ]] || [[ ! -f "$state_file" ]]; then
   emit_event "brain.health.skipped" "reason=not_a_brain_session" "path=${brain_dir}"
   printf '{"continue":true}\n'
   exit 0
@@ -106,8 +108,7 @@ fi
 # ---------------------------------------------------------------------------
 if [[ -z "$overall_health" ]] || [[ "$overall_health" == "null" ]]; then
   emit_event "brain.health.checked" "overall_state=UNREADABLE"
-  jq -cn \
-    '{"continue":true,"systemMessage":"Brain STATE.md unreadable — run /brain:health for diagnosis.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"E-HEALTH-003","unhealthy_state":true}}'
+  printf '{"continue":true,"systemMessage":"Brain STATE.md unreadable — run /brain:health for diagnosis.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"E-HEALTH-003","unhealthy_state":true}}\n'
   exit 0
 fi
 
@@ -116,8 +117,7 @@ fi
 # ---------------------------------------------------------------------------
 if [[ "$overall_health" == "GREEN" ]]; then
   emit_event "brain.health.checked" "overall_state=GREEN"
-  jq -cn \
-    '{"continue":true,"systemMessage":"Brain health: GREEN. All dimensions healthy.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"overall_health: GREEN"}}'
+  printf '{"continue":true,"systemMessage":"Brain health: GREEN. All dimensions healthy.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"overall_health: GREEN"}}\n'
   exit 0
 fi
 
@@ -163,14 +163,28 @@ else
 fi
 
 # Build red_dimensions JSON array from dims_csv (e.g. "wiki,output" → ["wiki","output"]).
+# Pure bash array construction — no jq subprocess needed.
 dims_array="[]"
 if [[ -n "$dims_csv" ]]; then
-  dims_array="$(printf '%s' "$dims_csv" | jq -Rc 'split(",") | map(select(length > 0))')" || dims_array="[]"
+  _darr="["
+  _first=true
+  IFS=',' read -ra _dim_parts <<<"$dims_csv"
+  for _d in "${_dim_parts[@]}"; do
+    _d="${_d## }"
+    _d="${_d%% }"
+    [[ -z "$_d" ]] && continue
+    if [[ "$_first" == "true" ]]; then
+      _darr="${_darr}\"$(_json_escape "${_d}")\""
+      _first=false
+    else
+      _darr="${_darr},\"$(_json_escape "${_d}")\""
+    fi
+  done
+  dims_array="${_darr}]"
 fi
 
 emit_event "brain.health.checked" "overall_state=${overall_health}" "red_dimensions=${dims_csv}"
-jq -cn \
-  --arg msg "$issue_msg" \
-  --argjson rdims "$dims_array" \
-  '{"continue":true,"systemMessage":$msg,"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"E-HEALTH-002","unhealthy_state":true,"red_dimensions":$rdims}}'
+_em_msg="$(_json_escape "${issue_msg}")"
+printf '{"continue":true,"systemMessage":"%s","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"E-HEALTH-002","unhealthy_state":true,"red_dimensions":%s}}\n' \
+  "${_em_msg}" "${dims_array}"
 exit 0

@@ -22,47 +22,30 @@ HELPER="${CLAUDE_PLUGIN_ROOT}/hooks/lib/hook-event-emit.sh"
 if [ ! -f "$HELPER" ]; then
   printf '{"ts":"%s","event_type":"hook.helper.missing","hook_name":"%s","trace":"00000000-0000-0000-0000-000000000000","code":"E-HOOK-002","reason":"hook-event-emit.sh not found"}\n' \
     "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "validate-page-type-policy.sh" >&2
-  jq -cn \
-    --arg trace "00000000-0000-0000-0000-000000000000" \
-    '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":$trace}}'
-  echo "Page type policy hook blocked: internal error." >&2
+  printf '{"continue":false,"decision":"block","reason":"Hook helper missing; cannot safely proceed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-002","trace":"00000000-0000-0000-0000-000000000000"}}\n'
   exit 2
 fi
 # shellcheck disable=SC1090,SC1091
 source "$HELPER"
 
 # ---------------------------------------------------------------------------
-# Read stdin JSON payload
+# Read stdin JSON payload and extract file_path + cwd using pure bash
+# _json_get_str (no subprocess — zero jq calls for simple string fields).
+# Both fields are simple quoted strings; _json_get_str is safe here.
+# Malformed/empty stdin → file_path and cwd are empty → fail-closed below.
 # ---------------------------------------------------------------------------
 stdin_json="$(cat)"
-
-# Validate JSON is parseable — fail-closed on malformed or empty stdin.
-if ! printf '%s' "$stdin_json" | jq empty 2>/dev/null; then
-  jq -cn \
-    --arg code "E-WIKI-003" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Page type policy hook blocked: malformed or empty hook payload." >&2
-  exit 2
-fi
-
-# ---------------------------------------------------------------------------
-# Extract fields from the payload
-# ---------------------------------------------------------------------------
-file_path="$(printf '%s' "$stdin_json" | jq -r '.tool_input.file_path // empty')"
-brain_dir="$(printf '%s' "$stdin_json" | jq -r '.cwd // empty')"
+file_path="$(_json_get_str "$stdin_json" 'file_path')"
+_cwd_raw="$(_json_get_str "$stdin_json" 'cwd')"
 # BRAIN_DIR env var takes precedence (used in test environments and local invocation).
-brain_dir="${BRAIN_DIR:-${brain_dir}}"
+brain_dir="${BRAIN_DIR:-${_cwd_raw}}"
 
 # Fail-closed if we cannot determine the file path.
+# This also catches malformed/empty stdin (jq failure leaves file_path empty).
 if [[ -z "$file_path" ]]; then
-  jq -cn \
-    --arg code "E-WIKI-003" \
-    --arg msg "Malformed or empty hook payload." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Page type policy hook blocked: malformed or empty hook payload." >&2
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
+  printf '{"continue":false,"decision":"block","code":"E-HOOK-001","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -76,9 +59,8 @@ relative_path="${file_path#"${brain_dir}/"}"
 # Non-wiki paths are a no-op (exit 0 immediately).
 # ---------------------------------------------------------------------------
 if [[ "$relative_path" != wiki/* ]]; then
-  jq -cn --arg trace "${HOOK_TRACE_ID}" \
-    --arg msg "Non-wiki path; page type policy check skipped." \
-    '{"continue":true,"trace":$trace,"message":$msg}'
+  printf '{"continue":true,"trace":"%s","message":"Non-wiki path; page type policy check skipped."}\n' \
+    "${HOOK_TRACE_ID}"
   exit 0
 fi
 
@@ -88,9 +70,8 @@ fi
 # ---------------------------------------------------------------------------
 wiki_rel="${relative_path#wiki/}"
 if [[ "$wiki_rel" == "index.md" ]] || [[ "$wiki_rel" == "log.md" ]]; then
-  jq -cn --arg trace "${HOOK_TRACE_ID}" \
-    --arg msg "Exempt wiki path; page type policy skipped." \
-    '{"continue":true,"trace":$trace,"message":$msg}'
+  printf '{"continue":true,"trace":"%s","message":"Exempt wiki path; page type policy skipped."}\n' \
+    "${HOOK_TRACE_ID}"
   exit 0
 fi
 
@@ -102,12 +83,8 @@ fi
 # If it has no slash, the file is directly in wiki/ root — that is forbidden.
 if [[ "$wiki_rel" != */* ]]; then
   emit_event "wiki.page_type.rejected" "path=$file_path" "code=E-WIKI-006"
-  jq -cn \
-    --arg code "E-WIKI-006" \
-    --arg msg "Wiki page must be in a type directory (wiki/<type>/). Direct writes to wiki/ root are not allowed." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace}}'
-  echo "Page type policy hook blocked: direct wiki root write is not allowed." >&2
+  printf '{"continue":false,"decision":"block","reason":"Wiki page must be in a type directory (wiki/<type>/). Direct writes to wiki/ root are not allowed.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-WIKI-006","trace":"%s"}}\n' \
+    "${HOOK_TRACE_ID}"
   exit 2
 fi
 
@@ -127,14 +104,10 @@ esac
 
 if [[ "$type_valid" != "true" ]]; then
   emit_event "wiki.page_type.rejected" "path=$file_path" "code=E-WIKI-005" "invalid_type=$type_dir"
-  jq -cn \
-    --arg code "E-WIKI-005" \
-    --arg type_dir "$type_dir" \
-    --arg path "$file_path" \
-    --arg msg "Invalid wiki type directory '${type_dir}' in path ${file_path}. Must be one of: concepts, people, frameworks, syntheses, observations, questions." \
-    --arg trace "${HOOK_TRACE_ID}" \
-    '{"continue":false,"decision":"block","reason":$msg,"hookSpecificOutput":{"hookEventName":"PostToolUse","code":$code,"trace":$trace,"invalid_type":$type_dir}}'
-  echo "Page type policy hook blocked: invalid wiki type '${type_dir}'." >&2
+  _em_td="$(_json_escape "${type_dir}")"
+  _em_fp="$(_json_escape "${file_path}")"
+  printf '{"continue":false,"decision":"block","reason":"Invalid wiki type directory '\''%s'\'' in path %s. Must be one of: concepts, people, frameworks, syntheses, observations, questions.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-WIKI-005","trace":"%s","invalid_type":"%s"}}\n' \
+    "${_em_td}" "${_em_fp}" "${HOOK_TRACE_ID}" "${_em_td}"
   exit 2
 fi
 
@@ -142,8 +115,7 @@ fi
 # Valid type — allow.
 # ---------------------------------------------------------------------------
 emit_event "wiki.page_type.accepted" "path=$file_path"
-jq -cn --arg trace "${HOOK_TRACE_ID}" \
-  --arg type_dir "$type_dir" \
-  --arg msg "Wiki page type '${type_dir}' accepted." \
-  '{"continue":true,"trace":$trace,"message":$msg}'
+_em_td="$(_json_escape "${type_dir}")"
+printf '{"continue":true,"trace":"%s","message":"Wiki page type '\''%s'\'' accepted."}\n' \
+  "${HOOK_TRACE_ID}" "${_em_td}"
 exit 0
