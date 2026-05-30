@@ -292,7 +292,7 @@ Option B's "pin-at-burst-end" invariant has a hidden parallel-burst hazard: when
 
 | CAP-NNN | Module(s) | SS-NN | Notes |
 |---------|-----------|-------|-------|
-| CAP-001 | skills/init/SKILL.md, skills/health/SKILL.md, templates/brain-scaffold/ | SS-01 | /brain:init + /brain:health |
+| CAP-001 | skills/init/SKILL.md, skills/brain-health/SKILL.md, templates/brain-scaffold/ | SS-01 | /brain:init + /brain:health |
 | CAP-002 | skills/ingest-url/SKILL.md, scripts/defuddle-fetch.mjs, hooks/validate-source-immutability.sh | SS-02 | URL ingest + Defuddle + immutability guard |
 | CAP-003 | skills/ingest-source/SKILL.md, hooks/validate-source-immutability.sh | SS-03 | Local file ingest |
 | CAP-004 | hooks/*.sh (all 13 hook scripts), hooks/lib/ (shared helpers) | SS-04 | Enforcement chain |

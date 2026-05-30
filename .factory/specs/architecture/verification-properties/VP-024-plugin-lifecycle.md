@@ -10,7 +10,8 @@ traces_to: ../VP-INDEX.md
 timestamp: 2026-05-15T00:00:00
 verifies_bcs: [BC-2.14.001, BC-2.14.003]
 created: 2026-05-15
-status: proposed
+status: partial
+status_detail: "brain-health sub-property verified by brain-health-skill.bats (STORY-004); upgrade-brain sub-property pending future story"
 ---
 
 # VP-024: Plugin lifecycle: install from marketplace and upgrade migration execution
@@ -21,16 +22,19 @@ status: proposed
 delivers a complete, working plugin installation: all 13 hook scripts, all 26 skill
 SKILL.md files, all 14 agent AGENT.md files, all templates, all workflow YAML files,
 and all scripts are present at the installed path. After installation, `/brain:health`
-is invokable without error (it may return RED status on a non-brain directory — that
-is correct behavior, not a crash). The tarball is the only distribution mechanism —
-no npm/pip install paths exist.
+is invokable without raw bash crash on any directory. On a non-brain directory (no
+`.brain/STATE.md`), the skill emits a structured E-HEALTH-001 error envelope (per
+BC-2.01.006 EC-002 and the error-taxonomy) and exits 2 — a clean structured error,
+not an unhandled bash crash. The verification property is: no raw stack traces escape
+the skill. The tarball is the only distribution mechanism — no npm/pip install paths
+exist.
 
 **Upgrade migration script execution (BC-2.14.003):** When the operator runs
 `/brain:upgrade-brain` to migrate from a prior version, the upgrade script executes
 all applicable migration steps for the version delta (e.g., v0.1→v0.2 migration adds
 `briefs/research/` if absent). Migration steps are idempotent: running the migration
 script twice produces the same outcome as running it once. After migration, the brain
-vault passes `/brain:health` with GREEN status.
+vault passes `/brain:health` with exit 0 (GREEN or YELLOW status both acceptable per BC-2.01.006 postcondition 1; the verification property is exit 0 success, not a specific dimension status).
 
 ## Verification Mechanism
 
@@ -84,14 +88,16 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
   local brain_dir; brain_dir="${BATS_TEST_TMPDIR}/non-brain-dir"
   mkdir -p "$brain_dir"
 
-  # Run health on a non-brain directory — should exit 1 (RED) but not crash
-  CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
-    run bash "${PLUGIN_ROOT}/skills/health/run.sh" --brain "$brain_dir"
-  # Exit 1 (RED) is acceptable; exit 2 (crash) is not
-  refute [ "$status" -eq 2 ]
-  # Output must be structured (no raw stack traces)
+  # Run health on a non-brain directory — exits 2 (E-HEALTH-001: STATE.md missing),
+  # which is a structured error, not a crash. Any exit code other than raw bash crash
+  # (unhandled error) is acceptable; the output must always be parseable JSON.
+  BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
+    run bash "${PLUGIN_ROOT}/skills/brain-health/run.sh"
+  # Exit 2 (E-HEALTH-001) is the expected structured response for missing STATE.md.
+  # What we forbid is an unstructured bash crash (no JSON on stdout).
+  # Output must be structured JSON.
   run jq empty <<< "$output"
-  # At minimum, output is valid JSON or a formatted human-readable health report
+  # At minimum, output is valid JSON (either health report or E-HEALTH-001 envelope)
 }
 
 # --- BC-2.14.003: Upgrade migration idempotency ---
@@ -132,16 +138,16 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
     "Migration is not idempotent: file state changed between first and second run"
 }
 
-@test "upgrade-brain: brain passes health GREEN status after migration" {
+@test "upgrade-brain: brain passes health check (exit 0) after migration (GREEN or YELLOW both valid)" {
   local brain_dir; brain_dir="${BATS_TEST_TMPDIR}/brain-post-upgrade-test"
   setup_v01_fixture_brain "$brain_dir"
 
   BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
     bash "${PLUGIN_ROOT}/skills/upgrade-brain/run.sh" --from 0.1 --to 0.2 --yes
 
-  CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
-    run bash "${PLUGIN_ROOT}/skills/health/run.sh" --brain "$brain_dir"
-  assert_success  # GREEN status = exit 0
+  BRAIN_ROOT="$brain_dir" CLAUDE_PLUGIN_ROOT="${PLUGIN_ROOT}" \
+    run bash "${PLUGIN_ROOT}/skills/brain-health/run.sh"
+  assert_success  # exit 0 = health check passed (GREEN or YELLOW both valid per BC-2.01.006 postcondition 1)
 }
 ```
 
@@ -160,10 +166,12 @@ bats (upgrade.bats) — local install simulation and migration idempotency:
   artifacts, not runtime plugin files) — the planning-docs-absent test catches this
 - The migration script is not idempotent: running it twice creates duplicate entries
   in `wiki/index.md` — the sha256 state-comparison test catches this
-- `/brain:health` crashes with an unhandled bash error (exit 2 with no JSON output)
-  on a non-brain directory — the health-callable test catches this specific failure mode
+- `/brain:health` crashes with an unhandled bash error (raw stack trace to stderr,
+  no JSON envelope on stdout) on a non-brain directory — the health-callable test
+  catches this specific failure mode (E-HEALTH-001 envelope must be present with
+  valid JSON; exit 2 is the expected structured response, not the failure)
 
 ## Status
 
-proposed — pending Phase 3 implementation of health skill, upgrade-brain skill,
-and upgrade.bats
+partial — Brain-health sub-property verified by STORY-004 (brain-health-skill.bats,
+45/45 green). Upgrade-brain sub-property + upgrade.bats pending future story.

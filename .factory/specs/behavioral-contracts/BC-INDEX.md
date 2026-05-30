@@ -77,7 +77,7 @@ last_updated: 2026-05-19
 | BC-2.04.011 | `enforce-kebab-case.sh` blocks file writes with non-kebab-case filenames (exit 2) | SS-04 | CAP-004 | P0 | active | ss-04/BC-2.04.011.md |
 | BC-2.04.012 | `block-ai-attribution.sh` blocks bash commands containing AI attribution tokens (exit 2) | SS-04 | CAP-004 | P0 | active | ss-04/BC-2.04.012.md |
 | BC-2.04.013 | `flush-state-and-commit.sh` commits brain state on session Stop (exit 0 or advisory) | SS-04 | CAP-004 | P1 | active | ss-04/BC-2.04.013.md |
-| BC-2.04.014 | `brain-health-check.sh` surfaces six-dimensional convergence state on SessionStart (exit 0 or 1) | SS-04 | CAP-004 | P1 | active | ss-04/BC-2.04.014.md |
+| BC-2.04.014 | `brain-health-check.sh` surfaces convergence state on SessionStart (always exits 0; advisory delivered via systemMessage) | SS-04 | CAP-004 | P1 | active | ss-04/BC-2.04.014.md |
 | BC-2.04.015 | Every hook processes its sample payload under 100ms p99 (performance budget) | SS-04 | CAP-004 | P0 | active | ss-04/BC-2.04.015.md |
 | BC-2.04.016 | Every hook reads JSON from stdin, writes JSON verdict to stdout, exits 0/1/2 only | SS-04 | CAP-004 | P0 | active | ss-04/BC-2.04.016.md |
 | BC-2.04.017 | Hook structured event emission: every hook emits JSONL events on stderr via hook-event catalog | SS-04 | CAP-004 | P0 | active | ss-04/BC-2.04.017.md |

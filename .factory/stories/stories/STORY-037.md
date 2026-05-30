@@ -174,7 +174,7 @@ confirms `jq -e '.embeddings_model == null'` passes.
 
    Run bats — confirm all 15 tests fail (Red Gate confirmed).
 
-3. **[impl — budget alert in health]** In `plugins/brain-factory/skills/health/run.sh`:
+3. **[impl — budget alert in health]** In `plugins/brain-factory/skills/brain-health/run.sh`:
    - Source `compute-token-average.sh`; call it with `--days 30`.
    - Read `average_tokens` from JSON output; compare against baseline (50K, or
      `policies.yaml` `max_ingest_tokens_per_chunk`).
@@ -265,7 +265,7 @@ From `architecture/verification-properties/VP-003-source-immutability.md`:
 | Path | Action | Notes |
 |------|--------|-------|
 | `plugins/brain-factory/scripts/compute-token-average.sh` | Create | Token average aggregation helper |
-| `plugins/brain-factory/skills/health/run.sh` | Modify | Add Sources dimension YELLOW/RED alert |
+| `plugins/brain-factory/skills/brain-health/run.sh` | Modify | Add Sources dimension YELLOW/RED alert |
 | `plugins/brain-factory/scripts/lib/manifest-write.sh` | Modify | Add `chunks: []` and `embeddings_model: null` to every new entry template |
 | `plugins/brain-factory/tests/integration.bats` | Modify | Add 7 budget-alert + manifest schema bats tests |
 | `plugins/brain-factory/tests/validate-source-immutability.bats` | Extend | Add 5 VP-003 source-immutability bats tests to the per-hook suite (STORY-007 created it) |

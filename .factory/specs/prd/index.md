@@ -141,7 +141,7 @@ The plugin eliminates this burden by centralizing the methodology as versioned a
 | BC-2.04.011 | `enforce-kebab-case.sh` blocks file writes with non-kebab-case filenames (exit 2) | P0 |
 | BC-2.04.012 | `block-ai-attribution.sh` blocks bash commands containing AI attribution tokens (exit 2) | P0 |
 | BC-2.04.013 | `flush-state-and-commit.sh` commits brain state on session Stop (exit 0 or advisory) | P1 |
-| BC-2.04.014 | `brain-health-check.sh` surfaces six-dimensional convergence state on SessionStart (exit 0 or 1) | P1 |
+| BC-2.04.014 | `brain-health-check.sh` surfaces convergence state on SessionStart (always exits 0; advisory delivered via systemMessage) | P1 |
 | BC-2.04.015 | Every hook processes its sample payload under 100ms p99 (performance budget) | P0 |
 | BC-2.04.016 | Every hook reads JSON from stdin, writes JSON verdict to stdout, exits 0/1/2 only | P0 |
 | BC-2.04.017 | Hook structured event emission: every hook emits JSONL events on stderr via hook-event catalog | P0 |
