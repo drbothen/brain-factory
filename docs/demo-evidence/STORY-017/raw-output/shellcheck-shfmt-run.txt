@@ -1,0 +1,10 @@
+Command: shellcheck plugins/brain-factory/scripts/generate-wiki.sh plugins/brain-factory/scripts/log-tokens.sh plugins/brain-factory/scripts/check-token-threshold.sh
+Result: exit 0 — 0 warnings
+shellcheck: PASS (0 warnings)
+
+Command: shfmt -d -i 2 plugins/brain-factory/scripts/generate-wiki.sh plugins/brain-factory/scripts/log-tokens.sh plugins/brain-factory/scripts/check-token-threshold.sh
+Result: exit 0 — 0 diffs
+shfmt: PASS (0 diffs)
+
+Note: Structural Red Gate bats tests (skills.bats tests 14-19) also independently
+verify shellcheck and shfmt cleanliness in the bats runtime context.

@@ -1,0 +1,90 @@
+1..114
+ok 28 BC_2_12_001: lobster-run linear DAG executes steps in dependency order (--dry-run)
+ok 29 BC_2_12_001: lobster-run diamond DAG A before B and C, both before D (--dry-run)
+ok 30 BC_2_12_001: lobster-run --dry-run prints node scripts/run-skill.mjs invocation per step
+ok 31 BC_2_12_001: lobster-run cycle in depends_on emits E-LOBSTER-001 exit 2
+ok 32 BC_2_12_001: lobster-run missing skill emits E-LOBSTER-002 exit 2
+ok 33 BC_2_12_001: lobster-run malformed YAML emits E-LOBSTER-003 exit 2
+ok 34 BC_2_12_001: lobster-run writes step results to .brain/logs/lobster-YYYY-MM-DD.jsonl
+ok 35 BC_2_12_001: lobster-run --dry-run same workflow twice produces identical output (VP-007)
+ok 36 BC_2_12_002: lobster-run all steps exit 0 → lobster exits 0
+ok 37 BC_2_12_002: lobster-run one step exits 1 and none exit 2 → lobster exits 1 all steps ran
+ok 38 BC_2_12_002: lobster-run one step exits 2 → lobster exits 2 and skips remaining steps
+ok 39 BC_2_12_001: lobster-run is pure bash — no node/python/ruby calls in the script itself
+ok 40 BC_2_12_001: bin/lobster-run has no bare 'read' calls (VP-022 prerequisite)
+ok 41 BC_2_12_001: lobster-run undefined dependency reference emits E-LOBSTER-004 exit 2
+ok 42 BC_2_12_001: lobster-run --dry-run forwards multi-arg steps without concatenation
+ok 43 BC_2_12_001: lobster-run emits lobster.run.completed on stderr for cycle failure (I04)
+ok 44 BC_2_12_001: lobster-run emits lobster.run.completed on stderr for malformed YAML failure (I04)
+ok 45 BC_2_12_001: lobster-run step log duration_ms is a non-negative integer (I05)
+ok 46 BC_2_12_001: lobster-run emits non-zero trace UUID in step events (I03)
+ok 47 BC_2_12_001: bin/lobster-run has no bare 'read' calls (strengthened S04 regex)
+ok 48 BC_2_12_001: bin/lobster-run passes shellcheck
+ok 49 BC_2_12_001: bin/lobster-run passes shfmt normalization
+ok 50 BC_2_12_001: lobster-run workflow missing name field emits E-LOBSTER-003 exit 2
+ok 51 BC_2_12_001: lobster-run workflow missing description field emits E-LOBSTER-003 exit 2
+ok 52 BC_2_12_001: lobster-run duplicate step id emits E-LOBSTER-009 exit 2
+ok 53 BC_2_12_001: lobster-run --dry-run does not require BRAIN_ROOT
+ok 54 BC_2_12_001: lobster-run emits lobster.run.completed on stderr for dry-run success (I01)
+ok 55 BC_2_12_001: lobster-run preserves actual exit code in JSONL log (I02)
+ok 56 BC_2_12_001: lobster-run step missing id field emits E-LOBSTER-003 exit 2
+ok 57 BC_2_12_001: lobster-run step missing skill field emits E-LOBSTER-003 exit 2
+ok 58 BC_2_12_001: lobster-run missing CLAUDE_PLUGIN_ROOT emits E-LOBSTER-010 exit 2
+ok 59 BC_2_12_001: lobster-run nonexistent workflow file emits E-LOBSTER-011 exit 2
+ok 60 BC_2_12_001: lobster-run step with invalid id (space) emits E-LOBSTER-003 exit 2
+ok 61 BC_2_12_001: lobster-run step with non-array args emits E-LOBSTER-003 exit 2
+ok 62 BC_2_12_001: lobster-run preserves multiline arg as single arg in dry-run (I03)
+ok 63 BC_2_12_001: lobster-run non-mapping step emits E-LOBSTER-003 exit 2
+ok 64 BC_2_12_001: lobster-run missing plugin manifest emits E-LOBSTER-012 exit 2
+ok 65 BC_2_12_001: lobster-run UUID fallback is v4-conformant when uuidgen absent
+ok 66 BC_2_12_001: lobster-run read-only log dir emits E-LOBSTER-006 and lobster.run.completed (I01)
+ok 67 BC_2_12_001: lobster-run accepts process substitution as workflow file (I02/VP-007)
+ok 68 BC_2_12_001: lobster-run accepts brain: namespace prefix on skill names (I03)
+ok 69 BC_2_12_001: lobster-run dep entry with embedded comma emits E-LOBSTER-003 exit 2 (S02)
+ok 70 BC_2_12_001: lobster-run .skills as array in plugin manifest emits E-LOBSTER-013 exit 2 (S03+P18I02)
+ok 71 BC_2_12_001: lobster-run JSONL log entries contain ts and trace fields (S04)
+ok 72 BC_2_12_001: lobster-run completed event shows unknown workflow when file arg missing (S01)
+ok 73 BC_2_12_001: lobster-run depends_on as string emits E-LOBSTER-003 exit 2 (C01)
+ok 74 BC_2_12_001: lobster-run depends_on as object emits E-LOBSTER-003 exit 2 (C01)
+ok 75 BC_2_12_001: lobster-run depends_on as number emits E-LOBSTER-003 exit 2 (C01)
+ok 76 BC_2_12_001: lobster-run cycle message includes cycle member step IDs (C02/S02)
+ok 77 BC_2_12_001: lobster-run cycle failure completed event reports steps_skipped = step count (C02/S01)
+ok 78 BC_2_12_001: lobster-run malformed YAML error message contains actual yq error detail (I01)
+ok 79 BC_2_12_001: lobster-run EXIT trap cleans up tmpfile on normal exit (I03)
+ok 80 BC_2_12_001: lobster-run steps as string scalar emits E-LOBSTER-003 exit 2 (C01)
+ok 81 BC_2_12_001: lobster-run steps as number scalar emits E-LOBSTER-003 exit 2 (C01)
+ok 82 BC_2_12_001: lobster-run steps as mapping object emits E-LOBSTER-003 exit 2 (C01)
+ok 83 BC_2_12_001: lobster-run empty .skills string in plugin manifest emits E-LOBSTER-013 exit 2 (I01+P18I02)
+ok 84 BC_2_12_001: lobster-run whitespace-only BRAIN_ROOT emits E-LOBSTER-005 exit 2 (I02)
+ok 85 BC_2_12_001: lobster-run nonexistent BRAIN_ROOT directory emits E-LOBSTER-005 exit 2 (I02)
+ok 86 BC_2_12_001: lobster-run whitespace-only CLAUDE_PLUGIN_ROOT emits E-LOBSTER-010 exit 2 (I02)
+ok 87 BC_2_12_001: lobster-run _now_ms produces valid millisecond integer (I04 precision guard)
+ok 88 BC_2_12_001: lobster-run cycle detected creates no log file entries (O01)
+ok 89 BC_2_12_001: lobster-run unknown flag emits E-LOBSTER-007 and lobster.run.completed (I01)
+ok 90 BC_2_12_001: lobster-run unknown flag exits 2 (I01)
+ok 91 BC_2_12_001: error envelope is valid JSON even with quotes in env vars (I02)
+ok 92 BC_2_12_001: error envelope from _emit_error contains trace field (S01)
+ok 93 BC_2_12_001: lobster-run tab-only BRAIN_ROOT emits E-LOBSTER-005 exit 2 (S02)
+ok 94 BC_2_12_001: malformed plugin.json emits E-LOBSTER-013 exit 2 (S03)
+ok 95 BC_2_12_001: malformed plugin.json does not emit E-LOBSTER-002 (wrong error class) (S03)
+ok 96 BC_2_12_001: lobster-run two positional workflow files emits E-LOBSTER-007 exit 2 (I01/FB9)
+ok 97 BC_2_12_001: lobster-run dry-run shell-quotes path with double-quote in PLUGIN_ROOT (L01/FB9)
+ok 98 BC_2_12_001: lobster-run dep with embedded newline emits E-LOBSTER-003 exit 2 (L02/FB9)
+ok 99 BC_2_12_001: malformed YAML error envelope contains trace field (H01/FB10)
+ok 100 BC_2_12_001: steps-type mismatch error envelope contains trace field (H01/FB10)
+ok 101 BC_2_12_001: cycle detection error envelope contains trace field (H01/FB10)
+ok 102 BC_2_12_001: lobster-run args null element emits E-LOBSTER-003 exit 2 (M01/FB10)
+ok 103 BC_2_12_001: lobster-run args null element error envelope contains trace field (M01/FB10)
+ok 104 BC_2_12_001: lobster-run interleaved workflow files emits E-LOBSTER-007 exit 2 (H01/FB11)
+ok 105 BC_2_12_001: lobster-run rejects second workflow file even after intervening flag (H01/FB11)
+ok 106 BC_2_12_001: lobster-run depends_on null element emits E-LOBSTER-003 exit 2 (M01/FB11)
+ok 107 BC_2_12_001: lobster-run depends_on null element error envelope contains trace field (M01/FB11)
+ok 108 BC_2_12_001: lobster-run name as integer emits E-LOBSTER-003 exit 2 (L01/FB11)
+ok 109 BC_2_12_001: lobster-run description as integer emits E-LOBSTER-003 exit 2 (L01/FB11)
+ok 110 BC_2_12_001: lobster-run rejects second workflow file after -- separator emits E-LOBSTER-007 exit 2 (C01/FB12)
+ok 111 BC_2_12_001: lobster-run bare -- emits E-LOBSTER-008 exit 2 and lobster.run.completed (C02/FB12)
+ok 112 BC_2_12_001: lobster-run bare -- exits with code 2 (C02/FB12)
+ok 113 BC_2_12_001: lobster-run cycle message uses accurate unresolved-dependencies phrasing (S01/FB12)
+
+Total BC_2_12 tests: 86 of 114 total integration.bats tests
+All 86 BC_2_12 tests: PASS (0 failures)

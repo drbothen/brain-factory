@@ -1,0 +1,33 @@
+Demo: check-token-threshold.sh — below threshold (AC-014, no warning)
+Command: bash scripts/check-token-threshold.sh <brain_dir> <short-source.md>
+Source: 8-word body (estimated 0 tokens below threshold)
+Exit: 0
+Stdout: {"estimated_tokens":0,"threshold":50000,"exceeds":false}
+
+---
+
+Demo: check-token-threshold.sh — 50K-word source triggers advisory (AC-012/AC-013)
+Command: bash scripts/check-token-threshold.sh <brain_dir> <big-source.md>
+Source: ~50000 words in body (estimate 65000 tokens, exceeds 50000 threshold)
+Exit: 0 (AC-013: advisory only, ingest proceeds)
+
+Stdout:
+{"estimated_tokens":65000,"threshold":50000,"exceeds":true}
+{"level":"warn","code":"E-INGEST-013","message":"Source content estimated at 65000 tokens, exceeding the 50000-token chunk threshold. Full content ingested in v0.1. Automatic chunking available at v0.5+. Consider splitting large sources manually."}
+
+Stderr (structured event):
+{"ts":"2026-05-30T18:43:13Z","event_type":"ingest.url.token_threshold_exceeded","hook_name":"check-token-threshold.sh","trace":"698715f0-395a-4e3d-aadf-439b4f48082c","estimated_tokens":"65000","threshold":"50000","source_file":"<path>"}
+
+Key assertions verified:
+- Exit 0 even when threshold exceeded (AC-013: advisory only)
+- E-INGEST-013 code present in output
+- Advisory message matches exact wording from AC-012
+- Structured event emitted on stderr (stream separation)
+- No write to ingest-tokens.jsonl (check-token-threshold.sh is pre-librarian, read-only)
+
+---
+
+Demo: check-token-threshold.sh — absent policies.yaml uses default 50000 (AC-015)
+Verified by bats test 9 (skills.bats): "check-token-threshold.sh uses default 50000 when key absent from policies.yaml"
+Verified by bats test 10 (skills.bats): "check-token-threshold.sh uses default 50000 when policies.yaml absent entirely"
+Both tests: ok (pass)

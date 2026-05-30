@@ -1,0 +1,20 @@
+1..19
+ok 1 BC_2_06_003: manifest source entry has last_ingest equal to ingested_at on first ingest
+ok 2 BC_2_06_003: manifest source entry last_ingest is valid ISO8601 UTC timestamp
+ok 3 BC_2_06_003: manifest source entry last_ingest is never null after ingest
+ok 4 BC_2_02_002: generate-wiki.sh emits E-INGEST-006 advisory when fewer than 5 pages produced (AC-004)
+ok 5 BC_2_02_002: generate-wiki.sh exits 0 on short article (E-INGEST-006 is advisory, not blocking) (AC-004)
+ok 6 BC_2_02_002: short-article fixture has fewer than 500 words (AC-004 test vector)
+ok 7 BC_2_02_003: log-tokens.sh writes input_tokens: -1 when token count unavailable (AC-010)
+ok 8 BC_2_02_003: log-tokens.sh succeeds even when token counts are -1 (AC-010)
+ok 9 BC_2_02_005: check-token-threshold.sh uses default 50000 when key absent from policies.yaml (AC-015)
+ok 10 BC_2_02_005: check-token-threshold.sh uses default 50000 when policies.yaml absent entirely (AC-015)
+ok 11 BC_2_02_002: scripts/generate-wiki.sh exists (structural Red Gate)
+ok 12 BC_2_02_003: scripts/log-tokens.sh exists (structural Red Gate)
+ok 13 BC_2_02_005: scripts/check-token-threshold.sh exists (structural Red Gate)
+ok 14 BC_2_02_002: scripts/generate-wiki.sh passes shellcheck (structural Red Gate)
+ok 15 BC_2_02_003: scripts/log-tokens.sh passes shellcheck (structural Red Gate)
+ok 16 BC_2_02_005: scripts/check-token-threshold.sh passes shellcheck (structural Red Gate)
+ok 17 BC_2_02_002: scripts/generate-wiki.sh passes shfmt normalization (structural Red Gate)
+ok 18 BC_2_02_003: scripts/log-tokens.sh passes shfmt normalization (structural Red Gate)
+ok 19 BC_2_02_005: scripts/check-token-threshold.sh passes shfmt normalization (structural Red Gate)
