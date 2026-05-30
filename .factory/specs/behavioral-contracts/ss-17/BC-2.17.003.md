@@ -1,8 +1,8 @@
 ---
 document_type: behavioral-contract
 level: L3
-version: "1.3"
-status: draft
+version: "1.4"
+status: active
 producer: "vsdd-factory:product-owner"
 traces_to: ../BC-INDEX.md
 timestamp: 2026-05-16T00:00:00
@@ -75,6 +75,10 @@ The stdout/stderr separation is a load-bearing architectural constraint for disp
 - BC-2.04.017 — composes with (emission protocol)
 
 ## Changelog
+
+### v1.4 (2026-05-30)
+
+**POL-14 AUTO-PROMOTION:** `status: draft` → `status: active` at STORY-015 PR #19 merge (squash-merged to develop at 20bedb7708660bc7a828a2d17c2e956fec8e301d, 2026-05-30). No semantic change to BC contract.
 
 ### v1.3 (2026-05-19)
 

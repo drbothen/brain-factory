@@ -1,15 +1,15 @@
 ---
 document_type: bc-index
 level: L3
-version: "0.1.16"
+version: "0.1.17"
 status: draft
 producer: "vsdd-factory:product-owner"
-timestamp: 2026-05-26T00:00:00
+timestamp: 2026-05-30T00:00:00
 phase: phase-1b
 traces_to: ../prd/index.md
 inherits_from: prd@v0.1.11
 created: 2026-05-15
-last_updated: 2026-05-26
+last_updated: 2026-05-30
 ---
 
 # Behavioral Contract Index: brain-factory
@@ -281,6 +281,10 @@ and confirm it returns zero output. Legitimate exclusions: (a) content inside tr
 ---
 
 ## Changelog
+
+### v0.1.17 (2026-05-30)
+
+**POL-14 AUTO-PROMOTION (STORY-015 PR #19 merge):** BC-2.04.015 v1.4→v1.5, BC-2.04.016 v1.4→v1.5, BC-2.17.003 v1.3→v1.4, BC-2.17.004 v1.3→v1.4 — all promoted `status: draft` → `status: active` at STORY-015 PR #19 squash-merge to develop at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30). Index table rows for these 4 BCs were already showing `active` (pre-set during Phase 2 story decomposition). BC file bodies now reflect active status with changelog entries. No semantic change to any BC contract; POL-14 lifecycle auto-promotion only.
 
 ### v0.1.16 (2026-05-26)
 

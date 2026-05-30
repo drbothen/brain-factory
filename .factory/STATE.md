@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-29T23:59:00
+last_updated: 2026-05-30T18:00:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-015-pending
+phase: phase-3-wave-4-complete-gate-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -44,29 +44,29 @@ phase_2_status: CLOSED — Human approved. All deliverables verified. 3-CLEAN at
 total_phase_2_passes_completed: 6
 total_phase_2_fix_bursts: 8
 phase_2_step_g_status: CONVERGED — adversarial cascade CLOSED at Pass 6 commit 543c588
-phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 1: 4/4 (29 pts, gate PASSED). Wave 2: 3/3 (24 pts, gate PASSED 6/6). Wave 3: 8/8 (32 pts, gate PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925). Wave 4: 3/4 stories delivered (21/26 pts delivered). 18/43 stories (103/264 pts). 40 BCs active."
+phase_3_status: "IN PROGRESS — Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 4/4 stories DELIVERED (26/26 pts) — integration gate PENDING. 19/43 stories (108/264 pts). 44 BCs active."
 wave_3_status: "GATE PASSED 6/6 — 2026-05-27 — 584/587 tests, DTU SKIP, adversary PASS (2C+5I found+fixed), demo evidence PASS, holdout PASS (mean 0.925), state update PASS"
 wave_3_gate_result: "PASSED 6/6 — fix commits: e7824d0 (lifecycle+catalog) + 56e1ec7 (manifest schema) + 42ca028 (slug_count)"
 dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-015-pending
-session_continuity: "STORY-004 DELIVERED — PR #18 squash-merged to develop at af7c6addd3e63379b67f17a2dd7ea27d31b3b765 (2026-05-29). 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats = 88 tests green in CI. LOCAL cascade CONVERGED at Pass 20 (BC-5.39.001 3-CLEAN at Passes 18+19+20). BC-2.01.006 v1.3 active (POL-14). BC-2.04.014 v1.6 already active. Wave 4 progress: 3/4 (21/26 pts). 18/43 stories (103/264 pts). 40 BCs active. NEXT ACTION: dispatch implementer for STORY-015 (hook meta-lint, P0, 5 pts — Wave 4 terminal node)."
+session_stage: phase-3-wave-4-complete-gate-pending
+session_continuity: "STORY-015 DELIVERED — PR #19 squash-merged to develop at 20bedb7708660bc7a828a2d17c2e956fec8e301d (2026-05-30). 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats green in CI. LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active (POL-14). Wave 4 COMPLETE: 4/4 (26/26 pts). 19/43 stories (108/264 pts). 44 BCs active. NEXT ACTION: Wave 4 integration gate (6-check). 3 cross-story deferrals to review at gate: D-PASS8-CS-01/02/03."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
 canonical_prd: .factory/specs/prd/index.md (v0.1.14, commit 5a64927)
-canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.15, commit 82ec4f5)
+canonical_bc_index: .factory/specs/behavioral-contracts/BC-INDEX.md (v0.1.17, this burst)
 canonical_architecture: .factory/specs/architecture/ARCH-INDEX.md (v0.1.24, commit 5a64927) + 17 ADRs + 18 SS-NN (SS-18 at v1.5; SS-04/SS-06/SS-17/SS-01/SS-11 at v1.2) + VP-INDEX v0.1.8 + 27 VPs
 canonical_nfr_catalog: .factory/specs/prd/nfr-catalog.md (v0.1.2, commit 5a64927)
 canonical_error_taxonomy: .factory/specs/prd/error-taxonomy.md (v0.1.2, commit 39d6fba)
-canonical_story_index: .factory/stories/STORY-INDEX.md (v0.4.6, post-STORY-004 delivery — Wave 4 3/4)
+canonical_story_index: .factory/stories/STORY-INDEX.md (v0.4.7, post-STORY-015 delivery — Wave 4 4/4 COMPLETE)
 canonical_dependency_graph: .factory/stories/dependency-graph.md (v0.1.1, commit f160696)
 canonical_holdout_scenarios: .factory/stories/holdout-scenarios.md (v0.1.4, commit 7b1ae9d)
 total_stories_drafted: 43
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.4.6"
+current_story_index_version: "0.4.7"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
@@ -82,8 +82,10 @@ holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
 story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS + Pass 19 PASS + Pass 20 PASS — BC-5.39.001 3-CLEAN satisfied — DELIVERED PR #18 af7c6ad"
-wave_4_status: "3/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18); STORY-015 next (hook meta-lint, P0, 5 pts)"
-status: phase-3-wave-4-story-015-pending
+story_015_cascade_streak: "3/3 CONVERGED — Pass 6 PASS + Pass 7 PASS + Pass 8 PASS — BC-5.39.001 3-CLEAN satisfied — DELIVERED PR #19 20bedb7 (2026-05-30)"
+story_015_merge_sha: 20bedb7708660bc7a828a2d17c2e956fec8e301d
+wave_4_status: "4/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18, STORY-015 PR#19); Wave 4 integration gate pending"
+status: phase-3-wave-4-complete-gate-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -92,19 +94,19 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 DELIVERED — STORY-015 pending
+## TOP OF STACK — STORY-015 DELIVERED — Wave 4 COMPLETE — Integration Gate PENDING
 
-**STORY-004 DELIVERED:** PR #18 squash-merged to develop at `af7c6addd3e63379b67f17a2dd7ea27d31b3b765` (2026-05-29). 88 tests green (45/45 brain-health-skill.bats + 43/43 brain-health-check.bats). BC-2.01.006 v1.3 active per POL-14. BC-2.04.014 v1.6 already active. Wave 4 progress: 3/4 (21/26 pts). 18/43 stories (103/264 pts). 40 BCs active.
+**STORY-015 DELIVERED:** PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d` (2026-05-30). 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats green in CI (134 + 1 skip). LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). 8 passes, 5 fix bursts. BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 → active per POL-14. Wave 4: 4/4 (26/26 pts) COMPLETE. 19/43 stories (108/264 pts). 44 BCs active.
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Dispatch implementer for STORY-015 (hook meta-lint expansion, Wave 4 story 4/4, P0, 5 pts)
-   - BCs: BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004
-   - Depends on: STORY-001, STORY-014 (both complete)
-   - Terminal node: true (no outgoing Wave 4 edges)
-2. After STORY-015 delivers: run Wave 4 integration gate (6-check)
-3. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006, DI-007, DI-008
+1. Run Wave 4 integration gate (6-check: test suite, DTU skip, adversary fresh-context wave diff, demo evidence, holdout, state update)
+2. During gate: review cross-story deferrals D-PASS8-CS-01/02/03 (see Drift Items table below)
+3. After gate PASSES: dispatch Wave 5 (STORY-019 first — critical path)
+4. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006, DI-007, DI-008
 
 ---
+
+**D-035 — STORY-015 delivered (2026-05-30):** PR #19 squash-merged to develop at 20bedb7708660bc7a828a2d17c2e956fec8e301d. CI green (88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats = 134 + 1 skip). LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). 8 passes, 5 fix bursts. POL-14: BC-2.04.015 v1.4→v1.5, BC-2.04.016 v1.4→v1.5, BC-2.17.003 v1.3→v1.4, BC-2.17.004 v1.3→v1.4 — all draft→active. Wave 4 COMPLETE: 4/4 (26/26 pts). 18/43→19/43 stories. 103/264→108/264 pts. 40→44 BCs active. Cross-story deferrals: D-PASS8-CS-01/02/03 routed to Wave 4 gate. New lessons: L12 (cascade paper-fix layers), L13 (compute-input-hash awk bug). Wave 4 integration gate NEXT.
 
 **D-034 — STORY-004 delivered (2026-05-29):** PR #18 squash-merged to develop at af7c6addd3e63379b67f17a2dd7ea27d31b3b765. CI green (88 tests: 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats). LOCAL cascade CONVERGED at Pass 20 (BC-5.39.001 3-CLEAN at Passes 18+19+20). 17 fix bursts, ~30 commits. POL-14: BC-2.01.006 v1.2→v1.3 draft→active; BC-2.04.014 already active. Wave 4 progress 2/4→3/4 (16/26→21/26 pts). 17/43→18/43 stories. 38→40 BCs active. .worktrees/STORY-004 can be safely removed. NEXT: STORY-015.
 
@@ -144,9 +146,9 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## Drift Items (process-gap deferrals — not blocking STORY-004)
+## Drift Items (process-gap deferrals)
 
-These items were identified during adversarial passes as out-of-STORY-004-scope process-gaps. Deferred per Cycle-Closing Checklist S-7.02. Each has a target and owner.
+Items identified during adversarial passes as out-of-scope. Deferred per Cycle-Closing Checklist S-7.02. Each has a target and owner.
 
 | ID | Finding | Origin | Defer Reason | Target | Owner |
 |----|---------|--------|--------------|--------|-------|
@@ -158,6 +160,9 @@ These items were identified during adversarial passes as out-of-STORY-004-scope 
 | DI-006 | [process-gap] Recommends codifying "grep swept token across plugin tree" as a formal closure-validation gate — recurring sibling-sweep miss pattern (TD-VSDD-060) detected across multiple passes | F-P6-O01 (Pass 6 adversary OBSERVATION; process-gap tag) | Adversary fresh-context audit currently catches sibling-sweep misses (demonstrated in Passes 4, 5, 6); codifying as a closure gate is process polish; defer to post-merge cycle-lessons sweep per S-7.02 | Post-STORY-004-PR-merge cycle-lessons sweep | state-manager + orchestrator |
 | DI-007 | BC-2.04.014 v1.6 postcondition exit-1 contradiction — postconditions may still specify exit 1 for YELLOW/RED but impl + bats enforce exit 0; possible residual from Pass-9 F-P9-C01/C02 closure sweep (50fa61c) | F13 DI candidate (Pass 13 adversary) — TENTATIVE | Pass 9 fix burst 50fa61c may have fully closed this; needs fresh-context verification by next adversary pass before confirming as open; STORY-013 ownership if confirmed open | Pass 14 adversary verification; if open, STORY-013 | product-owner (via story-writer) |
 | DI-008 | Token alert message format in run.sh does not match BC-2.16.002 / STORY-037 canonical message format — message text drift between impl and spec | F13 DI candidate (Pass 13 adversary) — TENTATIVE | STORY-037 ownership; out-of-STORY-004-scope for BC-2.01.006 cascade; needs adversary confirmation | Post-STORY-004-PR-merge or STORY-037 delivery | story-writer |
+| D-PASS8-CS-01 | validate-page-type-policy.sh ERR trap emits plain-text to stdout on crash — violates BC-2.04.016 (stdout must be valid JSON) | STORY-015 Pass 8 cross-story finding | Out-of-STORY-015-scope; validate-page-type-policy.sh is STORY-010 deliverable; fix requires implementer dispatch on that hook | Wave 4 integration gate review or Wave 5 fix burst | implementer |
+| D-PASS8-CS-02 | quarantine-fetch.sh ERR trap silent on crash — no stdout JSON emitted; violates BC-2.04.016 fail-closed contract (EC-001/EC-004) | STORY-015 Pass 8 cross-story finding | Out-of-STORY-015-scope; quarantine-fetch.sh is STORY-002 deliverable; needs dedicated fix burst | Wave 4 integration gate review or Wave 5 fix burst | implementer |
+| D-PASS8-CS-03 | BC-2.04.016 v1.4 Postcondition 2 still uses `{"verdict": "allow|advise|block", ...}` — ADR-002 v2.0 updated stdout format to `continue`/`decision` but BC-2.04.016 PC2 text not swept | STORY-015 Pass 8 cross-story finding | BC content update; out-of-STORY-015 scope; product-owner sweep against ADR-002 v2.0 format | Wave 4 integration gate or PO maintenance sweep | product-owner |
 
 ---
 
@@ -203,15 +208,15 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 | STORY-012 | 3 | #14 | 50b54e0 | 4p/1fc, 3-CLEAN@2-3-4 |
 | STORY-013 | 3 | #15 | 93af76d | 5p/2fc, 3-CLEAN@3-4-5 |
 
-### Overall Progress (updated after STORY-004 delivery)
-- 18/43 stories (103/264 points — 39%)
-- 40 BCs active (of 95 total)
-- 805 tests on develop
-- 18 PRs merged (#1-#18) + 3 Wave 3 gate fix commits
-- Waves 1–3 COMPLETE + GATE PASSED; Wave 4: 3/4 delivered (STORY-017, STORY-032, STORY-004)
+### Overall Progress (updated after STORY-015 delivery — Wave 4 COMPLETE)
+- 19/43 stories (108/264 points — 41%)
+- 44 BCs active (of 95 total)
+- 939 tests on develop (estimated)
+- 19 PRs merged (#1-#19) + 3 Wave 3 gate fix commits
+- Waves 1–3 COMPLETE + GATE PASSED; Wave 4: 4/4 delivered (STORY-017, STORY-032, STORY-004, STORY-015) — gate pending
 
 ### Git State to Verify
-- `git log --oneline origin/develop -3` should show d610cf0 (STORY-032 PR #17 squash-merge) at tip
+- `git log --oneline origin/develop -3` should show 20bedb7 (STORY-015 PR #19 squash-merge) at tip
 - `git status --short` should be clean (untracked: .claude/, .factory/code-delivery/, .factory/cycles/, .factory/logs/, .factory/planning/)
 - `.worktrees/` should be empty
 - No open PRs
@@ -232,7 +237,7 @@ Gate fix commits: e7824d0 (lifecycle hooks exit 0 + event catalog), 56e1ec7 (man
 ### Resume Procedure for Fresh Context
 
 #### 1. Pipeline Position
-Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 3/4 delivered (STORY-017, STORY-032, STORY-004). 18/43 stories delivered (103/264 pts). 40 BCs active. 805 tests on develop.
+Phase 3 TDD Implementation. Waves 1–3 COMPLETE + GATE PASSED. Wave 4: 4/4 delivered (STORY-017, STORY-032, STORY-004, STORY-015) — integration gate pending. 19/43 stories delivered (108/264 pts). 44 BCs active.
 
 #### 2. Wave 4 Task List (CRITICAL — this is what to DO)
 
@@ -245,9 +250,9 @@ Delivery order (STORY-017 first, rest parallel):
 | 1 | STORY-017 | 8 | EPIC-03 | Wiki page generation pipeline + token JSONL logging + 50K-chunk warning | BC-2.02.002, BC-2.02.003, BC-2.02.005 | **DELIVERED** — PR #16 b30dd35 |
 | 2 | STORY-032 | 8 | EPIC-07 | bin/lobster-run — YAML parsing, topological sort, exit-code contract | BC-2.12.001, BC-2.12.002 | **DELIVERED** — PR #17 d610cf0 |
 | 3 | STORY-004 | 5 | EPIC-01 | /brain:health six-dimensional convergence skill | BC-2.01.006 | **DELIVERED** — PR #18 af7c6ad |
-| 4 | STORY-015 | 5 | EPIC-02 | Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 |
+| 4 | STORY-015 | 5 | EPIC-02 | Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials | BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 | **DELIVERED** — PR #19 20bedb7 |
 
-Critical path: STORY-017 first (unblocks Wave 5 STORY-019). STORY-004 and STORY-015 are parallel.
+Wave 4 COMPLETE. Next: Wave 4 integration gate.
 
 #### 3. Per-Story Delivery Steps
 ```

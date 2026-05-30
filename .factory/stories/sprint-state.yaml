@@ -20,9 +20,9 @@ total_stories: 43
 total_points: 264
 current_wave: 4
 created: 2026-05-19
-last_updated: 2026-05-29
+last_updated: 2026-05-30
 in_progress_stories: []
-completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038, STORY-016, STORY-002, STORY-006, STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-017, STORY-032, STORY-004]
+completed_stories: [STORY-001, STORY-014, STORY-027, STORY-038, STORY-016, STORY-002, STORY-006, STORY-003, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-017, STORY-032, STORY-004, STORY-015]
 waves:
   - id: 1
     name: "Wave 1: Plugin Foundation"
@@ -193,7 +193,7 @@ waves:
         merge_commit: 93af76d
   - id: 4
     name: "Wave 4: Wiki Generation + Lobster Core + Health + Hook Meta-Lint"
-    status: in_progress
+    status: completed
     target_story_count: 4
     target_points: 26
     critical_path_stories: [STORY-017]
@@ -233,7 +233,7 @@ waves:
         pr_number: 18
         merge_commit: af7c6ad
       - id: STORY-015
-        status: pending
+        status: completed
         points: 5
         priority: P0
         epic: EPIC-02
@@ -241,6 +241,8 @@ waves:
         wave_position: 4
         critical_path: false
         terminal_node: true
+        pr_number: 19
+        merge_sha: 20bedb7708660bc7a828a2d17c2e956fec8e301d
   - id: 5
     name: "Wave 5: Source Ingest + Lobster Headless + Token Write + Adversary Core"
     status: pending

@@ -1,8 +1,8 @@
 ---
 artifact_type: session-handoff
 project: brain-factory
-session_phase: phase-3-wave-4-story-015-pending
-session_stage: phase-3-wave-4-story-015-pending
+session_phase: phase-3-wave-4-complete-gate-pending
+session_stage: phase-3-wave-4-complete-gate-pending
 current_brief_version: 0.4.20
 current_brief_path: .factory/specs/product-brief.md
 current_prd_version: 0.1.14
@@ -16,7 +16,7 @@ current_nfr_catalog_version: 0.1.2
 current_interface_defs_version: 0.2.0
 current_test_vectors_version: 0.2.0
 current_story_index_path: .factory/stories/STORY-INDEX.md
-current_story_index_version: "0.4.6"
+current_story_index_version: "0.4.7"
 current_dependency_graph_path: .factory/stories/dependency-graph.md
 current_dependency_graph_version: "0.1.1"
 current_wave_schedule_path: .factory/stories/wave-schedule.md
@@ -85,7 +85,7 @@ user_decision_ud002: "Option C — continue cascade without discipline catalog f
 user_decision_ud003: "Option (a) continue cascade — same as UD-002; meta-rule self-violation class acknowledged as predictable recurring pattern; F-PASS12-O2 3rd STRONG-ESCALATE resolved continue; 2026-05-17"
 user_decision_ud004: "Option (a) continue — user reaffirmed Option C after 16-pass post-UD-003 evidence (Passes 16-31, ~48 commits, 20+ recurrences, CRITICAL=2 extending to CRITICAL=3 at Pass 32, never streak 1/3); cascade continues until BC-5.39.001 literal streak 3/3; 2026-05-17"
 created: 2026-05-15
-last_updated: 2026-05-29T23:59:00
+last_updated: 2026-05-30T18:00:00
 current_holdout_scenarios_path: .factory/stories/holdout-scenarios.md
 current_holdout_scenarios_version: "0.1.4"
 total_holdout_scenarios: 17
@@ -94,59 +94,55 @@ holdout_nice_to_pass: 7
 uncertainty_removal_commit: 5a64927
 uncertainty_removal_files_changed: 70
 uncertainty_removal_blockers_fixed: 11
-status: phase-3-wave-4-story-015-pending
+status: phase-3-wave-4-complete-gate-pending
 wave_3_status: "GATE PASSED 6/6 — 584/587 tests, adversary 2C+5I fixed, holdout 0.925, demo evidence 8 stories, DTU SKIP"
 wave_3_gate_result: "PASSED 6/6 — 2026-05-27 — fix commits: e7824d0 + 56e1ec7 + 42ca028"
-wave_4_status: "3/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18 af7c6ad). STORY-015 next (hook meta-lint, P0, 5 pts)."
+wave_4_status: "4/4 stories delivered (STORY-017 PR#16, STORY-032 PR#17, STORY-004 PR#18, STORY-015 PR#19); Wave 4 integration gate pending"
 story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS (1/3) + Pass 19 PASS (2/3) + Pass 20 PASS (3/3) — DELIVERED PR #18 af7c6ad (2026-05-29)"
 story_004_merge_sha: af7c6addd3e63379b67f17a2dd7ea27d31b3b765
-total_stories_delivered: 18
-total_bcs_active: 40
-total_tests_on_develop: 805
+story_015_cascade_streak: "3/3 CONVERGED — Pass 6 PASS (1/3) + Pass 7 PASS (2/3) + Pass 8 PASS (3/3) — DELIVERED PR #19 20bedb7 (2026-05-30)"
+story_015_merge_sha: 20bedb7708660bc7a828a2d17c2e956fec8e301d
+total_stories_delivered: 19
+total_bcs_active: 44
+total_tests_on_develop: 939
 ---
 
-# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 IN PROGRESS — STORY-004 DELIVERED — STORY-015 pending
+# SESSION-HANDOFF — brain-factory Phase 3 Wave 4 COMPLETE — Integration Gate PENDING
 
 ## RESUME PROCEDURE FOR FRESH-CONTEXT ORCHESTRATOR
 
 **This section is the entry point for any orchestrator resuming from zero context.**
 
-**Current state (as of 2026-05-29):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 3/4 stories delivered. STORY-004 DELIVERED — PR #18 squash-merged to develop at `af7c6addd3e63379b67f17a2dd7ea27d31b3b765`. BC-2.01.006 v1.3 active per POL-14. BC-2.04.014 already active. 18/43 stories (103/264 pts). 40 BCs active. NEXT ACTION: dispatch implementer for STORY-015 (hook meta-lint, P0, 5 pts — Wave 4 terminal node). BCs: BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004. .worktrees/STORY-004 can be safely removed.
+**Current state (as of 2026-05-30):** Phase 3 IN PROGRESS — Waves 1–3 COMPLETE + gates PASSED. Wave 4: 4/4 stories DELIVERED (COMPLETE). STORY-015 DELIVERED — PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d`. BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active per POL-14. 19/43 stories (108/264 pts). 44 BCs active. NEXT ACTION: Wave 4 integration gate (6-check). 3 cross-story deferrals to review: D-PASS8-CS-01/02/03 (see STATE.md Drift Items table).
 
 ### Step 1 — Read documents in this exact order
 
 1. `/Users/jmagady/Dev/brain-factory/CLAUDE.md` (project conventions, canonical principle, agent routing table)
-2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (pipeline status, top-of-stack action — frontmatter updated to reflect relocation pause)
+2. `/Users/jmagady/Dev/brain-factory/.factory/STATE.md` (pipeline status, top-of-stack action)
 3. `/Users/jmagady/Dev/brain-factory/.factory/SESSION-HANDOFF.md` (this file — primary resume doc, read fully)
-4. `/Users/jmagady/Dev/brain-factory/.factory/stories/STORY-004.md` (in-flight story spec — has PO edits from Pass 1 locked in)
-5. `/Users/jmagady/Dev/brain-factory/.factory/specs/behavioral-contracts/ss-01/BC-2.01.006.md` (canonical BC, v1.4 — Postcondition 5 writeback 4-field enumeration + safeguard semantics codified by P4 fix burst)
+4. `/Users/jmagady/Dev/brain-factory/.factory/TASK-LIST.md` (durable working plan — UD-NNN user decisions log, Wave implementation status, active DIs, cycle lessons reference, next-steps queue — this is the orchestrator's mirror of harness TaskCreate tasks, which are ephemeral and do NOT survive session resets; per Lesson 11, this file is updated after every meaningful burst and is authoritative for working task state)
 
-Do NOT read TASK-LIST.md as a first-priority doc this session — it may not have been updated with the STORY-004 cascade detail. STATE.md and SESSION-HANDOFF.md are the authoritative resume sources.
+Read TASK-LIST.md before deep-diving into story/spec files so the orchestrator has the working plan, user decisions, and active DI state before dispatching any agent.
 
 ### Step 2 — Verify git state BEFORE dispatching any agent
 
-Run all four checks. If any check fails, diagnose before proceeding.
+Run these checks. If any check fails, diagnose before proceeding.
 
 ```bash
-# Check 1: develop tip should be d610cf0 (STORY-032 PR #17 squash-merge)
+# Check 1: develop tip should be 20bedb7 (STORY-015 PR #19 squash-merge)
 git log --oneline origin/develop -3
 
-# Check 2: STORY-004 worktree exists at expected tip
+# Check 2: no open worktrees (STORY-004 and STORY-015 worktrees should be removed)
 git worktree list
-# Expected: shows /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 [feature/STORY-004]
+# Expected: only main worktree; .worktrees/ should be empty
 
-# Check 3: STORY-004 worktree tip commit is abb9c71
-git -C /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 log --oneline origin/develop..HEAD | head -5
-# Expected: abb9c71 at tip, 44 commits ahead of develop
+# Check 3: working tree clean
+git status --short
+# Expected: clean (untracked: .claude/ .factory/code-delivery/ .factory/cycles/ .factory/logs/ .factory/planning/ OK)
 
-# Check 4: Tests pass on the worktree
-bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3
-# Expected: 45 tests, 45 passed, 0 failed
-bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3
-# Expected: 43 tests, 43 passed, 0 failed
-shellcheck plugins/brain-factory/skills/brain-health/run.sh plugins/brain-factory/hooks/brain-health-check.sh
-shfmt -d -i 2 plugins/brain-factory/skills/brain-health/run.sh plugins/brain-factory/hooks/brain-health-check.sh
-# Expected: no output (clean)
+# Check 4: no open PRs
+gh pr list --state open
+# Expected: none open
 ```
 
 ### Step 3 — What just happened (read carefully — do not skip)
@@ -161,18 +157,57 @@ Wave 1: STORY-001/014/027/038 (PRs #1-#4, gate PASSED). Wave 2: STORY-016/002/00
 **3c. DELIVERED — STORY-004 (wave 4 story 3/4):**
 PR #18 squash-merged to develop at `af7c6addd3e63379b67f17a2dd7ea27d31b3b765` (2026-05-29). 88 tests green. LOCAL cascade CONVERGED at Pass 20 (BC-5.39.001 3-CLEAN at Passes 18+19+20). BC-2.01.006 v1.3 active per POL-14. .worktrees/STORY-004 can be safely removed. See §STORY-004 Cascade Detail below for full history.
 
-**3d. PENDING — STORY-015 (wave 4 story 4/4):**
-Hook meta-lint coverage (5 pts). Has not been started. Parallel to STORY-004 but lower priority; begin after STORY-004 merges or in parallel worktree if context allows.
+**3d. DELIVERED — STORY-015 (wave 4 story 4/4):**
+PR #19 squash-merged to develop at `20bedb7708660bc7a828a2d17c2e956fec8e301d` (2026-05-30). 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats green in CI. LOCAL cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). 8 passes, 5 fix bursts. BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 active per POL-14. .worktrees/STORY-015 can be safely removed. See §STORY-015 Cascade Detail below.
 
-**3e. TOP-OF-STACK — STORY-015:**
-STORY-004 DELIVERED (PR #18, af7c6ad). Wave 4 progress: 3/4 (21/26 pts). DI-001, DI-002, DI-005, DI-006, DI-007, DI-008 remain open (project-wide deferred, non-blocking). NEXT: dispatch implementer for STORY-015 (hook meta-lint, P0, 5 pts — BCs: BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004). After STORY-015 delivers: run Wave 4 integration gate.
+**3e. TOP-OF-STACK — Wave 4 integration gate:**
+Wave 4 COMPLETE (4/4 stories, 26/26 pts). DI-001, DI-002, DI-005, DI-006, DI-007, DI-008 remain open (project-wide deferred, non-blocking). 3 cross-story deferrals to process at gate: D-PASS8-CS-01 (validate-page-type-policy ERR trap), D-PASS8-CS-02 (quarantine-fetch ERR trap), D-PASS8-CS-03 (BC-2.04.016 PC2 stale text). NEXT: Wave 4 integration gate (6-check). After gate PASSES: Wave 5 (STORY-019 first — critical path).
 
 **3f. Develop tip verification:**
 ```bash
-git log --oneline origin/develop -3   # tip: d610cf0 (STORY-032 PR #17 squash-merge)
+git log --oneline origin/develop -3   # tip: 20bedb7 (STORY-015 PR #19 squash-merge)
 git status --short                    # clean (untracked: .claude/ .factory/code-delivery/ .factory/cycles/ .factory/logs/ .factory/planning/ OK)
 gh pr list --state open               # none open
 ```
+
+---
+
+## STORY-015 Cascade Detail
+
+**Story:** STORY-015 — Hook meta-lint: performance budget, canonical I/O, fail-closed, credentials
+**Epic:** EPIC-02
+**Points:** 5
+**Key BCs:** BC-2.04.015, BC-2.04.016, BC-2.17.003, BC-2.17.004 (all status: active — promoted per POL-14 at PR #19 merge)
+**Merge SHA:** `20bedb7708660bc7a828a2d17c2e956fec8e301d` (PR #19, squash-merged to develop 2026-05-30)
+**Tests in CI:** 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats = 134 + 1 skip
+
+### Cascade History Table
+
+| Step | Result | Notes |
+|------|--------|-------|
+| Red Gate | failing tests written | hook-contracts.bats + hook-event-emit.bats + meta-lint.bats |
+| TDD impl | tests pass | Initial implementation |
+| Pass 1 | FAIL | Assertion strength: substring matching vs structural BC compliance — paper-fix layer 1 (test mechanism) |
+| Fix burst 1 | applied | Structural assertion replacement |
+| Pass 2 | FAIL | Implementation envelope: nested vs top-level code path — paper-fix layer 2 (implementation) |
+| Fix burst 2 | applied | Code path correction |
+| Pass 3 | FAIL | Additional findings across BC text and implementation alignment |
+| Fix burst 3 | applied | BC text + implementation alignment |
+| Pass 4 | FAIL | Fixture content: singular vs plural category names — paper-fix layer 3 (fixtures) |
+| Fix burst 4 | applied | Fixture content correction |
+| Pass 5 | FAIL | Test injection: shell-quoting brittleness — paper-fix layer 4 (injection mechanism) |
+| Fix burst 5 | applied | Shell quoting fix |
+| **Pass 6** | **PASS — streak 0/3 → 1/3** | First clean pass. Fresh-context read-only audit. No fix burst. |
+| **Pass 7** | **PASS — streak 1/3 → 2/3** | Second consecutive clean pass. Fresh-context. No fix burst. |
+| **Pass 8** | **PASS — streak 2/3 → 3/3 → CONVERGED** | BC-5.39.001 3-CLEAN protocol satisfied. Cross-story deferrals D-PASS8-CS-01/02/03 recorded (out-of-scope hooks + BC-2.04.016 PC2 text). |
+
+### Cross-Story Deferrals (Pass 8)
+
+| ID | Finding | Target | Owner |
+|----|---------|--------|-------|
+| D-PASS8-CS-01 | validate-page-type-policy ERR trap emits plain-text stdout on crash (BC-2.04.016 violation) | Wave 4 gate or Wave 5 fix | implementer |
+| D-PASS8-CS-02 | quarantine-fetch ERR trap silent on crash — no stdout JSON (BC-2.04.016 fail-closed violation) | Wave 4 gate or Wave 5 fix | implementer |
+| D-PASS8-CS-03 | BC-2.04.016 v1.4 PC2 stale `verdict` text vs ADR-002 v2.0 `continue`/`decision` format | Wave 4 gate or PO sweep | product-owner |
 
 ---
 
@@ -606,14 +641,14 @@ Find NEW defects only. CRITICAL findings block progression. IMPORTANT findings m
 
 ---
 
-## Wave 4 Summary
+## Wave 4 Summary (COMPLETE — 4/4 stories — 26/26 pts)
 
 | # | Story | Pts | Status | Notes |
 |---|-------|-----|--------|-------|
-| 1 | STORY-017 | 8 | DONE — PR #16 (b30dd35) | Wiki page generation pipeline; 5 passes 2 fix bursts |
-| 2 | STORY-032 | 8 | DONE — PR #17 (d610cf0) | bin/lobster-run; 22 passes 14 fix bursts; longest cascade |
-| 3 | STORY-004 | 5 | IN PROGRESS — Pass 17 pending | /brain:health skill; 16 passes 16 fix bursts (Pass 16 FAIL 1H+3M+1L; 4 findings closed in fix burst 16: Issues format colon-semicolon + skipped path silent + fallback Issues + corrupted-YAML guard; brain-health-check.bats 32→43; F16-05 deferred TD-VSDD-091; F16-06 no-action) |
-| 4 | STORY-015 | 5 | NOT STARTED | Hook meta-lint; begin after STORY-004 or parallel |
+| 1 | STORY-017 | 8 | DONE — PR #16 (b30dd35) | Wiki page generation pipeline; 5 passes, 2 fix bursts |
+| 2 | STORY-032 | 8 | DONE — PR #17 (d610cf0) | bin/lobster-run; 22 passes, 14 fix bursts; longest cascade in project history |
+| 3 | STORY-004 | 5 | DONE — PR #18 (af7c6ad) | /brain:health skill; 20 passes, 17 fix bursts; BC-5.39.001 3-CLEAN at Passes 18+19+20 |
+| 4 | STORY-015 | 5 | DONE — PR #19 (20bedb7) | Hook meta-lint; 8 passes, 5 fix bursts; BC-5.39.001 3-CLEAN at Passes 6+7+8; 4 BCs promoted per POL-14 |
 
 ---
 

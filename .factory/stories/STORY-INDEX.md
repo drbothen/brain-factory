@@ -1,8 +1,8 @@
 ---
 artifact_type: story-index
-version: "0.4.6"
+version: "0.4.7"
 created: 2026-05-18
-last_updated: 2026-05-29
+last_updated: 2026-05-30
 authored_by: vsdd-factory:story-writer
 total_stories: 43
 total_points: 264
@@ -24,13 +24,20 @@ inputs:
 
 # brain-factory Story Index
 
-**43 stories across 9 completed epics. 95 BCs total project scope. 18 stories completed (STORY-001, STORY-002, STORY-003, STORY-004, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-016, STORY-017, STORY-027, STORY-032, STORY-038). 25 stories status: draft.**
+**43 stories across 9 completed epics. 95 BCs total project scope. 19 stories completed (STORY-001, STORY-002, STORY-003, STORY-004, STORY-006, STORY-007, STORY-008, STORY-009, STORY-010, STORY-011, STORY-012, STORY-013, STORY-014, STORY-015, STORY-016, STORY-017, STORY-027, STORY-032, STORY-038). 24 stories status: draft.**
 
 > **Input-version freshness invariant (F-PHASE2-ADV-PASS2-S04):** Whenever an upstream input (brief, PRD, BC-INDEX, ARCH-INDEX, VP-INDEX, epics.md) is amended, this artifact's `inputs:` block MUST be refreshed in the same fix-burst chain. Stale `inputs:` references are a Pass-fail-class defect, not a cosmetic one.
 
 ---
 
 ## Changelog
+
+### v0.4.7 — 2026-05-30 (STORY-015 delivery / POL-14 BC promotion — Wave 4 COMPLETE 4/4)
+
+- **STORY-015 status:** `draft` → `completed` (PR #19 squash-merged to develop at 20bedb7708660bc7a828a2d17c2e956fec8e301d, 2026-05-30). BC-2.04.015 v1.5, BC-2.04.016 v1.5, BC-2.17.003 v1.4, BC-2.17.004 v1.4 promoted `draft` → `active` per POL-14.
+- **Delivery summary:** Hook meta-lint expansion — hook-contracts.bats (universal hook I/O contract), hook-event-emit.bats (stdout/stderr separation + credentials). LOCAL adversarial cascade CONVERGED at Pass 8 (BC-5.39.001 3-CLEAN at Passes 6+7+8). 8 passes, 5 fix bursts. Tests: 88/88 hook-contracts.bats + 25/26+1skip hook-event-emit.bats + 21/21 meta-lint.bats = 134 + 1 skip in CI. Cross-story deferrals: D-PASS8-CS-01 (validate-page-type-policy ERR trap), D-PASS8-CS-02 (quarantine-fetch ERR trap), D-PASS8-CS-03 (BC-2.04.016 PC2 text).
+- **Wave 4 progress:** 4/4 stories delivered (26/26 points). COMPLETE. Wave 4 integration gate pending.
+- **Overall:** 19/43 stories (108/264 pts ≈ 41%). 44 BCs active.
 
 ### v0.4.6 — 2026-05-29 (STORY-004 delivery / POL-14 BC promotion — Wave 4 progress 3/4)
 
