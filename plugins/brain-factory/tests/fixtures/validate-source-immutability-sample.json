@@ -1,0 +1,1 @@
+{"session_id":"test-s015","transcript_path":"/tmp/t","cwd":"/tmp","hook_event_name":"PostToolUse","tool_name":"Write","tool_input":{"file_path":"/tmp/sources/ai/my-source.md","content":"---\ntitle: My Source\ntype: source\ncreated: 2026-01-01\n---\n# My Source\n\nContent here.\n"},"tool_use_id":"s015-si-001","tool_result":{"type":"text","text":"File written","exit_code":0}}

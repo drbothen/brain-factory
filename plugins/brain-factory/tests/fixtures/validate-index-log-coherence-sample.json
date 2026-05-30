@@ -1,0 +1,1 @@
+{"session_id":"test-s015","transcript_path":"/tmp/t","cwd":"/tmp","hook_event_name":"PostToolUse","tool_name":"Write","tool_input":{"file_path":"/tmp/wiki/index.md","content":"# Index\n\n- [[my-page]]\n"},"tool_use_id":"s015-ilc-001","tool_result":{"type":"text","text":"File written","exit_code":0}}
