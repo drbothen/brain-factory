@@ -126,11 +126,11 @@ HOOK
 #   Canonical Principle Rule 6 (genuine scope-boundary defer requires explicit
 #   future-story anchor).
 #
-#   Proposed follow-up story: STORY-0XX "_json_get_str robustness — escaped
-#   quotes and nested-key disambiguation for hook stdin payloads." Filed with
-#   the implementer dispatch for Pass 1.2. This is NOT a defer-pattern because
-#   the limitation is explicitly documented in the function's own contract
-#   comment; the test documents the gap rather than silently accepting it.
+#   Deferred to v1.0 WASM dispatcher migration (docs/planning/llm-second-brain-phased-build-plan.md
+#   §A.4): richer JSON parsing tooling available post-migration; pure-bash JSON parsing in v0.x
+#   accepts the documented escape-handling limitation per CLAUDE.md §Project Identity pure-bash +
+#   minimal tooling authorization. This is NOT a defer-pattern because the limitation is
+#   explicitly documented in the function's own contract comment.
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -194,10 +194,7 @@ HOOK
   # {"key":"abc\"def"} — the function docs say it does NOT handle escaped quotes.
   # This test documents the known gap; it is skipped to avoid a false-Red-Gate
   # on behavior that is explicitly out-of-contract.
-  # Follow-up story: STORY-0XX "_json_get_str robustness — escaped quotes in values"
-  skip "Out-of-contract: _json_get_str docs state 'no escaped quotes inside value'. " \
-    "Broken behavior on this input is a known limitation, not a test failure. " \
-    "Follow-up: STORY-0XX _json_get_str robustness — escaped quotes in values."
+  skip "Deferred to v1.0 WASM dispatcher migration (docs/planning/llm-second-brain-phased-build-plan.md §A.4): richer JSON parsing tooling available post-migration; pure-bash JSON parsing in v0.x accepts the documented escape-handling limitation per CLAUDE.md §Project Identity pure-bash + minimal tooling authorization."
 }
 
 @test "F_PASS01_I01: _json_get_str key with literal newline escape sequence in value — skip outside contract" {

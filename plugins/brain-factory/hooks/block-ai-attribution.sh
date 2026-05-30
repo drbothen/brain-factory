@@ -41,7 +41,7 @@ _stripped="${_stripped%"${_stripped##*[![:space:]]}"}"
 
 if [[ -z "$_stripped" ]] || [[ "$_stripped" != '{'*'}' ]]; then
   emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
-  printf '{"continue":false,"decision":"block","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
+  printf '{"continue":false,"decision":"block","code":"E-HOOK-001","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
     "${HOOK_TRACE_ID}"
   exit 2
 fi

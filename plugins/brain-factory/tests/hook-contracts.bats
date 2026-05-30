@@ -93,7 +93,7 @@ setup() {
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
-  echo "$output" | grep -qF "E-HOOK-001"
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
 @test "BC_2_04_016: enforce-kebab-case empty stdin exits 2 with E-HOOK-001 in stdout" {
@@ -102,7 +102,7 @@ setup() {
   [ "$status" -eq 2 ]
   run bash -c "printf '' | CLAUDE_PLUGIN_ROOT='${CLAUDE_PLUGIN_ROOT}' bash '${hook}' 2>/dev/null"
   echo "$output" | jq -e '.' >/dev/null
-  echo "$output" | grep -qF "E-HOOK-001"
+  echo "$output" | jq -e '.code == "E-HOOK-001"' >/dev/null
 }
 
 @test "BC_2_04_016: quarantine-fetch empty stdin exits 2 with E-HOOK-001 in stdout" {
@@ -764,8 +764,7 @@ _make_cred_fixture() {
 #   - Hook stdin is fed via bash I/O redirection "< fixture" — no cat subprocess.
 #   - The only fork is the hook process itself (bash hook.sh < fixture) — that IS
 #     the hook's runtime and is correctly included per BC-2.04.015 PC1.
-#   - Portability fallback: perl -MTime::HiRes for bash < 5.0 environments
-#     (currently bash 5.2 on macOS ARM and Linux CI).
+#   - Requires bash 5.0+ for $EPOCHREALTIME. Project baseline is bash 5.2 per CLAUDE.md §Toolchain.
 #
 #   P99 estimator: N=10 samples, sort numerically, take the 9th-of-10 (second-
 #   highest). BC-2.04.015 EC-003 states "single outlier does not constitute

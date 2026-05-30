@@ -41,7 +41,7 @@ file_path="$(_json_get_str "$stdin_json" 'file_path')"
 # This also catches malformed/empty stdin (jq failure leaves file_path empty).
 if [[ -z "$file_path" ]]; then
   emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
-  printf '{"continue":false,"decision":"block","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
+  printf '{"continue":false,"decision":"block","code":"E-HOOK-001","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PreToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
     "${HOOK_TRACE_ID}"
   exit 2
 fi
