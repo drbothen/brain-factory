@@ -35,7 +35,7 @@ convergence_trajectory:
 current_pass_number: "6 (CLOSED PASS — 0C+0I+0S — CONVERGED — third consecutive PASS — BC-5.39.001 3-CLEAN literal streak ACHIEVED)"
 current_streak: "3/3 CONVERGED"
 mode: greenfield
-phase: phase-3-wave-4-story-004-pass-20-pending
+phase: phase-3-wave-4-story-004-CONVERGED-pr-pending
 phase_1a_status: CLOSED — cascade CONVERGED at Pass 23 on brief v0.4.15
 phase_1b_status: COMPLETED — PRD v0.1.1 landed at commit 7935faa; 95 BCs + BC-INDEX + 4 supplements; consistency audit closed (5 findings: 4 closed, 1 OBSERVATION accepted)
 phase_1c_status: COMPLETED — architecture v0.1.1 + 95 BCs SS-NN backfilled + PRD v0.1.2 + BC-INDEX v0.1.1; consistency audit closed (7 findings: 6 actionable closed, 1 OBSERVATION expected-pending then resolved); five-file gate canonical; 64/64 P0 BC VP coverage achieved
@@ -51,8 +51,8 @@ dtu_required: true
 dtu_assessment_path: .factory/specs/dtu-assessment.md
 cicd_setup_path: .factory/specs/cicd-setup.md
 ci_workflow_path: .github/workflows/ci.yml
-session_stage: phase-3-wave-4-story-004-pass-20-pending
-session_continuity: "Pass 19: PASS — 0C+0I+0S (zero findings of any severity). Fresh-context independent re-derivation reproduced Pass-18 invariants without inheriting verdict. All four-surface contracts aligned. Streak advances 1/3 → 2/3. Tests 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats at tip abb9c71 (unchanged). NEXT ACTION: dispatch adversary Pass 20 WITH ABSOLUTE WORKTREE PATHS (need 1 more consecutive PASS for BC-5.39.001 convergence). See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history."
+session_stage: phase-3-wave-4-story-004-CONVERGED-pr-pending
+session_continuity: "Pass 20: PASS — 0C+0I+0S+1OBS (OBS-01 benign dead-code, non-blocking). BC-5.39.001 3-CLEAN satisfied: Pass 18 PASS (streak 1/3) + Pass 19 PASS (streak 2/3) + Pass 20 PASS (streak 3/3 → CONVERGED). Tests 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats at tip abb9c71 (unchanged). NEXT ACTION: push feature/STORY-004 to origin, dispatch pr-manager for 9-step PR cycle targeting develop. BC-2.01.006 + BC-2.04.014 auto-promote draft→active at merge per POL-14."
 canonical_state_doc: .factory/STATE.md
 canonical_task_list: .factory/TASK-LIST.md
 canonical_brief: .factory/specs/product-brief.md (v0.4.20, commit f6725b9)
@@ -81,7 +81,8 @@ holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
 worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
-status: phase-3-wave-4-story-004-pass-20-pending
+story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS + Pass 19 PASS + Pass 20 PASS — BC-5.39.001 3-CLEAN satisfied"
+status: phase-3-wave-4-story-004-CONVERGED-pr-pending
 ---
 
 # brain-factory Pipeline STATE
@@ -90,22 +91,18 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 
 ---
 
-## TOP OF STACK — STORY-004 Pass 20 PENDING — Streak 2/3 (Pass 19 PASS — 0C+0I+0S — one more clean pass for convergence)
+## TOP OF STACK — STORY-004 LOCAL CASCADE CONVERGED — push + PR pending
+
+**BC-5.39.001 3-CLEAN SATISFIED:** Pass 18 PASS + Pass 19 PASS + Pass 20 PASS (streak 3/3). STORY-004 LOCAL adversarial cascade CONVERGED.
 
 **NEXT ACTION (for fresh session resuming here):**
-1. Verify worktree: `git worktree list` — should show STORY-004 at `abb9c71`
-2. Verify tests: `bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-skill.bats 2>&1 | tail -3` — expect 45/45
-3. `bats /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/plugins/brain-factory/tests/brain-health-check.bats 2>&1 | tail -3` — expect 43/43
-4. Dispatch adversary for Pass 20 WITH ABSOLUTE WORKTREE PATHS — use `/Users/jmagady/Dev/brain-factory/.worktrees/STORY-004/.factory/...` for all spec file references; do NOT use `/Users/jmagady/Dev/brain-factory/.factory/...` (stale factory-artifacts tree)
-5. DO NOT re-litigate PO/architect decisions from Pass 1 — they are locked in spec files
-6. DI-003 and DI-004 are RETIRED — do not re-raise BC-2.04.014 narrative drift or STORY-005 exit codes; fully closed
-7. STORY-004 frontmatter status:draft + BC-2.01.006 status:draft are CORRECT — both promote per POL-14 at PR merge; do not flag as findings
-8. F13-07 deferred (hook reference test paper-fix risk; intent verification pending) — can be addressed in PR review or follow-up
-9. F16-05 deferred (BC changelog volatile line pins; pass-report-changelog justified-citation exception per TD-VSDD-091; intent verification pending)
-10. DI-007 and DI-008 — closed/confirmed in Pass 19 (no findings raised); no action needed
-11. error-taxonomy is now v0.1.10; BC-2.01.006 is now v1.9; E-HEALTH-001 message is "missing or unreadable"
+1. Push feature/STORY-004 to origin: `git -C /Users/jmagady/Dev/brain-factory/.worktrees/STORY-004 push -u origin feature/STORY-004`
+2. Dispatch pr-manager for 9-step PR cycle targeting develop
+3. BC-2.01.006 + BC-2.04.014 auto-promote draft→active at PR merge per POL-14
+4. After PR merges: run state-manager post-merge burst (record delivery, update Wave 4 progress 3/4)
+5. Then begin STORY-015 (hook meta-lint, Wave 4 story 4/4)
 
-**STORY-004 cascade state:** Pass 19 PASS — 0C+0I+0S (zero findings of any severity). Fresh-context independent re-derivation reproduced Pass-18 invariants without inheriting verdict. All four-surface contracts aligned (BC ↔ SKILL.md ↔ run.sh ↔ bats); all four cited bats test names exist; F17-02 EC-002 message alignment propagated to all four artifacts. Worktree tip abb9c71 (unchanged). Tests 45/45 + 43/43. Streak advances to 2/3. Need 1 more consecutive PASS for BC-5.39.001 convergence. See SESSION-HANDOFF.md §STORY-004 Cascade Detail for complete history, locked decisions, and adversary dispatch template.
+**STORY-004 cascade state:** CONVERGED — Pass 20 PASS (0C+0I+0S+1OBS). OBS-01 benign dead-code in F17-04 fallback's unreachable `*":"*` branch (brain-health-check.sh) — classified informational per L10, non-blocking. All four-surface contracts aligned (BC ↔ SKILL.md ↔ run.sh ↔ bats). Worktree tip abb9c71 (unchanged). Tests 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats. Total: 17 fix bursts, ~30 commits on feature/STORY-004. DIs remaining: DI-001, DI-002, DI-005, DI-006 (project-wide/deferred). DI-003, DI-004 retired during cascade.
 
 ---
 
@@ -140,6 +137,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 **D-031 — STORY-004 Pass 18 PASS — streak 1/3 — first clean pass since Pass 7 (2026-05-29):** Pass 18 adversary verdict: PASS — 0C+0I+0S+2O (observations only, no blockers). Fresh-context read-only audit. No fix burst. Pass-17 closures all verified load-bearing: F17-01 marker-count check unconditional, F17-02 E-HEALTH-001 message wording, F17-03 marker_count arithmetic-safe, F17-04 yq-absent fallback BC format. Worktree tip remains abb9c71. Tests 45/45 + 43/43. BC-5.39.001 streak advances 0/3 → 1/3. Streak progression context: P7 PASS (1/3) → P8–P17 FAIL (streak reset each pass) → P18 PASS (1/3 restart). Pass 19 next (need 2/3 for second consecutive clean pass).
 
 **D-032 — STORY-004 Pass 19 PASS — streak 2/3 — one more clean pass for convergence (2026-05-29):** Pass 19 adversary verdict: PASS — 0C+0I+0S (zero findings of any severity). Fresh-context independent re-derivation reproduced Pass-18 invariants without inheriting verdict. All four-surface contracts aligned (BC ↔ SKILL.md ↔ run.sh ↔ bats); all four cited bats test names exist; F17-02 EC-002 message alignment propagated to all four artifacts. No fix burst. Worktree tip abb9c71 (unchanged). Tests 45/45 + 43/43. BC-5.39.001 streak advances 1/3 → 2/3. Pass 20 next (need 3/3 for BC-5.39.001 CONVERGED).
+
+**D-033 — STORY-004 Pass 20 PASS — streak 3/3 — BC-5.39.001 CONVERGED (2026-05-29):** Pass 20 adversary verdict: PASS — 0C+0I+0S+1OBS. OBS-01: benign dead-code observation on F17-04 fallback's unreachable `*":"*` branch in brain-health-check.sh — classified informational per Lesson 10; does not alter contract behavior; non-blocking per BC-5.39.001. Fresh-context read-only audit. No fix burst. Worktree tip abb9c71 (unchanged). Tests 45/45 brain-health-skill.bats + 43/43 brain-health-check.bats. BC-5.39.001 streak advances 2/3 → 3/3 → **CONVERGED**. Full cascade: 17 fix bursts, ~30 commits on feature/STORY-004. Passes 18+19+20 = 3 consecutive PASS — BC-5.39.001 3-CLEAN protocol satisfied. BC-2.01.006 v1.9 + BC-2.04.014 v1.6 + error-taxonomy v0.1.10 all aligned with implementation. All 6 ACs + 5 postconditions + 5 edge cases have load-bearing bats coverage. Semantic anchoring intact. No spec drift. Cycle Lesson 10 codified. NEXT: push feature/STORY-004, pr-manager 9-step PR cycle targeting develop.
 
 ---
 
