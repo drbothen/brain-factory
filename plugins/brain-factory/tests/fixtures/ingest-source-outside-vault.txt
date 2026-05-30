@@ -1,0 +1,20 @@
+# Out-of-Vault Path Reference Fixture
+
+This file is a bats test fixture for the BC-2.03.003 out-of-vault rejection tests.
+
+It does NOT contain a real file to ingest. Instead, bats tests that exercise the
+out-of-vault rejection path use paths like the following as test inputs:
+
+  /etc/passwd                          — system directory; always hard-blocked
+  /tmp/outside-vault-file.md           — outside vault root; no allowlist entry
+  ../../outside-vault/escape.md        — dot-dot traversal that readlink -f resolves
+                                         to a path outside the vault root
+
+The test fixture itself lives inside the vault (tests/fixtures/) so it can be
+tracked in git. The out-of-vault paths used in bats tests are constructed at
+test runtime using mktemp or hardcoded system paths — they are never tracked
+as actual files in this repository.
+
+Reference: BC-2.03.003 EC-001 (symlink inside vault resolving outside vault)
+           BC-2.03.003 invariant 2 (system directories always blocked)
+           STORY-019 AC-009, AC-010, AC-011, AC-012
