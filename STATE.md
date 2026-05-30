@@ -2,7 +2,7 @@
 artifact_type: pipeline-state
 project: brain-factory
 created: 2026-05-15
-last_updated: 2026-05-30T22:00:00
+last_updated: 2026-05-30T23:30:00
 wave_1_progress: "4/4 stories completed (21/21 points) — COMPLETE"
 wave_2_progress: "3/3 stories completed (24/24 points) — GATE PASSED"
 wave_2_gate_result: "GATE PASSED — 6/6 checks (test-suite 250/250, DTU skip, adversary PASS, demo-evidence PASS, holdout 1.0, state-update)"
@@ -80,7 +80,7 @@ total_holdout_scenarios: 17
 holdout_must_pass: 10
 holdout_nice_to_pass: 7
 total_waves: 11
-worktree_layout_note: .factory/ is a regular directory tracked on main with factory(...) conventional commits per SESSION-HANDOFF §10 standing directive (intentional pre-v0.1 state; NOT a regression)
+worktree_layout_note: .factory/ is mounted as a git worktree of the orphan factory-artifacts branch per canonical vsdd-factory pattern. Reconciled from pre-v0.1 main-tracked layout on 2026-05-30 at end of Wave 4 (D-038). All future factory(state) commits land on factory-artifacts via the worktree (cd .factory && git commit). main retains its pre-reconciliation factory(state) history (68 commits b3eed43..6d8450c) as backup only.
 story_004_cascade_streak: "3/3 CONVERGED — Pass 18 PASS + Pass 19 PASS + Pass 20 PASS — BC-5.39.001 3-CLEAN satisfied — DELIVERED PR #18 af7c6ad"
 story_015_cascade_streak: "3/3 CONVERGED — Pass 6 PASS + Pass 7 PASS + Pass 8 PASS — BC-5.39.001 3-CLEAN satisfied — DELIVERED PR #19 20bedb7 (2026-05-30)"
 story_015_merge_sha: 20bedb7708660bc7a828a2d17c2e956fec8e301d
@@ -116,6 +116,8 @@ This is the canonical state-discovery entry point. Read it FIRST when starting a
 4. DIs still open (project-wide, non-blocking): DI-001, DI-002, DI-005, DI-006
 
 ---
+
+**D-038 — Topology reconciliation executed (2026-05-30):** Force-replaced factory-artifacts orphan (af6f004 → 20d0d69 fresh from main:.factory @ 6d8450c, user-authorized). Removed .factory/ from main tracking via `git rm -r .factory/` + added `/.factory/` to .gitignore (removal commit f9c4b86 on main). Mounted .factory/ as worktree on factory-artifacts branch (canonical vsdd-factory pattern). Standing directive updated: `worktree_layout_note` replaced with canonical orphan-mount description. L16 codified: when project diverges from canonical patterns, document explicitly + plan reconciliation timeline. Reconciliation triggered by Wave 4 Gate 3 false-negative (devops-engineer auto-mounted .factory/ as worktree, adversary read stale factory-artifacts at af6f004 instead of live main; root cause: divergence without explicit reconciliation plan + agent auto-correction under canonical assumptions). main retains pre-reconciliation factory(state) history (68 commits b3eed43..6d8450c) as backup. All future factory(state) commits land on factory-artifacts via worktree.
 
 **D-037 — Wave 4 GATE PASSED 6/6 (2026-05-30):** Wave 4 integration gate PASSED all 6 checks. Gate 1 CI green at 21533b0. Gate 2 DTU SKIP (no LinkedIn calls in Wave 4). Gate 3 adversarial PASS after fix burst 1622696 (5 BCs: BC-2.02.002/003/005 + BC-2.12.001/002 promoted active) + PR #20 21533b0 (demo evidence 15 files). Gate 4 demo evidence PASS (51 ACs across 4 stories). Gate 5 holdout PASS after fix burst 43ff437 (holdout-scenarios v0.1.5, mean 0.90 / min 0.85). Gate 6 this commit. UD-011 recorded: user applied strict-pass disposition for Gate 5 (refresh scenarios per Source-of-Truth precedence rule 1 rather than lower threshold). Lessons L14 (worktree mount must respect project standing directive) + L15 (wave-perimeter adversary catches state-vs-impl drift) codified. STORY-044/045/046 follow-up stories await Wave 5+. Wave 5 NEXT (STORY-019 first).
 
