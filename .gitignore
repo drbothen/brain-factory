@@ -41,3 +41,6 @@ Cargo.lock
 .brain/logs/*.jsonl
 .brain/cycles/*/health-*.md
 .brain/cycles/*/lint-*.md
+
+# Factory state lives on orphan factory-artifacts branch, mounted at .factory/ via git worktree
+/.factory/
