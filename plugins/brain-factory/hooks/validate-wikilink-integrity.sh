@@ -51,8 +51,8 @@ brain_dir="${BRAIN_DIR:-${_cwd_raw}}"
 # Fail-closed if we cannot determine the brain directory or file path.
 # This also catches malformed/empty stdin (jq failure leaves file_path empty).
 if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
-  emit_event "wiki.wikilink.check_failed" "code=E-WIKI-002" "reason=malformed or empty hook payload"
-  printf '{"continue":false,"decision":"block","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-WIKI-002","trace":"%s"}}\n' \
+  emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
+  printf '{"continue":false,"decision":"block","code":"E-HOOK-001","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
     "${HOOK_TRACE_ID}"
   exit 2
 fi

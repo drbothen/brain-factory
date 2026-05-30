@@ -41,7 +41,7 @@ brain_dir="${BRAIN_DIR:-${_cwd_raw}}"
 # This also catches malformed/empty stdin (jq failure leaves file_path empty).
 if [[ -z "$file_path" ]] || [[ -z "$brain_dir" ]]; then
   emit_event "hook.input.invalid" "code=E-HOOK-001" "reason=malformed or empty hook payload"
-  printf '{"continue":false,"decision":"block","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-SOURCE-003","trace":"%s"}}\n' \
+  printf '{"continue":false,"decision":"block","code":"E-HOOK-001","reason":"Malformed or empty hook payload.","hookSpecificOutput":{"hookEventName":"PostToolUse","code":"E-HOOK-001","trace":"%s"}}\n' \
     "${HOOK_TRACE_ID}"
   exit 2
 fi
