@@ -1,0 +1,62 @@
+Demo 1: --dry-run linear DAG (AC-001, AC-002, AC-011 — topological order + determinism)
+Command: CLAUDE_PLUGIN_ROOT=plugins/brain-factory BRAIN_ROOT=<tmpdir> bin/lobster-run --dry-run tests/fixtures/linear-dag.yaml
+
+linear-dag.yaml content:
+  steps: step-a (no deps) → step-b (depends_on: [step-a]) → step-c (depends_on: [step-b])
+
+Stdout (dependency order preserved):
+  step-a: node /tmp/wave4-gate/plugins/brain-factory/scripts/run-skill.mjs init
+  step-b: node /tmp/wave4-gate/plugins/brain-factory/scripts/run-skill.mjs init
+  step-c: node /tmp/wave4-gate/plugins/brain-factory/scripts/run-skill.mjs init
+
+Exit: 0
+
+Observation: A before B before C — satisfies AC-001 topological order contract.
+AC-002: invocations formatted as "node scripts/run-skill.mjs <skill> <args>" per contract.
+
+---
+
+Demo 2: --dry-run same workflow twice produces identical output (AC-011 + VP-007)
+First run and second run produce byte-identical stdout.
+Verified by bats test 35:
+  ok 35 BC_2_12_001: lobster-run --dry-run same workflow twice produces identical output (VP-007)
+
+---
+
+Demo 3: Cycle detection → E-LOBSTER-001 exit 2 (AC-004)
+Command: CLAUDE_PLUGIN_ROOT=plugins/brain-factory BRAIN_ROOT=<tmpdir> bin/lobster-run --dry-run tests/fixtures/cycle-dag.yaml
+
+cycle-dag.yaml: step-a depends_on [step-b], step-b depends_on [step-a]
+
+Stderr output:
+  {"level":"error","code":"E-LOBSTER-001","message":"Steps with unresolved dependencies (cycle present): step-a,step-b.","trace":"f00efc9a-9a0b-4d19-98d7-70e0685ff95d"}
+  {"ts":"2026-05-30T18:43:40Z","event_type":"lobster.run.completed","hook_name":"bin/lobster-run","trace":"f00efc9a-9a0b-4d19-98d7-70e0685ff95d","workflow":"tests/fixtures/cycle-dag.yaml","exit_code":2,"steps_run":0,"steps_skipped":2}
+
+Exit: 2
+
+Observations:
+- E-LOBSTER-001 code present (AC-004 contract met)
+- steps_run: 0 — no steps executed before cycle detected (AC-004: no partial execution)
+- Cycle member IDs ("step-a,step-b") included in message (bats test 76 verifies this)
+
+---
+
+Demo 4: Normal execution mode — all steps exit 0 (AC-007, AC-006, AC-010)
+Command: CLAUDE_PLUGIN_ROOT=plugins/brain-factory BRAIN_ROOT=<tmpdir> bin/lobster-run tests/fixtures/linear-dag.yaml
+
+Stderr output (run-skill.mjs is a stub in v0.1 that exits 0):
+  {"level":"info","stub":true,"skill":"init","args":[],"message":"run-skill.mjs stub — real dispatch in STORY-033"}
+  {"ts":"...","event_type":"lobster.step.completed","hook_name":"bin/lobster-run","trace":"...","step_id":"step-a","exit_code":0,"verdict":"allow","duration_ms":76}
+  {"level":"info","stub":true,"skill":"init","args":[],"message":"run-skill.mjs stub — real dispatch in STORY-033"}
+  {"ts":"...","event_type":"lobster.step.completed","hook_name":"bin/lobster-run","trace":"...","step_id":"step-b","exit_code":0,"verdict":"allow","duration_ms":77}
+  {"level":"info","stub":true,"skill":"init","args":[],"message":"run-skill.mjs stub — real dispatch in STORY-033"}
+  {"ts":"...","event_type":"lobster.step.completed","hook_name":"bin/lobster-run","trace":"...","step_id":"step-c","exit_code":0,"verdict":"allow","duration_ms":75}
+  {"ts":"...","event_type":"lobster.run.completed","hook_name":"bin/lobster-run","trace":"...","workflow":"tests/fixtures/linear-dag.yaml","exit_code":0,"steps_run":3,"steps_skipped":0}
+
+Exit: 0 — all 3 steps succeeded (AC-007: all steps exit 0 → lobster exits 0)
+
+Observations:
+- Each step gets a lobster.step.completed JSONL log entry (AC-006 contract)
+- duration_ms is a non-negative integer (bats test 45 verifies)
+- trace UUID is non-zero across all events (bats test 46 verifies)
+- verdict field present: "allow" for exit 0, "advisory" for exit 1, "block" for exit 2

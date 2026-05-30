@@ -1,0 +1,11 @@
+Command: shellcheck plugins/brain-factory/bin/lobster-run
+Result: exit 0 — 0 warnings
+shellcheck: PASS (0 warnings)
+
+Command: shfmt -d -i 2 plugins/brain-factory/bin/lobster-run
+Result: exit 0 — 0 diffs
+shfmt: PASS (0 diffs)
+
+Note: Bats structural tests also independently verify both tools in the runtime context:
+  ok 48 BC_2_12_001: bin/lobster-run passes shellcheck
+  ok 49 BC_2_12_001: bin/lobster-run passes shfmt normalization
