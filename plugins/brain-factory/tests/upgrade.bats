@@ -46,10 +46,10 @@ setup() {
 }
 
 # AC-002 / BC-2.14.004 postcondition 3 — PASSES (stub directories already exist)
-@test "BC_2_14_004: 26 skill directories exist under skills/" {
+@test "BC_2_14_004: 27 skill directories exist under skills/" {
   local count
   count="$(find "${PLUGIN_DIR}/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
-  [ "$count" -eq 26 ]
+  [ "$count" -eq 27 ]
 }
 
 # AC-002 / BC-2.14.004 postcondition 4 — PASSES (stub directories already exist)
