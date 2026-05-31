@@ -7,8 +7,7 @@
 //
 // Exit codes:
 //   0 — skill name acknowledged (stub); full dispatch in STORY-034
-//   1 — reserved for skill advisory (stub: not emitted)
-//   2 — missing skill name argument
+//   2 — preflight block: Node < 22 (EC-002) or missing skill name argument
 
 const nodeMajor = parseInt(process.versions.node.split('.')[0], 10);
 if (nodeMajor < 22) {
@@ -19,7 +18,7 @@ if (nodeMajor < 22) {
       message: `run-skill.mjs requires Node 22+; found ${process.versions.node}`,
     }) + '\n'
   );
-  process.exit(1);
+  process.exit(2);
 }
 
 const [, , skillName, ...args] = process.argv;
