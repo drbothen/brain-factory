@@ -577,6 +577,23 @@ _run_validate_path() {
   _teardown_vault
 }
 
+@test "BC_2_03_003: out-of-vault /var/<non-enumerated> hard-blocked even when allowlisted (F3 regression)" {
+  # Traces to: BC-2.03.003 invariant 2 — deny-by-default for ALL /var/* outside vault.
+  # This test proves the old enumerated-only approach was insufficient: a non-enumerated
+  # /var/<other> path (e.g. /var/somethingelse) must be rejected even if in allowlist.
+  # Proof of bite: the OLD code let /var/somethingelse fall through to the allowlist check
+  # and accept it; the NEW code hard-blocks all /var/* for out-of-vault paths.
+  local policies_content
+  policies_content="$(printf 'allowed_external_paths:\n  - /var/somethingelse/\n')"
+  _setup_vault_with_policies "$policies_content"
+
+  _run_validate_path "/var/somethingelse/file.md"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
 # ===========================================================================
 # AC-012 / BC-2.03.003 EC-002:
 # Operator allowlist in policies.yaml permits a non-system outside-vault path
@@ -584,9 +601,14 @@ _run_validate_path() {
 @test "BC_2_03_003: allowlisted outside-vault path is accepted; exit 0 (AC-012)" {
   # Traces to: BC-2.03.003 EC-002; allowed_external_paths key
   # RED GATE: stub exits 3; test asserts exit 0 → FAILS
-  # Create a temp dir OUTSIDE the vault to act as the allowed external path
+  # Create a temp dir OUTSIDE the vault in /tmp (not /var/folders) to test the
+  # allowlist: /var/* is hard-blocked for out-of-vault paths, but non-system
+  # directories like /tmp are allowlist-eligible (BC-2.03.003 invariant 2).
   local allowed_dir
-  allowed_dir="$(mktemp -d)"
+  # Use /tmp explicitly to avoid macOS /var/folders temp paths which are hard-blocked
+  # (BC-2.03.003 invariant 2: all /var/* outside vault → denied).
+  # mktemp with explicit template places dir in /tmp on both macOS and Linux.
+  allowed_dir="$(mktemp -d /tmp/bats-allowed-XXXXXX)"
   local allowed_file="${allowed_dir}/research-notes.md"
   cp "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" "$allowed_file"
 

@@ -15,9 +15,10 @@ set -euo pipefail
 #      /var→/private/var symlinks are handled consistently.
 #   2. Vault check: if resolved path is inside resolved vault root → proceed.
 #   3. System-directory hard block (for paths NOT in vault):
-#      /etc /usr /var/log /var/run /var/spool /var/db /var/caches /sys /proc
+#      /etc /usr /var (ALL of /var/*) /sys /proc
 #      (and macOS /private/* equivalents). NOT configurable via allowlist.
-#      NOTE: /var/folders is macOS user-writable temp space (NOT a system dir).
+#      NOTE: /var/folders is macOS user-writable temp space; it is safe
+#      because in-vault paths (step 2) bypass this block entirely.
 #   4. Allowlist check: .brain/policies.yaml allowed_external_paths.
 #      If resolved path is prefixed by any allowed path → proceed.
 #   5. Otherwise reject with E-INGEST-009.
@@ -110,34 +111,25 @@ fi
 # ---------------------------------------------------------------------------
 # Step 3: Hard-block system directories for paths NOT inside the vault.
 # Blocks traditional Unix system directories and their macOS /private/* mirrors.
-# /var/folders is macOS user-writable temp space and is NOT blocked here.
-# BC-2.03.003 invariant 2.
+# ALL of /var/* is blocked for out-of-vault paths (BC-2.03.003 invariant 2).
+# In-vault paths (INSIDE_VAULT=1) never reach this check — that is the safe
+# path for /var/folders mktemp vaults on macOS.
 # ---------------------------------------------------------------------------
 _is_system_dir() {
   local path="$1"
+  # BC-2.03.003 invariant 2: deny-by-default for all /var/* when outside vault.
+  # /var/folders is macOS user-writable temp space (NOT blocked) — but that guard
+  # only applies when the path is INSIDE the vault (checked before this function).
+  # For out-of-vault paths, ALL of /var/* is hard-blocked.
   case "$path" in
   /etc/* | /etc) return 0 ;;
   /usr/* | /usr) return 0 ;;
-  /var/log/* | /var/log) return 0 ;;
-  /var/run/* | /var/run) return 0 ;;
-  /var/spool/* | /var/spool) return 0 ;;
-  /var/db/* | /var/db) return 0 ;;
-  /var/caches/* | /var/caches) return 0 ;;
-  /var/tmp/* | /var/tmp) return 0 ;;
-  /var/root/* | /var/root) return 0 ;;
-  /var/mail/* | /var/mail) return 0 ;;
+  /var/* | /var) return 0 ;;
   /sys/* | /sys) return 0 ;;
   /proc/* | /proc) return 0 ;;
   /private/etc/* | /private/etc) return 0 ;;
   /private/usr/* | /private/usr) return 0 ;;
-  /private/var/log/* | /private/var/log) return 0 ;;
-  /private/var/run/* | /private/var/run) return 0 ;;
-  /private/var/spool/* | /private/var/spool) return 0 ;;
-  /private/var/db/* | /private/var/db) return 0 ;;
-  /private/var/caches/* | /private/var/caches) return 0 ;;
-  /private/var/tmp/* | /private/var/tmp) return 0 ;;
-  /private/var/root/* | /private/var/root) return 0 ;;
-  /private/var/mail/* | /private/var/mail) return 0 ;;
+  /private/var/* | /private/var) return 0 ;;
   /private/sys/* | /private/sys) return 0 ;;
   /private/proc/* | /private/proc) return 0 ;;
   esac
