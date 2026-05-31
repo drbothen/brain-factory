@@ -2126,14 +2126,14 @@ _setup_lobster_env_with_spy() {
   SPY_LOG="$(mktemp)"
 
   # Spy run-skill.mjs: records every invocation, exits 0
+  # Must be valid ESM (lobster-run invokes it directly as a .mjs file — no .cjs copy).
   cat >"${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs" <<'SPY_EOF'
 #!/usr/bin/env node
-'use strict';
-const fs = require('fs');
+import { appendFileSync } from 'node:fs';
 const [, , skillName, ...args] = process.argv;
 const logPath = process.env.RUN_SKILL_SPY_LOG || '/dev/null';
 const entry = JSON.stringify({ skill: skillName || '', args }) + '\n';
-fs.appendFileSync(logPath, entry);
+appendFileSync(logPath, entry);
 process.exit(0);
 SPY_EOF
   chmod +x "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs"

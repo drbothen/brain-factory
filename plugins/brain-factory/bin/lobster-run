@@ -96,21 +96,12 @@ _emit_run_completed_and_exit() {
 # tmpfile is cleaned up on ANY exit path (normal, SIGINT, SIGTERM, set -e trip).
 # The EXIT trap fires unconditionally — this is the sole cleanup site.
 _WORKFLOW_TMPFILE=""
-# AC-005/BC-2.12.004: _RUNNER_TMPFILE holds a .cjs copy of run-skill.mjs so that
-# CommonJS-style spy mocks (require() syntax) work when the test overrides the script.
-# Node treats .mjs as strict ESM; .cjs forces CommonJS regardless of package.json.
-_RUNNER_TMPFILE=""
 # shellcheck disable=SC2329,SC2317  # invoked via trap EXIT, not a direct call
 _cleanup_tmpfile() {
   # shellcheck disable=SC2317
   if [[ -n "${_WORKFLOW_TMPFILE:-}" && -f "$_WORKFLOW_TMPFILE" ]]; then
     # shellcheck disable=SC2317
     rm -f "$_WORKFLOW_TMPFILE"
-  fi
-  # shellcheck disable=SC2317
-  if [[ -n "${_RUNNER_TMPFILE:-}" && -f "$_RUNNER_TMPFILE" ]]; then
-    # shellcheck disable=SC2317
-    rm -f "$_RUNNER_TMPFILE"
   fi
 }
 trap _cleanup_tmpfile EXIT
@@ -644,19 +635,6 @@ OVERALL_EXIT=0
 STEPS_RUN=0
 STEPS_SKIPPED=0
 
-# AC-005/BC-2.12.004: create a .cjs copy of run-skill.mjs so that the script runs
-# under Node's CommonJS loader regardless of .mjs extension.  Node strictly treats
-# .mjs as ESM (require() is unavailable), while .cjs forces CommonJS regardless of
-# any package.json.  Copying to .cjs lets both the production stub (pure ESM-safe JS)
-# AND test spy mocks that use CommonJS require() work without modification.
-_RUNNER_SRC="${PLUGIN_ROOT}/scripts/run-skill.mjs"
-if [[ -f "$_RUNNER_SRC" ]]; then
-  _RUNNER_TMPFILE="$(mktemp /tmp/lobster-runner-XXXXXX.cjs)"
-  cp "$_RUNNER_SRC" "$_RUNNER_TMPFILE"
-else
-  _RUNNER_TMPFILE=""
-fi
-
 for sid in "${TOPO_ORDER[@]}"; do
   skill="${STEP_SKILL_MAP["$sid"]}"
   args_json="${STEP_ARGS_JSON["$sid"]:-[]}"
@@ -676,14 +654,10 @@ for sid in "${TOPO_ORDER[@]}"; do
     done
   fi
 
-  # Use .cjs runner copy if available; fallback to direct .mjs invocation.
-  # The runner variable resolves to scripts/run-skill.mjs (via the .cjs copy).
-  _SKILL_RUNNER="${_RUNNER_TMPFILE:-${PLUGIN_ROOT}/scripts/run-skill.mjs}"
-
   if [[ "${#step_args[@]}" -gt 0 ]]; then
-    node "$_SKILL_RUNNER" "$skill" "${step_args[@]}" || step_exit="$?" # run-skill.mjs
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" "${step_args[@]}" || step_exit="$?" # run-skill.mjs
   else
-    node "$_SKILL_RUNNER" "$skill" || step_exit="$?" # run-skill.mjs
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" || step_exit="$?" # run-skill.mjs
   fi
 
   step_end_ms="$(_now_ms)"
