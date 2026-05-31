@@ -2437,6 +2437,108 @@ FAKE_EOF
   done
 }
 
+# ---------------------------------------------------------------------------
+# STORY-033 Pass 1 IMPORTANT-1: Node<22 preflight is exit-2 block (EC-002)
+# When a step's run-skill.mjs exits 2 (Node version mismatch), lobster-run must
+# aggregate to workflow exit 2 (block / fail-fast), NOT exit 1 (advisory).
+# Traces to: BC-2.12.004 v1.3 EC-002; AC-005
+# ---------------------------------------------------------------------------
+
+# IMPORTANT-1: step runner exits 2 (Node<22 preflight) → lobster-run exits 2 (block)
+@test "BC_2_12_004: run-skill.mjs Node<22 preflight exit-2 → lobster-run aggregates to exit 2 (IMPORTANT-1/EC-002)" {
+  _setup_lobster_env
+  # Register mock-pass so skill-check passes
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  # Override run-skill.mjs with a spy that unconditionally exits 2 (simulates Node<22 EC-002 block)
+  cat >"${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs" <<'EC002_EOF'
+#!/usr/bin/env node
+// Simulates BC-2.12.004 v1.3 EC-002: Node<22 preflight block (exit 2)
+process.stderr.write(JSON.stringify({level:'error',code:'E-SKILL-002',message:'run-skill.mjs requires Node 22+; found 20.0.0'}) + '\n');
+process.exit(2);
+EC002_EOF
+  chmod +x "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs"
+  # Use exit-code-all-pass.yaml (mock-pass steps): the spy overrides runner to exit 2
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  _teardown_lobster_env
+  # lobster-run MUST exit 2 (block) — not exit 1 (advisory)
+  # This pins BC-2.12.004 v1.3 EC-002: preflight failure is a BLOCK not advisory
+  [ "$status" -eq 2 ]
+}
+
+# ---------------------------------------------------------------------------
+# STORY-033 Pass 1 IMPORTANT-2: --headless exit-1/2 cases pinned through the flag
+# AC-004 headless exit-1: all-advisory workflow → workflow exit 1, all steps run
+# AC-004 headless exit-2: blocking workflow    → workflow exit 2, fail-fast
+# Traces to: BC-2.12.004 AC-004; AC-001
+# ---------------------------------------------------------------------------
+
+# IMPORTANT-2: --headless with all-advisory workflow (every step exits 1) → workflow exit 1; all steps ran
+@test "BC_2_12_004: lobster-run --headless all-advisory workflow exits 1 all steps ran (IMPORTANT-2/AC-004)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-advisory"
+  printf -- '---\nname: mock-advisory\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-advisory/SKILL.md"
+  # Run --headless with the advisory fixture (step-b exits 1; step-a and step-c exit 0)
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "${FIXTURE_DIR}/exit-code-advisory.yaml" </dev/null
+  local exit_status="$status"
+  # Read log content BEFORE teardown (teardown deletes LOBSTER_BRAIN)
+  local log_file step_c_line
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  if [ -n "$log_file" ]; then
+    step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
+  fi
+  _teardown_lobster_env
+  # --headless must be recognized (not E-LOBSTER-007)
+  [[ "$output" != *"E-LOBSTER-007"* ]]
+  # Workflow exit code must be 1 (advisory — not 0, not 2)
+  [ "$exit_status" -eq 1 ]
+  # All three steps must have run (pipeline continued through advisory);
+  # log_file must exist and step-c must appear in it
+  [ -n "$log_file" ]
+  [ -n "$step_c_line" ]
+}
+
+# IMPORTANT-2: --headless with blocking workflow (a step exits 2) → workflow exit 2, fail-fast
+@test "BC_2_12_004: lobster-run --headless blocking workflow exits 2 fail-fast (IMPORTANT-2/AC-004)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-block"
+  printf -- '---\nname: mock-block\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-block/SKILL.md"
+  # Run --headless with the block fixture (step-b exits 2; step-c should be skipped)
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "${FIXTURE_DIR}/exit-code-block.yaml" </dev/null
+  local exit_status="$status"
+  # Read log content BEFORE teardown (teardown deletes LOBSTER_BRAIN)
+  # step-c must NOT appear — fail-fast stops after step-b blocks.
+  # step-a and step-b MUST appear (they ran before the block).
+  local log_file step_a_line step_b_line step_c_line
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  if [ -n "$log_file" ]; then
+    step_a_line="$(grep 'step-a' "$log_file" 2>/dev/null || true)"
+    step_b_line="$(grep 'step-b' "$log_file" 2>/dev/null || true)"
+    step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
+  fi
+  _teardown_lobster_env
+  # --headless must be recognized (not E-LOBSTER-007)
+  [[ "$output" != *"E-LOBSTER-007"* ]]
+  # Workflow exit code must be 2 (block)
+  [ "$exit_status" -eq 2 ]
+  # step-a and step-b must appear in log (they executed)
+  [ -n "$log_file" ]
+  [ -n "$step_a_line" ]
+  [ -n "$step_b_line" ]
+  # step-c must NOT appear in log — fail-fast skips remaining steps
+  [ -z "$step_c_line" ]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

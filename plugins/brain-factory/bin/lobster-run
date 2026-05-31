@@ -110,7 +110,6 @@ trap _cleanup_tmpfile EXIT
 # Argument parsing — flexible: --dry-run / --headless may appear before or after workflow
 # ---------------------------------------------------------------------------
 DRY_RUN=false
-HEADLESS=false
 WORKFLOW_FILE=""
 
 while [[ $# -gt 0 ]]; do
@@ -120,11 +119,9 @@ while [[ $# -gt 0 ]]; do
     shift
     ;;
   --headless)
-    # AC-001/BC-2.12.004: accept --headless flag; execution mode already invokes
-    # node scripts/run-skill.mjs per step (identical to non-TTY headless semantics).
-    # Exported for downstream use by run-skill.mjs (e.g., STORY-034 scheduling context).
-    HEADLESS=true
-    export HEADLESS
+    # AC-001/BC-2.12.004: accept --headless flag; execution is already headless-safe
+    # (non-TTY; node scripts/run-skill.mjs per step; no interactive I/O).
+    # Flag is recognized and accepted; behaviorally equivalent to default execution.
     shift
     ;;
   --)
