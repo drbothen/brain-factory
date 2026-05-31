@@ -70,7 +70,7 @@ _to_slug() {
 
 # ---------------------------------------------------------------------------
 # _write_wiki_page <type> <slug> <title>
-# Writes one wiki page; returns 0 on success, 1 on skip (collision), 2 on fail
+# Writes one wiki page; returns 0 on success, 1 on collision, 2 on fail
 # ---------------------------------------------------------------------------
 _write_wiki_page() {
   local page_type="$1"
@@ -79,10 +79,17 @@ _write_wiki_page() {
   local page_dir="${BRAIN_DIR}/wiki/${page_type}"
   local page_path="${page_dir}/${page_slug}.md"
 
-  # Ensure wiki type directory exists
-  mkdir -p "$page_dir"
+  # Ensure wiki type directory exists; guard failure as per-page failure
+  local mkdir_err_file
+  mkdir_err_file="$(mktemp)"
+  if ! mkdir -p "$page_dir" 2>"$mkdir_err_file"; then
+    LAST_WRITE_ERR="$(cat "$mkdir_err_file" 2>/dev/null || true)"
+    rm -f "$mkdir_err_file"
+    return 2
+  fi
+  rm -f "$mkdir_err_file"
 
-  # Slug collision check: skip if file already exists
+  # Slug collision check: existing file is a FAILED page (BC-2.03.004)
   if [ -f "$page_path" ]; then
     return 1
   fi
@@ -196,9 +203,8 @@ MAX_PAGES=15
 PAGES_ATTEMPTED=0
 PAGES_CREATED=0
 PAGES_FAILED=0
-PAGES_SKIPPED=0
 FAILURES=()
-HAD_WRITE_FAILURE=0
+HAD_FAILURE=0
 LAST_WRITE_ERR=""
 write_diag=""
 
@@ -240,25 +246,25 @@ for i in "${!PAGE_TITLES[@]}"; do
     CREATED_TYPES+=("$page_type")
     ;;
   1)
-    # Slug collision — skip recorded; error follows BC-2.03.004 E-NNN: <message> form
-    PAGES_SKIPPED=$((PAGES_SKIPPED + 1))
+    # Slug collision — counts as a FAILED page (BC-2.03.004); invariant: attempted = created + failed
     PAGES_FAILED=$((PAGES_FAILED + 1))
+    HAD_FAILURE=1
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg error "E-INGEST-013: Wiki page generation failed for '${page_slug}': slug collision — page already exists. Other pages preserved." \
+      --arg error "E-INGEST-014: Wiki page generation failed for '${page_slug}': slug already exists. Other pages preserved." \
       '{slug:$slug,type:$type,error:$error}')")
     ;;
   *)
     # Write failure — capture diagnostics from LAST_WRITE_ERR (set by _write_wiki_page)
     PAGES_FAILED=$((PAGES_FAILED + 1))
-    HAD_WRITE_FAILURE=1
+    HAD_FAILURE=1
     write_diag="${LAST_WRITE_ERR:-write failed}"
     LAST_WRITE_ERR=""
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg error "E-INGEST-013: Wiki page generation failed for '${page_slug}': ${write_diag}. Other pages preserved." \
+      --arg error "E-INGEST-014: Wiki page generation failed for '${page_slug}': ${write_diag}. Other pages preserved." \
       '{slug:$slug,type:$type,error:$error}')")
     ;;
   esac
@@ -319,14 +325,14 @@ jq -n \
   --argjson attempted "$PAGES_ATTEMPTED" \
   --argjson created "$PAGES_CREATED" \
   --argjson failed "$PAGES_FAILED" \
-  --argjson skipped "$PAGES_SKIPPED" \
   --argjson failures "$FAILURES_JSON" \
-  '{pages_attempted:$attempted,pages_created:$created,pages_failed:$failed,pages_skipped:$skipped,failures:$failures}'
+  '{pages_attempted:$attempted,pages_created:$created,pages_failed:$failed,failures:$failures}'
 
 # ---------------------------------------------------------------------------
-# Exit code: 1 if any write failure; 0 if only collisions (or all success)
+# Exit code: 1 if any failure (write failure OR slug collision); 0 if all success
+# BC-2.03.004: slug collision is a FAILED page; pages_failed > 0 → exit 1
 # ---------------------------------------------------------------------------
-if [ "$HAD_WRITE_FAILURE" -eq 1 ]; then
+if [ "$HAD_FAILURE" -eq 1 ]; then
   exit 1
 fi
 

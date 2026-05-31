@@ -1473,10 +1473,10 @@ COLEOF
     "$BRAIN_DIR" \
     "${BRAIN_DIR}/sources/ai/article.md" 2>/dev/null || true)"
 
-  # pages_skipped must be > 0 (proves the collision code path ran)
-  local skipped
-  skipped="$(printf '%s' "$summary_output" | jq -r '.pages_skipped')"
-  [ "$skipped" -gt 0 ]
+  # pages_failed must be > 0 (collision counts as a failed page — BC-2.03.004)
+  local pages_failed
+  pages_failed="$(printf '%s' "$summary_output" | jq -r '.pages_failed')"
+  [ "$pages_failed" -gt 0 ]
 
   # The collision must appear in the failures array; identify via error field
   # (BC-2.03.004 failures form: {"slug":"<slug>","error":"E-NNN: <message>"}; no `reason` field)
@@ -1484,17 +1484,80 @@ COLEOF
   collision_found="$(printf '%s' "$summary_output" | \
     jq -r '.failures[] | select(.slug == "position-encoding") | .slug' || true)"
   [ "$collision_found" = "position-encoding" ]
-  # The error field must use E-INGEST-013 and include the slug (BC-2.03.004 postcondition 2)
+  # F5: full canonical form — E-INGEST-014 prefix + slug + "Other pages preserved."
   local collision_error
   collision_error="$(printf '%s' "$summary_output" | \
     jq -r '.failures[] | select(.slug == "position-encoding") | .error' || true)"
   [ -n "$collision_error" ]
   [ "$collision_error" != "null" ]
-  [[ "$collision_error" == *"E-INGEST-013"* ]]
+  [[ "$collision_error" == *"E-INGEST-014"* ]]
   [[ "$collision_error" == *"position-encoding"* ]]
+  [[ "$collision_error" == *"Other pages preserved."* ]]
 
   # The pre-existing file content must not have been overwritten
   [[ "$(cat "$collision_page")" == *"Prior content"* ]]
+}
+
+# ===========================================================================
+# F2 proof-of-bite: collision-only run exits 1 (BC-2.03.004)
+# A slug collision is a FAILED page; pages_failed > 0 must drive exit 1.
+# ===========================================================================
+@test "BC_2_03_004: collision-only run exits 1 with pages_failed>=1 and E-INGEST-014 (F2 regression)" {
+  # Construct a source fixture that produces a GUARANTEED collision:
+  # pre-create wiki/observations/ with a page whose slug matches the
+  # "Key Insights from: …" observation page generate-wiki.sh always emits.
+  _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
+  _setup_wiki_dirs "$BRAIN_DIR"
+
+  # The observation slug for the fixture title "Understanding Transformer Architecture in Large Language Models" →
+  # "Key Insights from: Understanding Transformer Architecture in Large Language Models"
+  # → slug "key-insights-from-understanding-transformer-architecture-in-large-language-models"
+  local obs_slug="key-insights-from-understanding-transformer-architecture-in-large-language-models"
+  local obs_page="${BRAIN_DIR}/wiki/observations/${obs_slug}.md"
+  cat >"$obs_page" <<'OBSEOF'
+---
+title: "Key Insights from: Understanding Transformer Architecture in Large Language Models"
+type: observations
+embedding_status: complete
+source_ids: [prior-source]
+---
+
+Pre-existing observation page — must not be overwritten.
+OBSEOF
+
+  # Capture stdout-only (per pattern used throughout this file: 2>/dev/null || true)
+  # This avoids bats $output capturing stderr (E-INGEST-006 advisory) alongside the JSON.
+  local envelope exit_code
+  exit_code=0
+  envelope="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$BRAIN_DIR" \
+    "${BRAIN_DIR}/sources/ai/article.md" 2>/dev/null)" || exit_code=$?
+
+  # exit 1: at least one page failed (collision counts as failed per BC-2.03.004)
+  [ "$exit_code" -eq 1 ]
+
+  # pages_failed >= 1 (the collision)
+  local pages_failed
+  pages_failed="$(printf '%s' "$envelope" | jq -r '.pages_failed' 2>/dev/null || true)"
+  [ "$pages_failed" -ge 1 ]
+
+  # failures[] must contain E-INGEST-014 with the colliding slug and full canonical form
+  local collision_error
+  collision_error="$(printf '%s' "$envelope" | \
+    jq -r --arg s "$obs_slug" '.failures[] | select(.slug == $s) | .error' || true)"
+  [[ "$collision_error" == *"E-INGEST-014"* ]]
+  [[ "$collision_error" == *"$obs_slug"* ]]
+  [[ "$collision_error" == *"Other pages preserved."* ]]
+
+  # Pre-existing page must not have been overwritten
+  [[ "$(cat "$obs_page")" == *"Pre-existing observation page"* ]]
+
+  # invariant: pages_attempted == pages_created + pages_failed
+  local pages_attempted pages_created computed_sum
+  pages_attempted="$(printf '%s' "$envelope" | jq -r '.pages_attempted' 2>/dev/null || true)"
+  pages_created="$(printf '%s' "$envelope" | jq -r '.pages_created' 2>/dev/null || true)"
+  computed_sum=$(( pages_created + pages_failed ))
+  [ "$pages_attempted" -eq "$computed_sum" ]
 }
 
 # ===========================================================================
