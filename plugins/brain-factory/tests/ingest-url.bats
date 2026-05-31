@@ -1448,7 +1448,7 @@ COLEOF
   [ "$original_content" = "$after_content" ]
 }
 
-@test "BC_2_02_002: generate-wiki.sh records slug collision skip in summary output (AC-005)" {
+@test "BC_2_02_002: generate-wiki.sh records slug collision as a failed page in summary output (AC-005)" {
   # Red Gate: scripts/generate-wiki.sh does not exist yet
   _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
   _setup_wiki_dirs "$BRAIN_DIR"

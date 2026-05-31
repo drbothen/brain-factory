@@ -55,7 +55,7 @@ _lexical_normalize_path() {
   local part
   # Split on /; read -ra requires bash (guaranteed by #!/usr/bin/env bash above)
   local IFS='/'
-  # shellcheck disable=SC2162
+  local -a segs
   read -ra segs <<<"$path"
   for part in "${segs[@]}"; do
     case "$part" in
