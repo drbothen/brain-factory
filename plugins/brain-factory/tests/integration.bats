@@ -2745,3 +2745,74 @@ _write_ingest_source_manifest_entry() {
   [[ "$output" == *"E-INGEST-009"* ]]
   rm -rf "$INGEST_VAULT"
 }
+
+# ===========================================================================
+# IMPORTANT-1 (F4 coverage): mkdir failure in _write_wiki_page
+# Traces to: BC-2.03.004 fan-out error handling — mkdir -p failure branch
+# The chmod-555 tests exercise the cat-write failure branch (the dir exists but
+# is unwritable). This test exercises the EARLIER branch where mkdir -p itself
+# fails because a path component is a REGULAR FILE, not a directory.
+#
+# Injection: create a regular file at wiki/<type> before the run.
+# mkdir -p wiki/<type>/<slug>.md fails because wiki/<type> is a file, not a dir.
+# Expected: the affected page appears in failures[] with E-INGEST-014,
+# exit code is 1 (partial failure), and pages for OTHER types still succeed.
+# ===========================================================================
+@test "BC_2_03_004: mkdir-p failure on type dir reported as E-INGEST-014; other-type pages preserved; exit 1 (F4 coverage)" {
+  # Traces to: BC-2.03.004 invariant 1 + fan-out postcondition 3
+  # generate-wiki.sh _write_wiki_page: mkdir -p failure → return 2 →
+  # appended to failures[] with E-INGEST-014; HAD_FAILURE=1 → exit 1.
+  # OTHER types (e.g. questions) must still succeed.
+  #
+  # This test was written as a RED GATE coverage test. If the mkdir-failure
+  # branch in _write_wiki_page already correctly propagates to failures[],
+  # the test will pass immediately (coverage test, not a defect test).
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # The happy fixture generates pages of types: observations, questions.
+  # Inject mkdir failure for the "observations" type by replacing the
+  # wiki/observations DIRECTORY with a regular FILE. mkdir -p cannot create a
+  # directory when a non-directory already occupies that path component.
+  rmdir "${INGEST_VAULT}/wiki/observations"
+  printf 'not-a-directory\n' >"${INGEST_VAULT}/wiki/observations"
+
+  run bash -c "bash '${PLUGIN_DIR}/scripts/generate-wiki.sh' \
+    '${INGEST_VAULT}' \
+    '${source_file}' 2>/dev/null"
+
+  # Partial failure: at least one mkdir-blocked page → exit 1
+  [ "$status" -eq 1 ]
+
+  # failures[] must include an E-INGEST-014 entry for the blocked type
+  local failures_count
+  failures_count="$(printf '%s' "$output" | jq -r '.failures | length' 2>/dev/null || true)"
+  [ -n "$failures_count" ]
+  [ "$failures_count" -ge 1 ]
+
+  local first_error
+  first_error="$(printf '%s' "$output" | jq -r '.failures[0].error' 2>/dev/null || true)"
+  [[ "$first_error" == *"E-INGEST-014"* ]]
+
+  # "Other pages preserved." must appear in the error message (BC-2.03.004)
+  [[ "$first_error" == *"Other pages preserved."* ]]
+
+  # OTHER type pages (questions) must still have been created successfully
+  local pages_created
+  pages_created="$(printf '%s' "$output" | jq -r '.pages_created' 2>/dev/null || true)"
+  [ -n "$pages_created" ]
+  [ "$pages_created" -ge 1 ]
+
+  # Invariant: pages_attempted == pages_created + pages_failed
+  local pages_attempted pages_failed
+  pages_attempted="$(printf '%s' "$output" | jq -r '.pages_attempted' 2>/dev/null || true)"
+  pages_failed="$(printf '%s' "$output" | jq -r '.pages_failed' 2>/dev/null || true)"
+  local computed_sum
+  computed_sum=$(( pages_created + pages_failed ))
+  [ "$pages_attempted" -eq "$computed_sum" ]
+
+  _teardown_ingest_source_vault
+}
