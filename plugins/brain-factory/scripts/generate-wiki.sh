@@ -12,7 +12,7 @@ set -euo pipefail
 #                  Pass "ingest.source" when called from /brain:ingest-source.
 #
 # Stdout: JSON fan-out envelope {"pages_attempted": N, "pages_created": M, "pages_failed": K, "failures": [...]}
-# Stderr: structured events ({event_prefix}.wiki_pages_generated) + E-INGEST-006 advisory
+# Stderr: structured events ({event_prefix}.wiki_pages_generated) + E-INGEST-006 advisory (<5 pages)
 #
 # Exit codes:
 #   0 — all pages succeeded (or < 5 pages: advisory emitted but still exits 0)
@@ -246,7 +246,7 @@ for i in "${!PAGE_TITLES[@]}"; do
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg error "E-INGEST-006: Wiki page slug collision — ${page_slug} already exists. Existing page preserved." \
+      --arg error "E-INGEST-013: Wiki page generation failed for '${page_slug}': slug collision — page already exists. Other pages preserved." \
       '{slug:$slug,type:$type,error:$error}')")
     ;;
   *)
@@ -258,7 +258,7 @@ for i in "${!PAGE_TITLES[@]}"; do
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg error "E-INGEST-006: Wiki page write failed — ${write_diag}" \
+      --arg error "E-INGEST-013: Wiki page generation failed for '${page_slug}': ${write_diag}. Other pages preserved." \
       '{slug:$slug,type:$type,error:$error}')")
     ;;
   esac

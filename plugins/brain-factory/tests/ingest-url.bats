@@ -1484,12 +1484,14 @@ COLEOF
   collision_found="$(printf '%s' "$summary_output" | \
     jq -r '.failures[] | select(.slug == "position-encoding") | .slug' || true)"
   [ "$collision_found" = "position-encoding" ]
-  # The error field must be present and non-empty (BC-2.03.004 postcondition 2)
+  # The error field must use E-INGEST-013 and include the slug (BC-2.03.004 postcondition 2)
   local collision_error
   collision_error="$(printf '%s' "$summary_output" | \
     jq -r '.failures[] | select(.slug == "position-encoding") | .error' || true)"
   [ -n "$collision_error" ]
   [ "$collision_error" != "null" ]
+  [[ "$collision_error" == *"E-INGEST-013"* ]]
+  [[ "$collision_error" == *"position-encoding"* ]]
 
   # The pre-existing file content must not have been overwritten
   [[ "$(cat "$collision_page")" == *"Prior content"* ]]

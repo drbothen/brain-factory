@@ -2590,7 +2590,7 @@ _write_ingest_source_manifest_entry() {
   [ "$failures_type" = "array" ]
   [ "$failures_count" -ge 1 ]
 
-  # Each failure entry must have slug and error fields
+  # Each failure entry must have slug and error fields using E-INGEST-013
   local first_slug first_error
   first_slug="$(printf '%s' "$envelope" | jq -r '.failures[0].slug' 2>/dev/null || true)"
   first_error="$(printf '%s' "$envelope" | jq -r '.failures[0].error' 2>/dev/null || true)"
@@ -2598,6 +2598,8 @@ _write_ingest_source_manifest_entry() {
   [ "$first_slug" != "null" ]
   [ -n "$first_error" ]
   [ "$first_error" != "null" ]
+  [[ "$first_error" == *"E-INGEST-013"* ]]
+  [[ "$first_error" == *"$first_slug"* ]]
 
   _teardown_ingest_source_vault
 }
