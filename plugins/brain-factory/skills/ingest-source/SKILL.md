@@ -43,7 +43,7 @@ Validate the file path is inside the vault before any read; sources are immutabl
 
 7. **Atomic manifest update.** Source `${CLAUDE_PLUGIN_ROOT}/hooks/lib/manifest-write.sh`. Call `manifest_write '{"source_id":"<slug>","path":"<relative-path>","topic":"<topic>","ingested_at":"<ts>","last_ingest":"<ts>","chunks":[],"embeddings_model":null}' "${BRAIN_DIR}/.brain/manifest.json" "ingest.source.manifest_updated"`. On failure (E-INGEST-008), delete the source file written in step 6 and exit 2 with the error.
 
-8. **Wiki generation.** Run `bash "${CLAUDE_PLUGIN_ROOT}/scripts/generate-wiki.sh" "${BRAIN_DIR}" "${source_file}" "ingest.source"`. Capture the JSON result envelope from stdout: `pages_attempted`, `pages_created`, `pages_failed`, `failures`. Note the exit code (0 = all succeeded, 1 = partial failure) for step 10. Emit `ingest.source.wiki_pages_generated` event via `hook-event-emit.sh` with fields `source_id` (the slug), `pages_created`, `pages_failed`.
+8. **Wiki generation.** Run `bash "${CLAUDE_PLUGIN_ROOT}/scripts/generate-wiki.sh" "${BRAIN_DIR}" "${source_file}" "ingest.source"`. Capture the JSON result envelope from stdout: `pages_attempted`, `pages_created`, `pages_failed`, `failures`. Note the exit code (0 = all succeeded, 1 = partial failure) for step 10. Note: `generate-wiki.sh` is the sole emitter of `ingest.source.wiki_pages_generated` (it emits automatically on stderr). Do NOT re-emit this event from the skill — doing so would double-count the event.
 
 9. **Token logging.** Run `bash "${CLAUDE_PLUGIN_ROOT}/scripts/log-tokens.sh" "${BRAIN_DIR}" "${PATH_ARG}" "${SLUG}" "-1" "-1" "${pages_created}" "${duration_seconds}"` where `pages_created` is from the generate-wiki.sh envelope and `duration_seconds` is elapsed time since step 2.
 
@@ -62,7 +62,7 @@ Validate the file path is inside the vault before any read; sources are immutabl
 - Manifest entry contains `path` field (not `url`) and all 7 required fields.
 - Fan-out envelope `failures` array is always present, even when empty.
 - `pages_attempted == pages_created + pages_failed` invariant holds in all test scenarios.
-- All 5 `ingest.source.*` event types pre-registered in `scripts/event-catalog.json` before emit calls.
+- All `ingest.source.*` event types emitted by this skill (started, path_rejected, written, completed) and by generate-wiki.sh (wiki_pages_generated) are pre-registered in `scripts/event-catalog.json` before emit calls.
 
 ## Output
 
