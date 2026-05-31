@@ -34,12 +34,68 @@ set -euo pipefail
 CANDIDATE="${1:?Usage: validate-ingest-path.sh <candidate-path>}"
 
 # ---------------------------------------------------------------------------
+# _lexical_normalize_path <absolute-path>
+#
+# Lexically collapse a /-separated absolute path by dropping empty segments
+# and `.` segments and popping on `..` segments. Does NOT touch the filesystem.
+# This is used after the slow-path ancestor-walk to eliminate any remaining `..`
+# segments that were appended verbatim (because the intermediate component did
+# not exist at resolution time and therefore could not be dereferenced via
+# readlink -f on macOS).
+#
+# Guarded against popping above root: excess `..` segments at the root level
+# are silently ignored (POSIX: "/.." == "/").
+#
+# Input must be an absolute path (starts with /). Behaviour is undefined for
+# relative paths — callers must not pass relative paths here.
+# ---------------------------------------------------------------------------
+_lexical_normalize_path() {
+  local path="$1"
+  local -a parts=()
+  local part
+  # Split on /; read -ra requires bash (guaranteed by #!/usr/bin/env bash above)
+  local IFS='/'
+  # shellcheck disable=SC2162
+  read -ra segs <<<"$path"
+  for part in "${segs[@]}"; do
+    case "$part" in
+    '' | '.') continue ;;
+    '..')
+      if [ "${#parts[@]}" -gt 0 ]; then
+        unset 'parts[-1]'
+      fi
+      ;;
+    *) parts+=("$part") ;;
+    esac
+  done
+  # Reconstruct: always starts with /
+  if [ "${#parts[@]}" -eq 0 ]; then
+    printf '/'
+    return 0
+  fi
+  local result="/${parts[0]}"
+  local i
+  for ((i = 1; i < ${#parts[@]}; i++)); do
+    result="${result}/${parts[$i]}"
+  done
+  printf '%s' "$result"
+}
+
+# ---------------------------------------------------------------------------
 # _resolve_path <path>
 #
 # Resolves a path with readlink -f. For nonexistent paths (readlink -f exits 1
 # on macOS), walks up the directory tree to find the nearest existing ancestor,
 # resolves that with readlink -f, then appends the remaining path components.
 # This correctly handles macOS /var → /private/var symlinks for temp paths.
+#
+# SECURITY: After slow-path reconstruction the raw string may contain literal
+# `..` segments (e.g. vault/nonexistent/../../../../etc/passwd). We MUST call
+# _lexical_normalize_path on the reconstructed result to collapse those `..`
+# segments before any prefix or system-directory comparisons are made.
+# Without this normalization, a path that lexically starts with the vault root
+# but lexically escapes it via `..` would incorrectly set INSIDE_VAULT=1.
+# (BC-2.03.003 invariant 1)
 # ---------------------------------------------------------------------------
 _resolve_path() {
   local path="$1"
@@ -56,14 +112,19 @@ _resolve_path() {
     if [ -e "$current" ]; then
       local ancestor_resolved
       ancestor_resolved="$(readlink -f "$current" 2>/dev/null || printf '%s' "$current")"
-      printf '%s%s' "${ancestor_resolved%/}" "$remaining"
+      local raw_result="${ancestor_resolved%/}${remaining}"
+      # SECURITY: canonicalize to collapse any .. segments before returning.
+      # The remaining component may contain literal ../ escapes (e.g. from a
+      # path like vault/nonexistent/../../../../etc/passwd). Lexically normalize
+      # so that all prefix and system-dir checks operate on the true canonical path.
+      _lexical_normalize_path "$raw_result"
       return 0
     fi
     remaining="/$(basename "$current")${remaining}"
     current="$(dirname "$current")"
   done
-  # Root or completely unresolvable: return as-is
-  printf '%s' "$path"
+  # Root or completely unresolvable: normalize as-is (handles edge case of / input)
+  _lexical_normalize_path "$path"
 }
 
 # ---------------------------------------------------------------------------

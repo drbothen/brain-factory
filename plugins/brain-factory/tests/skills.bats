@@ -885,3 +885,60 @@ PDFMOCK
     | grep -E '\$\(realpath|\`realpath|^\s*realpath\b' | wc -l | tr -d ' ' || true)"
   [ "$found" -eq 0 ]
 }
+
+# ===========================================================================
+# BLOCKER-1 (SECURITY) — BC-2.03.003 invariant 1:
+# Nonexistent intermediate component must not allow .. to bypass vault-root check.
+# Traces to: BC-2.03.003 invariant 1 ("readlink -f follows .. before vault-root compare")
+# RED GATE: slow-path reconstruction leaves .. unresolved; _path_has_prefix passes
+# incorrectly; wrong error code E-INGEST-011 returned instead of E-INGEST-009.
+# ===========================================================================
+
+@test "BC_2_03_003: nonexistent-intermediate dotdot escaping to system file yields E-INGEST-009 exit 2 (BLOCKER-1)" {
+  # Traces to: BC-2.03.003 invariant 1 — slow-path .. must be canonicalized before vault check.
+  # Attack vector: vault/nonexistent/../../../../etc/passwd
+  # Slow path walks up to vault root (exists), appends /nonexistent/../../../../etc/passwd VERBATIM.
+  # The reconstructed string lexically starts with vault root → INSIDE_VAULT=1 incorrectly.
+  # System-dir hard-block is bypassed; wrong error code returned.
+  # Fix: canonicalize (collapse ..) after slow-path reconstruction, before prefix checks.
+  _setup_vault_with_policies
+  # Use a path where /nonexistent does not exist under vault, followed by enough dots
+  # to traverse outside: vault/nonexistent/../../../../etc/passwd
+  # (4 dots = enough to escape /private/var/folders/XX/YYYY/T/vault structure on macOS)
+  # Use enough dots to always escape regardless of temp dir depth: use 10 dots
+  local candidate="${VAULT_DIR}/nonexistent/../../../../../../../../../../../../etc/passwd"
+
+  _run_validate_path "$candidate"
+
+  # MUST be rejected as outside vault (E-INGEST-009), not "file not found" (E-INGEST-011)
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
+@test "BC_2_03_003: nonexistent-intermediate dotdot escaping to sibling outside vault yields E-INGEST-009 exit 2 (BLOCKER-1)" {
+  # Traces to: BC-2.03.003 invariant 1 — slow-path .. canonicalization required.
+  # Attack vector: vault/nonexistent/../../<sibling-dir>/file.md
+  # Even if target is not a system dir and even if it would otherwise be allowlisted,
+  # the raw path MUST be canonicalized before vault-root comparison.
+  # Result: sibling is outside vault → E-INGEST-009 (not E-INGEST-011).
+  local sibling_dir
+  sibling_dir="$(mktemp -d)"
+  local sibling_file="${sibling_dir}/outside.md"
+  printf '# Outside\n' >"$sibling_file"
+  local sibling_basename
+  sibling_basename="$(basename "$sibling_dir")"
+
+  _setup_vault_with_policies
+  # Construct path: vault/nonexistent/../../<sibling>/outside.md
+  # After canonicalization: <parent_of_vault>/<sibling>/outside.md — outside vault
+  local candidate="${VAULT_DIR}/nonexistent/../../${sibling_basename}/outside.md"
+
+  _run_validate_path "$candidate"
+
+  # MUST be rejected as outside vault regardless of allowlist state
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  rm -rf "$sibling_dir"
+  _teardown_vault
+}
