@@ -1,0 +1,17 @@
+=== shellcheck validate-ingest-path.sh ===
+shellcheck: PASS (exit 0)
+
+=== shfmt validate-ingest-path.sh ===
+shfmt: PASS (exit 0, no diff)
+
+=== shellcheck generate-wiki.sh ===
+shellcheck: PASS (exit 0)
+
+=== shfmt generate-wiki.sh ===
+shfmt: PASS (exit 0, no diff)
+
+=== shellcheck log-tokens.sh ===
+shellcheck: PASS (exit 0)
+
+=== shellcheck manifest-write.sh ===
+shellcheck: PASS (exit 0)

@@ -5,10 +5,14 @@ set -euo pipefail
 # Wiki page generation orchestrator.
 # Parses a source file and generates 5-15 wiki pages under wiki/{type}/.
 #
-# Usage: generate-wiki.sh <brain_dir> <source_file_path>
+# Usage: generate-wiki.sh <brain_dir> <source_file_path> [event_prefix]
+#
+#   event_prefix — optional; prefix for the wiki_pages_generated structured event.
+#                  Defaults to "ingest.url" for backward compatibility.
+#                  Pass "ingest.source" when called from /brain:ingest-source.
 #
 # Stdout: JSON fan-out envelope {"pages_attempted": N, "pages_created": M, "pages_failed": K, "failures": [...]}
-# Stderr: structured events (ingest.url.wiki_pages_generated) + E-INGEST-006 advisory
+# Stderr: structured events ({event_prefix}.wiki_pages_generated) + E-INGEST-006 advisory (<5 pages)
 #
 # Exit codes:
 #   0 — all pages succeeded (or < 5 pages: advisory emitted but still exits 0)
@@ -16,6 +20,7 @@ set -euo pipefail
 
 BRAIN_DIR="${1:?Usage: generate-wiki.sh <brain_dir> <source_file_path>}"
 SOURCE_FILE="${2:?Usage: generate-wiki.sh <brain_dir> <source_file_path>}"
+EVENT_PREFIX="${3:-ingest.url}"
 
 PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HELPER="${PLUGIN_DIR}/hooks/lib/hook-event-emit.sh"
@@ -65,7 +70,7 @@ _to_slug() {
 
 # ---------------------------------------------------------------------------
 # _write_wiki_page <type> <slug> <title>
-# Writes one wiki page; returns 0 on success, 1 on skip (collision), 2 on fail
+# Writes one wiki page; returns 0 on success, 1 on collision, 2 on fail
 # ---------------------------------------------------------------------------
 _write_wiki_page() {
   local page_type="$1"
@@ -74,10 +79,17 @@ _write_wiki_page() {
   local page_dir="${BRAIN_DIR}/wiki/${page_type}"
   local page_path="${page_dir}/${page_slug}.md"
 
-  # Ensure wiki type directory exists
-  mkdir -p "$page_dir"
+  # Ensure wiki type directory exists; guard failure as per-page failure
+  local mkdir_err_file
+  mkdir_err_file="$(mktemp)"
+  if ! mkdir -p "$page_dir" 2>"$mkdir_err_file"; then
+    LAST_WRITE_ERR="$(cat "$mkdir_err_file" 2>/dev/null || true)"
+    rm -f "$mkdir_err_file"
+    return 2
+  fi
+  rm -f "$mkdir_err_file"
 
-  # Slug collision check: skip if file already exists
+  # Slug collision check: existing file is a FAILED page (BC-2.03.004)
   if [ -f "$page_path" ]; then
     return 1
   fi
@@ -85,8 +97,12 @@ _write_wiki_page() {
   # Escape double quotes in title to produce valid YAML
   local safe_title="${page_title//\"/\\\"}"
 
-  # Attempt to write the page
-  if ! cat >"$page_path" <<PAGEEOF; then
+  # Attempt to write the page.
+  # Capture stderr from the write attempt to propagate actionable diagnostics
+  # into the failure entry (I2: no blanket 2>/dev/null suppression).
+  local write_err_file
+  write_err_file="$(mktemp)"
+  if ! cat >"$page_path" 2>"$write_err_file" <<PAGEEOF; then
 ---
 title: "${safe_title}"
 type: ${page_type}
@@ -98,8 +114,11 @@ source_ids: [${SOURCE_SLUG}]
 
 *Generated from source: [[${SOURCE_SLUG}]]*
 PAGEEOF
+    LAST_WRITE_ERR="$(cat "$write_err_file" 2>/dev/null || true)"
+    rm -f "$write_err_file"
     return 2
   fi
+  rm -f "$write_err_file"
 
   return 0
 }
@@ -184,9 +203,10 @@ MAX_PAGES=15
 PAGES_ATTEMPTED=0
 PAGES_CREATED=0
 PAGES_FAILED=0
-PAGES_SKIPPED=0
 FAILURES=()
-HAD_WRITE_FAILURE=0
+HAD_FAILURE=0
+LAST_WRITE_ERR=""
+write_diag=""
 
 declare -A SEEN_SLUGS
 declare -a CREATED_SLUGS
@@ -226,24 +246,26 @@ for i in "${!PAGE_TITLES[@]}"; do
     CREATED_TYPES+=("$page_type")
     ;;
   1)
-    # Slug collision — skip recorded
-    PAGES_SKIPPED=$((PAGES_SKIPPED + 1))
+    # Slug collision — counts as a FAILED page (BC-2.03.004); invariant: attempted = created + failed
     PAGES_FAILED=$((PAGES_FAILED + 1))
+    HAD_FAILURE=1
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg reason "slug_collision" \
-      '{slug:$slug,type:$type,reason:$reason}')")
+      --arg error "E-INGEST-014: Wiki page generation failed for '${page_slug}': slug already exists. Other pages preserved." \
+      '{slug:$slug,type:$type,error:$error}')")
     ;;
   *)
-    # Write failure
+    # Write failure — capture diagnostics from LAST_WRITE_ERR (set by _write_wiki_page)
     PAGES_FAILED=$((PAGES_FAILED + 1))
-    HAD_WRITE_FAILURE=1
+    HAD_FAILURE=1
+    write_diag="${LAST_WRITE_ERR:-write failed}"
+    LAST_WRITE_ERR=""
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg reason "write_failed" \
-      '{slug:$slug,type:$type,reason:$reason}')")
+      --arg error "E-INGEST-014: Wiki page generation failed for '${page_slug}': ${write_diag}. Other pages preserved." \
+      '{slug:$slug,type:$type,error:$error}')")
     ;;
   esac
 done
@@ -281,15 +303,15 @@ FAILURES_JSON="$(
 )"
 
 # ---------------------------------------------------------------------------
-# Emit structured event on stderr
+# Emit structured event on stderr (CLAUDE.md §Logging: structured events on stderr)
 # ---------------------------------------------------------------------------
-emit_event "ingest.url.wiki_pages_generated" \
+emit_event "${EVENT_PREFIX}.wiki_pages_generated" \
   "source_id=${SOURCE_SLUG}" \
   "pages_created=${PAGES_CREATED}" \
   "pages_failed=${PAGES_FAILED}"
 
 # ---------------------------------------------------------------------------
-# Emit E-INGEST-006 advisory if fewer than 5 pages produced
+# Emit E-INGEST-006 advisory on stderr if fewer than 5 pages produced
 # ---------------------------------------------------------------------------
 if [ "$PAGES_CREATED" -lt 5 ]; then
   printf '{"level":"warn","code":"E-INGEST-006","message":"Fewer than 5 wiki pages generated (%d). Source may have limited extractable concepts."}\n' \
@@ -303,14 +325,14 @@ jq -n \
   --argjson attempted "$PAGES_ATTEMPTED" \
   --argjson created "$PAGES_CREATED" \
   --argjson failed "$PAGES_FAILED" \
-  --argjson skipped "$PAGES_SKIPPED" \
   --argjson failures "$FAILURES_JSON" \
-  '{pages_attempted:$attempted,pages_created:$created,pages_failed:$failed,pages_skipped:$skipped,failures:$failures}'
+  '{pages_attempted:$attempted,pages_created:$created,pages_failed:$failed,failures:$failures}'
 
 # ---------------------------------------------------------------------------
-# Exit code: 1 if any write failure; 0 if only collisions (or all success)
+# Exit code: 1 if any failure (write failure OR slug collision); 0 if all success
+# BC-2.03.004: slug collision is a FAILED page; pages_failed > 0 → exit 1
 # ---------------------------------------------------------------------------
-if [ "$HAD_WRITE_FAILURE" -eq 1 ]; then
+if [ "$HAD_FAILURE" -eq 1 ]; then
   exit 1
 fi
 

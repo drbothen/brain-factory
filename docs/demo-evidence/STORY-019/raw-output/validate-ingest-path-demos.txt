@@ -1,0 +1,57 @@
+=== DEMO 1 (AC-001/AC-009): Valid in-vault file — exit 0, resolved path printed ===
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh <vault>/sources/ai/my-research.md
+stdout: /private/var/folders/56/f6gp627172q66y8qbg6hvbd80000gn/T/tmp.ClBzCUG81c/sources/ai/my-research.md
+exit: 0
+
+=== DEMO 2 (AC-009/AC-010): /etc/passwd — system-dir hard block, exit 2 ===
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh /etc/passwd
+stdout: {"level":"error","code":"E-INGEST-009","message":"Path '/private/etc/passwd' is outside the brain vault. Only vault-relative paths are allowed."}
+exit: 2
+
+=== DEMO 3 (AC-009): dot-dot traversal outside vault — exit 2 ===
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh <vault>/../<sibling>/outside.txt
+stdout: {"level":"error","code":"E-INGEST-009","message":"Path '/private/var/folders/56/f6gp627172q66y8qbg6hvbd80000gn/T/tmp.ImyX9fHOor/outside.txt' is outside the brain vault. Only vault-relative paths are allowed."}
+exit: 2
+
+=== DEMO 4 (AC-011): Symlink inside vault → outside vault — exit 2 ===
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh <vault>/sources/outside-link.md (symlink→outside)
+stdout: {"level":"error","code":"E-INGEST-009","message":"Path '/private/var/folders/56/f6gp627172q66y8qbg6hvbd80000gn/T/tmp.CMXFTL1YLj/secret.md' is outside the brain vault. Only vault-relative paths are allowed."}
+exit: 2
+
+=== DEMO 5 (AC-010/AC-012): /etc/ in allowlist but still blocked ===
+policies.yaml: allowed_external_paths: [/etc/]
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh /etc/passwd (with /etc/ allowlisted)
+stdout: {"level":"error","code":"E-INGEST-009","message":"Path '/private/etc/passwd' is outside the brain vault. Only vault-relative paths are allowed."}
+exit: 2
+
+=== DEMO 6 (AC-012): Allowlisted non-system outside-vault path — exit 0 ===
+policies.yaml: allowed_external_paths: [<allowed_dir>/]
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh <allowed_dir>/research-notes.md
+stdout: /private/tmp/bats-allowed-86MbxS/research-notes.md
+exit: 0
+
+=== DEMO 7 (AC-005): File not found — E-INGEST-011 exit 2 ===
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh <vault>/sources/does-not-exist.md
+stdout: {"level":"error","code":"E-INGEST-011","message":"File not found: /private/var/folders/56/f6gp627172q66y8qbg6hvbd80000gn/T/tmp.ClBzCUG81c/sources/does-not-exist.md"}
+exit: 2
+
+=== DEMO 8 (AC-003): PDF with pdftotext available — exit 0 ===
+Command: BRAIN_ROOT=<vault> PATH=<mock_bin>:PATH validate-ingest-path.sh <vault>/sources/ai/report.pdf
+stdout: /private/var/folders/56/f6gp627172q66y8qbg6hvbd80000gn/T/tmp.ClBzCUG81c/sources/ai/report.pdf
+exit: 0
+
+=== DEMO 9 (AC-003): PDF without pdftotext — E-INGEST-010 exit 2 ===
+Command: BRAIN_ROOT=<vault> PATH=<no_pdftotext> validate-ingest-path.sh report.pdf
+stdout: {"level":"error","code":"E-INGEST-010","message":"PDF extraction requires poppler-utils (pdftotext). Install via your OS package manager or convert manually."}
+exit: 2
+
+=== DEMO 10 (AC-004): Image file (.png) — E-INGEST-010 exit 2 ===
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh diagram.png
+stdout: {"level":"error","code":"E-INGEST-010","message":"Image files cannot be ingested in v0.1. Convert to text or markdown first."}
+exit: 2
+
+=== DEMO 11 (AC-006): Already-ingested slug — E-INGEST-001 exit 2 ===
+Manifest seeded with slug: my-article
+Command: BRAIN_ROOT=<vault> validate-ingest-path.sh <vault>/sources/ai/my-article.md
+stdout: {"level":"error","code":"E-INGEST-001","message":"Source already ingested as my-article. Sources are immutable."}
+exit: 2

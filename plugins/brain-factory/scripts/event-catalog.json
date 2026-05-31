@@ -488,5 +488,61 @@
       "curl_rc"
     ],
     "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"quarantine.fetch.failed\",\"hook_name\":\"quarantine-fetch.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"code\":\"E-QUARANTINE-004\",\"curl_rc\":\"7\"}"
+  },
+  {
+    "event_type": "ingest.source.started",
+    "hook_name": "ingest-source",
+    "severity": "info",
+    "fields": [
+      "path",
+      "topic"
+    ],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.source.started\",\"hook_name\":\"ingest-source\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"sources/ai/my-article.md\",\"topic\":\"ai\"}"
+  },
+  {
+    "event_type": "ingest.source.path_rejected",
+    "hook_name": "ingest-source",
+    "severity": "warn",
+    "fields": [
+      "path",
+      "code",
+      "reason"
+    ],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.source.path_rejected\",\"hook_name\":\"ingest-source\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"/etc/passwd\",\"code\":\"E-INGEST-009\",\"reason\":\"outside vault\"}"
+  },
+  {
+    "event_type": "ingest.source.written",
+    "hook_name": "ingest-source",
+    "severity": "info",
+    "fields": [
+      "path",
+      "topic",
+      "slug",
+      "file_path"
+    ],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.source.written\",\"hook_name\":\"ingest-source\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"sources/ai/my-article.md\",\"topic\":\"ai\",\"slug\":\"my-article\",\"file_path\":\"sources/ai/my-article.md\"}"
+  },
+  {
+    "event_type": "ingest.source.wiki_pages_generated",
+    "hook_name": "generate-wiki.sh",
+    "severity": "info",
+    "fields": [
+      "source_id",
+      "pages_created",
+      "pages_failed"
+    ],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.source.wiki_pages_generated\",\"hook_name\":\"generate-wiki.sh\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"source_id\":\"my-article\",\"pages_created\":\"7\",\"pages_failed\":\"0\"}"
+  },
+  {
+    "event_type": "ingest.source.completed",
+    "hook_name": "ingest-source",
+    "severity": "info",
+    "fields": [
+      "path",
+      "source_id",
+      "wiki_pages_created",
+      "duration_seconds"
+    ],
+    "example": "{\"ts\":\"2026-01-01T00:00:00Z\",\"event_type\":\"ingest.source.completed\",\"hook_name\":\"ingest-source\",\"trace\":\"550e8400-e29b-41d4-a716-446655440000\",\"path\":\"sources/ai/my-article.md\",\"source_id\":\"my-article\",\"wiki_pages_created\":\"7\",\"duration_seconds\":\"5\"}"
   }
 ]

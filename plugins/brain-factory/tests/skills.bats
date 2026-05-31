@@ -371,3 +371,574 @@ SMALLEOF
   [ "$status" -eq 0 ]
   [ -z "$output" ]
 }
+
+# ===========================================================================
+# STORY-019: validate-ingest-path.sh unit tests — path validation contract
+# Traces to: BC-2.03.001, BC-2.03.002, BC-2.03.003, BC-2.03.004
+# VP coverage: VP-016 (local source ingest pipeline), VP-012 (manifest atomicity)
+#
+# NOTE on event-catalog registration: The 5 structured event types required by
+# the implementer (ingest.source.started, ingest.source.path_rejected,
+# ingest.source.written, ingest.source.wiki_pages_generated,
+# ingest.source.completed) and error codes E-INGEST-009, E-INGEST-010,
+# E-INGEST-011 must be pre-registered in scripts/event-catalog.json before
+# emit calls are added. That is implementer scope (STORY-014 deliverable).
+#
+# NOTE on readlink -f: Architecture Compliance Rule 1 mandates readlink -f
+# (portable on macOS 12.3+ and Linux). Do NOT use realpath (not on macOS
+# without GNU coreutils). Tests use readlink -f in their own expectations.
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# Helper: _setup_vault_with_policies
+#
+# Creates a minimal git-init'd brain vault with:
+#   - .brain/manifest.json (empty sources)
+#   - optional .brain/policies.yaml content passed as $2
+# Exports BRAIN_ROOT pointing at the vault.
+# Returns the vault directory in VAULT_DIR.
+# ---------------------------------------------------------------------------
+_setup_vault_with_policies() {
+  local policies_yaml_content="${1:-}"
+  VAULT_DIR="$(mktemp -d)"
+  git init "$VAULT_DIR" >/dev/null 2>&1
+  mkdir -p "${VAULT_DIR}/.brain"
+  printf '{"sources":{}}\n' >"${VAULT_DIR}/.brain/manifest.json"
+  if [ -n "$policies_yaml_content" ]; then
+    printf '%s\n' "$policies_yaml_content" >"${VAULT_DIR}/.brain/policies.yaml"
+  fi
+  export BRAIN_ROOT="$VAULT_DIR"
+}
+
+# ---------------------------------------------------------------------------
+# Helper: _teardown_vault
+# ---------------------------------------------------------------------------
+_teardown_vault() {
+  rm -rf "${VAULT_DIR:-}"
+}
+
+# ---------------------------------------------------------------------------
+# Helper: _run_validate_path
+#
+# Runs validate-ingest-path.sh with BRAIN_ROOT set to VAULT_DIR.
+# Sets BATS_STATUS and BATS_OUTPUT via `run`.
+# ---------------------------------------------------------------------------
+_run_validate_path() {
+  local candidate="$1"
+  run env BRAIN_ROOT="$VAULT_DIR" \
+    bash "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" "$candidate"
+}
+
+# ===========================================================================
+# AC-001 / AC-009 / BC-2.03.003 postcondition (in-vault path):
+# Valid markdown file inside the vault → resolved path printed; exit 0
+# Exercises VP-016
+# ===========================================================================
+@test "BC_2_03_003: valid markdown file inside vault exits 0 with resolved path (AC-001/AC-009)" {
+  # Traces to: BC-2.03.003 happy-path postcondition; BC-2.03.001 precondition 2
+  # RED GATE: stub exits 3 with E-STUB sentinel; test asserts exit 0 → FAILS
+  _setup_vault_with_policies
+  # Create a real markdown file inside the vault
+  local test_file="${VAULT_DIR}/sources/ai/my-article.md"
+  mkdir -p "${VAULT_DIR}/sources/ai"
+  cp "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" "$test_file"
+
+  _run_validate_path "$test_file"
+
+  # Must exit 0 on accepted path
+  [ "$status" -eq 0 ]
+  # Must print the resolved absolute path to stdout
+  local resolved
+  resolved="$(readlink -f "$test_file")"
+  [[ "$output" == *"$resolved"* ]]
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-009 / AC-010 / BC-2.03.003 postcondition 1 (out-of-vault):
+# Path to /etc/passwd → E-INGEST-009; exit 2; no file read
+# Exercises VP-016 (out-of-vault path blocked) and BC-2.03.003 invariant 2
+# ===========================================================================
+@test "BC_2_03_003: /etc/passwd rejected with E-INGEST-009 exit 2 (AC-009/AC-010)" {
+  # Traces to: BC-2.03.003 postcondition 1; invariant 2 (system dir hard block)
+  # RED GATE: stub exits 3 with E-STUB; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+
+  _run_validate_path "/etc/passwd"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-009 / BC-2.03.003 canonical test vector:
+# .. traversal resolving outside vault → E-INGEST-009; exit 2
+# readlink -f semantics: raw path is relative, resolved path is outside vault
+# ===========================================================================
+@test "BC_2_03_003: dot-dot traversal resolving outside vault rejected E-INGEST-009 exit 2 (AC-009)" {
+  # Traces to: BC-2.03.003 canonical test vector (../../outside-vault/file.md)
+  # BC-2.03.003 invariant 1: readlink -f follows .. before vault-root compare
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+  # Place the fixture OUTSIDE the vault (in a sibling temp dir)
+  local outside_dir
+  outside_dir="$(mktemp -d)"
+  cp "${PLUGIN_DIR}/tests/fixtures/ingest-source-outside-vault.txt" \
+    "${outside_dir}/outside.txt"
+  # Construct a traversal path using the vault as starting point.
+  # Navigate out of VAULT_DIR and into the outside dir.
+  # readlink -f will resolve this to outside_dir/outside.txt.
+  local vault_parent
+  vault_parent="$(dirname "$VAULT_DIR")"
+  local vault_name
+  vault_name="$(basename "$VAULT_DIR")"
+  local outside_name
+  outside_name="$(basename "$outside_dir")"
+  local traversal_path="${VAULT_DIR}/../${outside_name}/outside.txt"
+
+  _run_validate_path "$traversal_path"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  rm -rf "$outside_dir"
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-011 / BC-2.03.003 EC-001:
+# Symlink inside vault resolving to outside vault → E-INGEST-009; exit 2
+# readlink -f follows symlinks before vault-root comparison
+# ===========================================================================
+@test "BC_2_03_003: symlink inside vault pointing outside vault rejected E-INGEST-009 exit 2 (AC-011)" {
+  # Traces to: BC-2.03.003 EC-001
+  # BC-2.03.003 invariant 1: readlink -f must follow symlinks
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+  # Create a real file outside the vault
+  local outside_dir
+  outside_dir="$(mktemp -d)"
+  local outside_file="${outside_dir}/secret.md"
+  printf '# Secret\n\nContent outside vault.\n' >"$outside_file"
+  # Create a symlink inside the vault pointing to the outside file
+  local symlink_in_vault="${VAULT_DIR}/sources/outside-link.md"
+  mkdir -p "${VAULT_DIR}/sources"
+  ln -s "$outside_file" "$symlink_in_vault"
+
+  _run_validate_path "$symlink_in_vault"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  rm -rf "$outside_dir"
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-010 / AC-012 / BC-2.03.003 invariant 2 (security):
+# System directory /etc/ hard-blocked EVEN IF listed in allowed_external_paths
+# ===========================================================================
+@test "BC_2_03_003: /etc/ hard-blocked even when in policies.yaml allowed_external_paths (AC-010/AC-012)" {
+  # Traces to: BC-2.03.003 invariant 2; AC-012 security clause
+  # System dirs are always rejected regardless of policy — not configurable
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  local policies_content
+  policies_content="$(printf 'allowed_external_paths:\n  - /etc/\n')"
+  _setup_vault_with_policies "$policies_content"
+
+  # /etc/ in the allowlist but must still be rejected
+  _run_validate_path "/etc/passwd"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
+@test "BC_2_03_003: /usr/ hard-blocked regardless of allowlist (AC-010)" {
+  # Traces to: BC-2.03.003 invariant 2; /usr/ is a system directory
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+
+  _run_validate_path "/usr/share/doc/some-file.txt"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
+@test "BC_2_03_003: /var/ hard-blocked regardless of allowlist (AC-010)" {
+  # Traces to: BC-2.03.003 invariant 2; /var/ is a system directory
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+
+  _run_validate_path "/var/log/system.log"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
+@test "BC_2_03_003: out-of-vault /var/<non-enumerated> hard-blocked even when allowlisted (F3 regression)" {
+  # Traces to: BC-2.03.003 invariant 2 — deny-by-default for ALL /var/* outside vault.
+  # This test proves the old enumerated-only approach was insufficient: a non-enumerated
+  # /var/<other> path (e.g. /var/somethingelse) must be rejected even if in allowlist.
+  # Proof of bite: the OLD code let /var/somethingelse fall through to the allowlist check
+  # and accept it; the NEW code hard-blocks all /var/* for out-of-vault paths.
+  local policies_content
+  policies_content="$(printf 'allowed_external_paths:\n  - /var/somethingelse/\n')"
+  _setup_vault_with_policies "$policies_content"
+
+  _run_validate_path "/var/somethingelse/file.md"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-012 / BC-2.03.003 EC-002:
+# Operator allowlist in policies.yaml permits a non-system outside-vault path
+# ===========================================================================
+@test "BC_2_03_003: allowlisted outside-vault path is accepted; exit 0 (AC-012)" {
+  # Traces to: BC-2.03.003 EC-002; allowed_external_paths key
+  # RED GATE: stub exits 3; test asserts exit 0 → FAILS
+  # Create a temp dir OUTSIDE the vault in /tmp (not /var/folders) to test the
+  # allowlist: /var/* is hard-blocked for out-of-vault paths, but non-system
+  # directories like /tmp are allowlist-eligible (BC-2.03.003 invariant 2).
+  local allowed_dir
+  # Use /tmp explicitly to avoid macOS /var/folders temp paths which are hard-blocked
+  # (BC-2.03.003 invariant 2: all /var/* outside vault → denied).
+  # mktemp with explicit template places dir in /tmp on both macOS and Linux.
+  allowed_dir="$(mktemp -d /tmp/bats-allowed-XXXXXX)"
+  local allowed_file="${allowed_dir}/research-notes.md"
+  cp "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" "$allowed_file"
+
+  local policies_content
+  policies_content="$(printf 'allowed_external_paths:\n  - %s/\n' "$allowed_dir")"
+  _setup_vault_with_policies "$policies_content"
+
+  _run_validate_path "$allowed_file"
+
+  [ "$status" -eq 0 ]
+  # Resolved absolute path must be printed
+  local resolved
+  resolved="$(readlink -f "$allowed_file")"
+  [[ "$output" == *"$resolved"* ]]
+  rm -rf "$allowed_dir"
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-005 / BC-2.03.001 canonical test vector:
+# File not found at resolved path → E-INGEST-011; exit 2
+# ===========================================================================
+@test "BC_2_03_001: nonexistent file emits E-INGEST-011 exit 2 (AC-005)" {
+  # Traces to: BC-2.03.001 canonical test vector (file not found)
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+  local nonexistent="${VAULT_DIR}/sources/does-not-exist.md"
+  # File must NOT exist
+  [ ! -f "$nonexistent" ]
+
+  _run_validate_path "$nonexistent"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-011"* ]]
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-003 / BC-2.03.001 EC-002:
+# PDF with pdftotext available (mock on PATH) → exit 0 (handled, not rejected)
+# ===========================================================================
+@test "BC_2_03_001: PDF file with pdftotext on PATH exits 0 (AC-003)" {
+  # Traces to: BC-2.03.001 EC-002 (PDF with extractor available)
+  # We mock pdftotext as a script on PATH that outputs text content
+  # RED GATE: stub exits 3; test asserts exit 0 → FAILS
+  _setup_vault_with_policies
+  local fake_bin
+  fake_bin="$(mktemp -d)"
+  # Mock pdftotext: accepts <path> - args and writes text to stdout
+  cat >"${fake_bin}/pdftotext" <<'PDFMOCK'
+#!/usr/bin/env bash
+# Mock pdftotext: outputs extraction text (args: <pdf_path> -)
+printf '# Extracted PDF Content\n\nThis is extracted text from the PDF.\n'
+exit 0
+PDFMOCK
+  chmod +x "${fake_bin}/pdftotext"
+
+  # Create a fake PDF file inside the vault
+  local pdf_file="${VAULT_DIR}/sources/ai/report.pdf"
+  mkdir -p "${VAULT_DIR}/sources/ai"
+  printf '%%PDF-1.4 fake pdf content\n' >"$pdf_file"
+
+  run env BRAIN_ROOT="$VAULT_DIR" PATH="${fake_bin}:${PATH}" \
+    bash "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" "$pdf_file"
+
+  [ "$status" -eq 0 ]
+  rm -rf "$fake_bin"
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-003 / BC-2.03.001 EC-002:
+# PDF with pdftotext absent → E-INGEST-010; exit 2
+# ===========================================================================
+@test "BC_2_03_001: PDF file without pdftotext emits E-INGEST-010 exit 2 (AC-003)" {
+  # Traces to: BC-2.03.001 EC-002; AC-003 advisory message for poppler-utils
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+  # Build a restricted PATH that has no pdftotext
+  local rdir
+  rdir="$(mktemp -d)"
+  local cmd_path name
+  local IFS=':'
+  for dir in $PATH; do
+    [[ -d "$dir" ]] || continue
+    for cmd_path in "$dir"/*; do
+      [[ -x "$cmd_path" ]] || continue
+      name="${cmd_path##*/}"
+      [[ "$name" = "pdftotext" ]] && continue
+      [[ -e "${rdir}/${name}" ]] && continue
+      ln -sf "$cmd_path" "${rdir}/${name}"
+    done
+  done
+
+  local pdf_file="${VAULT_DIR}/sources/ai/report.pdf"
+  mkdir -p "${VAULT_DIR}/sources/ai"
+  printf '%%PDF-1.4 fake pdf content\n' >"$pdf_file"
+
+  run env BRAIN_ROOT="$VAULT_DIR" PATH="$rdir" \
+    bash "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" "$pdf_file"
+
+  rm -rf "$rdir"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-010"* ]]
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-004 / BC-2.03.001 EC-002:
+# Image file (.png) → E-INGEST-010; exit 2
+# ===========================================================================
+@test "BC_2_03_001: .png image file emits E-INGEST-010 exit 2 (AC-004)" {
+  # Traces to: BC-2.03.001 EC-002 (image type — cannot ingest in v0.1)
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+  local image_file="${VAULT_DIR}/sources/ai/diagram.png"
+  mkdir -p "${VAULT_DIR}/sources/ai"
+  # Create a minimal fake PNG (not a valid PNG, just the right extension)
+  printf '\x89PNG\r\n\x1a\n' >"$image_file"
+
+  _run_validate_path "$image_file"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-010"* ]]
+  _teardown_vault
+}
+
+@test "BC_2_03_001: .jpg image file emits E-INGEST-010 exit 2 (AC-004)" {
+  # Traces to: BC-2.03.001 EC-002 (image type)
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+  local image_file="${VAULT_DIR}/sources/ai/photo.jpg"
+  mkdir -p "${VAULT_DIR}/sources/ai"
+  printf 'fake jpg content\n' >"$image_file"
+
+  _run_validate_path "$image_file"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-010"* ]]
+  _teardown_vault
+}
+
+# ===========================================================================
+# AC-006 / BC-2.03.001 EC-003:
+# Already-ingested slug (present in manifest) → E-INGEST-001; exit 2; no read
+# ===========================================================================
+@test "BC_2_03_001: already-ingested slug in manifest emits E-INGEST-001 exit 2 (AC-006)" {
+  # Traces to: BC-2.03.001 EC-003 (duplicate guard against manifest)
+  # RED GATE: stub exits 3; test asserts exit 2 → FAILS
+  _setup_vault_with_policies
+  local test_file="${VAULT_DIR}/sources/ai/my-article.md"
+  mkdir -p "${VAULT_DIR}/sources/ai"
+  cp "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" "$test_file"
+
+  # Pre-populate manifest with matching slug "my-article"
+  local manifest_key="sources/ai/my-article.md"
+  local existing_ts
+  existing_ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  local updated
+  updated="$(jq \
+    --arg key "$manifest_key" \
+    --arg ts "$existing_ts" \
+    '.sources[$key] = {
+      "source_id": "my-article",
+      "path": "sources/ai/my-article.md",
+      "topic": "ai",
+      "ingested_at": $ts,
+      "last_ingest": $ts,
+      "chunks": [],
+      "embeddings_model": null
+    }' \
+    "${VAULT_DIR}/.brain/manifest.json")"
+  printf '%s\n' "$updated" >"${VAULT_DIR}/.brain/manifest.json"
+
+  _run_validate_path "$test_file"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-001"* ]]
+  _teardown_vault
+}
+
+# ===========================================================================
+# Structural Red Gate: validate-ingest-path.sh script exists
+# ===========================================================================
+@test "BC_2_03_003: scripts/validate-ingest-path.sh exists (structural)" {
+  # Traces to: STORY-019 File Structure Requirements
+  # RED GATE: script exists as a stub — this test passes (structural gate only)
+  [ -f "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" ]
+}
+
+@test "BC_2_03_003: scripts/validate-ingest-path.sh first line is #!/usr/bin/env bash" {
+  # Traces to: CLAUDE.md §Conventions (hook contract)
+  # RED GATE: stub already has the right shebang — this passes; kept as structural guard
+  local shebang
+  shebang="$(head -1 "${PLUGIN_DIR}/scripts/validate-ingest-path.sh")"
+  [ "$shebang" = "#!/usr/bin/env bash" ]
+}
+
+@test "BC_2_03_003: scripts/validate-ingest-path.sh has set -euo pipefail within first 10 lines" {
+  # Traces to: CLAUDE.md §Conventions (hook contract)
+  local found
+  found="$(head -10 "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" | grep -c 'set -euo pipefail' || true)"
+  [ "$found" -gt 0 ]
+}
+
+@test "BC_2_03_003: scripts/validate-ingest-path.sh passes shellcheck (structural Red Gate)" {
+  # Traces to: CLAUDE.md §Conventions (shellcheck clean)
+  # RED GATE: stub is shellcheck-clean — this passes; kept as forward gate for impl
+  run shellcheck "${PLUGIN_DIR}/scripts/validate-ingest-path.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "BC_2_03_003: scripts/validate-ingest-path.sh passes shfmt normalization (structural Red Gate)" {
+  # Traces to: CLAUDE.md §Conventions (shfmt -i 2)
+  run shfmt -d -i 2 "${PLUGIN_DIR}/scripts/validate-ingest-path.sh"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "BC_2_03_003: scripts/validate-ingest-path.sh does not invoke realpath as a command (uses readlink -f)" {
+  # Traces to: STORY-019 Architecture Compliance Rule 1; Forbidden dependencies
+  # realpath is not available on macOS without GNU coreutils.
+  # We grep for realpath NOT preceded by # (comment) or backtick or NOT (negation words),
+  # i.e. any bare command invocation. Strategy: grep all non-comment lines for
+  # a word-boundary 'realpath' invocation (not a doc mention).
+  # The stub comment block uses "NOT realpath" — we must not flag that.
+  # A real invocation would look like: realpath "$path" or $(realpath ...)
+  # Pattern: line starts with optional whitespace then 'realpath' (not preceded by -, `, NOT, ')
+  local invocations
+  invocations="$(grep -n '\brealpath\b' "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" \
+    | grep -v '^\s*#' | grep -v 'NOT realpath' | grep -v 'readlink\|not available' || true)"
+  [ -z "$invocations" ]
+}
+
+# ===========================================================================
+# AC-016 / BC-2.03.004 invariant 3 (static analysis):
+# ingest-source SKILL.md procedure body must NOT contain 'set +e' as a command
+# The Red Flags section legitimately mentions "set +e" as a FORBIDDEN pattern.
+# We distinguish documentation (mentions in Red Flags / Quality Bar) from
+# actual invocation (a bare `set +e` that would run in the skill body).
+# ===========================================================================
+@test "BC_2_03_004: ingest-source SKILL.md Procedure section does not contain set +e as command (AC-016)" {
+  # Traces to: BC-2.03.004 invariant 3 (no set +e to silence hook-rejected writes)
+  # Mirrors meta-lint static analysis check
+  # Strategy: extract only the Procedure section lines and check for `set +e`.
+  # The skeleton SKILL.md mentions it only in Red Flags (as a FORBIDDEN item) —
+  # the Procedure section and code blocks must never contain it.
+  # RED GATE: skeleton exists with no set +e in Procedure — passes.
+  # This test guards the IMPLEMENTER from accidentally adding set +e in the Procedure body.
+  local skill_file="${PLUGIN_DIR}/skills/ingest-source/SKILL.md"
+  [ -f "$skill_file" ]
+  # Extract Procedure section: lines between "## Procedure" and the next "## " heading
+  local procedure_content
+  procedure_content="$(awk '/^## Procedure/{p=1; next} /^## /{p=0} p' "$skill_file")"
+  # Must not contain `set +e`
+  local found
+  found="$(printf '%s' "$procedure_content" | grep -c 'set +e' || true)"
+  [ "$found" -eq 0 ]
+}
+
+@test "BC_2_03_004: skills/ingest-source/SKILL.md Procedure does not invoke realpath (uses readlink -f) (AC-016)" {
+  # Traces to: STORY-019 Architecture Compliance Rule 1; Forbidden dependencies
+  # The Red Flags section mentions realpath as forbidden — that's documentation, not code.
+  # This test checks the Procedure section (actual steps) for realpath invocations.
+  # RED GATE: skeleton Procedure has no realpath invocations — passes.
+  # Guards the implementer from using realpath in the actual Procedure steps.
+  local skill_file="${PLUGIN_DIR}/skills/ingest-source/SKILL.md"
+  [ -f "$skill_file" ]
+  local procedure_content
+  procedure_content="$(awk '/^## Procedure/{p=1; next} /^## /{p=0} p' "$skill_file")"
+  # Must not contain a bare realpath invocation (backtick or $( form)
+  local found
+  found="$(printf '%s' "$procedure_content" \
+    | grep -E '\$\(realpath|\`realpath|^\s*realpath\b' | wc -l | tr -d ' ' || true)"
+  [ "$found" -eq 0 ]
+}
+
+# ===========================================================================
+# BLOCKER-1 (SECURITY) — BC-2.03.003 invariant 1:
+# Nonexistent intermediate component must not allow .. to bypass vault-root check.
+# Traces to: BC-2.03.003 invariant 1 ("readlink -f follows .. before vault-root compare")
+# RED GATE: slow-path reconstruction leaves .. unresolved; _path_has_prefix passes
+# incorrectly; wrong error code E-INGEST-011 returned instead of E-INGEST-009.
+# ===========================================================================
+
+@test "BC_2_03_003: nonexistent-intermediate dotdot escaping to system file yields E-INGEST-009 exit 2 (BLOCKER-1)" {
+  # Traces to: BC-2.03.003 invariant 1 — slow-path .. must be canonicalized before vault check.
+  # Attack vector: vault/nonexistent/../../../../etc/passwd
+  # Slow path walks up to vault root (exists), appends /nonexistent/../../../../etc/passwd VERBATIM.
+  # The reconstructed string lexically starts with vault root → INSIDE_VAULT=1 incorrectly.
+  # System-dir hard-block is bypassed; wrong error code returned.
+  # Fix: canonicalize (collapse ..) after slow-path reconstruction, before prefix checks.
+  _setup_vault_with_policies
+  # Use a path where /nonexistent does not exist under vault, followed by enough dots
+  # to traverse outside: vault/nonexistent/../../../../etc/passwd
+  # (4 dots = enough to escape /private/var/folders/XX/YYYY/T/vault structure on macOS)
+  # Use enough dots to always escape regardless of temp dir depth: use 10 dots
+  local candidate="${VAULT_DIR}/nonexistent/../../../../../../../../../../../../etc/passwd"
+
+  _run_validate_path "$candidate"
+
+  # MUST be rejected as outside vault (E-INGEST-009), not "file not found" (E-INGEST-011)
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  _teardown_vault
+}
+
+@test "BC_2_03_003: nonexistent-intermediate dotdot escaping to sibling outside vault yields E-INGEST-009 exit 2 (BLOCKER-1)" {
+  # Traces to: BC-2.03.003 invariant 1 — slow-path .. canonicalization required.
+  # Attack vector: vault/nonexistent/../../<sibling-dir>/file.md
+  # Even if target is not a system dir and even if it would otherwise be allowlisted,
+  # the raw path MUST be canonicalized before vault-root comparison.
+  # Result: sibling is outside vault → E-INGEST-009 (not E-INGEST-011).
+  local sibling_dir
+  sibling_dir="$(mktemp -d)"
+  local sibling_file="${sibling_dir}/outside.md"
+  printf '# Outside\n' >"$sibling_file"
+  local sibling_basename
+  sibling_basename="$(basename "$sibling_dir")"
+
+  _setup_vault_with_policies
+  # Construct path: vault/nonexistent/../../<sibling>/outside.md
+  # After canonicalization: <parent_of_vault>/<sibling>/outside.md — outside vault
+  local candidate="${VAULT_DIR}/nonexistent/../../${sibling_basename}/outside.md"
+
+  _run_validate_path "$candidate"
+
+  # MUST be rejected as outside vault regardless of allowlist state
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  rm -rf "$sibling_dir"
+  _teardown_vault
+}

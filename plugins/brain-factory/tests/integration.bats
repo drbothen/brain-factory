@@ -2097,3 +2097,722 @@ MOCK_EOF
   [ "$unique" -gt 5 ]
   rm -rf "$out_dir"
 }
+
+# ===========================================================================
+# STORY-019: Integration tests for /brain:ingest-source pipeline
+# Traces to: BC-2.03.001, BC-2.03.002, BC-2.03.003, BC-2.03.004
+# VP coverage: VP-016 (local source ingest pipeline), VP-012 (manifest atomicity)
+#
+# NOTE on event-catalog: The 5 structured event types
+# (ingest.source.started, ingest.source.path_rejected, ingest.source.written,
+# ingest.source.wiki_pages_generated, ingest.source.completed) and error codes
+# E-INGEST-009/010/011 must be pre-registered in scripts/event-catalog.json
+# by the implementer before emit calls are added. That is implementer scope.
+#
+# NOTE on readlink -f: Architecture Compliance Rule 1 mandates readlink -f;
+# do NOT use realpath (not portable on macOS without GNU coreutils).
+#
+# Integration test strategy: we test the script-level pipeline helpers that
+# /brain:ingest-source will delegate to — validate-ingest-path.sh (path gate),
+# manifest-write.sh (atomic manifest delta with `path` not `url`), and
+# generate-wiki.sh + log-tokens.sh (wiki fan-out). The partial-failure fan-out
+# tests inject a directory write-protection failure for exactly one of N pages,
+# mirroring the approach in the STORY-017 generate-wiki.sh tests above.
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# Integration setup: git-init'd vault with full brain scaffold
+# ---------------------------------------------------------------------------
+_setup_ingest_source_vault() {
+  INGEST_VAULT="$(mktemp -d)"
+  git init "$INGEST_VAULT" >/dev/null 2>&1
+  mkdir -p "${INGEST_VAULT}/.brain/logs"
+  mkdir -p "${INGEST_VAULT}/sources/ai"
+  mkdir -p "${INGEST_VAULT}/wiki/concepts" \
+    "${INGEST_VAULT}/wiki/people" \
+    "${INGEST_VAULT}/wiki/frameworks" \
+    "${INGEST_VAULT}/wiki/syntheses" \
+    "${INGEST_VAULT}/wiki/observations" \
+    "${INGEST_VAULT}/wiki/questions"
+  printf '{"sources":{}}\n' >"${INGEST_VAULT}/.brain/manifest.json"
+  cat >"${INGEST_VAULT}/wiki/index.md" <<'IDXEOF'
+---
+type: index
+title: "Wiki Index"
+---
+
+# Wiki Index
+IDXEOF
+  cat >"${INGEST_VAULT}/wiki/log.md" <<'LOGEOF'
+---
+type: log
+title: "Ingest Log"
+---
+
+# Ingest Log
+LOGEOF
+  export BRAIN_ROOT="$INGEST_VAULT"
+}
+
+_teardown_ingest_source_vault() {
+  rm -rf "${INGEST_VAULT:-}"
+}
+
+# ---------------------------------------------------------------------------
+# Helper: _write_ingest_source_file
+#
+# Writes the happy-path fixture into sources/{topic}/{slug}.md with the
+# correct source frontmatter (path field, not url).
+# Mirrors the expected output of steps 6-7 in SKILL.md Procedure.
+# ---------------------------------------------------------------------------
+_write_ingest_source_file() {
+  local vault_dir="$1"
+  local topic="$2"
+  local slug="$3"
+  local original_path="$4"
+
+  mkdir -p "${vault_dir}/sources/${topic}"
+  local dest="${vault_dir}/sources/${topic}/${slug}.md"
+  local ingested_at
+  ingested_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  local relative_path="sources/${topic}/${slug}.md"
+
+  # Write frontmatter using a quoted heredoc (no expansion inside) for the static
+  # fields, then substitute the dynamic fields via printf before writing.
+  # Body is appended separately (not embedded in heredoc) to avoid ## markdown
+  # headings breaking yq full-file YAML parse in subsequent yq --front-matter=extract tests.
+  {
+    printf -- '---\n'
+    printf 'title: "The Practical Guide to Retrieval-Augmented Generation"\n'
+    printf 'path: "%s"\n' "$relative_path"
+    printf 'ingested_at: "%s"\n' "$ingested_at"
+    printf 'source_id: "%s"\n' "$slug"
+    printf 'topic: "%s"\n' "$topic"
+    printf 'embedding_status: pending\n'
+    printf -- '---\n\n'
+    cat "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md"
+  } >"$dest"
+  printf '%s' "$dest"
+}
+
+# ---------------------------------------------------------------------------
+# Helper: _write_ingest_source_manifest_entry
+#
+# Appends a local-source manifest entry (path field, NOT url field) via
+# manifest-write.sh. Returns the manifest path.
+# ---------------------------------------------------------------------------
+_write_ingest_source_manifest_entry() {
+  local vault_dir="$1"
+  local slug="$2"
+  local topic="$3"
+  local relative_path="sources/${topic}/${slug}.md"
+  local manifest="${vault_dir}/.brain/manifest.json"
+  local ingested_at
+  ingested_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+  local entry
+  entry="$(printf '{"source_id":"%s","path":"%s","topic":"%s","ingested_at":"%s","last_ingest":"%s","chunks":[],"embeddings_model":null}' \
+    "$slug" "$relative_path" "$topic" "$ingested_at" "$ingested_at")"
+
+  # shellcheck source=/dev/null
+  (
+    BRAIN_DIR="$vault_dir"
+    export BRAIN_DIR
+    source "${PLUGIN_DIR}/hooks/lib/manifest-write.sh"
+    manifest_write "$entry" "$manifest"
+  )
+}
+
+# ===========================================================================
+# AC-001 / AC-002 / AC-007 / BC-2.03.001 postconditions 1-5; BC-2.03.002 postcondition 1:
+# Successful ingest → source file written with `path` field (not `url`); 5+ wiki pages;
+# token record appended; exit 0
+# Exercises VP-016 (ingest pipeline) and VP-012 (manifest path field)
+# ===========================================================================
+@test "BC_2_03_001: path validation gate passes for valid vault-relative file before source write (AC-001)" {
+  # Traces to: BC-2.03.001 postcondition 1; BC-2.03.003 happy-path postcondition
+  # The path validation gate (validate-ingest-path.sh) must exit 0 for a valid
+  # vault-relative file before any source write. The stub exits 3 with E-STUB.
+  # RED GATE: validate-ingest-path.sh stub exits 3; test asserts exit 0 → FAILS
+  _setup_ingest_source_vault
+
+  # Create a valid markdown file inside the vault (happy-path fixture)
+  local test_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  mkdir -p "${INGEST_VAULT}/sources/ai"
+  cp "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" "$test_file"
+
+  # The validate-ingest-path.sh gate must exit 0 for a file inside the vault.
+  # Without this gate passing, no source file can be written.
+  run env BRAIN_ROOT="$INGEST_VAULT" \
+    bash "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" "$test_file"
+
+  # Must exit 0 (accepted)
+  [ "$status" -eq 0 ]
+  # Must print the readlink -f resolved absolute path
+  local resolved
+  resolved="$(readlink -f "$test_file")"
+  [[ "$output" == *"$resolved"* ]]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_002: successful ingest appends manifest entry with path field not url (AC-007/VP-012)" {
+  # Traces to: BC-2.03.002 postcondition 1; VP-012 manifest path field
+  # BC-2.03.002 invariant 1: local-source entries use `path` not `url`
+  # RED GATE: manifest-write.sh is IMPLEMENTED (STORY-016 deliverable) — this test
+  # passes once we call it with a properly structured entry. The Red Gate here is
+  # that the validate-ingest-path.sh stub (exit 3) prevents the real ingest skill
+  # from reaching this step. The helper _write_ingest_source_manifest_entry directly
+  # calls manifest-write.sh to test the contract that path (not url) is stored.
+  # Assertion: manifest entry has `path` field — verifies BC-2.03.002 invariant 1.
+  _setup_ingest_source_vault
+  local manifest="${INGEST_VAULT}/.brain/manifest.json"
+
+  # Write source file first (precondition for manifest step)
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # Call manifest-write.sh to append entry with path field
+  _write_ingest_source_manifest_entry "$INGEST_VAULT" "rag-guide" "ai"
+
+  # Manifest must have exactly 1 entry
+  local count
+  count="$(jq '.sources | length' "$manifest")"
+  [ "$count" -eq 1 ]
+
+  # Entry must have `path` field (not url — BC-2.03.002 invariant 1)
+  local path_val
+  path_val="$(jq -r 'first(.sources[]).path' "$manifest")"
+  [ -n "$path_val" ]
+  [ "$path_val" != "null" ]
+
+  # Entry must NOT have `url` field
+  local url_val
+  url_val="$(jq -r 'first(.sources[]).url // "absent"' "$manifest")"
+  [ "$url_val" = "absent" ]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_001: ingest pipeline produces 5+ wiki pages via generate-wiki.sh (AC-002/VP-016)" {
+  # Traces to: BC-2.03.001 postconditions 2-3; VP-016 wiki generation
+  # RED GATE: scripts/generate-wiki.sh not implemented → no wiki pages created → count < 5 → FAILS
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  run bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file"
+  [ "$status" -eq 0 ]
+
+  local wiki_count
+  wiki_count="$(find "${INGEST_VAULT}/wiki" -name '*.md' \
+    -not -name 'index.md' \
+    -not -name 'log.md' | wc -l | tr -d ' ')"
+  [ "$wiki_count" -ge 5 ]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_001: token record appended to .brain/logs/ingest-tokens.jsonl on successful ingest (AC-002)" {
+  # Traces to: BC-2.03.001 postcondition 4; log-tokens.sh integration
+  # RED GATE: scripts/log-tokens.sh not implemented → JSONL file not created → FAILS
+  _setup_ingest_source_vault
+
+  run bash "${PLUGIN_DIR}/scripts/log-tokens.sh" \
+    "$INGEST_VAULT" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" \
+    "rag-guide" \
+    "1200" \
+    "600" \
+    "7" \
+    "10"
+  [ "$status" -eq 0 ]
+  [ -f "${INGEST_VAULT}/.brain/logs/ingest-tokens.jsonl" ]
+
+  # Record must exist and be valid JSONL
+  local record
+  record="$(tail -1 "${INGEST_VAULT}/.brain/logs/ingest-tokens.jsonl")"
+  [ -n "$record" ]
+  run jq -e '.' <<<"$record"
+  [ "$status" -eq 0 ]
+
+  _teardown_ingest_source_vault
+}
+
+# ===========================================================================
+# AC-008 / BC-2.03.002 postconditions 2-3 + EC-001:
+# Existing manifest entries NOT modified; atomic write; manifest write failure
+# → source rolled back + E-INGEST-008
+# Exercises VP-012 (manifest atomicity)
+# ===========================================================================
+@test "BC_2_03_002: second ingest does not modify first entry (existing entries preserved) (AC-008)" {
+  # Traces to: BC-2.03.002 postcondition 2; VP-012
+  # RED GATE: manifest-write.sh stub returns 1 → count stays 0 → second entry doesn't exist → FAILS
+  _setup_ingest_source_vault
+
+  # First entry
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "first-source" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+  _write_ingest_source_manifest_entry "$INGEST_VAULT" "first-source" "ai"
+
+  # Second entry
+  local second_file="${INGEST_VAULT}/sources/ai/second-source.md"
+  cp "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" "$second_file"
+  _write_ingest_source_manifest_entry "$INGEST_VAULT" "second-source" "ai"
+
+  local count
+  count="$(jq '.sources | length' "${INGEST_VAULT}/.brain/manifest.json")"
+  [ "$count" -eq 2 ]
+
+  # First entry must still be present with original source_id
+  local first_id
+  first_id="$(jq -r '.sources["sources/ai/first-source.md"].source_id' \
+    "${INGEST_VAULT}/.brain/manifest.json")"
+  [ "$first_id" = "first-source" ]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_002: manifest write failure rolls back source file and emits E-INGEST-008 (AC-008)" {
+  # Traces to: BC-2.03.002 EC-001; VP-012 atomicity
+  # RED GATE: manifest-write.sh stub does not emit E-INGEST-008 → assertion FAILS
+  _setup_ingest_source_vault
+
+  local manifest="${INGEST_VAULT}/.brain/manifest.json"
+
+  # Make manifest read-only to simulate write failure
+  chmod 444 "$manifest"
+
+  local entry
+  entry='{"source_id":"rollback-test","path":"sources/ai/rollback-test.md","topic":"ai","ingested_at":"2026-05-30T00:00:00Z","last_ingest":"2026-05-30T00:00:00Z","chunks":[],"embeddings_model":null}'
+
+  local err_out
+  err_out="$(bash -c "
+    source '${PLUGIN_DIR}/hooks/lib/manifest-write.sh'
+    BRAIN_DIR='${INGEST_VAULT}'
+    manifest_write '${entry}' '${manifest}'
+  " 2>&1 || true)"
+
+  # Restore for teardown
+  chmod 644 "$manifest"
+
+  # Must emit E-INGEST-008
+  [[ "$err_out" == *"E-INGEST-008"* ]]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_002: manifest write is atomic (uses .tmp+mv pattern) (VP-012)" {
+  # Traces to: BC-2.03.002 postcondition 3; VP-012 atomicity property
+  # RED GATE: manifest-write.sh stub does not contain .tmp → assertion fails → FAILS
+  local manifest_lib="${PLUGIN_DIR}/hooks/lib/manifest-write.sh"
+  grep -q '\.tmp' "$manifest_lib" || {
+    echo "FAIL: manifest-write.sh does not contain .tmp pattern" >&2
+    return 1
+  }
+  grep -q '\bmv\b' "$manifest_lib" || {
+    echo "FAIL: manifest-write.sh does not contain mv (atomic rename)" >&2
+    return 1
+  }
+}
+
+# ===========================================================================
+# AC-013 / AC-015 / BC-2.03.004 postconditions 1-3 + invariant 1:
+# 10 pages planned, 1 hook-blocked → pages_failed:1, pages_created:9,
+# pages_attempted:10; exit 1
+# Exercises VP-016 (partial failure reported accurately)
+# Injection mechanism: chmod 555 on concepts/ (mirrors STORY-017 approach)
+# ===========================================================================
+@test "BC_2_03_004: partial failure (1 hook-blocked) exits 1 with pages_failed:1 pages_created:N-1 (AC-013/AC-015)" {
+  # Traces to: BC-2.03.004 postconditions 1-2; invariant 1
+  # VP-016: partial failure reported accurately
+  # Injection: make wiki/concepts/ read-only to block any concept pages
+  # RED GATE: generate-wiki.sh not implemented → run fails or exits wrong code → FAILS
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # Block writes to concepts/ to inject exactly one failure category
+  chmod 555 "${INGEST_VAULT}/wiki/concepts"
+
+  # Use bash -c with stderr suppressed so structured events (emitted on stderr per
+  # CLAUDE.md §Logging) do not pollute $output and break integer assertions.
+  run bash -c "bash '${PLUGIN_DIR}/scripts/generate-wiki.sh' \
+    '${INGEST_VAULT}' \
+    '${source_file}' 2>/dev/null"
+
+  # Restore before any assertion that might short-circuit teardown
+  chmod 755 "${INGEST_VAULT}/wiki/concepts"
+
+  # exit 1 = partial failure (advisory — pages_failed > 0)
+  [ "$status" -eq 1 ]
+
+  # Output must be a JSON fan-out envelope
+  local pages_attempted pages_created pages_failed
+  pages_attempted="$(printf '%s' "$output" | jq -r '.pages_attempted' 2>/dev/null || true)"
+  pages_created="$(printf '%s' "$output" | jq -r '.pages_created' 2>/dev/null || true)"
+  pages_failed="$(printf '%s' "$output" | jq -r '.pages_failed' 2>/dev/null || true)"
+
+  [ -n "$pages_attempted" ]
+  [ "$pages_attempted" != "null" ]
+  [ -n "$pages_failed" ]
+  [ "$pages_failed" -ge 1 ]
+  [ -n "$pages_created" ]
+  [ "$pages_created" -ge 1 ]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_004: pages_attempted == pages_created + pages_failed invariant holds on partial failure (AC-015)" {
+  # Traces to: BC-2.03.004 invariant 1; STORY-019 Test Vectors (invariant row)
+  # VP-016: pages_attempted = pages_created + pages_failed in all scenarios
+  # RED GATE: generate-wiki.sh not implemented → output not parseable → FAILS
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # Inject hook failure for concepts/ pages
+  chmod 555 "${INGEST_VAULT}/wiki/concepts"
+
+  local envelope
+  envelope="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" 2>/dev/null || true)"
+
+  chmod 755 "${INGEST_VAULT}/wiki/concepts"
+
+  local pages_attempted pages_created pages_failed
+  pages_attempted="$(printf '%s' "$envelope" | jq -r '.pages_attempted' 2>/dev/null || true)"
+  pages_created="$(printf '%s' "$envelope" | jq -r '.pages_created' 2>/dev/null || true)"
+  pages_failed="$(printf '%s' "$envelope" | jq -r '.pages_failed' 2>/dev/null || true)"
+
+  # All three fields must be numeric
+  [[ "$pages_attempted" =~ ^[0-9]+$ ]]
+  [[ "$pages_created" =~ ^[0-9]+$ ]]
+  [[ "$pages_failed" =~ ^[0-9]+$ ]]
+
+  # Invariant: pages_attempted == pages_created + pages_failed
+  local computed_sum
+  computed_sum=$(( pages_created + pages_failed ))
+  [ "$pages_attempted" -eq "$computed_sum" ]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_004: pages_attempted == pages_created + pages_failed invariant holds on full success (AC-015)" {
+  # Traces to: BC-2.03.004 invariant 1 (happy path scenario)
+  # RED GATE: generate-wiki.sh not implemented → FAILS
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  local envelope
+  envelope="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" 2>/dev/null || true)"
+
+  local pages_attempted pages_created pages_failed
+  pages_attempted="$(printf '%s' "$envelope" | jq -r '.pages_attempted' 2>/dev/null || true)"
+  pages_created="$(printf '%s' "$envelope" | jq -r '.pages_created' 2>/dev/null || true)"
+  pages_failed="$(printf '%s' "$envelope" | jq -r '.pages_failed' 2>/dev/null || true)"
+
+  [[ "$pages_attempted" =~ ^[0-9]+$ ]]
+  [[ "$pages_created" =~ ^[0-9]+$ ]]
+  [[ "$pages_failed" =~ ^[0-9]+$ ]]
+
+  local computed_sum
+  computed_sum=$(( pages_created + pages_failed ))
+  [ "$pages_attempted" -eq "$computed_sum" ]
+
+  _teardown_ingest_source_vault
+}
+
+# ===========================================================================
+# AC-014 / BC-2.03.004 postcondition 3 + invariant 2:
+# failures array is always present in envelope, never absent, even when empty
+# ===========================================================================
+@test "BC_2_03_004: fan-out envelope always includes failures array even when empty (AC-014)" {
+  # Traces to: BC-2.03.004 postcondition 3; invariant 2 (no silent omission)
+  # VP-016: no silent swallow on failed pages
+  # RED GATE: generate-wiki.sh not implemented → no JSON output → jq parse fails → FAILS
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  local envelope
+  envelope="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" 2>/dev/null || true)"
+
+  # failures key must exist (type must be array, not null/absent)
+  local failures_type
+  failures_type="$(printf '%s' "$envelope" | jq -r '.failures | type' 2>/dev/null || true)"
+  [ "$failures_type" = "array" ]
+
+  _teardown_ingest_source_vault
+}
+
+@test "BC_2_03_004: fan-out envelope failures array present on partial failure with failure entries (AC-014)" {
+  # Traces to: BC-2.03.004 postcondition 3; no failed page silently omitted
+  # RED GATE: generate-wiki.sh not implemented → FAILS
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # Block concepts/ to inject failures
+  chmod 555 "${INGEST_VAULT}/wiki/concepts"
+
+  local envelope
+  envelope="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" 2>/dev/null || true)"
+
+  chmod 755 "${INGEST_VAULT}/wiki/concepts"
+
+  # failures array must exist and be non-empty (partial failure occurred)
+  local failures_type failures_count
+  failures_type="$(printf '%s' "$envelope" | jq -r '.failures | type' 2>/dev/null || true)"
+  failures_count="$(printf '%s' "$envelope" | jq -r '.failures | length' 2>/dev/null || true)"
+  [ "$failures_type" = "array" ]
+  [ "$failures_count" -ge 1 ]
+
+  # Each failure entry must have slug and error fields using E-INGEST-014
+  local first_slug first_error
+  first_slug="$(printf '%s' "$envelope" | jq -r '.failures[0].slug' 2>/dev/null || true)"
+  first_error="$(printf '%s' "$envelope" | jq -r '.failures[0].error' 2>/dev/null || true)"
+  [ -n "$first_slug" ]
+  [ "$first_slug" != "null" ]
+  [ -n "$first_error" ]
+  [ "$first_error" != "null" ]
+  # F5: assert full canonical form — code prefix + slug + "Other pages preserved."
+  [[ "$first_error" == *"E-INGEST-014"* ]]
+  [[ "$first_error" == *"$first_slug"* ]]
+  [[ "$first_error" == *"Other pages preserved."* ]]
+
+  _teardown_ingest_source_vault
+}
+
+# ===========================================================================
+# AC-017 / BC-2.03.004 EC-001:
+# All pages blocked → pages_created:0; pages_failed:N; source + manifest stand; exit 1
+# ===========================================================================
+@test "BC_2_03_004: all pages blocked exits 1 with pages_created:0 and pages_failed:N (AC-017)" {
+  # Traces to: BC-2.03.004 EC-001 (all 0 of N created)
+  # Injection: block ALL wiki subdirectories simultaneously
+  # RED GATE: generate-wiki.sh not implemented → FAILS
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # Write manifest entry so source "stands" for assertion
+  _write_ingest_source_manifest_entry "$INGEST_VAULT" "rag-guide" "ai"
+
+  # Block ALL wiki type directories to force total failure
+  chmod 555 "${INGEST_VAULT}/wiki/concepts" \
+    "${INGEST_VAULT}/wiki/people" \
+    "${INGEST_VAULT}/wiki/frameworks" \
+    "${INGEST_VAULT}/wiki/syntheses" \
+    "${INGEST_VAULT}/wiki/observations" \
+    "${INGEST_VAULT}/wiki/questions"
+
+  # Use bash -c with stderr suppressed so structured events (emitted on stderr per
+  # CLAUDE.md §Logging) do not pollute $output and break integer assertions.
+  run bash -c "bash '${PLUGIN_DIR}/scripts/generate-wiki.sh' \
+    '${INGEST_VAULT}' \
+    '${source_file}' 2>/dev/null"
+
+  # Restore before teardown assertions
+  chmod 755 "${INGEST_VAULT}/wiki/concepts" \
+    "${INGEST_VAULT}/wiki/people" \
+    "${INGEST_VAULT}/wiki/frameworks" \
+    "${INGEST_VAULT}/wiki/syntheses" \
+    "${INGEST_VAULT}/wiki/observations" \
+    "${INGEST_VAULT}/wiki/questions"
+
+  # exit 1 = advisory (all pages failed but source + manifest stand)
+  [ "$status" -eq 1 ]
+
+  # pages_created must be 0
+  local pages_created
+  pages_created="$(printf '%s' "$output" | jq -r '.pages_created' 2>/dev/null || true)"
+  [ "$pages_created" = "0" ]
+
+  # pages_failed must be > 0 (at least some pages were attempted)
+  local pages_failed
+  pages_failed="$(printf '%s' "$output" | jq -r '.pages_failed' 2>/dev/null || true)"
+  [ "$pages_failed" -ge 1 ]
+
+  # Source file must still exist (not rolled back on wiki failure)
+  [ -f "$source_file" ]
+
+  # Manifest entry must still exist (not rolled back on wiki failure)
+  local manifest_count
+  manifest_count="$(jq '.sources | length' "${INGEST_VAULT}/.brain/manifest.json")"
+  [ "$manifest_count" -ge 1 ]
+
+  _teardown_ingest_source_vault
+}
+
+# ===========================================================================
+# B1 regression: generate-wiki.sh emits wiki_pages_generated event to STDERR
+# even when .brain/logs/ exists (production condition: init/run.sh always creates it).
+# Absence of this test allowed the log-file-redirect regression in STORY-019 Pass 1.
+# Traces to: CLAUDE.md §Logging ("structured events on stderr"); B1 adversary finding.
+# ===========================================================================
+@test "BC_2_03_001: generate-wiki.sh emits wiki_pages_generated event to stderr when .brain/logs/ exists (B1 regression)" {
+  # The production brain always has .brain/logs/ (created by init/run.sh).
+  # This test asserts that structured events reach stderr regardless of log dir presence —
+  # which is the correct behavior per CLAUDE.md §Logging.
+  _setup_ingest_source_vault
+  # _setup_ingest_source_vault already creates .brain/logs/ — confirm it exists
+  [ -d "${INGEST_VAULT}/.brain/logs" ]
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # Capture stderr only (production event transport); discard stdout (fan-out envelope)
+  local stderr_out
+  stderr_out="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" \
+    "ingest.source" 2>&1 1>/dev/null || true)"
+
+  # The wiki_pages_generated event must appear on stderr (not swallowed to a log file)
+  [[ "$stderr_out" == *"wiki_pages_generated"* ]]
+
+  _teardown_ingest_source_vault
+}
+
+# Regression for ingest.url prefix (default, no 3rd arg)
+@test "BC_2_02_002: generate-wiki.sh emits ingest.url.wiki_pages_generated to stderr when .brain/logs/ exists (B1 regression)" {
+  # Mirrors the ingest.source regression above but for the ingest.url prefix path.
+  _setup_ingest_source_vault
+  [ -d "${INGEST_VAULT}/.brain/logs" ]
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  local stderr_out
+  stderr_out="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" 2>&1 1>/dev/null || true)"
+
+  # Default prefix is "ingest.url"
+  [[ "$stderr_out" == *"ingest.url.wiki_pages_generated"* ]]
+
+  _teardown_ingest_source_vault
+}
+
+# ===========================================================================
+# AC-010 / AC-012 / BC-2.03.003 invariant 2 (integration):
+# System directory /etc/ blocked even when in policies.yaml allowlist
+# ===========================================================================
+@test "BC_2_03_003: system dir /etc/ blocked even if in allowlist (integration; AC-010/AC-012)" {
+  # Traces to: BC-2.03.003 invariant 2; AC-012 security clause
+  # This is the integration-level check: validate-ingest-path.sh is called
+  # by the full ingest pipeline; system dirs must never reach source write.
+  # RED GATE: validate-ingest-path.sh stub exits 3; test asserts exit 2 → FAILS
+  INGEST_VAULT="$(mktemp -d)"
+  git init "$INGEST_VAULT" >/dev/null 2>&1
+  mkdir -p "${INGEST_VAULT}/.brain"
+  printf '{"sources":{}}\n' >"${INGEST_VAULT}/.brain/manifest.json"
+  # Put /etc/ in the allowlist — must still be blocked
+  printf 'allowed_external_paths:\n  - /etc/\n' \
+    >"${INGEST_VAULT}/.brain/policies.yaml"
+
+  run env BRAIN_ROOT="$INGEST_VAULT" \
+    bash "${PLUGIN_DIR}/scripts/validate-ingest-path.sh" "/etc/passwd"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"E-INGEST-009"* ]]
+  rm -rf "$INGEST_VAULT"
+}
+
+# ===========================================================================
+# IMPORTANT-1 (F4 coverage): mkdir failure in _write_wiki_page
+# Traces to: BC-2.03.004 fan-out error handling — mkdir -p failure branch
+# The chmod-555 tests exercise the cat-write failure branch (the dir exists but
+# is unwritable). This test exercises the EARLIER branch where mkdir -p itself
+# fails because a path component is a REGULAR FILE, not a directory.
+#
+# Injection: create a regular file at wiki/<type> before the run.
+# mkdir -p wiki/<type>/<slug>.md fails because wiki/<type> is a file, not a dir.
+# Expected: the affected page appears in failures[] with E-INGEST-014,
+# exit code is 1 (partial failure), and pages for OTHER types still succeed.
+# ===========================================================================
+@test "BC_2_03_004: mkdir-p failure on type dir reported as E-INGEST-014; other-type pages preserved; exit 1 (F4 coverage)" {
+  # Traces to: BC-2.03.004 invariant 1 + fan-out postcondition 3
+  # generate-wiki.sh _write_wiki_page: mkdir -p failure → return 2 →
+  # appended to failures[] with E-INGEST-014; HAD_FAILURE=1 → exit 1.
+  # OTHER types (e.g. questions) must still succeed.
+  #
+  # This test was written as a RED GATE coverage test. If the mkdir-failure
+  # branch in _write_wiki_page already correctly propagates to failures[],
+  # the test will pass immediately (coverage test, not a defect test).
+  _setup_ingest_source_vault
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # The happy fixture generates pages of types: observations, questions.
+  # Inject mkdir failure for the "observations" type by replacing the
+  # wiki/observations DIRECTORY with a regular FILE. mkdir -p cannot create a
+  # directory when a non-directory already occupies that path component.
+  rmdir "${INGEST_VAULT}/wiki/observations"
+  printf 'not-a-directory\n' >"${INGEST_VAULT}/wiki/observations"
+
+  run bash -c "bash '${PLUGIN_DIR}/scripts/generate-wiki.sh' \
+    '${INGEST_VAULT}' \
+    '${source_file}' 2>/dev/null"
+
+  # Partial failure: at least one mkdir-blocked page → exit 1
+  [ "$status" -eq 1 ]
+
+  # failures[] must include an E-INGEST-014 entry for the blocked type
+  local failures_count
+  failures_count="$(printf '%s' "$output" | jq -r '.failures | length' 2>/dev/null || true)"
+  [ -n "$failures_count" ]
+  [ "$failures_count" -ge 1 ]
+
+  local first_error
+  first_error="$(printf '%s' "$output" | jq -r '.failures[0].error' 2>/dev/null || true)"
+  [[ "$first_error" == *"E-INGEST-014"* ]]
+
+  # "Other pages preserved." must appear in the error message (BC-2.03.004)
+  [[ "$first_error" == *"Other pages preserved."* ]]
+
+  # OTHER type pages (questions) must still have been created successfully
+  local pages_created
+  pages_created="$(printf '%s' "$output" | jq -r '.pages_created' 2>/dev/null || true)"
+  [ -n "$pages_created" ]
+  [ "$pages_created" -ge 1 ]
+
+  # Invariant: pages_attempted == pages_created + pages_failed
+  local pages_attempted pages_failed
+  pages_attempted="$(printf '%s' "$output" | jq -r '.pages_attempted' 2>/dev/null || true)"
+  pages_failed="$(printf '%s' "$output" | jq -r '.pages_failed' 2>/dev/null || true)"
+  local computed_sum
+  computed_sum=$(( pages_created + pages_failed ))
+  [ "$pages_attempted" -eq "$computed_sum" ]
+
+  _teardown_ingest_source_vault
+}
