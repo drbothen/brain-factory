@@ -1,0 +1,30 @@
+name: weekly-refresh
+description: "Weekly brain synthesis: synthesize recent topics, connect sources, and run a full brain health report."
+steps:
+  - id: synthesize
+    skill: brain:synthesize-topic
+    args:
+      - --yes
+      - --json
+    depends_on: []
+  - id: connect
+    skill: brain:connect-sources
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - synthesize
+  - id: monthly-synthesis
+    skill: brain:monthly-synthesis
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - connect
+  - id: health-report
+    skill: brain:brain-health
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - monthly-synthesis
