@@ -1,0 +1,88 @@
+=== FANOUT DEMO 1 (AC-013/014/015): Full success — pages_failed=0 ===
+Command: generate-wiki.sh <brain> transformer-models.md ingest.source
+Envelope:
+{
+  "pages_attempted": 12,
+  "pages_created": 12,
+  "pages_failed": 0,
+  "failures": []
+}
+exit: 0
+Invariant check: attempted(12) == created(12) + failed(0): PASS
+failures array present: true
+failures array length: 0
+
+=== FANOUT DEMO 2 (AC-013/014/015): Partial failure — 1 slug collision ===
+Command: generate-wiki.sh <brain> transformer-v2.md ingest.source (1 collision expected)
+Envelope:
+{
+  "pages_attempted": 7,
+  "pages_created": 3,
+  "pages_failed": 4,
+  "failures": [
+    {
+      "slug": "attention-mechanisms",
+      "type": "concepts",
+      "error": "E-INGEST-014: Wiki page generation failed for 'attention-mechanisms': slug already exists. Other pages preserved."
+    },
+    {
+      "slug": "scaling-laws",
+      "type": "syntheses",
+      "error": "E-INGEST-014: Wiki page generation failed for 'scaling-laws': slug already exists. Other pages preserved."
+    },
+    {
+      "slug": "geoffrey-hinton",
+      "type": "people",
+      "error": "E-INGEST-014: Wiki page generation failed for 'geoffrey-hinton': slug already exists. Other pages preserved."
+    },
+    {
+      "slug": "pytorch",
+      "type": "frameworks",
+      "error": "E-INGEST-014: Wiki page generation failed for 'pytorch': slug already exists. Other pages preserved."
+    }
+  ]
+}
+exit: 1 (expected 1 — partial failure)
+pages_failed > 0: true
+failures[0].error contains E-INGEST-014: 1
+Invariant: attempted(7) == created(3) + failed(4): PASS
+
+=== FANOUT DEMO 3 (AC-017): All pages fail — pages_created=0 ===
+First run (all succeed): {
+  "pages_attempted": 4,
+  "pages_created": 4
+}
+Command: generate-wiki.sh <brain> simple-source-copy.md (all slugs already exist)
+Envelope:
+{
+  "pages_attempted": 4,
+  "pages_created": 0,
+  "pages_failed": 4,
+  "failures": [
+    {
+      "slug": "simple-source",
+      "type": "concepts",
+      "error": "E-INGEST-014: Wiki page generation failed for 'simple-source': slug already exists. Other pages preserved."
+    },
+    {
+      "slug": "core-concept",
+      "type": "concepts",
+      "error": "E-INGEST-014: Wiki page generation failed for 'core-concept': slug already exists. Other pages preserved."
+    },
+    {
+      "slug": "key-insights-from-simple-source",
+      "type": "observations",
+      "error": "E-INGEST-014: Wiki page generation failed for 'key-insights-from-simple-source': slug already exists. Other pages preserved."
+    },
+    {
+      "slug": "open-questions-on-simple-source",
+      "type": "questions",
+      "error": "E-INGEST-014: Wiki page generation failed for 'open-questions-on-simple-source': slug already exists. Other pages preserved."
+    }
+  ]
+}
+exit: 1 (expected 1)
+pages_created == 0: true
+pages_failed > 0: true
+Invariant: attempted(4) == created(0) + failed(4): PASS
+Source file still stands: YES

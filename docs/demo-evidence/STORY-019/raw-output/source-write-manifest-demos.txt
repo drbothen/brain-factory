@@ -1,0 +1,52 @@
+=== AC-001 DEMO: Source file written with path frontmatter (not url) ===
+Source file: /var/folders/56/f6gp627172q66y8qbg6hvbd80000gn/T/tmp.RejOIMkWcT/sources/ai/my-research-notes.md
+
+All 6 required frontmatter fields:
+title: "My Research Notes"
+path: "sources/ai/my-research-notes.md"
+ingested_at: "2026-05-31T03:31:01Z"
+source_id: "my-research-notes"
+topic: "ai"
+embedding_status: pending
+
+path field present: 1 (expected: 1)
+url field absent: 0 (expected: 0)
+
+=== AC-007 DEMO: manifest-write.sh — atomic entry with path field ===
+manifest_write exit: 0
+
+Manifest entry:
+{
+  "source_id": "my-research-notes",
+  "path": "sources/ai/my-research-notes.md",
+  "topic": "ai",
+  "ingested_at": "2026-05-31T03:31:01Z",
+  "last_ingest": "2026-05-31T03:31:01Z",
+  "chunks": [],
+  "embeddings_model": null
+}
+
+has_path: true
+has_url: false
+
+=== AC-008 DEMO: Existing entries preserved on second write ===
+Source count after 2 writes: 2 (expected: 2)
+Keys:
+[
+  "sources/ai/my-research-notes.md",
+  "sources/ai/prior-source.md"
+]
+Original entry (my-research-notes) still intact:
+"my-research-notes"
+
+=== AC-002 DEMO: Token JSONL record ===
+JSONL record in .brain/logs/ingest-tokens.jsonl:
+{
+  "timestamp": "2026-05-31T03:31:02Z",
+  "url": "/var/folders/56/f6gp627172q66y8qbg6hvbd80000gn/T/tmp.RejOIMkWcT/sources/ai/my-research-notes.md",
+  "source_id": "my-research-notes",
+  "input_tokens": -1,
+  "output_tokens": -1,
+  "wiki_pages_created": 6,
+  "duration_seconds": 3
+}
