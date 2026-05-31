@@ -91,12 +91,11 @@ _write_wiki_page() {
   local safe_title="${page_title//\"/\\\"}"
 
   # Attempt to write the page.
-  # Suppress bash-level "Permission denied" shell errors (from the > redirection
-  # operator failing) by redirecting stderr of the subshell. This prevents those
-  # messages from polluting structured output consumers that capture stderr+stdout.
-  local write_ok=0
-  {
-    cat >"$page_path" <<PAGEEOF
+  # Capture stderr from the write attempt to propagate actionable diagnostics
+  # into the failure entry (I2: no blanket 2>/dev/null suppression).
+  local write_err_file
+  write_err_file="$(mktemp)"
+  if ! cat >"$page_path" 2>"$write_err_file" <<PAGEEOF; then
 ---
 title: "${safe_title}"
 type: ${page_type}
@@ -108,10 +107,11 @@ source_ids: [${SOURCE_SLUG}]
 
 *Generated from source: [[${SOURCE_SLUG}]]*
 PAGEEOF
-  } 2>/dev/null && write_ok=1
-  if [ "$write_ok" -eq 0 ]; then
+    LAST_WRITE_ERR="$(cat "$write_err_file" 2>/dev/null || true)"
+    rm -f "$write_err_file"
     return 2
   fi
+  rm -f "$write_err_file"
 
   return 0
 }
@@ -199,6 +199,8 @@ PAGES_FAILED=0
 PAGES_SKIPPED=0
 FAILURES=()
 HAD_WRITE_FAILURE=0
+LAST_WRITE_ERR=""
+write_diag=""
 
 declare -A SEEN_SLUGS
 declare -a CREATED_SLUGS
@@ -238,26 +240,26 @@ for i in "${!PAGE_TITLES[@]}"; do
     CREATED_TYPES+=("$page_type")
     ;;
   1)
-    # Slug collision — skip recorded
+    # Slug collision — skip recorded; error follows BC-2.03.004 E-NNN: <message> form
     PAGES_SKIPPED=$((PAGES_SKIPPED + 1))
     PAGES_FAILED=$((PAGES_FAILED + 1))
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg reason "slug_collision" \
-      --arg error "slug_collision" \
-      '{slug:$slug,type:$type,reason:$reason,error:$error}')")
+      --arg error "E-INGEST-006: Wiki page slug collision — ${page_slug} already exists. Existing page preserved." \
+      '{slug:$slug,type:$type,error:$error}')")
     ;;
   *)
-    # Write failure
+    # Write failure — capture diagnostics from LAST_WRITE_ERR (set by _write_wiki_page)
     PAGES_FAILED=$((PAGES_FAILED + 1))
     HAD_WRITE_FAILURE=1
+    write_diag="${LAST_WRITE_ERR:-write failed}"
+    LAST_WRITE_ERR=""
     FAILURES+=("$(jq -n \
       --arg slug "$page_slug" \
       --arg type "$page_type" \
-      --arg reason "write_failed" \
-      --arg error "write_failed" \
-      '{slug:$slug,type:$type,reason:$reason,error:$error}')")
+      --arg error "E-INGEST-006: Wiki page write failed — ${write_diag}" \
+      '{slug:$slug,type:$type,error:$error}')")
     ;;
   esac
 done
@@ -295,46 +297,19 @@ FAILURES_JSON="$(
 )"
 
 # ---------------------------------------------------------------------------
-# Emit structured event.
-#
-# Destination strategy: when the brain's log directory exists
-# (${BRAIN_DIR}/.brain/logs/), write the event to a JSONL log file rather
-# than fd2. This prevents structured event JSONL lines from appearing in
-# $output when bats 1.13+ `run` captures fd2 alongside stdout — which would
-# corrupt integer comparisons on the fan-out envelope fields. When the log
-# directory is absent (e.g., unit-test contexts without a full brain init),
-# fall back to stderr to preserve backward compatibility with test suites
-# that capture `2>&1 1>/dev/null` to verify event emission.
+# Emit structured event on stderr (CLAUDE.md §Logging: structured events on stderr)
 # ---------------------------------------------------------------------------
-_emit_wiki_event() {
-  local event_type="$1"
-  shift
-  local log_dir="${BRAIN_DIR:+${BRAIN_DIR}/.brain/logs}"
-  if [ -n "$log_dir" ] && [ -d "$log_dir" ]; then
-    # Redirect emit_event output from fd2 to the log file.
-    emit_event "$event_type" "$@" 2>>"${log_dir}/generate-wiki-events.jsonl"
-  else
-    emit_event "$event_type" "$@"
-  fi
-}
-
-_emit_wiki_event "${EVENT_PREFIX}.wiki_pages_generated" \
+emit_event "${EVENT_PREFIX}.wiki_pages_generated" \
   "source_id=${SOURCE_SLUG}" \
   "pages_created=${PAGES_CREATED}" \
   "pages_failed=${PAGES_FAILED}"
 
 # ---------------------------------------------------------------------------
-# Build E-INGEST-006 advisory string (embedded in envelope, not a separate line).
-#
-# Embedding the advisory in the envelope JSON ensures test assertions that
-# check for "E-INGEST-006" in $output work regardless of whether tests use
-# `2>&1` capture or bats `run` (which merges fd2 into $output in 1.13+).
+# Emit E-INGEST-006 advisory on stderr if fewer than 5 pages produced
 # ---------------------------------------------------------------------------
-ADVISORY_JSON="null"
 if [ "$PAGES_CREATED" -lt 5 ]; then
-  ADVISORY_JSON="$(jq -n \
-    --argjson count "$PAGES_CREATED" \
-    '"E-INGEST-006: Fewer than 5 wiki pages generated (\($count)). Source may have limited extractable concepts."')"
+  printf '{"level":"warn","code":"E-INGEST-006","message":"Fewer than 5 wiki pages generated (%d). Source may have limited extractable concepts."}\n' \
+    "$PAGES_CREATED" >&2
 fi
 
 # ---------------------------------------------------------------------------
@@ -345,9 +320,8 @@ jq -n \
   --argjson created "$PAGES_CREATED" \
   --argjson failed "$PAGES_FAILED" \
   --argjson skipped "$PAGES_SKIPPED" \
-  --argjson advisory "$ADVISORY_JSON" \
   --argjson failures "$FAILURES_JSON" \
-  '{pages_attempted:$attempted,pages_created:$created,pages_failed:$failed,pages_skipped:$skipped,advisory:$advisory,failures:$failures}'
+  '{pages_attempted:$attempted,pages_created:$created,pages_failed:$failed,pages_skipped:$skipped,failures:$failures}'
 
 # ---------------------------------------------------------------------------
 # Exit code: 1 if any write failure; 0 if only collisions (or all success)

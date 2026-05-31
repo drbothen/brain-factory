@@ -1478,11 +1478,18 @@ COLEOF
   skipped="$(printf '%s' "$summary_output" | jq -r '.pages_skipped')"
   [ "$skipped" -gt 0 ]
 
-  # The collision must appear in the failures array with reason "slug_collision"
+  # The collision must appear in the failures array; identify via error field
+  # (BC-2.03.004 failures form: {"slug":"<slug>","error":"E-NNN: <message>"}; no `reason` field)
   local collision_found
   collision_found="$(printf '%s' "$summary_output" | \
-    jq -r '.failures[] | select(.reason == "slug_collision") | .slug' || true)"
+    jq -r '.failures[] | select(.slug == "position-encoding") | .slug' || true)"
   [ "$collision_found" = "position-encoding" ]
+  # The error field must be present and non-empty (BC-2.03.004 postcondition 2)
+  local collision_error
+  collision_error="$(printf '%s' "$summary_output" | \
+    jq -r '.failures[] | select(.slug == "position-encoding") | .error' || true)"
+  [ -n "$collision_error" ]
+  [ "$collision_error" != "null" ]
 
   # The pre-existing file content must not have been overwritten
   [[ "$(cat "$collision_page")" == *"Prior content"* ]]

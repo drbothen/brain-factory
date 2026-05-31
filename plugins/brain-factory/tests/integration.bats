@@ -2441,9 +2441,11 @@ _write_ingest_source_manifest_entry() {
   # Block writes to concepts/ to inject exactly one failure category
   chmod 555 "${INGEST_VAULT}/wiki/concepts"
 
-  run bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
-    "$INGEST_VAULT" \
-    "$source_file"
+  # Use bash -c with stderr suppressed so structured events (emitted on stderr per
+  # CLAUDE.md §Logging) do not pollute $output and break integer assertions.
+  run bash -c "bash '${PLUGIN_DIR}/scripts/generate-wiki.sh' \
+    '${INGEST_VAULT}' \
+    '${source_file}' 2>/dev/null"
 
   # Restore before any assertion that might short-circuit teardown
   chmod 755 "${INGEST_VAULT}/wiki/concepts"
@@ -2625,9 +2627,11 @@ _write_ingest_source_manifest_entry() {
     "${INGEST_VAULT}/wiki/observations" \
     "${INGEST_VAULT}/wiki/questions"
 
-  run bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
-    "$INGEST_VAULT" \
-    "$source_file"
+  # Use bash -c with stderr suppressed so structured events (emitted on stderr per
+  # CLAUDE.md §Logging) do not pollute $output and break integer assertions.
+  run bash -c "bash '${PLUGIN_DIR}/scripts/generate-wiki.sh' \
+    '${INGEST_VAULT}' \
+    '${source_file}' 2>/dev/null"
 
   # Restore before teardown assertions
   chmod 755 "${INGEST_VAULT}/wiki/concepts" \
@@ -2657,6 +2661,58 @@ _write_ingest_source_manifest_entry() {
   local manifest_count
   manifest_count="$(jq '.sources | length' "${INGEST_VAULT}/.brain/manifest.json")"
   [ "$manifest_count" -ge 1 ]
+
+  _teardown_ingest_source_vault
+}
+
+# ===========================================================================
+# B1 regression: generate-wiki.sh emits wiki_pages_generated event to STDERR
+# even when .brain/logs/ exists (production condition: init/run.sh always creates it).
+# Absence of this test allowed the log-file-redirect regression in STORY-019 Pass 1.
+# Traces to: CLAUDE.md §Logging ("structured events on stderr"); B1 adversary finding.
+# ===========================================================================
+@test "BC_2_03_001: generate-wiki.sh emits wiki_pages_generated event to stderr when .brain/logs/ exists (B1 regression)" {
+  # The production brain always has .brain/logs/ (created by init/run.sh).
+  # This test asserts that structured events reach stderr regardless of log dir presence —
+  # which is the correct behavior per CLAUDE.md §Logging.
+  _setup_ingest_source_vault
+  # _setup_ingest_source_vault already creates .brain/logs/ — confirm it exists
+  [ -d "${INGEST_VAULT}/.brain/logs" ]
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  # Capture stderr only (production event transport); discard stdout (fan-out envelope)
+  local stderr_out
+  stderr_out="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" \
+    "ingest.source" 2>&1 1>/dev/null || true)"
+
+  # The wiki_pages_generated event must appear on stderr (not swallowed to a log file)
+  [[ "$stderr_out" == *"wiki_pages_generated"* ]]
+
+  _teardown_ingest_source_vault
+}
+
+# Regression for ingest.url prefix (default, no 3rd arg)
+@test "BC_2_02_002: generate-wiki.sh emits ingest.url.wiki_pages_generated to stderr when .brain/logs/ exists (B1 regression)" {
+  # Mirrors the ingest.source regression above but for the ingest.url prefix path.
+  _setup_ingest_source_vault
+  [ -d "${INGEST_VAULT}/.brain/logs" ]
+
+  local source_file="${INGEST_VAULT}/sources/ai/rag-guide.md"
+  _write_ingest_source_file "$INGEST_VAULT" "ai" "rag-guide" \
+    "${PLUGIN_DIR}/tests/fixtures/ingest-source-happy.md" >/dev/null
+
+  local stderr_out
+  stderr_out="$(bash "${PLUGIN_DIR}/scripts/generate-wiki.sh" \
+    "$INGEST_VAULT" \
+    "$source_file" 2>&1 1>/dev/null || true)"
+
+  # Default prefix is "ingest.url"
+  [[ "$stderr_out" == *"ingest.url.wiki_pages_generated"* ]]
 
   _teardown_ingest_source_vault
 }
