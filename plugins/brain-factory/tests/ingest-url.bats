@@ -1403,9 +1403,9 @@ HDREOF
 }
 
 # ===========================================================================
-# AC-005 / BC-2.02.002 EC-002: Slug collision → page skipped, skip recorded
+# AC-005 / BC-2.02.002 EC-002: Slug collision → collision recorded as a failed page
 # ===========================================================================
-@test "BC_2_02_002: slug collision causes page to be skipped, not overwritten (AC-005)" {
+@test "BC_2_02_002: slug collision recorded as a failed page, colliding page not overwritten (AC-005)" {
   # Red Gate: scripts/generate-wiki.sh does not exist yet
   _write_source_for_wiki "$BRAIN_DIR" "ai" "article"
   _setup_wiki_dirs "$BRAIN_DIR"
