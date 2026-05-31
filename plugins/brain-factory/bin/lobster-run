@@ -4,7 +4,7 @@ LC_ALL=C
 export LC_ALL
 
 # bin/lobster-run — Lobster workflow runtime
-# Traces to: BC-2.12.001, BC-2.12.002, VP-007
+# Traces to: BC-2.12.001, BC-2.12.002, BC-2.12.003, BC-2.12.004, VP-007, VP-022
 #
 # Usage: lobster-run [--dry-run] <workflow.yaml>
 #
