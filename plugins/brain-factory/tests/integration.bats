@@ -2149,18 +2149,36 @@ _teardown_lobster_env_with_spy() {
 # gracefully), exit code ≤ 2, no timeout.
 @test "BC_2_12_004: lobster-run --headless flag accepted — does not hang with /dev/null stdin (AC-001/VP-022)" {
   # Traces to: BC-2.12.004 postcondition 1, VP-022
+  # AC-001 + BC-2.12.004 Canonical Test Vector mandate timeout 30 to catch stdin hangs.
   _setup_lobster_env_with_spy
   # Register brain-health for the sample-daily-brief.yaml fixture
   mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/brain-health"
   printf -- '---\nname: brain-health\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/brain-health/SKILL.md"
 
-  run env RUN_SKILL_SPY_LOG="${SPY_LOG}" \
+  # Portable timeout: prefer GNU timeout, fall back to gtimeout (macOS coreutils),
+  # finally a no-op wrapper so the test still runs on machines without either.
+  local _to_cmd
+  if command -v timeout >/dev/null 2>&1; then
+    _to_cmd="timeout 30"
+  elif command -v gtimeout >/dev/null 2>&1; then
+    _to_cmd="gtimeout 30"
+  else
+    # No timeout available; the /dev/null redirect already prevents most hangs
+    # (lobster-run must not block on stdin in --headless mode — that is what AC-001 tests).
+    _to_cmd=""
+  fi
+
+  # shellcheck disable=SC2086  # _to_cmd is intentionally word-split
+  run ${_to_cmd} env RUN_SKILL_SPY_LOG="${SPY_LOG}" \
     CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
     BRAIN_ROOT="${LOBSTER_BRAIN}" \
     "${LOBSTER_BIN}" --headless "${FIXTURE_DIR}/sample-daily-brief.yaml" </dev/null
   local rc="$status"
   _teardown_lobster_env_with_spy
 
+  # 124 = timeout sentinel (GNU timeout exit code for killed-by-timeout);
+  # if we hit it a stdin hang occurred — fail the test explicitly.
+  [ "$rc" -ne 124 ]
   # Must NOT be E-LOBSTER-007 (unknown flag) — --headless must be recognized
   [[ "$output" != *"E-LOBSTER-007"* ]]
   # Must complete with a meaningful exit code: 0 (success), 1 (advisory), or 2 (block)
@@ -2361,41 +2379,41 @@ _teardown_lobster_env_with_spy() {
 }
 
 # AC-005 / BC-2.12.004: scripts/run-skill.mjs requires Node 22+ (version guard present + behaves)
-# STRUCTURAL — MAY PASS against existing stub (stub has the version guard).
-# Behavioral: a fake-node with version v20.0.0 must cause run-skill.mjs to exit non-zero.
-# Traces to: BC-2.12.004 postcondition 1
+# Behavioral: an ESM wrapper that overrides process.versions.node to "20.0.0" before
+# dynamic-importing the real run-skill.mjs must cause exit 2 (block per BC-2.12.004 v1.3
+# EC-002 / Invariant 3) and emit E-SKILL-002 on stderr.
+#
+# BLOCKER-1 fix: assertion is now -eq 2 (not -ne 0), pinning the exit-2 BLOCK contract.
+# A revert to exit 1 would cause this test to fail.
+#
+# BLOCKER-2 fix: uses a test-only ESM wrapper (.mjs) with await import() instead of
+# require() — avoids ERR_REQUIRE_ESM on Node versions where require(esm) is not enabled,
+# making the harness deterministic across all Node minor versions.
+# Traces to: BC-2.12.004 v1.3 EC-002, Invariant 3; AC-005
 @test "BC_2_12_004: scripts/run-skill.mjs rejects Node < 22 with non-zero exit (AC-005 Node22)" {
   local rsmjs="${PLUGIN_DIR}/scripts/run-skill.mjs"
   [ -f "$rsmjs" ]
-  # Create a fake node binary that reports version v20.0.0 so the guard fires.
-  # We intercept node by wrapping run-skill.mjs in a shim that forces versions.node.
-  local fake_dir
-  fake_dir="$(mktemp -d)"
-  # Write a shim script: runs the real node but overrides process.versions.node
-  cat >"${fake_dir}/node" <<'FAKE_EOF'
-#!/usr/bin/env node
-// Override process.versions.node to simulate v20 before executing the target script
-const origVersion = process.versions.node;
-Object.defineProperty(process.versions, 'node', {
-  value: '20.0.0',
-  writable: false,
-  configurable: true,
-});
-const path = require('path');
-const target = process.argv[2];
-if (!target) { process.exit(1); }
-require(path.resolve(target));
-FAKE_EOF
-  chmod +x "${fake_dir}/node"
+  # Write a test-only ESM wrapper that overrides process.versions.node to "20.0.0" then
+  # ESM-dynamic-imports the real run-skill.mjs.  Using await import() (not require()) avoids
+  # ERR_REQUIRE_ESM on Node versions where require(esm) is disabled, making the harness
+  # deterministic.  defineProperty is applied before the import so the guard in run-skill.mjs
+  # reads the overridden value on startup.
+  local wrapper_mjs
+  wrapper_mjs="$(mktemp).mjs"
+  # Use printf with %s to avoid any shell-glob or quote expansion in the heredoc body.
+  printf '%s\n' \
+    "Object.defineProperty(process.versions, 'node', { value: '20.0.0', writable: false, configurable: true });" \
+    "await import(process.argv[2]);" \
+    >"$wrapper_mjs"
 
-  # Call run-skill.mjs via the shim directly (not via PATH override, which breaks test runner)
-  run node "${fake_dir}/node" "$rsmjs" mock-skill
-  rm -rf "$fake_dir"
+  run node "$wrapper_mjs" "$rsmjs"
+  rm -f "$wrapper_mjs"
 
-  # Must exit non-zero (version guard fires; exit 1 per stub contract)
-  [ "$status" -ne 0 ]
-  # stderr must mention the version requirement
-  [[ "$output" == *"22"* ]] || [[ "$output" == *"Node"* ]] || [[ "$output" == *"node"* ]]
+  # Must exit 2 — Node<22 is a preflight BLOCK per BC-2.12.004 v1.3 EC-002 / Invariant 3.
+  # (A revert of run-skill.mjs to exit 1 would cause this assertion to fail.)
+  [ "$status" -eq 2 ]
+  # stderr must contain E-SKILL-002 (the structured error code for version mismatch)
+  [[ "$output" == *"E-SKILL-002"* ]]
 }
 
 # AC-009 / BC-2.12.003 invariant 3: workflow files read-only at runtime (mtime unchanged after dry-run)
