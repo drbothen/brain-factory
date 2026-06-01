@@ -1,0 +1,15 @@
+name: ingest-source
+description: "Ingest a local file or directory as a brain source, validate immutability hash, and connect to the wiki."
+steps:
+  - id: ingest
+    skill: brain:ingest-source
+    args:
+      - --yes
+    depends_on: []
+  - id: connect
+    skill: brain:connect-sources
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - ingest

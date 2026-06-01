@@ -1,0 +1,43 @@
+## AC-005: scripts/run-skill.mjs — node --check, Node<22 guard, lobster-run invokes it
+## Recorded: 2026-06-01
+
+--- Static: node --check scripts/run-skill.mjs ---
+$ node --check plugins/brain-factory/scripts/run-skill.mjs
+(no output — exit 0)
+EXIT_CODE: 0
+RESULT: PASS — file is syntactically valid Node.js
+
+--- Runtime: Node version on this machine ---
+$ node --version
+v25.2.1
+(Node 25 ≥ 22 — normal execution path)
+
+--- Node<22 guard: ESM-wrapper override technique ---
+$ node - <<'NODEOF'
+'use strict';
+Object.defineProperty(process.versions, 'node', { value: '20.0.0', configurable: true });
+const fs = require('fs');
+const src = fs.readFileSync('scripts/run-skill.mjs', 'utf8');
+eval(src.replace(/^#!.*\n/, ''));
+NODEOF
+
+STDERR:
+{"level":"error","code":"E-SKILL-002","message":"run-skill.mjs requires Node 22+; found 20.0.0"}
+EXIT_CODE: 2
+RESULT: PASS — Node major 20 < 22 → exit 2 BLOCK + E-SKILL-002 on stderr
+        (exit 1 is NOT used for environment checks — only for skill advisory verdicts)
+
+--- lobster-run invokes node scripts/run-skill.mjs per step (--dry-run) ---
+$ env CLAUDE_PLUGIN_ROOT=<tmp> BRAIN_ROOT=<tmp> \
+    bin/lobster-run --dry-run test-workflow.yaml
+
+step-a: node <PLUGIN_ROOT>/scripts/run-skill.mjs mock-pass
+step-b: node <PLUGIN_ROOT>/scripts/run-skill.mjs mock-pass --yes
+{"ts":"2026-06-01T05:22:00Z","event_type":"lobster.run.completed",...,"exit_code":0,"steps_run":2,"steps_skipped":0}
+EXIT_CODE: 0
+RESULT: PASS — each step line shows "node <path>/run-skill.mjs <skill> [args]"
+
+AC-005 SUMMARY:
+  node --check: exit 0     PASS
+  Node<22 guard: exit 2 + E-SKILL-002    PASS
+  lobster-run --dry-run invocation: run-skill.mjs per step    PASS

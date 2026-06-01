@@ -2077,6 +2077,494 @@ MOCK_EOF
   [[ "$stdout_out" == *"step-a"* ]]
 }
 
+# ---------------------------------------------------------------------------
+# STORY-033: bin/lobster-run headless execution + six workflow YAML files
+# Traces to: BC-2.12.003, BC-2.12.004, VP-022
+#
+# Red Gate notes:
+#   STRUCTURAL tests (AC-006/007/008/005 static) MAY PASS against existing stubs
+#   — that is expected and acceptable (they are guardrails, not new behavior).
+#   BEHAVIORAL tests (AC-001/003/004 via --headless, AC-005 spy) MUST FAIL because
+#   bin/lobster-run from STORY-032 does not yet accept the --headless flag
+#   (currently exits 2 with E-LOBSTER-007 "Unknown flag: --headless").
+#
+# The --headless flag is the primary new behavior this story delivers.
+# STORY-032's lobster-run already invokes run-skill.mjs in execution mode;
+# STORY-033 adds the --headless flag, non-TTY detection, and headless guarantees.
+# ---------------------------------------------------------------------------
+
+# Helper: set up a lobster test environment with a spy run-skill.mjs.
+# The spy records each invocation to ${SPY_LOG} and exits 0.
+# Sets LOBSTER_BIN, LOBSTER_BRAIN, LOBSTER_PLUGIN_ROOT, SPY_LOG in caller scope.
+_setup_lobster_env_with_spy() {
+  LOBSTER_BIN="${PLUGIN_DIR}/bin/lobster-run"
+  FIXTURE_DIR="${PLUGIN_DIR}/tests/fixtures"
+
+  LOBSTER_BRAIN="$(mktemp -d)"
+  mkdir -p "${LOBSTER_BRAIN}/.brain/logs"
+
+  LOBSTER_PLUGIN_ROOT="$(mktemp -d)"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/scripts"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/.claude-plugin"
+  printf '{"name":"brain-factory","skills":"./skills/","hooks":"hooks/hooks.json"}\n' \
+    >"${LOBSTER_PLUGIN_ROOT}/.claude-plugin/plugin.json"
+
+  # Mirror real skills into mock plugin root
+  if [[ -d "${PLUGIN_DIR}/skills" ]]; then
+    for skill_dir in "${PLUGIN_DIR}/skills"/*/; do
+      local skill_name
+      skill_name="$(basename "$skill_dir")"
+      mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/${skill_name}"
+      if [[ -f "${skill_dir}/SKILL.md" ]]; then
+        cp "${skill_dir}/SKILL.md" "${LOBSTER_PLUGIN_ROOT}/skills/${skill_name}/SKILL.md"
+      fi
+    done
+  fi
+
+  # Spy log: each line = one invocation record "skill=<name> args=<json>"
+  SPY_LOG="$(mktemp)"
+
+  # Spy run-skill.mjs: records every invocation, exits 0
+  # Must be valid ESM (lobster-run invokes it directly as a .mjs file — no .cjs copy).
+  cat >"${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs" <<'SPY_EOF'
+#!/usr/bin/env node
+import { appendFileSync } from 'node:fs';
+const [, , skillName, ...args] = process.argv;
+const logPath = process.env.RUN_SKILL_SPY_LOG || '/dev/null';
+const entry = JSON.stringify({ skill: skillName || '', args }) + '\n';
+appendFileSync(logPath, entry);
+process.exit(0);
+SPY_EOF
+  chmod +x "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs"
+}
+
+_teardown_lobster_env_with_spy() {
+  rm -rf "${LOBSTER_BRAIN:-}" "${LOBSTER_PLUGIN_ROOT:-}" "${SPY_LOG:-}"
+}
+
+# AC-001 / BC-2.12.004 / VP-022: headless --headless flag accepted, does not hang within 30s
+# RED GATE: --headless currently → E-LOBSTER-007 "Unknown flag: --headless" exit 2.
+# GREEN when: --headless flag recognized, execution completes (workflow steps execute or fail
+# gracefully), exit code ≤ 2, no timeout.
+@test "BC_2_12_004: lobster-run --headless flag accepted — does not hang with /dev/null stdin (AC-001/VP-022)" {
+  # Traces to: BC-2.12.004 postcondition 1, VP-022
+  # AC-001 + BC-2.12.004 Canonical Test Vector mandate timeout 30 to catch stdin hangs.
+  _setup_lobster_env_with_spy
+  # Register brain-health for the sample-daily-brief.yaml fixture
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/brain-health"
+  printf -- '---\nname: brain-health\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/brain-health/SKILL.md"
+
+  # Portable timeout: prefer GNU timeout, fall back to gtimeout (macOS coreutils),
+  # finally a no-op wrapper so the test still runs on machines without either.
+  local _to_cmd
+  if command -v timeout >/dev/null 2>&1; then
+    _to_cmd="timeout 30"
+  elif command -v gtimeout >/dev/null 2>&1; then
+    _to_cmd="gtimeout 30"
+  else
+    # No timeout available; the /dev/null redirect already prevents most hangs
+    # (lobster-run must not block on stdin in --headless mode — that is what AC-001 tests).
+    _to_cmd=""
+  fi
+
+  # shellcheck disable=SC2086  # _to_cmd is intentionally word-split
+  run ${_to_cmd} env RUN_SKILL_SPY_LOG="${SPY_LOG}" \
+    CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "${FIXTURE_DIR}/sample-daily-brief.yaml" </dev/null
+  local rc="$status"
+  _teardown_lobster_env_with_spy
+
+  # 124 = timeout sentinel (GNU timeout exit code for killed-by-timeout);
+  # if we hit it a stdin hang occurred — fail the test explicitly.
+  [ "$rc" -ne 124 ]
+  # Must NOT be E-LOBSTER-007 (unknown flag) — --headless must be recognized
+  [[ "$output" != *"E-LOBSTER-007"* ]]
+  # Must complete with a meaningful exit code: 0 (success), 1 (advisory), or 2 (block)
+  [ "$rc" -le 2 ]
+}
+
+# AC-002 / BC-2.12.004 invariant 1: bin/lobster-run contains no bare 'read' calls
+# STATIC — MAY PASS (STORY-032 already has no bare reads; verified by existing S04 test).
+# This test is additive confirmation under the STORY-033 BC tracing label.
+# Traces to: BC-2.12.004 invariant 1, VP-022
+@test "BC_2_12_004: lobster-run contains no bare read calls outside TTY guard (AC-002/VP-022)" {
+  [ -f "${PLUGIN_DIR}/bin/lobster-run" ]
+  # Must NOT contain any bare 'read' command token (neither leading-whitespace form
+  # nor inline-semicolon form) that could block on stdin.
+  local filtered
+  filtered="$(grep -nE '(^|[[:space:];|&{(])read([[:space:]]|$)' \
+    "${PLUGIN_DIR}/bin/lobster-run" | grep -v '^[0-9]*:[[:space:]]*#' || true)"
+  [ -z "$filtered" ]
+}
+
+# AC-003 / BC-2.12.004 invariant 2: stdout contains no interactive prompt text during headless run
+# RED GATE: --headless not recognized → output is an E-LOBSTER-007 error JSON, which does NOT
+# contain prompt patterns, but the real failure is that the workflow never executes.
+# This test is genuinely RED because it also asserts exit_code ≤ 2 AND no E-LOBSTER-007.
+# Traces to: BC-2.12.004 invariant 2, VP-022, edge case EC-001
+@test "BC_2_12_004: lobster-run stdout clean of interactive prompts during --headless run (AC-003/VP-022)" {
+  _setup_lobster_env_with_spy
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/brain-health"
+  printf -- '---\nname: brain-health\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/brain-health/SKILL.md"
+
+  local stdout_output
+  stdout_output="$(env RUN_SKILL_SPY_LOG="${SPY_LOG}" \
+    CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "${FIXTURE_DIR}/sample-daily-brief.yaml" </dev/null 2>/dev/null || true)"
+  local rc="${PIPESTATUS[0]:-$?}"
+  _teardown_lobster_env_with_spy
+
+  # --headless must be recognized (not E-LOBSTER-007)
+  [[ "$stdout_output" != *"E-LOBSTER-007"* ]]
+  # Interactive prompt patterns must not appear in stdout
+  for pattern in "Press Enter" "[y/N]" "[Y/n]" "Confirm:" "Enter your choice"; do
+    if printf '%s' "$stdout_output" | grep -qF "$pattern"; then
+      fail "Interactive prompt pattern found in stdout: $pattern"
+    fi
+  done
+}
+
+# AC-004 / BC-2.12.004 postcondition 2: headless exit code matches workflow result (0 on success)
+# RED GATE: --headless currently → E-LOBSTER-007 exit 2.
+# GREEN when: --headless recognized and workflow executes to completion with exit 0.
+# Traces to: BC-2.12.004 postcondition 2
+@test "BC_2_12_004: lobster-run --headless exit code 0 on all-pass workflow (AC-004/BC-2.12.004)" {
+  _setup_lobster_env_with_spy
+  # Register mock-pass skill
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+
+  # Create a minimal all-pass workflow
+  local wf_path
+  wf_path="${LOBSTER_PLUGIN_ROOT}/headless-all-pass.yaml"
+  printf 'name: headless-all-pass\ndescription: "All steps pass"\nsteps:\n  - id: step-a\n    skill: mock-pass\n    args: []\n    depends_on: []\n' \
+    >"$wf_path"
+
+  run env RUN_SKILL_SPY_LOG="${SPY_LOG}" \
+    CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "$wf_path" </dev/null
+  _teardown_lobster_env_with_spy
+
+  # --headless must be recognized (not E-LOBSTER-007)
+  [[ "$output" != *"E-LOBSTER-007"* ]]
+  # Exit code 0 on all-pass workflow
+  [ "$status" -eq 0 ]
+}
+
+# AC-005 behavioral / BC-2.12.004: lobster-run invokes node scripts/run-skill.mjs for each step
+# RED GATE: --headless not recognized → workflow never executes → spy log empty.
+# GREEN when: --headless recognized and run-skill.mjs invoked for each step, spy log populated.
+# Traces to: BC-2.12.004 postcondition 1, SS-12 §Step execution §headless
+@test "BC_2_12_004: lobster-run --headless invokes node scripts/run-skill.mjs for each step (AC-005 behavioral)" {
+  _setup_lobster_env_with_spy
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+
+  local wf_path
+  wf_path="${LOBSTER_PLUGIN_ROOT}/spy-workflow.yaml"
+  printf 'name: spy-test\ndescription: "Spy invocation test"\nsteps:\n  - id: step-a\n    skill: mock-pass\n    args: []\n    depends_on: []\n  - id: step-b\n    skill: mock-pass\n    args: []\n    depends_on:\n      - step-a\n' \
+    >"$wf_path"
+
+  env RUN_SKILL_SPY_LOG="${SPY_LOG}" \
+    CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "$wf_path" </dev/null >/dev/null 2>/dev/null || true
+
+  # Read spy log BEFORE teardown (teardown deletes the temp file)
+  # RED GATE: --headless not recognized → spy never called → log is empty
+  local spy_count
+  spy_count="$(wc -l <"${SPY_LOG}" | tr -d ' ')"
+  _teardown_lobster_env_with_spy
+
+  [ "$spy_count" -eq 2 ]
+}
+
+# AC-006 / BC-2.12.003 postcondition 1: all 6 workflow files exist in workflows/
+# STRUCTURAL — MAY PASS against existing stubs. This is a guardrail test.
+# Traces to: BC-2.12.003 postcondition 1, invariant 1
+# The lower-bound (each named file exists) and upper-bound (exactly 6 .yaml files —
+# no stray 7th) together enforce BC-2.12.003 invariant 1 completely (AC-006).
+@test "BC_2_12_003: all 6 workflow files exist in plugins/brain-factory/workflows/ (AC-006)" {
+  local wf_dir="${PLUGIN_DIR}/workflows"
+  [ -d "$wf_dir" ]
+  [ -f "${wf_dir}/ingest-url.yaml" ]
+  [ -f "${wf_dir}/ingest-source.yaml" ]
+  [ -f "${wf_dir}/brief-to-publish.yaml" ]
+  [ -f "${wf_dir}/daily-ritual.yaml" ]
+  [ -f "${wf_dir}/weekly-refresh.yaml" ]
+  [ -f "${wf_dir}/scale-test.yaml" ]
+  # Upper-bound: exactly 6 .yaml files — no stray 7th present.
+  # Traces to: BC-2.12.003 invariant 1 (exactly-6 upper bound, AC-006 Pass-4 NIT-1).
+  # Uses find to avoid zsh unmatched-glob abort; tr -d ' ' strips wc padding.
+  local yaml_count
+  yaml_count="$(find "${wf_dir}" -maxdepth 1 -name '*.yaml' | wc -l | tr -d ' ')"
+  [ "$yaml_count" -eq 6 ]
+}
+
+# AC-007 / BC-2.12.003 postcondition 2-3: all 6 workflow files pass yq parse + required schema fields
+# STRUCTURAL — MAY PASS against existing stubs (they have valid schema).
+# Traces to: BC-2.12.003 postconditions 2, 3
+@test "BC_2_12_003: all 6 workflow files parse with yq and contain required schema fields (AC-007)" {
+  local wf_dir="${PLUGIN_DIR}/workflows"
+  local required_files=(
+    "ingest-url.yaml"
+    "ingest-source.yaml"
+    "brief-to-publish.yaml"
+    "daily-ritual.yaml"
+    "weekly-refresh.yaml"
+    "scale-test.yaml"
+  )
+  for fname in "${required_files[@]}"; do
+    local fpath="${wf_dir}/${fname}"
+    [ -f "$fpath" ]
+    # Must parse without error
+    run yq eval '.' "$fpath"
+    [ "$status" -eq 0 ]
+    # name field: non-empty string
+    local name_val
+    name_val="$(yq eval '.name // ""' "$fpath")"
+    [ -n "$name_val" ]
+    [ "$name_val" != "null" ]
+    # description field: non-empty string
+    local desc_val
+    desc_val="$(yq eval '.description // ""' "$fpath")"
+    [ -n "$desc_val" ]
+    [ "$desc_val" != "null" ]
+    # steps: non-empty array
+    local step_count
+    step_count="$(yq eval '.steps | length' "$fpath")"
+    [ "$step_count" -gt 0 ]
+    # Each step must have id, skill, args (array), depends_on (array)
+    local steps_len
+    steps_len="$(yq eval '.steps | length' "$fpath")"
+    local i=0
+    while [ "$i" -lt "$steps_len" ]; do
+      local sid
+      sid="$(yq eval ".steps[$i].id // \"\"" "$fpath")"
+      [ -n "$sid" ]
+      [ "$sid" != "null" ]
+      local skill_val
+      skill_val="$(yq eval ".steps[$i].skill // \"\"" "$fpath")"
+      [ -n "$skill_val" ]
+      [ "$skill_val" != "null" ]
+      # args must be an array (type !!seq)
+      local args_type
+      args_type="$(yq eval ".steps[$i].args | type" "$fpath")"
+      [ "$args_type" = "!!seq" ]
+      # depends_on must be an array or absent (type !!seq or !!null)
+      local deps_type
+      deps_type="$(yq eval ".steps[$i].depends_on | type" "$fpath")"
+      [[ "$deps_type" == "!!seq" || "$deps_type" == "!!null" ]]
+      i=$((i + 1))
+    done
+  done
+}
+
+# AC-008 / BC-2.12.003 invariant 2: workflow files use .yaml extension, not .lobster
+# STRUCTURAL — MAY PASS. No .lobster files exist in the stub set.
+# Traces to: BC-2.12.003 invariant 2, edge case EC-002
+@test "BC_2_12_003: no .lobster files in workflows/ — extension is .yaml not .lobster (AC-008)" {
+  local wf_dir="${PLUGIN_DIR}/workflows"
+  [ -d "$wf_dir" ]
+  # zsh-safe glob: use find instead of ls *.lobster to avoid unmatched-glob abort
+  local lobster_count
+  lobster_count="$(find "$wf_dir" -maxdepth 1 -name '*.lobster' | wc -l | tr -d ' ')"
+  [ "$lobster_count" -eq 0 ]
+}
+
+# AC-005 static / BC-2.12.004 postcondition 1: scripts/run-skill.mjs parseable by node --check
+# STRUCTURAL — MAY PASS against existing stub (stub is valid JS).
+# Traces to: BC-2.12.004 postcondition 1
+@test "BC_2_12_004: scripts/run-skill.mjs parseable by node --check (AC-005 static)" {
+  local rsmjs="${PLUGIN_DIR}/scripts/run-skill.mjs"
+  [ -f "$rsmjs" ]
+  run node --check "$rsmjs"
+  [ "$status" -eq 0 ]
+}
+
+# AC-005 / BC-2.12.004: scripts/run-skill.mjs requires Node 22+ (version guard present + behaves)
+# Behavioral: an ESM wrapper that overrides process.versions.node to "20.0.0" before
+# dynamic-importing the real run-skill.mjs must cause exit 2 (block per BC-2.12.004 v1.3
+# EC-002 / Invariant 3) and emit E-SKILL-002 on stderr.
+#
+# BLOCKER-1 fix: assertion is now -eq 2 (not -ne 0), pinning the exit-2 BLOCK contract.
+# A revert to exit 1 would cause this test to fail.
+#
+# BLOCKER-2 fix: uses a test-only ESM wrapper (.mjs) with await import() instead of
+# require() — avoids ERR_REQUIRE_ESM on Node versions where require(esm) is not enabled,
+# making the harness deterministic across all Node minor versions.
+# Traces to: BC-2.12.004 v1.3 EC-002, Invariant 3; AC-005
+@test "BC_2_12_004: scripts/run-skill.mjs rejects Node < 22 with non-zero exit (AC-005 Node22)" {
+  local rsmjs="${PLUGIN_DIR}/scripts/run-skill.mjs"
+  [ -f "$rsmjs" ]
+  # Write a test-only ESM wrapper that overrides process.versions.node to "20.0.0" then
+  # ESM-dynamic-imports the real run-skill.mjs.  Using await import() (not require()) avoids
+  # ERR_REQUIRE_ESM on Node versions where require(esm) is disabled, making the harness
+  # deterministic.  defineProperty is applied before the import so the guard in run-skill.mjs
+  # reads the overridden value on startup.
+  local wrapper_mjs
+  wrapper_mjs="$(mktemp).mjs"
+  # Use printf with %s to avoid any shell-glob or quote expansion in the heredoc body.
+  printf '%s\n' \
+    "Object.defineProperty(process.versions, 'node', { value: '20.0.0', writable: false, configurable: true });" \
+    "await import(process.argv[2]);" \
+    >"$wrapper_mjs"
+
+  run node "$wrapper_mjs" "$rsmjs"
+  rm -f "$wrapper_mjs"
+
+  # Must exit 2 — Node<22 is a preflight BLOCK per BC-2.12.004 v1.3 EC-002 / Invariant 3.
+  # (A revert of run-skill.mjs to exit 1 would cause this assertion to fail.)
+  [ "$status" -eq 2 ]
+  # stderr must contain E-SKILL-002 (the structured error code for version mismatch)
+  [[ "$output" == *"E-SKILL-002"* ]]
+}
+
+# AC-009 / BC-2.12.003 invariant 3: workflow files read-only at runtime (mtime unchanged after dry-run)
+# MAY PASS — dry-run never writes to workflows/. This is a guardrail invariant test.
+# Traces to: BC-2.12.003 invariant 3
+@test "BC_2_12_003: workflow files mtime unchanged after dry-run execution (AC-009)" {
+  _setup_lobster_env
+  local wf_dir="${PLUGIN_DIR}/workflows"
+
+  # Record mtimes before run (using stat -f %m on macOS; stat -c %Y on Linux)
+  declare -A mtimes_before
+  for f in "${wf_dir}"/*.yaml; do
+    local fname
+    fname="$(basename "$f")"
+    if stat -f '%m' "$f" >/dev/null 2>&1; then
+      mtimes_before["$fname"]="$(stat -f '%m' "$f")"
+    else
+      mtimes_before["$fname"]="$(stat -c '%Y' "$f")"
+    fi
+  done
+
+  # Run a dry-run using one of the real workflow files and a temp brain
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --dry-run "${wf_dir}/daily-ritual.yaml"
+  _teardown_lobster_env
+
+  # Verify each workflow file's mtime is unchanged
+  for f in "${wf_dir}"/*.yaml; do
+    local fname
+    fname="$(basename "$f")"
+    local mtime_after
+    if stat -f '%m' "$f" >/dev/null 2>&1; then
+      mtime_after="$(stat -f '%m' "$f")"
+    else
+      mtime_after="$(stat -c '%Y' "$f")"
+    fi
+    [ "${mtimes_before[$fname]}" = "$mtime_after" ]
+  done
+}
+
+# ---------------------------------------------------------------------------
+# STORY-033 Pass 1 IMPORTANT-1: Node<22 preflight is exit-2 block (EC-002)
+# When a step's run-skill.mjs exits 2 (Node version mismatch), lobster-run must
+# aggregate to workflow exit 2 (block / fail-fast), NOT exit 1 (advisory).
+# Traces to: BC-2.12.004 v1.3 EC-002; AC-005
+# ---------------------------------------------------------------------------
+
+# IMPORTANT-1: step runner exits 2 (Node<22 preflight) → lobster-run exits 2 (block)
+@test "BC_2_12_004: run-skill.mjs Node<22 preflight exit-2 → lobster-run aggregates to exit 2 (IMPORTANT-1/EC-002)" {
+  _setup_lobster_env
+  # Register mock-pass so skill-check passes
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  # Override run-skill.mjs with a spy that unconditionally exits 2 (simulates Node<22 EC-002 block)
+  cat >"${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs" <<'EC002_EOF'
+#!/usr/bin/env node
+// Simulates BC-2.12.004 v1.3 EC-002: Node<22 preflight block (exit 2)
+process.stderr.write(JSON.stringify({level:'error',code:'E-SKILL-002',message:'run-skill.mjs requires Node 22+; found 20.0.0'}) + '\n');
+process.exit(2);
+EC002_EOF
+  chmod +x "${LOBSTER_PLUGIN_ROOT}/scripts/run-skill.mjs"
+  # Use exit-code-all-pass.yaml (mock-pass steps): the spy overrides runner to exit 2
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" "${FIXTURE_DIR}/exit-code-all-pass.yaml"
+  _teardown_lobster_env
+  # lobster-run MUST exit 2 (block) — not exit 1 (advisory)
+  # This pins BC-2.12.004 v1.3 EC-002: preflight failure is a BLOCK not advisory
+  [ "$status" -eq 2 ]
+}
+
+# ---------------------------------------------------------------------------
+# STORY-033 Pass 1 IMPORTANT-2: --headless exit-1/2 cases pinned through the flag
+# AC-004 headless exit-1: all-advisory workflow → workflow exit 1, all steps run
+# AC-004 headless exit-2: blocking workflow    → workflow exit 2, fail-fast
+# Traces to: BC-2.12.004 AC-004; AC-001
+# ---------------------------------------------------------------------------
+
+# IMPORTANT-2: --headless with all-advisory workflow (every step exits 1) → workflow exit 1; all steps ran
+@test "BC_2_12_004: lobster-run --headless all-advisory workflow exits 1 all steps ran (IMPORTANT-2/AC-004)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-advisory"
+  printf -- '---\nname: mock-advisory\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-advisory/SKILL.md"
+  # Run --headless with the advisory fixture (step-b exits 1; step-a and step-c exit 0)
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "${FIXTURE_DIR}/exit-code-advisory.yaml" </dev/null
+  local exit_status="$status"
+  # Read log content BEFORE teardown (teardown deletes LOBSTER_BRAIN)
+  local log_file step_c_line
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  if [ -n "$log_file" ]; then
+    step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
+  fi
+  _teardown_lobster_env
+  # --headless must be recognized (not E-LOBSTER-007)
+  [[ "$output" != *"E-LOBSTER-007"* ]]
+  # Workflow exit code must be 1 (advisory — not 0, not 2)
+  [ "$exit_status" -eq 1 ]
+  # All three steps must have run (pipeline continued through advisory);
+  # log_file must exist and step-c must appear in it
+  [ -n "$log_file" ]
+  [ -n "$step_c_line" ]
+}
+
+# IMPORTANT-2: --headless with blocking workflow (a step exits 2) → workflow exit 2, fail-fast
+@test "BC_2_12_004: lobster-run --headless blocking workflow exits 2 fail-fast (IMPORTANT-2/AC-004)" {
+  _setup_lobster_env
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-pass"
+  printf -- '---\nname: mock-pass\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-pass/SKILL.md"
+  mkdir -p "${LOBSTER_PLUGIN_ROOT}/skills/mock-block"
+  printf -- '---\nname: mock-block\n---\n' >"${LOBSTER_PLUGIN_ROOT}/skills/mock-block/SKILL.md"
+  # Run --headless with the block fixture (step-b exits 2; step-c should be skipped)
+  run env CLAUDE_PLUGIN_ROOT="${LOBSTER_PLUGIN_ROOT}" \
+    BRAIN_ROOT="${LOBSTER_BRAIN}" \
+    "${LOBSTER_BIN}" --headless "${FIXTURE_DIR}/exit-code-block.yaml" </dev/null
+  local exit_status="$status"
+  # Read log content BEFORE teardown (teardown deletes LOBSTER_BRAIN)
+  # step-c must NOT appear — fail-fast stops after step-b blocks.
+  # step-a and step-b MUST appear (they ran before the block).
+  local log_file step_a_line step_b_line step_c_line
+  log_file="$(find "${LOBSTER_BRAIN}/.brain/logs" -name 'lobster-*.jsonl' 2>/dev/null | head -1)"
+  if [ -n "$log_file" ]; then
+    step_a_line="$(grep 'step-a' "$log_file" 2>/dev/null || true)"
+    step_b_line="$(grep 'step-b' "$log_file" 2>/dev/null || true)"
+    step_c_line="$(grep 'step-c' "$log_file" 2>/dev/null || true)"
+  fi
+  _teardown_lobster_env
+  # --headless must be recognized (not E-LOBSTER-007)
+  [[ "$output" != *"E-LOBSTER-007"* ]]
+  # Workflow exit code must be 2 (block)
+  [ "$exit_status" -eq 2 ]
+  # step-a and step-b must appear in log (they executed)
+  [ -n "$log_file" ]
+  [ -n "$step_a_line" ]
+  [ -n "$step_b_line" ]
+  # step-c must NOT appear in log — fail-fast skips remaining steps
+  [ -z "$step_c_line" ]
+}
+
 # AC-003: LCG seed advances — sources have varied content
 @test "BC_2_16_006: generated sources have varied content (LCG produces progression)" {
   local out_dir

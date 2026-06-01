@@ -1,0 +1,30 @@
+## AC-004: exit-code aggregation — 0 (all-pass), 1 (advisory), 2 (block)
+## Recorded: 2026-06-01
+## Fixtures used: exit-code-all-pass.yaml, exit-code-advisory.yaml, exit-code-block.yaml
+## Mock run-skill.mjs: mock-pass → exit 0, mock-advisory → exit 1, mock-block → exit 2
+
+--- Scenario 1: all-pass workflow (exit-code-all-pass.yaml) ---
+$ env CLAUDE_PLUGIN_ROOT=<tmp> BRAIN_ROOT=<tmp> \
+    bin/lobster-run tests/fixtures/exit-code-all-pass.yaml 2>/dev/null
+(no stdout — steps exit 0 silently)
+EXIT_CODE: 0
+RESULT: PASS — all steps pass → lobster exits 0
+
+--- Scenario 2: advisory workflow (exit-code-advisory.yaml) ---
+$ env CLAUDE_PLUGIN_ROOT=<tmp> BRAIN_ROOT=<tmp> \
+    bin/lobster-run tests/fixtures/exit-code-advisory.yaml 2>/dev/null
+(no stdout — steps exit 0 or 1 silently; pipeline continues)
+EXIT_CODE: 1
+RESULT: PASS — one step exits 1, no blocks → lobster exits 1; all steps ran
+
+--- Scenario 3: block workflow (exit-code-block.yaml) ---
+$ env CLAUDE_PLUGIN_ROOT=<tmp> BRAIN_ROOT=<tmp> \
+    bin/lobster-run tests/fixtures/exit-code-block.yaml 2>/dev/null
+(no stdout — step-b exits 2, step-c skipped)
+EXIT_CODE: 2
+RESULT: PASS — step-b exits 2 → lobster exits 2 immediately; step-c skipped
+
+AC-004 AGGREGATION TABLE:
+  all-pass  → exit 0  PASS
+  advisory  → exit 1  PASS
+  block     → exit 2  PASS

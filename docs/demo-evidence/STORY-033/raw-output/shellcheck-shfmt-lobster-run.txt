@@ -1,0 +1,13 @@
+## shellcheck + shfmt on bin/lobster-run
+## Command: shellcheck bin/lobster-run && shfmt -d -i 2 bin/lobster-run
+## Recorded: 2026-06-01
+
+$ shellcheck plugins/brain-factory/bin/lobster-run
+(no output — exit 0)
+shellcheck: 0 warnings (PASS)
+EXIT_CODE: 0
+
+$ shfmt -d -i 2 plugins/brain-factory/bin/lobster-run
+(no output — exit 0)
+shfmt: no diff (PASS)
+EXIT_CODE: 0

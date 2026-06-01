@@ -1,0 +1,22 @@
+name: daily-ritual
+description: "Daily brain maintenance: health check, inbox review, and quarantine check for all active sources."
+steps:
+  - id: health-check
+    skill: brain:brain-health
+    args:
+      - --yes
+      - --json
+    depends_on: []
+  - id: inbox-review
+    skill: brain:inbox-review
+    args:
+      - --yes
+    depends_on:
+      - health-check
+  - id: quarantine-check
+    skill: brain:quarantine-check
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - health-check

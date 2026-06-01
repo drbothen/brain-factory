@@ -4,7 +4,7 @@ LC_ALL=C
 export LC_ALL
 
 # bin/lobster-run — Lobster workflow runtime
-# Traces to: BC-2.12.001, BC-2.12.002, VP-007
+# Traces to: BC-2.12.001, BC-2.12.002, BC-2.12.003, BC-2.12.004, VP-007, VP-022
 #
 # Usage: lobster-run [--dry-run] <workflow.yaml>
 #
@@ -107,7 +107,7 @@ _cleanup_tmpfile() {
 trap _cleanup_tmpfile EXIT
 
 # ---------------------------------------------------------------------------
-# Argument parsing — flexible: --dry-run may appear before or after workflow
+# Argument parsing — flexible: --dry-run / --headless may appear before or after workflow
 # ---------------------------------------------------------------------------
 DRY_RUN=false
 WORKFLOW_FILE=""
@@ -116,6 +116,12 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
   --dry-run)
     DRY_RUN=true
+    shift
+    ;;
+  --headless)
+    # AC-001/BC-2.12.004: accept --headless flag; execution is already headless-safe
+    # (non-TTY; node scripts/run-skill.mjs per step; no interactive I/O).
+    # Flag is recognized and accepted; behaviorally equivalent to default execution.
     shift
     ;;
   --)
@@ -646,9 +652,9 @@ for sid in "${TOPO_ORDER[@]}"; do
   fi
 
   if [[ "${#step_args[@]}" -gt 0 ]]; then
-    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" "${step_args[@]}" || step_exit="$?"
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" "${step_args[@]}" || step_exit="$?" # run-skill.mjs
   else
-    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" || step_exit="$?"
+    node "${PLUGIN_ROOT}/scripts/run-skill.mjs" "$skill" || step_exit="$?" # run-skill.mjs
   fi
 
   step_end_ms="$(_now_ms)"

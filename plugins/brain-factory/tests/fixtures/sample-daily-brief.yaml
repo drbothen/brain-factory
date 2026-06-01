@@ -1,0 +1,9 @@
+name: sample-daily-brief
+description: "VP-022 headless fixture: minimal single-step workflow used to verify no-hang behavior with /dev/null stdin."
+steps:
+  - id: health-check
+    skill: brain:brain-health
+    args:
+      - --yes
+      - --json
+    depends_on: []

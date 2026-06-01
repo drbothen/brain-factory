@@ -1,0 +1,15 @@
+name: ingest-url
+description: "Ingest a URL into the brain: fetch, clean, store as a source, and update the wiki index."
+steps:
+  - id: fetch-url
+    skill: brain:ingest-url
+    args:
+      - --yes
+    depends_on: []
+  - id: synthesize
+    skill: brain:synthesize-topic
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - fetch-url

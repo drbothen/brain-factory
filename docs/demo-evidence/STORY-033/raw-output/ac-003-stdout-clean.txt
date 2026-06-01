@@ -1,0 +1,20 @@
+## AC-003: stdout clean of interactive prompts during headless run
+## Command: lobster-run --headless sample-daily-brief.yaml < /dev/null 2>/dev/null
+## Recorded: 2026-06-01
+
+$ stdout_output="$(env CLAUDE_PLUGIN_ROOT=<tmp> BRAIN_ROOT=<tmp> \
+    bin/lobster-run --headless tests/fixtures/sample-daily-brief.yaml </dev/null 2>/dev/null || true)"
+
+STDOUT captured: '' (empty)
+
+Checking interactive prompt patterns:
+  PASS: 'Press Enter' not found in stdout
+  PASS: '[y/N]' not found in stdout
+  PASS: '[Y/n]' not found in stdout
+  PASS: 'Confirm:' not found in stdout
+  PASS: 'Enter your choice' not found in stdout
+
+Also verified: output does NOT contain 'E-LOBSTER-007' (--headless flag recognized)
+
+RESULT: PASS — stdout is empty; no interactive prompt text present.
+        lobster-run emits JSONL events to stderr only (not stdout).

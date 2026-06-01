@@ -1,0 +1,22 @@
+name: brief-to-publish
+description: "End-to-end pipeline: draft a content brief, write the wiki page, and publish to the configured platform."
+steps:
+  - id: draft-brief
+    skill: brain:draft-content-brief
+    args:
+      - --yes
+      - --json
+    depends_on: []
+  - id: write-page
+    skill: brain:write-page
+    args:
+      - --yes
+    depends_on:
+      - draft-brief
+  - id: publish
+    skill: brain:publish-content
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - write-page

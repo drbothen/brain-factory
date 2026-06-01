@@ -1,0 +1,24 @@
+name: scale-test
+description: "Scale validation corpus: generate a test corpus and run full brain health validation against it."
+steps:
+  - id: generate-corpus
+    skill: brain:brain-health
+    args:
+      - --yes
+      - --json
+      - --scale-mode
+    depends_on: []
+  - id: lint-wiki
+    skill: brain:lint-wiki
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - generate-corpus
+  - id: health-report
+    skill: brain:brain-health
+    args:
+      - --yes
+      - --json
+    depends_on:
+      - lint-wiki
