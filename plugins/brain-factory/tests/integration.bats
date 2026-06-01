@@ -2286,6 +2286,8 @@ _teardown_lobster_env_with_spy() {
 # AC-006 / BC-2.12.003 postcondition 1: all 6 workflow files exist in workflows/
 # STRUCTURAL — MAY PASS against existing stubs. This is a guardrail test.
 # Traces to: BC-2.12.003 postcondition 1, invariant 1
+# The lower-bound (each named file exists) and upper-bound (exactly 6 .yaml files —
+# no stray 7th) together enforce BC-2.12.003 invariant 1 completely (AC-006).
 @test "BC_2_12_003: all 6 workflow files exist in plugins/brain-factory/workflows/ (AC-006)" {
   local wf_dir="${PLUGIN_DIR}/workflows"
   [ -d "$wf_dir" ]
@@ -2295,6 +2297,12 @@ _teardown_lobster_env_with_spy() {
   [ -f "${wf_dir}/daily-ritual.yaml" ]
   [ -f "${wf_dir}/weekly-refresh.yaml" ]
   [ -f "${wf_dir}/scale-test.yaml" ]
+  # Upper-bound: exactly 6 .yaml files — no stray 7th present.
+  # Traces to: BC-2.12.003 invariant 1 (exactly-6 upper bound, AC-006 Pass-4 NIT-1).
+  # Uses find to avoid zsh unmatched-glob abort; tr -d ' ' strips wc padding.
+  local yaml_count
+  yaml_count="$(find "${wf_dir}" -maxdepth 1 -name '*.yaml' | wc -l | tr -d ' ')"
+  [ "$yaml_count" -eq 6 ]
 }
 
 # AC-007 / BC-2.12.003 postcondition 2-3: all 6 workflow files pass yq parse + required schema fields
