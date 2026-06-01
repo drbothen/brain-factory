@@ -1,0 +1,68 @@
+## AC-006, AC-007, AC-008: workflow YAML files — existence, schema, extension
+## Recorded: 2026-06-01
+
+--- AC-006: ls workflows/ ---
+$ ls plugins/brain-factory/workflows/
+
+brief-to-publish.yaml
+daily-ritual.yaml
+ingest-source.yaml
+ingest-url.yaml
+scale-test.yaml
+weekly-refresh.yaml
+
+$ find workflows -maxdepth 1 -name '*.yaml' | wc -l
+6
+RESULT: PASS — exactly 6 .yaml files present
+
+--- AC-007: yq parse + schema validation ---
+$ yq eval '.' workflows/brief-to-publish.yaml  (exit 0)
+  name: brief-to-publish
+  description: End-to-end pipeline: draft a content brief, write the wiki page, and publish to the configured platform.
+  steps count: 3
+  steps[0].id: draft-brief  steps[0].skill: brain:draft-content-brief
+  steps[0].args: !!seq (array)  steps[0].depends_on: !!seq (array)
+
+$ yq eval '.' workflows/daily-ritual.yaml  (exit 0)
+  name: daily-ritual
+  description: Daily brain maintenance: health check, inbox review, and quarantine check for all active sources.
+  steps count: 3
+  steps[0].id: health-check  steps[0].skill: brain:brain-health
+  steps[0].args: !!seq (array)  steps[0].depends_on: !!seq (array)
+
+$ yq eval '.' workflows/ingest-source.yaml  (exit 0)
+  name: ingest-source
+  description: Ingest a local file or directory as a brain source, validate immutability hash, and connect to the wiki.
+  steps count: 2
+  steps[0].id: ingest  steps[0].skill: brain:ingest-source
+  steps[0].args: !!seq (array)  steps[0].depends_on: !!seq (array)
+
+$ yq eval '.' workflows/ingest-url.yaml  (exit 0)
+  name: ingest-url
+  description: Ingest a URL into the brain: fetch, clean, store as a source, and update the wiki index.
+  steps count: 2
+  steps[0].id: fetch-url  steps[0].skill: brain:ingest-url
+  steps[0].args: !!seq (array)  steps[0].depends_on: !!seq (array)
+
+$ yq eval '.' workflows/scale-test.yaml  (exit 0)
+  name: scale-test
+  description: Scale validation corpus: generate a test corpus and run full brain health validation against it.
+  steps count: 3
+  steps[0].id: generate-corpus  steps[0].skill: brain:brain-health
+  steps[0].args: !!seq (array)  steps[0].depends_on: !!seq (array)
+
+$ yq eval '.' workflows/weekly-refresh.yaml  (exit 0)
+  name: weekly-refresh
+  description: Weekly brain synthesis: synthesize recent topics, connect sources, and run a full brain health report.
+  steps count: 4
+  steps[0].id: synthesize  steps[0].skill: brain:synthesize-topic
+  steps[0].args: !!seq (array)  steps[0].depends_on: !!seq (array)
+
+All 6: yq parse OK, name non-empty, description non-empty, steps[0].{id,skill,args,depends_on} all present
+RESULT AC-007: PASS
+
+--- AC-008: no .lobster files ---
+$ ls workflows/*.lobster 2>/dev/null
+(no output — no matches found)
+Output: '' (empty)
+RESULT AC-008: PASS — zero .lobster files; only .yaml extension used

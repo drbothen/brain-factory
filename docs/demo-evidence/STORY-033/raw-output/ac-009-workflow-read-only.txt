@@ -1,0 +1,29 @@
+## AC-009: workflow files read-only at runtime — mtimes unchanged after dry-run
+## Recorded: 2026-06-01
+
+Before dry-run mtimes (stat epoch seconds):
+  brief-to-publish.yaml:  1780200298
+  daily-ritual.yaml:      1780200302
+  ingest-source.yaml:     1780200293
+  ingest-url.yaml:        1780200289
+  scale-test.yaml:        1780200315
+  weekly-refresh.yaml:    1780200311
+
+$ env CLAUDE_PLUGIN_ROOT=<tmp> BRAIN_ROOT=<tmp> \
+    bin/lobster-run --dry-run workflows/daily-ritual.yaml 2>/dev/null
+
+Dry-run output (execution plan):
+  health-check: node <PLUGIN_ROOT>/scripts/run-skill.mjs brain:brain-health --yes --json
+  inbox-review: node <PLUGIN_ROOT>/scripts/run-skill.mjs brain:inbox-review --yes
+  quarantine-check: node <PLUGIN_ROOT>/scripts/run-skill.mjs brain:quarantine-check --yes --json
+
+After dry-run mtimes (stat epoch seconds):
+  brief-to-publish.yaml:  1780200298  (unchanged)
+  daily-ritual.yaml:      1780200302  (unchanged)
+  ingest-source.yaml:     1780200293  (unchanged)
+  ingest-url.yaml:        1780200289  (unchanged)
+  scale-test.yaml:        1780200315  (unchanged)
+  weekly-refresh.yaml:    1780200311  (unchanged)
+
+RESULT: PASS — All 6 workflow file mtimes are identical before and after dry-run.
+        bin/lobster-run does not write to workflows/ during execution.

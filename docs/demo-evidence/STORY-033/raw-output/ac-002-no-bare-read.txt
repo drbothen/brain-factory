@@ -1,0 +1,16 @@
+## AC-002: no bare read calls in bin/lobster-run
+## Command: grep -n '^[[:space:]]*read ' bin/lobster-run
+## Recorded: 2026-06-01
+
+$ grep -n '^[[:space:]]*read ' plugins/brain-factory/bin/lobster-run
+(no output — exit 1 from grep = no matches found)
+
+Output: '' (empty)
+RESULT: PASS — grep returned empty output (no bare read calls)
+
+## Additional strengthened regex (bats test S04)
+$ grep -nE '(^|[[:space:];|&])read([[:space:]]|$)' bin/lobster-run \
+    | grep -v '^[0-9]*:[[:space:]]*#'
+(no output — PASS)
+
+RESULT: PASS — AC-002 and S04 both confirm: no bare 'read' calls outside TTY guard.

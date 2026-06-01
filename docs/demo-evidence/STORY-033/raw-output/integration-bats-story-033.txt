@@ -1,0 +1,26 @@
+## STORY-033 bats tests from tests/integration.bats
+## Command: bats tests/integration.bats
+## Total: 145 tests, 145 passed, 0 failed
+## STORY-033-specific tests: ok 114 – ok 127 (14 tests)
+## Recorded: 2026-06-01
+## Worktree: .worktrees/STORY-033/plugins/brain-factory
+## HEAD: 6ab6871
+
+ok 114 BC_2_12_004: lobster-run --headless flag accepted — does not hang with /dev/null stdin (AC-001/VP-022)
+ok 115 BC_2_12_004: lobster-run contains no bare read calls outside TTY guard (AC-002/VP-022)
+ok 116 BC_2_12_004: lobster-run stdout clean of interactive prompts during --headless run (AC-003/VP-022)
+ok 117 BC_2_12_004: lobster-run --headless exit code 0 on all-pass workflow (AC-004/BC-2.12.004)
+ok 118 BC_2_12_004: lobster-run --headless invokes node scripts/run-skill.mjs for each step (AC-005 behavioral)
+ok 119 BC_2_12_003: all 6 workflow files exist in plugins/brain-factory/workflows/ (AC-006)
+ok 120 BC_2_12_003: all 6 workflow files parse with yq and contain required schema fields (AC-007)
+ok 121 BC_2_12_003: no .lobster files in workflows/ — extension is .yaml not .lobster (AC-008)
+ok 122 BC_2_12_004: scripts/run-skill.mjs parseable by node --check (AC-005 static)
+ok 123 BC_2_12_004: scripts/run-skill.mjs rejects Node < 22 with non-zero exit (AC-005 Node22)
+ok 124 BC_2_12_003: workflow files mtime unchanged after dry-run execution (AC-009)
+ok 125 BC_2_12_004: run-skill.mjs Node<22 preflight exit-2 → lobster-run aggregates to exit 2 (IMPORTANT-1/EC-002)
+ok 126 BC_2_12_004: lobster-run --headless all-advisory workflow exits 1 all steps ran (IMPORTANT-2/AC-004)
+ok 127 BC_2_12_004: lobster-run --headless blocking workflow exits 2 fail-fast (IMPORTANT-2/AC-004)
+
+## Full suite summary
+1..145
+(145 tests, 0 failures, 0 skipped)
